@@ -1,6 +1,6 @@
 {
   "name": "@johnhenry/domkit",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A toolkit of small, independent DOM/HTML-component modules -- custom elements, shadow-DOM/component-authoring primitives, and DOM<->React interop helpers.",
   "type": "module",
   "exports": {
@@ -30,6 +30,7 @@
     "node": ">=26.0.0"
   },
   "dependencies": {
+    "@johnhenry/domable": "^0.0.1",
     "parsel-js": "^1.2.3"
   }
 }

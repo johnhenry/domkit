@@ -61,5 +61,5 @@ The following elements are considered "unsuitable" for mounting:
 
 ## See also
 
-- [dom-to-React](../dom-to-React/readme.md) / [react-to-dom](../react-to-dom/readme.md) — converting between real DOM and React-element-shaped objects
+- [`@johnhenry/domable`](https://github.com/johnhenry/domable)'s `domToReact`/`reactToDom` — converting between real DOM and React-element-shaped objects (domkit doesn't vendor its own copy of these; domable's is the maintained one)
 - [hydratable](../hydratable/readme.md) — a generic hydration mixin

@@ -1,4 +1,4 @@
-import textToDOMNodes from "../text-to-DOM-nodes/index.mjs";
+import textToDOMNodes from "@johnhenry/domable/text-to-dom";
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
 const DEFAULT_SELECT_TAG = "select";
 

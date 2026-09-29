@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.1] - 2026-09-29
+
+Removed six foundation modules that duplicated
+[`@johnhenry/domable`](https://github.com/johnhenry/domable) — a separate
+package, published two days before this one's extraction, that already
+consolidated the same six `lib` modules with real TypeScript types and
+jsdom-backed tests. The overlap was found while starting this package's
+opensource.johnhenry.me docs section, after domkit had already shipped as
+`0.0.0`.
+
+- Dropped from `src/`: `simple-element`, `create-element`,
+  `text-to-DOM-nodes`, `DOM-nodes-to-text`, `react-to-dom`, `dom-to-React`.
+- Added `@johnhenry/domable` as a real dependency; the three internal
+  consumers (`shadow-dom.element`, `define-component-by-content.component`,
+  `infinite-combo.component`) now import `simple-element`/`text-to-dom`
+  directly from it (`@johnhenry/domable/simple-element`,
+  `@johnhenry/domable/text-to-dom`).
+- README's Foundation and DOM⇄React interop sections updated to point at
+  domable instead of listing local copies; added a `## Family` section.
+- Everything else — the define-component family, responsive containers,
+  shadow/slot widgets, all standalone widgets, `mounts`/`hydratable`,
+  `create-mutable-nodelist`, `live-query-selector` — is unaffected; no
+  overlap exists there.
+
 ## [0.0.0] - 2026-09-29
 
 Initial release. Extracted from [`johnhenry/lib`](https://github.com/johnhenry/lib)'s

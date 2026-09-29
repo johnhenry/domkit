@@ -1,4 +1,4 @@
-import { constructSuperclass } from "../simple-element/index.mjs";
+import { constructSuperclass } from "@johnhenry/domable/simple-element";
 
 export default class extends globalThis.HTMLElement {
   constructor() {

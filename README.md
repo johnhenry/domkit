@@ -13,6 +13,11 @@ Full documentation: [opensource.johnhenry.me/domkit](https://opensource.johnhenr
 > lifecycle bugs across the cluster — see `CHANGELOG.md` for the full
 > history. `lib` itself is unaffected: its own copies of these modules keep
 > existing at their original published URLs per its own no-deletion policy.
+> Six foundation modules that overlapped with the already-published
+> [`@johnhenry/domable`](https://github.com/johnhenry/domable) (`simple-element`,
+> `create-element`, `text-to-DOM-nodes`, `DOM-nodes-to-text`, `react-to-dom`,
+> `dom-to-React`) were dropped from this package in `0.0.1` in favor of
+> depending on domable directly — see `## Family` below.
 
 A toolkit of small, independent DOM/HTML-component modules — custom
 elements, shadow-DOM/component-authoring primitives, and DOM⇄React
@@ -20,7 +25,7 @@ interop helpers. Each module is its own directory under `src/`, importable
 individually:
 
 ```js
-import { shadowOpen } from "@johnhenry/domkit/simple-element/index.mjs";
+import { shadowOpen } from "@johnhenry/domable/simple-element";
 ```
 
 or, in a browser with no build step, via a CDN:
@@ -46,12 +51,15 @@ npm install @johnhenry/domkit
 
 ### Foundation — component-authoring primitives
 
+`simple-element` (build custom-element classes from HTML template strings),
+`create-element` (JSX-less `createElement` + per-tag shorthands),
+`text-to-DOM-nodes`/`DOM-nodes-to-text` (HTML string ⇄ real DOM nodes) all
+now live in [`@johnhenry/domable`](https://github.com/johnhenry/domable) — a
+real dependency of this package — rather than as domkit modules. See
+`## Family` below.
+
 | Module | Description |
 |---|---|
-| [simple-element](src/simple-element/readme.md) | Build custom-element classes from HTML template strings (shadow DOM, slots, `::part()`) |
-| [create-element](src/create-element/readme.md) | JSX-less `createElement` + per-tag shorthand exports |
-| [text-to-DOM-nodes](src/text-to-DOM-nodes/readme.md) | Parse an HTML string into a `NodeList` |
-| [DOM-nodes-to-text](src/DOM-nodes-to-text/readme.md) | The inverse: DOM nodes → HTML string |
 | [create-mutable-nodelist](src/create-mutable-nodelist/readme.md) | A push/pop/shift/unshift-able `NodeList`-like collection |
 | [live-query-selector](src/live-query-selector/readme.md) | An auto-updating live collection matching a selector |
 
@@ -75,7 +83,7 @@ npm install @johnhenry/domkit
 
 | Module | Description |
 |---|---|
-| [shadow-dom.element](src/shadow-dom.element/readme.md) | Deprecated alias for `simple-element`'s `shadowOpen` |
+| [shadow-dom.element](src/shadow-dom.element/readme.md) | Deprecated alias for domable's `simple-element` `shadowOpen` |
 | [internal-timer.component](src/internal-timer.component/readme.md) | A pause/frame-timer element (shadow-DOM+slot plumbing) |
 
 ### Widgets
@@ -103,10 +111,12 @@ see each module's own `demo.html`/`demo.htm`.
 
 ### DOM ⇄ React interop
 
+`domToReact`/`reactToDom` (real DOM ⇄ React-element-shaped plain objects)
+live in [`@johnhenry/domable`](https://github.com/johnhenry/domable), not
+here — see `## Family` below.
+
 | Module | Description |
 |---|---|
-| [dom-to-React](src/dom-to-React/readme.md) | Convert a real DOM node into a React-element-shaped object |
-| [react-to-dom](src/react-to-dom/readme.md) | The inverse: React-element-shaped object → real DOM |
 | [mounts](src/mounts/readme.md) | Framework-agnostic DOM mount-point helpers (Solid/Vue/React) |
 | [hydratable](src/hydratable/readme.md) | A generic async hydration mixin |
 
@@ -115,6 +125,15 @@ see each module's own `demo.html`/`demo.htm`.
 `clamp`, `pause`, `pauseframespersecond`, `localstorage-cycler`,
 `localstorage-class-cycler` — small helpers a handful of the modules above
 depend on. See their own directories.
+
+## Family
+
+- [`@johnhenry/domable`](https://github.com/johnhenry/domable) — the DOM
+  ⇄ text ⇄ React conversion primitives (`simple-element`, `create-element`,
+  `text-to-dom`/`dom-to-text`, `react-to-dom`/`dom-to-react`) that this
+  package builds custom elements and interop helpers on top of. domkit is a
+  real npm dependency of neither direction of that relationship — it depends
+  on domable, not the other way around.
 
 ## License
 

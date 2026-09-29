@@ -1,5 +1,0 @@
-{
-  "tasks": {
-    "gentags": "deno run --allow-read --allow-write ./gen-tags.mjs"
-  }
-}
