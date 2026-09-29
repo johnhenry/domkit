@@ -51,7 +51,29 @@ no shared barrel or build step; every module's `src/<module>/index.mjs`
   but not enough to fully *exercise* modules like `mounts` that read
   `window.document.body` at the top level. Use a real browser or a real
   DOM library (jsdom/happy-dom) for anything beyond import-resolution
-  checks.
+  checks. This exact gap is how `mounts/last.mjs`'s real
+  `unsuitable.contains is not a function` bug (fixed in 0.0.2 — `Array`
+  has `.includes()`, not `.contains()`) went undetected through the
+  import-resolution smoke test the initial extraction relied on: it only
+  imports modules, it doesn't run their top-level DOM-reading code against
+  a body that actually has element children.
+- **`simple-element`/`create-element`/`text-to-DOM-nodes`/
+  `DOM-nodes-to-text`/`react-to-dom`/`dom-to-React` are NOT in this
+  package** (removed in 0.0.1) — they duplicated
+  [`@johnhenry/domable`](https://github.com/johnhenry/domable), a separate,
+  more polished package (real TS types, jsdom tests) published two days
+  before this package's own extraction from `lib`. domkit depends on it
+  directly; import `@johnhenry/domable/<name>`, not a local path, for any
+  of those six.
+- **`demo/` is a repo-root sibling of `src/`, not published to npm**
+  (`files` is still just `["src/"]`). It's a live gallery
+  (`demo/index.html`) running most modules simultaneously, each isolated
+  in its own iframe — either an existing `src/<module>/demo.html`/
+  `demo.htm`, or a small fragment under `demo/fragments/` for modules that
+  had none. Requires a static server (`npx serve .` from the repo root,
+  then visit `/demo/`) — module imports don't resolve over `file://`.
+  Add a new module's live example here too, not just its own
+  `demo.html`/`demo.htm`, when it's substantial enough to warrant one.
 
 ## Definition of done (adding or changing a module)
 
