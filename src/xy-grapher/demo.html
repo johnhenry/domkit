@@ -4,28 +4,38 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "@johnhenry/definable/": "../../node_modules/@johnhenry/definable/src/"
+        }
+      }
+    </script>
     <script type="module">
-      import defineChernoffFace from "./define.mjs";
-      defineChernoffFace("chernoff-face");
+      import defineXyGrapher from "./define.mjs";
+      defineXyGrapher("xy-grapher");
       window.onload = () => {
-        const face = document.createElement("chernoff-face");
-        face.setAttribute("eyeoffset", 0);
-        document.body.appendChild(face);
+        const grapher = document.createElement("xy-grapher");
+        grapher.setAttribute("xmax", "10");
+        grapher.setAttribute("ymax", "10");
+        grapher.setAttribute(
+          "data",
+          JSON.stringify([
+            [1, 2],
+            [3, 5],
+            [5, 3],
+            [7, 8],
+            [9, 4],
+          ]),
+        );
+        document.body.appendChild(grapher);
       };
     </script>
     <style>
-      chernoff-face > svg {
-        width: 128px;
-        height: 128px;
-        stroke-width: 1;
-        fill: yellow;
-        stroke: black;
-      }
-      chernoff-face .eye {
-        fill: white;
-      }
-      chernoff-face .iris {
-        fill: red;
+      xy-grapher {
+        display: block;
+        width: 256px;
+        height: 256px;
       }
     </style>
   </head>

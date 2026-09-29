@@ -17,7 +17,20 @@ Full documentation: [opensource.johnhenry.me/domkit](https://opensource.johnhenr
 > [`@johnhenry/domable`](https://github.com/johnhenry/domable) (`simple-element`,
 > `create-element`, `text-to-DOM-nodes`, `DOM-nodes-to-text`, `react-to-dom`,
 > `dom-to-React`) were dropped from this package in `0.0.1` in favor of
-> depending on domable directly — see `## Family` below.
+> depending on domable directly. In `0.0.3`, four more *coherent clusters*
+> (modules that form a real family, not just unrelated widgets) were split
+> out into their own standalone packages for the same reason:
+> [`@johnhenry/definable`](https://github.com/johnhenry/definable) (the
+> "define a component declaratively" family),
+> [`@johnhenry/respondable`](https://github.com/johnhenry/respondable)
+> (media-query-driven responsive containers),
+> [`@johnhenry/cyclable`](https://github.com/johnhenry/cyclable) (the
+> localStorage class-cycler family), and
+> [`@johnhenry/hydratable`](https://github.com/johnhenry/hydratable)
+> (`mounts` + `hydratable`). domkit now depends on `definable` for the
+> handful of remaining modules that still need it — see `## Family` below.
+> What's left in domkit is deliberately a toolkit again: one class or
+> function each, no natural sibling worth its own package.
 
 A toolkit of small, independent DOM/HTML-component modules — custom
 elements, shadow-DOM/component-authoring primitives, and DOM⇄React
@@ -33,7 +46,7 @@ or, in a browser with no build step, via a CDN:
 ```html
 <script
   type="module"
-  src="https://esm.sh/@johnhenry/domkit/query-container.component/global.mjs"
+  src="https://esm.sh/@johnhenry/domkit/tabbed-ui.component/global.mjs"
 ></script>
 ```
 
@@ -69,19 +82,18 @@ real dependency of this package — rather than as domkit modules. See
 
 ### Defining custom elements
 
-| Module | Description |
-|---|---|
-| [definetag](src/definetag/readme.md) | Curried `customElements.define` wrapper |
-| [define-component.component](src/define-component.component/readme.md) | Load a module by URL, register its export as a custom element |
-| [define-component-by-content.component](src/define-component-by-content.component/readme.md) | Define a custom element from an inline HTML string attribute |
-| [polyfill-window.component](src/polyfill-window.component/readme.md) | Load a module by URL, assign its export to a global (not a custom-element registrar) |
+`definetag`, `define-component.component`, `define-component-by-content.component`,
+and `polyfill-window.component` all now live in
+[`@johnhenry/definable`](https://github.com/johnhenry/definable) — a real
+dependency of this package, used internally by `chernoff-face`, `xy-grapher`,
+and `animate-paths.component` below to register themselves. See
+`## Family` below.
 
 ### Responsive containers
 
-| Module | Description |
-|---|---|
-| [query-container.component](src/query-container.component/readme.md) | Swap the rendered child element by media query |
-| [attribute-provider.component](src/attribute-provider.component/readme.md) | Apply classes/styles/attributes to children by media query |
+`query-container.component` and `attribute-provider.component` now live in
+[`@johnhenry/respondable`](https://github.com/johnhenry/respondable). See
+`## Family` below.
 
 ### Shadow DOM / slots
 
@@ -92,10 +104,14 @@ real dependency of this package — rather than as domkit modules. See
 
 ### Widgets
 
+The localStorage-backed class-cycler family (`class-cycler.component`,
+`class-cycler.button.component`, `localstorage-class-cycler`,
+`localstorage-cycler`) now lives in
+[`@johnhenry/cyclable`](https://github.com/johnhenry/cyclable). See
+`## Family` below.
+
 | Module | Description |
 |---|---|
-| [class-cycler.component](src/class-cycler.component/readme.md) | Global-function class cycler |
-| [class-cycler.button.component](src/class-cycler.button.component/readme.md) | Self-contained button variant |
 | [hotkey-modal.dialog.component](src/hotkey-modal.dialog.component/readme.md) | A `<dialog>` opened/closed by a keyboard shortcut |
 | [menu-component.component](src/menu-component.component/readme.md) | Keyboard-navigable stateful menu/wizard, with a `hash.mjs` location-hash companion |
 | [stylable-select.component](src/stylable-select.component/readme.md) | A `<select>`-like element whose options can actually be styled |
@@ -116,28 +132,38 @@ see each module's own `demo.html`/`demo.htm`.
 ### DOM ⇄ React interop
 
 `domToReact`/`reactToDom` (real DOM ⇄ React-element-shaped plain objects)
-live in [`@johnhenry/domable`](https://github.com/johnhenry/domable), not
-here — see `## Family` below.
-
-| Module | Description |
-|---|---|
-| [mounts](src/mounts/readme.md) | Framework-agnostic DOM mount-point helpers (Solid/Vue/React) |
-| [hydratable](src/hydratable/readme.md) | A generic async hydration mixin |
+live in [`@johnhenry/domable`](https://github.com/johnhenry/domable), and
+`mounts`/`hydratable` now live in
+[`@johnhenry/hydratable`](https://github.com/johnhenry/hydratable) — none
+of the DOM⇄React interop story lives in domkit itself anymore. See
+`## Family` below.
 
 ### Support utilities
 
-`clamp`, `pause`, `pauseframespersecond`, `localstorage-cycler`,
-`localstorage-class-cycler` — small helpers a handful of the modules above
-depend on. See their own directories.
+`clamp`, `pause`, `pauseframespersecond` — small helpers a handful of the
+modules above depend on. See their own directories.
 
 ## Family
 
 - [`@johnhenry/domable`](https://github.com/johnhenry/domable) — the DOM
   ⇄ text ⇄ React conversion primitives (`simple-element`, `create-element`,
   `text-to-dom`/`dom-to-text`, `react-to-dom`/`dom-to-react`) that this
-  package builds custom elements and interop helpers on top of. domkit is a
-  real npm dependency of neither direction of that relationship — it depends
-  on domable, not the other way around.
+  package builds custom elements and interop helpers on top of. domkit
+  depends on domable, not the other way around.
+- [`@johnhenry/definable`](https://github.com/johnhenry/definable) — the
+  "define a component declaratively" family. `chernoff-face`, `xy-grapher`,
+  and `animate-paths.component` (still in domkit) depend on it to register
+  themselves.
+- [`@johnhenry/respondable`](https://github.com/johnhenry/respondable) —
+  media-query-driven responsive containers (`query-container.component`,
+  `attribute-provider.component`), split out of domkit `0.0.2` into
+  `respondable` `0.0.0`. No remaining domkit module depends on it.
+- [`@johnhenry/cyclable`](https://github.com/johnhenry/cyclable) — the
+  localStorage class-cycler family, split out the same way. No remaining
+  domkit module depends on it.
+- [`@johnhenry/hydratable`](https://github.com/johnhenry/hydratable) —
+  `mounts` + a generic hydration mixin, split out the same way. No
+  remaining domkit module depends on it.
 
 ## License
 

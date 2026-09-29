@@ -6,6 +6,13 @@
   body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
   shadow-dom-demo { display: block; border: 1px dashed #888; padding: 8px; }
 </style>
+<script type="importmap">
+  {
+    "imports": {
+      "@johnhenry/domable/simple-element": "../../node_modules/@johnhenry/domable/src/simple-element.mjs"
+    }
+  }
+</script>
 <script type="module">
   import ShadowDom from "../../src/shadow-dom.element/index.mjs";
   customElements.define("shadow-dom-demo", ShadowDom);

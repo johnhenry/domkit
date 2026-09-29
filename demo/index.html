@@ -12,13 +12,24 @@
   <p class="lede">
     A live gallery of <strong>@johnhenry/domkit</strong>'s modules, each
     running the real source from <code>../src/</code> in its own isolated
-    iframe (so ~25 independent custom elements can coexist on one page
+    iframe (so independent custom elements can coexist on one page
     without colliding). Nothing here is a mockup — every card is the
     actual module, actually running.
   </p>
+  <p class="group-note">
+    Four coherent clusters that used to be shown here were split out into
+    their own packages, each with its own demo material: the
+    "define a component" family →
+    <a href="https://github.com/johnhenry/definable">definable</a>,
+    responsive containers →
+    <a href="https://github.com/johnhenry/respondable">respondable</a>,
+    the class-cycler family →
+    <a href="https://github.com/johnhenry/cyclable">cyclable</a>, and
+    <code>mounts</code>/<code>hydratable</code> →
+    <a href="https://github.com/johnhenry/hydratable">hydratable</a>. This
+    gallery now only shows what's still actually part of domkit.
+  </p>
   <nav>
-    <a href="#defining">Defining custom elements</a>
-    <a href="#responsive">Responsive containers</a>
     <a href="#shadow">Shadow DOM / lifecycle</a>
     <a href="#widgets">Widgets</a>
     <a href="#visual">Visual/canvas experiments</a>
@@ -29,47 +40,6 @@
 </header>
 
 <main>
-
-  <h2 id="defining">Defining custom elements <span class="count">definetag · define-component.component · define-component-by-content.component · polyfill-window.component</span></h2>
-  <p class="group-note">
-    <code>definetag</code> is the curried <code>customElements.define</code>
-    wrapper several of the other modules on this page use internally — no
-    card of its own, since it has no visible output. The other three solve
-    "register a component" from a URL, from inline HTML, and (for
-    non-component globals) a plain module respectively.
-  </p>
-  <div class="grid">
-    <div class="card">
-      <h3>define-component.component</h3>
-      <p>Load a module by URL, register its export as a custom element. (Own demo — bootstraps itself via this exact pattern.)</p>
-      <iframe src="../src/define-component.component/demo.html"></iframe>
-    </div>
-    <div class="card">
-      <h3>define-component-by-content.component</h3>
-      <p>Define a custom element from an inline HTML string attribute.</p>
-      <iframe src="fragments/define-component-by-content.html"></iframe>
-    </div>
-    <div class="card">
-      <h3>polyfill-window.component</h3>
-      <p>Load a module by URL, assign its export to a global — not a custom-element registrar.</p>
-      <iframe src="../src/polyfill-window.component/demo.html"></iframe>
-    </div>
-  </div>
-
-  <h2 id="responsive">Responsive containers <span class="count">query-container.component · attribute-provider.component</span></h2>
-  <p class="group-note">Resize your browser window — these frames re-evaluate their media queries live.</p>
-  <div class="grid">
-    <div class="card tall">
-      <h3>query-container.component</h3>
-      <p>Swap the rendered child element entirely by media query.</p>
-      <iframe src="../src/query-container.component/demo.htm"></iframe>
-    </div>
-    <div class="card tall">
-      <h3>attribute-provider.component</h3>
-      <p>Apply classes/styles/attributes to existing children by media query.</p>
-      <iframe src="../src/attribute-provider.component/demo.htm"></iframe>
-    </div>
-  </div>
 
   <h2 id="shadow">Shadow DOM &amp; lifecycle <span class="count">shadow-dom.element · internal-timer.component</span></h2>
   <div class="grid">
@@ -87,16 +57,6 @@
 
   <h2 id="widgets">Widgets</h2>
   <div class="grid">
-    <div class="card">
-      <h3>class-cycler.component</h3>
-      <p>Global-function class cycler, persisted to localStorage.</p>
-      <iframe src="fragments/class-cycler.html"></iframe>
-    </div>
-    <div class="card">
-      <h3>class-cycler.button.component</h3>
-      <p>Self-contained button variant.</p>
-      <iframe src="fragments/class-cycler-button.html"></iframe>
-    </div>
     <div class="card">
       <h3>hotkey-modal.dialog.component</h3>
       <p>A native &lt;dialog&gt; opened/closed by a keyboard shortcut.</p>
@@ -143,7 +103,14 @@
     </div>
     <div class="card tall">
       <h3>xy-grapher</h3>
-      <p>Generative XY graphing element.</p>
+      <p><strong>Known broken</strong> — <code>component.mjs</code> calls a
+      <code>genSVG()</code> function that's never defined anywhere, so
+      <code>render()</code> throws. Inherited from <code>lib</code>, predates
+      this package. The demo used to silently mask this by accidentally
+      registering <em>chernoff-face's</em> component under the
+      <code>xy-grapher</code> tag (a copy-paste bug in the original
+      <code>demo.html</code>) — fixed to register the real component, which
+      surfaces the render bug instead of hiding it.</p>
       <iframe src="../src/xy-grapher/demo.html"></iframe>
     </div>
     <div class="card">
@@ -165,22 +132,19 @@
     undocumented API. See their source under <code>src/</code>.
   </p>
 
-  <h2 id="interop">DOM ⇄ React interop <span class="count">mounts · hydratable · domable</span></h2>
+  <h2 id="interop">DOM ⇄ React interop <span class="count">domable</span></h2>
+  <p class="group-note">
+    domkit no longer has any DOM/React interop modules of its own —
+    <code>mounts</code>/<code>hydratable</code> moved to
+    <a href="https://github.com/johnhenry/hydratable">@johnhenry/hydratable</a>.
+    This is domable's own conversion pair, shown here since domkit depends
+    on it directly.
+  </p>
   <div class="grid">
     <div class="card tall">
       <h3>domable's domToReact / reactToDom</h3>
       <p>domkit has no conversions of its own — it depends on <a href="https://github.com/johnhenry/domable">@johnhenry/domable</a> for these.</p>
       <iframe src="fragments/domable-interop.html"></iframe>
-    </div>
-    <div class="card">
-      <h3>mounts</h3>
-      <p>Framework-agnostic body-first/body-last mount points (Solid/Vue/React-style).</p>
-      <iframe src="fragments/mounts.html"></iframe>
-    </div>
-    <div class="card">
-      <h3>hydratable</h3>
-      <p>A generic async hydration mixin.</p>
-      <iframe src="fragments/hydratable.html"></iframe>
     </div>
   </div>
 

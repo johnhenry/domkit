@@ -2,6 +2,61 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.3] - 2026-09-29
+
+Split four more *coherent clusters* (modules that form a real family, not
+just unrelated widgets) out of domkit into their own standalone packages —
+the same reasoning that moved six foundation modules to `@johnhenry/domable`
+in `0.0.1`. domkit is now a smaller, more honest toolkit: what's left is
+deliberately one class or function each, with no natural sibling worth its
+own package.
+
+- **[`@johnhenry/definable`](https://github.com/johnhenry/definable)** —
+  `definetag`, `define-component.component`,
+  `define-component-by-content.component`, `polyfill-window.component`.
+  Also gained `until-window-load`, a module `polyfill-window.component`'s
+  own demo had always referenced but that was never actually migrated out
+  of `lib` in the first place — found while porting that demo.
+- **[`@johnhenry/respondable`](https://github.com/johnhenry/respondable)**
+  — `query-container.component`, `attribute-provider.component`. Their
+  demo files previously referenced a `css-model-window` module that was
+  similarly never migrated out of `lib` (and itself depends on an
+  undocumented `css-model` module) — rather than chase that chain for
+  purely decorative window-size display, it was dropped from both demos.
+- **[`@johnhenry/cyclable`](https://github.com/johnhenry/cyclable)** —
+  `class-cycler.component`, `class-cycler.button.component`,
+  `localstorage-class-cycler`, `localstorage-cycler`.
+- **[`@johnhenry/hydratable`](https://github.com/johnhenry/hydratable)** —
+  `mounts`, `hydratable`.
+- `package.json`: added `@johnhenry/definable` as a dependency (`chernoff-face`,
+  `xy-grapher`, and `animate-paths.component` still depend on it to
+  register themselves); removed `parsel-js` (only `query-container.component`
+  used it, and that module is gone).
+- Fixed three bare-specifier module resolution bugs that only manifest in
+  a real browser, not under Node: `demo/fragments/shadow-dom.html`,
+  `src/infinite-combo.component/demo.htm`, `src/chernoff-face/demo.html`,
+  `src/chernoff-face/graph.html`, and `src/xy-grapher/demo.html` all
+  transitively import `@johnhenry/domable/...`/`@johnhenry/definable/...`
+  via bare specifiers, which Node resolves via `node_modules` but a plain
+  browser with no bundler cannot resolve without an import map. Added
+  `<script type="importmap">` to each. (This is exactly the class of bug
+  the local-vs-Node-vs-browser verification gap in `AGENTS.md` warns
+  about — caught here by static reasoning, not a live browser test, since
+  this sandbox has no working localhost networking.)
+- **Found and documented, not fixed**: `xy-grapher/component.mjs` calls a
+  `genSVG()` function that is never defined or imported anywhere in this
+  package *or* in `johnhenry/lib`'s original source — `render()` throws
+  whenever actually invoked. `xy-grapher/demo.html` previously masked this
+  entirely: it imported `chernoff-face`'s `define.mjs` (a copy-paste bug)
+  and registered *that* component under the `xy-grapher` tag, so the demo
+  "worked" while silently never exercising the real, broken component. Demo
+  fixed to register the actual `xy-grapher` component with real `data`/
+  `xmax`/`ymax` attributes — this surfaces the render bug instead of
+  hiding it. Implementing `genSVG` is a real follow-up, not done here.
+- `demo/index.html` and `demo/fragments/` updated: cards for all four
+  extracted clusters removed (their own repos now carry their demo
+  material); a card added noting the `xy-grapher` bug above.
+
 ## [0.0.2] - 2026-09-29
 
 Added `demo/` — a live module gallery (not published to npm; repo-only).
