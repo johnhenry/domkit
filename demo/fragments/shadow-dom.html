@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
+  shadow-dom-demo { display: block; border: 1px dashed #888; padding: 8px; }
+</style>
+<script type="module">
+  import ShadowDom from "../../src/shadow-dom.element/index.mjs";
+  customElements.define("shadow-dom-demo", ShadowDom);
+</script>
+</head>
+<body>
+<p>A deprecated thin alias for domable's <code>simple-element</code>
+<code>shadowOpen</code> — wraps its light-DOM content in an open shadow
+root containing a single <code>&lt;slot&gt;</code>:</p>
+<shadow-dom-demo>
+  This text is projected into an open shadow root via <code>&lt;slot /&gt;</code>.
+  Inspect this frame's DOM to see the real shadow root.
+</shadow-dom-demo>
+</body>
+</html>

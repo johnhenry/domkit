@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
+  [slot="tab-bar"] button { font: inherit; padding: 4px 10px; }
+  tabbed-ui > div:not([slot]) { border: 1px solid #888; padding: 10px; margin-top: 6px; border-radius: 6px; }
+</style>
+<script
+  type="module"
+  src="../../src/tabbed-ui.component/global.mjs"
+></script>
+</head>
+<body>
+<tabbed-ui>
+  <div slot="tab-bar">
+    <button>One</button>
+    <button>Two</button>
+    <button>Three</button>
+  </div>
+  <div>Panel one — the tab bar and panels correspond by position.</div>
+  <div>Panel two — clicking a tab shows its panel and hides the rest.</div>
+  <div>Panel three.</div>
+</tabbed-ui>
+</body>
+</html>

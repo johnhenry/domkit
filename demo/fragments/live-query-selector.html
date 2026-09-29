@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
+  button { font: inherit; padding: 6px 12px; margin-right: 6px; }
+  #watched .item { display: inline-block; padding: 4px 8px; margin: 2px; background: #eef; border-radius: 4px; }
+  #status { font-family: ui-monospace, monospace; margin-top: 8px; }
+</style>
+<script type="module">
+  import liveQuerySelector from "../../src/live-query-selector/index.mjs";
+
+  window.addEventListener("DOMContentLoaded", () => {
+    const container = document.getElementById("watched");
+    const statusEl = document.getElementById("status");
+    const list = liveQuerySelector(".item", container);
+
+    let n = 0;
+    const render = () => (statusEl.textContent = `live collection length: ${list.length}`);
+    render();
+
+    document.getElementById("add").onclick = () => {
+      n++;
+      const div = document.createElement("div");
+      div.className = "item";
+      div.textContent = `item ${n}`;
+      container.appendChild(div);
+      // MutationObserver callbacks are async (microtask), so re-render next tick.
+      queueMicrotask(render);
+    };
+    document.getElementById("remove").onclick = () => {
+      container.lastElementChild?.remove();
+      queueMicrotask(render);
+    };
+    document.getElementById("stop").onclick = () => {
+      list.stop();
+      statusEl.textContent += " -- stopped watching (further add/remove won't update this number)";
+    };
+  });
+</script>
+</head>
+<body>
+<p>A live array of elements matching a selector, auto-updated as the DOM
+changes -- with a <code>.stop()</code> to disconnect the underlying
+<code>MutationObserver</code> when you're done watching:</p>
+<div id="watched"></div>
+<div id="status"></div>
+<button id="add">Add item</button>
+<button id="remove">Remove last</button>
+<button id="stop">Stop watching</button>
+</body>
+</html>

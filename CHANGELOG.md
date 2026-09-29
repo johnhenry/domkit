@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.2] - 2026-09-29
+
+Added `demo/` — a live module gallery (not published to npm; repo-only).
+`demo/index.html` runs ~25 of the ~33 modules simultaneously, each in its
+own iframe (either an existing per-module `demo.html`/`demo.htm`, reused
+as-is, or a small new fragment under `demo/fragments/` for modules that
+had none) so unrelated custom elements can't collide by tag name, CSS, or
+global state. Requires a static file server (module imports don't resolve
+over `file://`) — `npx serve .` from the repo root, then visit `/demo/`.
+
+Building it surfaced one real, previously-undetected bug:
+
+- `src/mounts/last.mjs` called `unsuitable.contains(...)` on a plain
+  array — `Array` has no `.contains()` method (that's `Node`/
+  `DOMTokenList`), only `.includes()`, which `first.mjs`'s equivalent
+  check already used correctly. Importing `last` threw a `TypeError`
+  whenever `document.body`'s last child was a real element — i.e. almost
+  always. Fixed to `.includes()`.
+
+The four modules with no README or demo file (`canvasrenderer.component`,
+`pixelshader.component`, `imagedata-emitter.component`, `brains`) were
+deliberately left out of the gallery rather than guessing at an
+undocumented API.
+
 ## [0.0.1] - 2026-09-29
 
 Removed six foundation modules that duplicated

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
+  pre { font-family: ui-monospace, monospace; padding: 10px; border-radius: 6px; background: #1e1e1e; color: #ddd; overflow: auto; }
+</style>
+<script
+  type="module"
+  src="../../src/code-color.component/global.mjs"
+></script>
+</head>
+<body>
+<p>Syntax-highlights its contents, re-highlighting whenever the content
+changes:</p>
+<code-color>
+<pre>function greet(name) {
+  // say hello
+  return `Hello, ${name}!`;
+}
+console.log(greet("domkit"));</pre>
+</code-color>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>domkit — live module gallery</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header>
+  <h1>domkit</h1>
+  <p class="lede">
+    A live gallery of <strong>@johnhenry/domkit</strong>'s modules, each
+    running the real source from <code>../src/</code> in its own isolated
+    iframe (so ~25 independent custom elements can coexist on one page
+    without colliding). Nothing here is a mockup — every card is the
+    actual module, actually running.
+  </p>
+  <nav>
+    <a href="#defining">Defining custom elements</a>
+    <a href="#responsive">Responsive containers</a>
+    <a href="#shadow">Shadow DOM / lifecycle</a>
+    <a href="#widgets">Widgets</a>
+    <a href="#visual">Visual/canvas experiments</a>
+    <a href="#interop">DOM ⇄ React interop</a>
+    <a href="#foundation">Foundation</a>
+    <a href="https://github.com/johnhenry/domkit">Source</a>
+  </nav>
+</header>
+
+<main>
+
+  <h2 id="defining">Defining custom elements <span class="count">definetag · define-component.component · define-component-by-content.component · polyfill-window.component</span></h2>
+  <p class="group-note">
+    <code>definetag</code> is the curried <code>customElements.define</code>
+    wrapper several of the other modules on this page use internally — no
+    card of its own, since it has no visible output. The other three solve
+    "register a component" from a URL, from inline HTML, and (for
+    non-component globals) a plain module respectively.
+  </p>
+  <div class="grid">
+    <div class="card">
+      <h3>define-component.component</h3>
+      <p>Load a module by URL, register its export as a custom element. (Own demo — bootstraps itself via this exact pattern.)</p>
+      <iframe src="../src/define-component.component/demo.html"></iframe>
+    </div>
+    <div class="card">
+      <h3>define-component-by-content.component</h3>
+      <p>Define a custom element from an inline HTML string attribute.</p>
+      <iframe src="fragments/define-component-by-content.html"></iframe>
+    </div>
+    <div class="card">
+      <h3>polyfill-window.component</h3>
+      <p>Load a module by URL, assign its export to a global — not a custom-element registrar.</p>
+      <iframe src="../src/polyfill-window.component/demo.html"></iframe>
+    </div>
+  </div>
+
+  <h2 id="responsive">Responsive containers <span class="count">query-container.component · attribute-provider.component</span></h2>
+  <p class="group-note">Resize your browser window — these frames re-evaluate their media queries live.</p>
+  <div class="grid">
+    <div class="card tall">
+      <h3>query-container.component</h3>
+      <p>Swap the rendered child element entirely by media query.</p>
+      <iframe src="../src/query-container.component/demo.htm"></iframe>
+    </div>
+    <div class="card tall">
+      <h3>attribute-provider.component</h3>
+      <p>Apply classes/styles/attributes to existing children by media query.</p>
+      <iframe src="../src/attribute-provider.component/demo.htm"></iframe>
+    </div>
+  </div>
+
+  <h2 id="shadow">Shadow DOM &amp; lifecycle <span class="count">shadow-dom.element · internal-timer.component</span></h2>
+  <div class="grid">
+    <div class="card">
+      <h3>shadow-dom.element</h3>
+      <p>Deprecated alias for domable's <code>simple-element</code> <code>shadowOpen</code>.</p>
+      <iframe src="fragments/shadow-dom.html"></iframe>
+    </div>
+    <div class="card">
+      <h3>internal-timer.component</h3>
+      <p>A frame-paced <code>tick</code> emitter with pause/resume — a worked example of the disconnectedCallback lifecycle-symmetry fixes from the completeness audit.</p>
+      <iframe src="fragments/internal-timer.html"></iframe>
+    </div>
+  </div>
+
+  <h2 id="widgets">Widgets</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>class-cycler.component</h3>
+      <p>Global-function class cycler, persisted to localStorage.</p>
+      <iframe src="fragments/class-cycler.html"></iframe>
+    </div>
+    <div class="card">
+      <h3>class-cycler.button.component</h3>
+      <p>Self-contained button variant.</p>
+      <iframe src="fragments/class-cycler-button.html"></iframe>
+    </div>
+    <div class="card">
+      <h3>hotkey-modal.dialog.component</h3>
+      <p>A native &lt;dialog&gt; opened/closed by a keyboard shortcut.</p>
+      <iframe src="fragments/hotkey-modal.html"></iframe>
+    </div>
+    <div class="card tall">
+      <h3>menu-component.component + hash.mjs</h3>
+      <p>Keyboard-navigable stateful menu, synced to <code>location.hash</code> via its <code>attach()</code>/<code>detach()</code> companion.</p>
+      <iframe src="fragments/menu-component.html"></iframe>
+    </div>
+    <div class="card">
+      <h3>stylable-select.component</h3>
+      <p>A &lt;select&gt;-like element whose options can actually be styled.</p>
+      <iframe src="../src/stylable-select.component/demo.htm"></iframe>
+    </div>
+    <div class="card">
+      <h3>tabbed-ui.component</h3>
+      <p>Tabs/panels element, matched by position.</p>
+      <iframe src="fragments/tabbed-ui.html"></iframe>
+    </div>
+    <div class="card">
+      <h3>infinite-combo.component</h3>
+      <p>A combo-box that loads more options on demand.</p>
+      <iframe src="../src/infinite-combo.component/demo.htm"></iframe>
+    </div>
+    <div class="card">
+      <h3>event-consumer.component</h3>
+      <p>Declaratively wire event listeners without JS setup code.</p>
+      <iframe src="fragments/event-consumer.html"></iframe>
+    </div>
+    <div class="card">
+      <h3>code-color.component</h3>
+      <p>Syntax-highlights its contents, re-highlighting on change.</p>
+      <iframe src="fragments/code-color.html"></iframe>
+    </div>
+  </div>
+
+  <h2 id="visual">Visual/canvas experiments <span class="count">animate-paths.component · xy-grapher · chernoff-face</span></h2>
+  <div class="grid">
+    <div class="card tall">
+      <h3>animate-paths.component</h3>
+      <p>SVG path animation — the domkit logo, animated.</p>
+      <iframe src="../src/animate-paths.component/demo.htm"></iframe>
+    </div>
+    <div class="card tall">
+      <h3>xy-grapher</h3>
+      <p>Generative XY graphing element.</p>
+      <iframe src="../src/xy-grapher/demo.html"></iframe>
+    </div>
+    <div class="card">
+      <h3>chernoff-face</h3>
+      <p>Parametric faces as a data-visualization technique.</p>
+      <iframe src="../src/chernoff-face/demo.html"></iframe>
+    </div>
+    <div class="card">
+      <h3>graph.component</h3>
+      <p>Unimplemented placeholder — kept per the repo's no-deletion policy.</p>
+      <iframe src="../src/graph.component/demo.html"></iframe>
+    </div>
+  </div>
+  <p class="unimplemented">
+    <code>canvasrenderer.component</code>, <code>pixelshader.component</code>,
+    <code>imagedata-emitter.component</code>, and <code>brains</code> have no
+    README or demo file yet (demo-grade experiments, carried over as-is from
+    the original extraction) — not included here to avoid guessing at an
+    undocumented API. See their source under <code>src/</code>.
+  </p>
+
+  <h2 id="interop">DOM ⇄ React interop <span class="count">mounts · hydratable · domable</span></h2>
+  <div class="grid">
+    <div class="card tall">
+      <h3>domable's domToReact / reactToDom</h3>
+      <p>domkit has no conversions of its own — it depends on <a href="https://github.com/johnhenry/domable">@johnhenry/domable</a> for these.</p>
+      <iframe src="fragments/domable-interop.html"></iframe>
+    </div>
+    <div class="card">
+      <h3>mounts</h3>
+      <p>Framework-agnostic body-first/body-last mount points (Solid/Vue/React-style).</p>
+      <iframe src="fragments/mounts.html"></iframe>
+    </div>
+    <div class="card">
+      <h3>hydratable</h3>
+      <p>A generic async hydration mixin.</p>
+      <iframe src="fragments/hydratable.html"></iframe>
+    </div>
+  </div>
+
+  <h2 id="foundation">Foundation <span class="count">create-mutable-nodelist · live-query-selector</span></h2>
+  <div class="grid">
+    <div class="card">
+      <h3>create-mutable-nodelist</h3>
+      <p>A push/pop/shift/unshift-able NodeList-like collection.</p>
+      <iframe src="fragments/create-mutable-nodelist.html"></iframe>
+    </div>
+    <div class="card">
+      <h3>live-query-selector</h3>
+      <p>An auto-updating live collection matching a selector, with a <code>.stop()</code> to disconnect it.</p>
+      <iframe src="fragments/live-query-selector.html"></iframe>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>
+    Every card above imports directly from this repo's <code>src/</code> —
+    open this page through a static file server (module imports don't
+    resolve over <code>file://</code>), e.g. <code>npx serve .</code> from
+    the repo root, then visit <code>/demo/</code>. See the
+    <a href="../README.md">root README</a> for the full module index and
+    install instructions.
+  </p>
+</footer>
+</body>
+</html>

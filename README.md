@@ -41,6 +41,10 @@ There is no single root import — this is a toolkit of ~40 independent
 things, not one coherent API. Every module's own `readme.md` (linked
 below) documents its real usage.
 
+See [`demo/`](demo/) for a live gallery running ~25 of these modules at
+once (`npx serve .` from the repo root, then visit `/demo/` — module
+imports don't resolve over `file://`).
+
 ## Install
 
 ```bash
