@@ -1,0 +1,11 @@
+{
+  "name": "create-element-jsx-demo",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "build": "esbuild ./index.jsx --outfile=./index.jsx.mjs --banner:js=\"import _createElement from 'https://esm.sh/@johnhenry/domkit/create-element/index.mjs'; \" --jsx-factory=_createElement --jsx-fragment=\"''\""
+  },
+  "dependencies": {
+    "esbuild": "^0.14.39"
+  }
+}

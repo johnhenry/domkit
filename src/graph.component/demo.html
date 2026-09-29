@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Graph Component</title>
+    <script>
+      import GraphComponent from "./index.mjs";
+      globalThis.customElements.define("graph-xy", GraphComponent);
+    </script>
+  </head>
+  <body>
+    <h1>Graph:Line</h1>
+    <h2>input</h2>
+    <graph-xy id="graph" start-x="0" start-y="0" mode="line">
+      <div data-x="10" data-y="10" />
+      <div data-x="20" data-y="20" />
+    </graph-xy>
+    <h2>output</h2>
+    <svg>
+      <path d="m 0 0 l 10 10 l 20 20" />
+    </svg>
+    <h1>Graph:Object</h1>
+    <h2>input</h2>
+    <graph-xy id="graph" start-x="0" start-y="0" mode="line">
+      <div data-x="10" data-y="10" />
+      <div data-x="20" data-y="20" />
+    </graph-xy>
+    <h2>output</h2>
+    <div>
+      <div style="position: absolute; top: 10; left: 10"></div>
+      <div style="position: absolute; top: 20; left: 20"></div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,48 @@
+<title>Document</title>
+<script type="module">
+  import defineChernoffFace from "./define.mjs";
+  defineChernoffFace("chernoff-face");
+</script>
+<style>
+  html {
+    height: 100%;
+  }
+  body {
+    height: 100%;
+  }
+  chernoff-face > svg {
+    width: 64px;
+    height: 64px;
+    stroke-width: 1;
+    fill: yellow;
+    stroke: black;
+  }
+  chernoff-face .eye {
+    fill: white;
+  }
+  chernoff-face .iris {
+    fill: red;
+  }
+</style>
+
+<a href="./graph.html">graph</a>
+
+<ul>
+  <li>
+    <h2>happy face</h2>
+    <chernoff-face irisoffset="-12"></chernoff-face>
+  </li>
+  <li>
+    <h2>surprised face</h2>
+    <chernoff-face upperlip="32" lowerlip="32" noseoffset="64"></chernoff-face>
+  </li>
+  <li>
+    <h2>suspicious face</h2>
+    <chernoff-face
+      irisoffset="12"
+      upperlip="4"
+      lowerlip="4"
+      eyerotation="1.5"
+    ></chernoff-face>
+  </li>
+</ul>

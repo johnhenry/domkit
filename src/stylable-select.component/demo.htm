@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="https://johnhenry.github.io/lib/css/blank-slate/0.0.0/index.css" />
+    <link rel="stylesheet" href="./index.css" />
+
+    <script type="module" src="./global.mjs"></script>
+    <style>
+      /* option {
+          display: flex;
+        }
+        option::before {
+          content: "O";
+        }
+        option::after {
+          content: "X";
+          margin-left: auto;
+        } */
+      select-panel {
+        display: flex;
+        flex-direction: column;
+      }
+      #application {
+        font-size: 15rem;
+        font-family: Arial, Helvetica, sans-serif;
+        background-color: indianred;
+        width: 100%;
+        height: 100%;
+      }
+      #application::backdrop {
+        background-color: #f0f0f0;
+      }
+      .github-panel {
+        width: 50%;
+        margin: auto;
+        background-color: #0e1117;
+        /* border: 1px solid antiquewhite; */
+        color: antiquewhite;
+        border-radius: 8px;
+        position: relative;
+        overflow: hidden;
+      }
+      .github-panel > * {
+        background-color: inherit;
+        color: inherit;
+        border: none;
+      }
+      .github-panel > input {
+        /* border-bottom: 1px solid white; */
+        padding: 8px 32px;
+        outline: none;
+      }
+      .github-panel::before {
+        position: absolute;
+        content: "🔍";
+        left: 8px;
+        top: 8px;
+      }
+      .github-panel > select {
+        outline: none;
+      }
+      .github-panel > select option:checked {
+        background: red;
+      }
+      .github-panel > select option::before {
+        content: "😄";
+      }
+      .github-panel > select option {
+        padding: 10px 8px;
+        margin: 0 8px;
+        gap: 4px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+      .github-panel > select optgroup {
+        padding: 16px 16px;
+      }
+      .github-panel > select option:hover::after {
+        content: "click";
+        margin-left: auto;
+      }
+      .github-panel > select > optgroup {
+        line-height: 2rem;
+      }
+    </style>
+    <script type="module">
+      window.search = async (event) => {
+        return `<option>${event.data}</option>${event.initialString}`;
+      };
+      window.select = (event) => {
+        console.log(event.target);
+      };
+      document
+        .querySelector(".github-panel")
+        .addEventListener("select", (x) => console.log(x.target.value, x));
+    </script>
+  </head>
+  <body>
+    <div id="application">
+      <select-panel
+        class="github-panel"
+        onsearch="window.search(event)"
+        onselect="window.select(event)"
+        size="8"
+      >
+        <optgroup label="Pages">
+          <option value="pages-dashboard">Dashboard</option>
+          <option value="pages-notifications">Notifications</option>
+          <option value="pages-issues">Issues</option>
+          <option value="pages-pullrequests">Pull Requests</option>
+          <option value="pages-discussions">Discussions</option>
+        </optgroup>
+
+        <optgroup label="Repositories">
+          <option value="repositories-johnhenry/lib">johnhenry/lib</option>
+        </optgroup>
+        <optgroup label="Organizations">
+          <option value="organizations-fornsakengine">Forsnakengine</option>
+          <option value="organizations-iamjohnenry">iamjohnhenry</option>
+          <option value="organizations-epicgames">epicgames</option>
+        </optgroup>
+        <optgroup label="Users">
+          <option value="users-johnhenry">@johnhenry -- john</option>
+        </optgroup>
+      </select-panel>
+    </div>
+  </body>
+</html>

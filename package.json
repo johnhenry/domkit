@@ -1,0 +1,35 @@
+{
+  "name": "@johnhenry/domkit",
+  "version": "0.0.0",
+  "description": "A toolkit of small, independent DOM/HTML-component modules -- custom elements, shadow-DOM/component-authoring primitives, and DOM<->React interop helpers.",
+  "type": "module",
+  "exports": {
+    "./*": "./src/*"
+  },
+  "files": [
+    "src/"
+  ],
+  "scripts": {
+    "test": "node scripts/check-syntax.mjs"
+  },
+  "keywords": [
+    "html",
+    "dom",
+    "web-components",
+    "custom-elements",
+    "shadow-dom"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johnhenry/domkit.git"
+  },
+  "homepage": "https://opensource.johnhenry.me/domkit/",
+  "engines": {
+    "node": ">=26.0.0"
+  },
+  "dependencies": {
+    "parsel-js": "^1.2.3"
+  }
+}

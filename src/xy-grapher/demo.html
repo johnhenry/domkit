@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script type="module">
+      import defineChernoffFace from "./define.mjs";
+      defineChernoffFace("chernoff-face");
+      window.onload = () => {
+        const face = document.createElement("chernoff-face");
+        face.setAttribute("eyeoffset", 0);
+        document.body.appendChild(face);
+      };
+    </script>
+    <style>
+      chernoff-face > svg {
+        width: 128px;
+        height: 128px;
+        stroke-width: 1;
+        fill: yellow;
+        stroke: black;
+      }
+      chernoff-face .eye {
+        fill: white;
+      }
+      chernoff-face .iris {
+        fill: red;
+      }
+    </style>
+  </head>
+  <body></body>
+</html>
