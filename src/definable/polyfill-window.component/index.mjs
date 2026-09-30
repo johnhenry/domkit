@@ -1,11 +1,7 @@
+import { resolveRelativeUrl } from "../resolve-relative-url.mjs";
+
 const define = async (src, name, imp, force, noImport) => {
-  const { href } = globalThis.location;
-  const indexQM = href.lastIndexOf("?");
-  const withoutQuery = indexQM === -1 ? href : href.substring(0, indexQM);
-  const indexS = withoutQuery.lastIndexOf("/");
-  const dirname =
-    indexS === -1 ? withoutQuery : withoutQuery.substring(0, indexS);
-  const url = new URL(src, dirname + "/");
+  const url = resolveRelativeUrl(src);
   if (!globalThis[name] || force !== null) {
     const module = await import(url.href);
     if (!noImport) {

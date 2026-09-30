@@ -1,4 +1,4 @@
-const exp = /\[(.+)\](.+)/;
+import { parseQuerySections } from "../query-sections.mjs";
 
 const stripQuotes = (string, quotes = ["'", '"', "`"]) => {
   for (const quote of quotes) {
@@ -8,13 +8,6 @@ const stripQuotes = (string, quotes = ["'", '"', "`"]) => {
   }
   return string;
 };
-
-const parseQueries = (queries) =>
-  queries
-    .trim()
-    .split("|")
-    .map((x) => x.trim())
-    .filter((x) => x);
 
 export default class extends HTMLElement {
   #classes;
@@ -44,26 +37,12 @@ export default class extends HTMLElement {
     const queries = this.getAttribute("classes") || "";
     this.#classes = new Map();
     const mediaMatches = (this.#mediaMatches["classes"] = new Set());
-    for (const mediaQuery of parseQueries(queries)) {
-      let query, selector;
-      if (exp.test(mediaQuery)) {
-        [, query, selector] = exp.exec(mediaQuery);
-        query = query.trim();
-        selector = selector.trim();
-      } else {
-        query = "";
-        selector = mediaQuery.trim();
-      }
-      this.#classes.set(
-        globalThis.matchMedia(query),
-        selector.trim().split(" ")
-      );
-
-      const m = globalThis.matchMedia(query);
-      m.onchange = (e) => {
+    for (const { mql, value } of parseQuerySections(queries)) {
+      this.#classes.set(mql, value.split(" ").filter(Boolean));
+      mql.onchange = (e) => {
         this.triggerClass(e);
       };
-      mediaMatches.add(m);
+      mediaMatches.add(mql);
     }
     this.triggerClass();
   }
@@ -71,29 +50,18 @@ export default class extends HTMLElement {
     const queries = this.getAttribute("styles") || "";
     this.#styles = new Map();
     const mediaMatches = (this.#mediaMatches["styles"] = new Set());
-    for (const mediaQuery of parseQueries(queries)) {
-      let query, selector;
-      if (exp.test(mediaQuery)) {
-        [, query, selector] = exp.exec(mediaQuery);
-        query = query.trim();
-        selector = selector.trim();
-      } else {
-        query = "";
-        selector = mediaQuery.trim();
-      }
+    for (const { mql, value } of parseQuerySections(queries)) {
       this.#styles.set(
-        globalThis.matchMedia(query),
-        selector
-          .trim()
+        mql,
+        value
           .split(";")
-          .filter((x) => x)
+          .map((x) => x.trim())
+          .filter(Boolean)
       );
-
-      const m = globalThis.matchMedia(query);
-      m.onchange = (e) => {
+      mql.onchange = (e) => {
         this.triggerStyle(e);
       };
-      mediaMatches.add(m);
+      mediaMatches.add(mql);
     }
     this.triggerStyle();
   }
@@ -101,30 +69,24 @@ export default class extends HTMLElement {
     const queries = this.getAttribute("attributes") || "";
     this.#attributes = new Map();
     const mediaMatches = (this.#mediaMatches["attributes"] = new Set());
-    for (const mediaQuery of parseQueries(queries)) {
-      let query, selector;
-      if (exp.test(mediaQuery)) {
-        [, query, selector] = exp.exec(mediaQuery);
-        query = query.trim();
-        selector = selector.trim();
-      } else {
-        query = "";
-        selector = mediaQuery.trim();
-      }
-
+    for (const { mql, value } of parseQuerySections(queries)) {
       this.#attributes.set(
-        globalThis.matchMedia(query),
-        selector
-          .trim()
+        mql,
+        value
           .split(";")
-          .filter((x) => x)
+          .map((x) => x.trim())
+          .filter(Boolean)
           .reduce((acc, curr) => {
             let [key, value] = curr.split("=", 2);
+            key = (key ?? "").trim();
             if (!key) {
-              return;
+              // Malformed segment (e.g. "=foo" with no key) -- skip it,
+              // don't drop the accumulator. Returning `acc` here (not
+              // `undefined`) is the fix: the old code returned bare
+              // `undefined` on this branch, which became the next
+              // iteration's accumulator and crashed on the next .push().
+              return acc;
             }
-
-            key = key.trim();
             if (value === undefined) {
               value = "";
             }
@@ -134,16 +96,14 @@ export default class extends HTMLElement {
             if (value) {
               value = stripQuotes(value.trim());
             }
-            acc.push([key.trim(), value]);
+            acc.push([key, value]);
             return acc;
           }, [])
       );
-
-      const m = globalThis.matchMedia(query);
-      m.onchange = (e) => {
+      mql.onchange = (e) => {
         this.triggerAttribute(e);
       };
-      mediaMatches.add(m);
+      mediaMatches.add(mql);
     }
     this.triggerAttribute();
   }

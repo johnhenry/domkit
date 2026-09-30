@@ -52,3 +52,19 @@ The handler takes four parametes:
   passed into the "updateLocalStorage" function OR
   an "init" CustomEvent if fired from the initial
   call to localStorageCycler.
+
+## `.previous()`, `.peek()`, `.set()`
+
+The returned function is still directly callable to advance forward
+(as above), and also carries three additional methods:
+
+```javascript
+updateLocalStorage.previous(); // step backward instead of forward
+updateLocalStorage.peek(); // read the current { value, key, index } without changing anything
+updateLocalStorage.set("b"); // jump directly to a specific value (must be one of the configured values)
+```
+
+All three return the same `{ value, key, index, result }` shape as the
+main function (`peek()` omits `result` -- it doesn't call the handler).
+`set()` throws if given a value that isn't one of the ones this cycler was
+configured with.

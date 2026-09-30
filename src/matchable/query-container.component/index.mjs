@@ -1,4 +1,5 @@
 import { tokenize } from "parsel-js";
+import { parseQuerySections } from "../query-sections.mjs";
 /*
   <query-component
     default="ul"
@@ -6,7 +7,6 @@ import { tokenize } from "parsel-js";
   ></query-component>
   -- see readme.md for the full example.
 */
-const exp = /\[(.+)\](.+)/;
 const elementFromSelector = (selector = "") => {
   let tag = "template";
   let id = undefined;
@@ -74,19 +74,10 @@ export default class extends HTMLElement {
   setQueries(queries) {
     this.#queries = new Map();
     let firstSelector = "";
-    for (const mediaQuery of queries
-      .trim()
-      .split("|")
-      .map((x) => x.trim())
-      .filter((x) => x)) {
-      const [, query, selector] = exp.exec(mediaQuery);
+    for (const { mql, value: selector } of parseQuerySections(queries)) {
       firstSelector = firstSelector || selector;
-      this.#queries.set(
-        globalThis.matchMedia(query),
-        elementFromSelector(selector)
-      );
-      const m = globalThis.matchMedia(query);
-      m.onchange = (e) => {
+      this.#queries.set(mql, elementFromSelector(selector));
+      mql.onchange = (e) => {
         this.triggerQuery(e);
       };
     }

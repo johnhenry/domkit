@@ -2,6 +2,83 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.5] - 2026-09-30
+
+A completeness pass (duals/complements/supplements) across the four
+namespaced clusters merged in `0.0.4`, read module by module. Real bugs
+found and fixed, plus a handful of genuinely missing counterpart
+operations added:
+
+**`matchable`** (crash bugs -- the most severe findings):
+- `query-container.component` and `attribute-provider.component` both
+  claimed to share one pipe-delimited `[query] value` grammar, but only
+  `attribute-provider.component` actually supported a bracket-less bare
+  section (treated as "always applies"). `query-container.component` had
+  no such fallback and threw a `TypeError` on one. Both now share one
+  parser (`matchable/query-sections.mjs`), so the grammar is identical by
+  construction instead of by convention.
+- `attribute-provider.component`'s `setAttributes()` `reduce` callback
+  returned `undefined` instead of the accumulator on a malformed/
+  whitespace-only segment (e.g. `"foo:bar; ;baz:qux"`), corrupting the
+  accumulator and crashing on the next `.push()`. Fixed to return `acc`.
+- Both modules called `matchMedia(query)` twice per section (once for
+  state, once for `.onchange`) instead of reusing one reference -- relied
+  on every browser returning the same cached `MediaQueryList` for a given
+  query string, which is true today but not a spec guarantee. The shared
+  parser calls it once and passes the same object to both uses.
+
+**`definable`:**
+- `define-component.component`'s `force` attribute was documented to
+  "re-register even if already defined," which is physically impossible --
+  `customElements.define()` unconditionally throws if the name is taken,
+  with no browser API to undo a registration. Using `force` on an
+  already-registered name threw an uncaught exception. Now logs a
+  `console.warn` explaining why and skips instead of throwing; the readme
+  is corrected to describe what actually happens.
+- `until-window-load` had no "already loaded" fast path -- if `load` had
+  already fired before the listener attached (a late dynamic import, a
+  slow deferred module script), the hidden content stayed hidden
+  permanently. Now checks `document.readyState` first.
+- `define-component.component` and `polyfill-window.component` had two
+  copy-pasted copies of the same URL-directory-resolution logic; extracted
+  to `definable/resolve-relative-url.mjs`.
+- `define-component-by-content.component` parsed a `shadow` attribute and
+  passed it through to domable's `constructSuperclass()`, which has no
+  such parameter -- silently dropped, dead code. Removed (never part of
+  the documented API; only `use-dom`/`mode` ever did anything).
+- `definetag`'s dead commented-out try/catch variant removed.
+
+**`cyclable`:**
+- `localstorage-cycler/class.mjs` was an unused, never-imported
+  near-duplicate of `localstorage-class-cycler/index.mjs`. Deleted.
+- The engine only ever stepped forward, with no way to step back, read the
+  current value without mutating it, or jump directly to a specific value.
+  Added `.previous()`, `.peek()`, and `.set(value)`, attached to the same
+  returned function `next()` already was -- fully backward compatible,
+  nothing about the existing callable contract changed.
+- `class-cycler.component`: renaming the `global` attribute directly from
+  one non-empty value to another (`global="a"` → `global="b"`) leaked the
+  old global -- only removal-to-empty was handled. Fixed to clear the old
+  name on any change away from it, not just removal.
+
+**`hydratable`:**
+- `hydrate()` was a one-way transition with no way back -- worse, the
+  `HYDRATED` flag was defined `configurable: false`, so it could never be
+  cleared even manually. Added a `dehydrate()` counterpart (name
+  configurable, defaults to `` `de${name}` ``), with its own
+  `dehydrator()` registration mirroring `finalizer()`. Required changing
+  `HYDRATED` to `configurable: true` -- the one real behavior change in
+  this release, needed for `delete` to work at all. Also fixed a harmless
+  but confusing `writible` (should be `writable`) typo in the same
+  property descriptor while touching that line.
+- `mounts`: no way to remove a mount point `first`/`last` created for you.
+  Added `unmount(target)` (`mounts/unmount.mjs`) -- removes it only if
+  `mounts` actually created it (tracked via a `WeakSet` in the new
+  `mounts/created.mjs`); an existing element that was found and reused is
+  left alone. Also added named `resolveFirst()`/`resolveLast()` exports
+  alongside the existing eager default exports, for callers that want a
+  fresh read instead of the one-shot import-time snapshot.
+
 ## [0.0.4] - 2026-09-30
 
 Reverses `0.0.3`: the four clusters split out as standalone npm packages

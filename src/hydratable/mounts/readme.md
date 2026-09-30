@@ -59,6 +59,34 @@ The following elements are considered "unsuitable" for mounting:
 - link
 - noscript
 
+### Unmounting
+
+`first`/`last`'s default exports are one-shot snapshots resolved once, at
+import time -- reusing an existing suitable child if there is one, or
+creating and inserting a fresh `<div>` if there isn't. There was previously
+no way to remove a mount point `first`/`last` created for you. `unmount()`
+does that -- but only for elements it actually created; an existing element
+that was found and reused is left alone, since mounts doesn't own it:
+
+```javascript
+import first from "mounts/first.mjs";
+import unmount from "mounts/unmount.mjs";
+
+// ...later, tearing the app down:
+unmount(first); // true if it was a mounts-created div and got removed
+```
+
+### Resolving fresh instead of once
+
+`first.mjs`/`last.mjs` also export named `resolveFirst()`/`resolveLast()`
+functions that re-run the same find-or-create logic on demand, instead of
+only ever returning the value from whenever the module first loaded:
+
+```javascript
+import { resolveFirst } from "mounts/first.mjs";
+const target = resolveFirst(); // a fresh read of body's current first child
+```
+
 ## See also
 
 - [`@johnhenry/domable`](https://github.com/johnhenry/domable)'s `domToReact`/`reactToDom` — converting between real DOM and React-element-shaped objects (domkit doesn't vendor its own copy of these; domable's is the maintained one)

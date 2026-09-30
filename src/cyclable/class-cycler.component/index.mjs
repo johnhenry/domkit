@@ -29,8 +29,15 @@ export default class extends globalThis.HTMLElement {
   attributeChangedCallback(name, old, current) {
     switch (name) {
       case "global":
-        if (old && !current) {
+        // Covers both "global" being removed AND being renamed to a
+        // different value -- the old branch here only cleared the old
+        // global when it was removed entirely, leaking a stale global
+        // function under the previous name whenever `global` was renamed
+        // from one non-empty value directly to another.
+        if (old && old !== current) {
           delete globalThis[old];
+        }
+        if (!current) {
           return;
         }
         break;

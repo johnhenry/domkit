@@ -101,6 +101,19 @@ no shared barrel or build step; every module's `src/<module>/index.mjs`
   correct pattern. domable's package is flat (one `.mjs` file per subpath,
   e.g. `src/simple-element.mjs`) so its import-map entries must be exact
   subpath matches, not a trailing-slash prefix.
+- **`matchable/query-sections.mjs` is the one place the `[query] value`
+  pipe-delimited grammar is parsed — `query-container.component` and
+  `attribute-provider.component` both use it, on purpose.** They used to
+  each hand-roll their own copy, which is exactly how they silently
+  diverged (0.0.5: `query-container.component` had no fallback for a
+  bracket-less section and threw). If you touch this grammar, touch the
+  shared parser, not either component's own code — and reuse the `mql` it
+  hands back for both state and `.onchange` rather than calling
+  `matchMedia()` again; that was the other 0.0.5 lifecycle-cleanup bug.
+- **`hydratable`'s `HYDRATED` symbol is `configurable: true` as of
+  0.0.5** (it was `false` before, permanently — the whole point of adding
+  `dehydrate()` was making it undoable). If you're diffing against an
+  older copy of this module elsewhere, don't "fix" this back.
 - **`demo/` is a repo-root sibling of `src/`, not published to npm**
   (`files` is still just `["src/"]`). It's a live gallery
   (`demo/index.html`) running most modules simultaneously, each isolated

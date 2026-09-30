@@ -18,7 +18,7 @@ module file.
 | `name` | Tag name to register (required) |
 | `src` | URL of the module to import, resolved relative to the current document (required) |
 | `import` | Named export to use as the element class. Defaults to the module's default export |
-| `force` | If present, re-imports and re-registers even if `name` is already a registered custom element |
+| `force` | If present and `name` is already registered, logs a `console.warn` explaining why instead of silently doing nothing. **Cannot actually re-register the tag** — `customElements.define()` has no browser API to redefine an already-registered name, so the existing registration is always left unchanged either way; `force` only changes whether that's silent or warned about. |
 
 ## Usage
 

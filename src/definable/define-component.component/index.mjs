@@ -1,16 +1,26 @@
 // Dynamically imports a module and registers its default (or named) export
-// as a custom element. Adapted from polyfill-window.component/index.mjs's
-// URL-resolution logic, but ends in customElements.define(...) instead of a
-// global assignment -- see readme.md.
+// as a custom element. Shares its URL-resolution logic with
+// polyfill-window.component/index.mjs, but ends in customElements.define(...)
+// instead of a global assignment -- see readme.md.
+import { resolveRelativeUrl } from "../resolve-relative-url.mjs";
+
 const define = async (src, name, imp, force) => {
-  const { href } = globalThis.location;
-  const indexQM = href.lastIndexOf("?");
-  const withoutQuery = indexQM === -1 ? href : href.substring(0, indexQM);
-  const indexS = withoutQuery.lastIndexOf("/");
-  const dirname =
-    indexS === -1 ? withoutQuery : withoutQuery.substring(0, indexS);
-  const url = new URL(src, dirname + "/");
-  if (globalThis.customElements.get(name) && force === null) {
+  const url = resolveRelativeUrl(src);
+  const alreadyDefined = globalThis.customElements.get(name);
+  if (alreadyDefined && force === null) {
+    return;
+  }
+  if (alreadyDefined && force !== null) {
+    // `force` cannot actually redefine a tag -- customElements.define()
+    // unconditionally throws NotSupportedError if the name is already
+    // registered, and there is no browser API to undo a registration.
+    // Skip instead of letting that throw reach the caller uncaught; warn
+    // so the gap is visible rather than silent.
+    console.warn(
+      `<define-component name="${name}" force>: "${name}" is already a registered custom element. ` +
+        `customElements.define() cannot redefine a tag once registered -- there is no browser API for this. ` +
+        `Skipping re-registration; the existing "${name}" registration is unchanged.`,
+    );
     return;
   }
   const module = await import(url.href);
