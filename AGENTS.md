@@ -64,47 +64,58 @@ no shared barrel or build step; every module's `src/<module>/index.mjs`
   before this package's own extraction from `lib`. domkit depends on it
   directly; import `@johnhenry/domable/<name>`, not a local path, for any
   of those six.
-- **`definetag`/`define-component.component`/
-  `define-component-by-content.component`/`polyfill-window.component`,
-  `query-container.component`/`attribute-provider.component`, the
-  class-cycler family, and `mounts`/`hydratable` are NOT in this package
-  either** (removed in 0.0.3) — split into
-  [`@johnhenry/definable`](https://github.com/johnhenry/definable),
-  [`@johnhenry/respondable`](https://github.com/johnhenry/respondable),
-  [`@johnhenry/cyclable`](https://github.com/johnhenry/cyclable), and
-  [`@johnhenry/hydratable`](https://github.com/johnhenry/hydratable)
-  respectively — each a *coherent cluster* (a real family, not just
-  unrelated widgets), unlike everything still in domkit. Only `definable`
-  is an actual dependency of this package (`chernoff-face`, `xy-grapher`,
-  `animate-paths.component` use it to register themselves) — the other
-  three have zero remaining domkit consumers.
+- **`src/definable/`, `src/matchable/`, `src/cyclable/`, `src/hydratable/`
+  are namespaced clusters, not flat modules** — each briefly existed as
+  its own standalone npm package (`0.0.3`), then got folded back in
+  (`0.0.4`) as a subdirectory containing its member modules, one nesting
+  level deeper than everything else under `src/`. If you're porting
+  something from one of the old standalone repos, or comparing against
+  their git history, remember that extra level:
+  `<old-repo>/src/<module>/...` is now
+  `src/<cluster>/<module>/...` here. `matchable` was `respondable` when it
+  was its own package — renamed on the way back in (see README's
+  Provenance note for why).
+  - `chernoff-face`, `xy-grapher`, and `animate-paths.component` (still
+    flat under `src/`) import from `src/definable/` via relative paths
+    (e.g. `../definable/definetag/index.mjs`) — not a package dependency.
+    Only `@johnhenry/domable` is a real `package.json` dependency now;
+    definable/matchable/cyclable/hydratable are internal.
 - **A bare specifier like `@johnhenry/domable/simple-element` resolves
   fine under Node (via `node_modules`) but NOT in a real browser with no
   bundler** — browsers can't resolve bare module specifiers without a
   `<script type="importmap">`. Every demo `.html`/`.htm` file that
-  transitively imports `@johnhenry/domable/...` or
-  `@johnhenry/definable/...` needs one (see `demo/fragments/shadow-dom.html`,
-  `src/infinite-combo.component/demo.htm`, `src/chernoff-face/demo.html`,
-  `src/chernoff-face/graph.html`, `src/xy-grapher/demo.html` for the
-  pattern — an import map placed before the first `<script type="module">`
-  that needs it, pointing at `../../node_modules/@johnhenry/<pkg>/...`).
-  domable's package is flat (one `.mjs` file per subpath, e.g.
-  `src/simple-element.mjs`) so its import-map entries must be exact
-  subpath matches; definable mirrors domkit's own directory-per-module
-  layout, so a trailing-slash prefix entry works for it.
+  transitively imports `@johnhenry/domable/...` needs one, and the
+  relative path inside it must count directory levels from *that file's*
+  location — `src/definable/<module>/demo.html` needs one more `../` than
+  a flat `src/<module>/demo.html` would, and `matchable`'s two demo files
+  need their *own* copy of the entry even though they only reach
+  `@johnhenry/domable` indirectly through a `definable` module they load,
+  because **import maps are per-document and don't inherit across a
+  loaded module boundary**, even same-origin. Getting either of these
+  wrong is exactly how two real bugs shipped and got caught during the
+  `0.0.4` merge — see `demo/fragments/shadow-dom.html`,
+  `src/infinite-combo.component/demo.htm`,
+  `src/definable/define-component-by-content.component/demo.html`,
+  `src/matchable/query-container.component/demo.htm`,
+  `src/matchable/attribute-provider.component/demo.htm` for the current,
+  correct pattern. domable's package is flat (one `.mjs` file per subpath,
+  e.g. `src/simple-element.mjs`) so its import-map entries must be exact
+  subpath matches, not a trailing-slash prefix.
 - **`demo/` is a repo-root sibling of `src/`, not published to npm**
   (`files` is still just `["src/"]`). It's a live gallery
-  (`demo/index.html`) running most remaining modules simultaneously, each
-  isolated in its own iframe — either an existing `src/<module>/demo.html`/
+  (`demo/index.html`) running most modules simultaneously, each isolated
+  in its own iframe — either an existing `src/<cluster>/<module>/demo.html`/
   `demo.htm`, or a small fragment under `demo/fragments/` for modules that
-  had none. Requires a static server (`npx serve .` from the repo root,
-  then visit `/demo/`) — module imports don't resolve over `file://`.
+  had none. Requires a static server (`npx http-server .` from the repo
+  root, then visit `/demo/`) — module imports don't resolve over
+  `file://`. `npx serve .` also works but needs `serve.json`'s
+  `cleanUrls: false` (already present) — its default URL rewriting
+  otherwise breaks relative module imports on any bare directory URL.
   Add a new module's live example here too, not just its own
-  `demo.html`/`demo.htm`, when it's substantial enough to warrant one. If a
-  cluster of modules is ever split out into its own package again, remove
-  its cards/fragments from here in the same change — don't leave dangling
-  iframe references, which is exactly what happened (and was fixed) in
-  0.0.3.
+  `demo.html`/`demo.htm`, when it's substantial enough to warrant one.
+  If a cluster of modules is ever split out into its own package again
+  (or merged back in, as happened in `0.0.4`), update its cards/fragments
+  here in the same change — don't leave dangling iframe references.
 
 ## Definition of done (adding or changing a module)
 

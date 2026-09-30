@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
+  .until-window-load { visibility: hidden; }
+  .card { padding: 12px; border: 1px solid #888; border-radius: 6px; margin-top: 8px; }
+</style>
+<script type="module" src="./global.mjs"></script>
+</head>
+<body>
+<p>Removes the <code>until-window-load</code> class once <code>window</code>'s
+<code>load</code> event fires -- useful to avoid a flash of unstyled/
+unarranged content for components that lay themselves out after loading.
+This card is hidden (<code>visibility: hidden</code>) until that happens:</p>
+<div class="card until-window-load">
+  <strong>Now visible.</strong> The <code>until-window-load</code> class was removed from
+  this element once the window finished loading.
+</div>
+</body>
+</html>

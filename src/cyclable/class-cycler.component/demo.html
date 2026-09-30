@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  body.light { background: #fdfdfd; color: #111; font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
+  body.dark { background: #16181d; color: #eee; font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
+  body.system { background: #eef; color: #113; font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
+  button { font: inherit; padding: 6px 12px; }
+</style>
+<script
+  type="module"
+  src="./global.mjs"
+></script>
+</head>
+<body class="light">
+<p>A global function (assigned via <code>global="cycleTheme"</code>) cycles
+<code>body</code>'s class through <code>light</code> / <code>dark</code> /
+<code>system</code>, persisted to <code>localStorage</code>.</p>
+<class-cycler
+  global="cycleTheme"
+  selector="body"
+  storage-key="cyclable-demo-theme"
+  classes="light,dark,system"
+></class-cycler>
+<button onclick="cycleTheme()">Cycle theme</button>
+</body>
+</html>

@@ -2,6 +2,55 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.4] - 2026-09-30
+
+Reverses `0.0.3`: the four clusters split out as standalone npm packages
+(`@johnhenry/definable`, `@johnhenry/respondable`, `@johnhenry/cyclable`,
+`@johnhenry/hydratable`) are folded back into this package as namespaced
+subpaths (`src/definable/`, `src/matchable/`, `src/cyclable/`,
+`src/hydratable/`) instead. Running four separate repos for clusters this
+small — four CI/publish setups, four sets of secrets, four release
+cadences to coordinate, four demo galleries to keep in sync — cost more
+than it bought. The grouping itself (recognizing these as real families,
+not just unrelated widgets) was still worth doing; it just didn't need
+four separate npm identities. `@johnhenry/domable` is unaffected by this —
+it's genuinely independent (real TS types, jsdom tests, published before
+this cluster existed) and stays a real dependency, not folded in.
+
+- `respondable` renamed `matchable` on the way back in — the original name
+  read too close to "responsive design," a much more common and
+  differently-scoped web term. `matchable` names the actual shared
+  mechanism (`matchMedia()`).
+- `package.json`: dropped the `@johnhenry/definable` dependency; re-added
+  `parsel-js` (only `matchable/query-container.component` needs it, same
+  as before the split).
+- Fixed the same class of bare-specifier/import-map bug found during the
+  `0.0.3` split, now at one directory level deeper: every demo file under
+  the four merged clusters that transitively imports
+  `@johnhenry/domable/...` needed its import map's relative path
+  recomputed for the new nesting (`src/definable/<module>/demo.html` is
+  one level deeper than the old standalone `src/<module>/demo.html` was).
+  `matchable`'s two demo files also needed their own `@johnhenry/domable`
+  import-map entry, since import maps are per-document and don't inherit
+  across a loaded module boundary even within the same origin.
+- `matchable`'s two demo files' CDN references to `definable`'s modules
+  (previously `https://esm.sh/@johnhenry/definable/...`, dating from when
+  they were separate packages) now use plain relative paths — they're
+  siblings in the same package again, no CDN round-trip needed for local
+  development.
+- Added `serve.json` (`cleanUrls: false`) — `npx serve .` redirects away
+  the trailing path segment on a bare directory URL and breaks relative
+  module imports otherwise (same bug found and fixed the same way in
+  `@johnhenry/safe-fragment`). `npx http-server .` doesn't have this
+  problem and doesn't need the file, but `serve.json` costs nothing to
+  keep around for anyone who reaches for `serve` first.
+- `demo/` gallery: all four clusters' cards are back, pointing at the new
+  `src/<cluster>/<module>/demo.*` paths.
+- The four old GitHub repos (`johnhenry/definable`, `johnhenry/respondable`,
+  `johnhenry/cyclable`, `johnhenry/hydratable`) are archived (read-only,
+  not deleted) and the four old npm packages are `npm deprecate`d, both
+  pointing back at this package.
+
 ## [0.0.3] - 2026-09-29
 
 Split four more *coherent clusters* (modules that form a real family, not

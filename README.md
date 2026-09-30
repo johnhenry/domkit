@@ -17,20 +17,22 @@ Full documentation: [opensource.johnhenry.me/domkit](https://opensource.johnhenr
 > [`@johnhenry/domable`](https://github.com/johnhenry/domable) (`simple-element`,
 > `create-element`, `text-to-DOM-nodes`, `DOM-nodes-to-text`, `react-to-dom`,
 > `dom-to-React`) were dropped from this package in `0.0.1` in favor of
-> depending on domable directly. In `0.0.3`, four more *coherent clusters*
-> (modules that form a real family, not just unrelated widgets) were split
-> out into their own standalone packages for the same reason:
-> [`@johnhenry/definable`](https://github.com/johnhenry/definable) (the
-> "define a component declaratively" family),
-> [`@johnhenry/respondable`](https://github.com/johnhenry/respondable)
-> (media-query-driven responsive containers),
-> [`@johnhenry/cyclable`](https://github.com/johnhenry/cyclable) (the
-> localStorage class-cycler family), and
-> [`@johnhenry/hydratable`](https://github.com/johnhenry/hydratable)
-> (`mounts` + `hydratable`). domkit now depends on `definable` for the
-> handful of remaining modules that still need it — see `## Family` below.
-> What's left in domkit is deliberately a toolkit again: one class or
-> function each, no natural sibling worth its own package.
+> depending on domable directly — domable is genuinely independent (real TS
+> types, jsdom tests, published before this cluster existed) and stays its
+> own package. In `0.0.3`, four more *coherent clusters* were split out
+> into their own standalone packages the same way: `definable`,
+> `respondable` (renamed `matchable` on the way back in), `cyclable`, and
+> `hydratable`. In `0.0.4`, those four came back — not as separate npm
+> packages, but as namespaced subpaths under this one package
+> (`src/definable/`, `src/matchable/`, `src/cyclable/`, `src/hydratable/`),
+> after living as standalone repos/packages made the operational cost
+> (four repos, four CI/publish setups, four sets of secrets, four release
+> cadences to coordinate) outweigh the benefit for clusters this small. The
+> *grouping itself* — recognizing these as real families instead of an
+> undifferentiated pile — was still worth doing; it just didn't need to be
+> four separate npm identities. The four old repos are archived, and the
+> four old npm packages are deprecated, both pointing back here — see
+> `## Family` below for the full account.
 
 A toolkit of small, independent DOM/HTML-component modules — custom
 elements, shadow-DOM/component-authoring primitives, and DOM⇄React
@@ -54,9 +56,10 @@ There is no single root import — this is a toolkit of ~40 independent
 things, not one coherent API. Every module's own `readme.md` (linked
 below) documents its real usage.
 
-See [`demo/`](demo/) for a live gallery running ~25 of these modules at
-once (`npx serve .` from the repo root, then visit `/demo/` — module
-imports don't resolve over `file://`).
+See [`demo/`](demo/) for a live gallery running most of these modules at
+once (`npx http-server .` from the repo root, then visit `/demo/` — module
+imports don't resolve over `file://`; `npx serve .` also works but needs
+`cleanUrls: false` in `serve.json`, see AGENTS.md).
 
 ## Install
 
@@ -80,20 +83,31 @@ real dependency of this package — rather than as domkit modules. See
 | [create-mutable-nodelist](src/create-mutable-nodelist/readme.md) | A push/pop/shift/unshift-able `NodeList`-like collection |
 | [live-query-selector](src/live-query-selector/readme.md) | An auto-updating live collection matching a selector |
 
-### Defining custom elements
+### Defining custom elements — `src/definable/`
 
-`definetag`, `define-component.component`, `define-component-by-content.component`,
-and `polyfill-window.component` all now live in
-[`@johnhenry/definable`](https://github.com/johnhenry/definable) — a real
-dependency of this package, used internally by `chernoff-face`, `xy-grapher`,
-and `animate-paths.component` below to register themselves. See
-`## Family` below.
+Four related ways to get behavior onto a page declaratively, from four
+different kinds of source, plus the primitive they're built on.
+`chernoff-face`, `xy-grapher`, and `animate-paths.component` (below) use
+`definetag`/`define-component.component` to register themselves.
 
-### Responsive containers
+| Module | Description |
+|---|---|
+| [definetag](src/definable/definetag/readme.md) | Curried `customElements.define` wrapper |
+| [define-component.component](src/definable/define-component.component/readme.md) | Load a module by URL, register its export as a custom element |
+| [define-component-by-content.component](src/definable/define-component-by-content.component/readme.md) | Define a custom element from an inline HTML string attribute |
+| [polyfill-window.component](src/definable/polyfill-window.component/readme.md) | Load a module by URL, assign its export to a global (not a custom-element registrar) |
+| [until-window-load](src/definable/until-window-load/readme.md) | Remove a "hidden until loaded" class once `window` fires `load` |
 
-`query-container.component` and `attribute-provider.component` now live in
-[`@johnhenry/respondable`](https://github.com/johnhenry/respondable). See
-`## Family` below.
+### Responsive containers — `src/matchable/`
+
+Two duals of the same idea — respond to a media query by swapping vs. by
+styling — sharing a pipe-delimited query grammar and a real `parsel-js`
+dependency.
+
+| Module | Description |
+|---|---|
+| [query-container.component](src/matchable/query-container.component/readme.md) | Swap the rendered child element by media query |
+| [attribute-provider.component](src/matchable/attribute-provider.component/readme.md) | Apply classes/styles/attributes to children by media query |
 
 ### Shadow DOM / slots
 
@@ -104,14 +118,17 @@ and `animate-paths.component` below to register themselves. See
 
 ### Widgets
 
-The localStorage-backed class-cycler family (`class-cycler.component`,
-`class-cycler.button.component`, `localstorage-class-cycler`,
-`localstorage-cycler`) now lives in
-[`@johnhenry/cyclable`](https://github.com/johnhenry/cyclable). See
-`## Family` below.
+The localStorage-backed class-cycler family lives under `src/cyclable/` —
+one engine (`localstorage-cycler`), a class-applying wrapper
+(`localstorage-class-cycler`), and two ready-made custom elements built on
+it.
 
 | Module | Description |
 |---|---|
+| [cyclable/class-cycler.component](src/cyclable/class-cycler.component/readme.md) | Global-function class cycler |
+| [cyclable/class-cycler.button.component](src/cyclable/class-cycler.button.component/readme.md) | Self-contained button variant |
+| [cyclable/localstorage-class-cycler](src/cyclable/localstorage-class-cycler/readme.md) | Applies a cycled value as a class on a given element |
+| [cyclable/localstorage-cycler](src/cyclable/localstorage-cycler/readme.md) | The base engine: cycle a localStorage value through a fixed list |
 | [hotkey-modal.dialog.component](src/hotkey-modal.dialog.component/readme.md) | A `<dialog>` opened/closed by a keyboard shortcut |
 | [menu-component.component](src/menu-component.component/readme.md) | Keyboard-navigable stateful menu/wizard, with a `hash.mjs` location-hash companion |
 | [stylable-select.component](src/stylable-select.component/readme.md) | A `<select>`-like element whose options can actually be styled |
@@ -129,14 +146,16 @@ demo/experiment-grade custom elements (canvas rendering, SVG path
 animation, pixel shaders, generative graphics). No individual READMEs yet;
 see each module's own `demo.html`/`demo.htm`.
 
-### DOM ⇄ React interop
+### DOM ⇄ React interop — `src/hydratable/`
 
 `domToReact`/`reactToDom` (real DOM ⇄ React-element-shaped plain objects)
-live in [`@johnhenry/domable`](https://github.com/johnhenry/domable), and
-`mounts`/`hydratable` now live in
-[`@johnhenry/hydratable`](https://github.com/johnhenry/hydratable) — none
-of the DOM⇄React interop story lives in domkit itself anymore. See
-`## Family` below.
+live in [`@johnhenry/domable`](https://github.com/johnhenry/domable), not
+here — see `## Family` below.
+
+| Module | Description |
+|---|---|
+| [hydratable/mounts](src/hydratable/mounts/readme.md) | Framework-agnostic DOM mount-point helpers (Solid/Vue/React) |
+| [hydratable](src/hydratable/readme.md) | A generic async hydration mixin |
 
 ### Support utilities
 
@@ -149,21 +168,19 @@ modules above depend on. See their own directories.
   ⇄ text ⇄ React conversion primitives (`simple-element`, `create-element`,
   `text-to-dom`/`dom-to-text`, `react-to-dom`/`dom-to-react`) that this
   package builds custom elements and interop helpers on top of. domkit
-  depends on domable, not the other way around.
-- [`@johnhenry/definable`](https://github.com/johnhenry/definable) — the
-  "define a component declaratively" family. `chernoff-face`, `xy-grapher`,
-  and `animate-paths.component` (still in domkit) depend on it to register
-  themselves.
-- [`@johnhenry/respondable`](https://github.com/johnhenry/respondable) —
-  media-query-driven responsive containers (`query-container.component`,
-  `attribute-provider.component`), split out of domkit `0.0.2` into
-  `respondable` `0.0.0`. No remaining domkit module depends on it.
-- [`@johnhenry/cyclable`](https://github.com/johnhenry/cyclable) — the
-  localStorage class-cycler family, split out the same way. No remaining
-  domkit module depends on it.
-- [`@johnhenry/hydratable`](https://github.com/johnhenry/hydratable) —
-  `mounts` + a generic hydration mixin, split out the same way. No
-  remaining domkit module depends on it.
+  depends on domable, not the other way around — domable is genuinely
+  independent (real TS types, jsdom tests, its own consumers outside this
+  cluster) and stays its own package.
+- **`definable`, `matchable`, `cyclable`, `hydratable`** — briefly existed
+  as four separate npm packages (`@johnhenry/definable`,
+  `@johnhenry/respondable`, `@johnhenry/cyclable`, `@johnhenry/hydratable`;
+  `respondable` renamed `matchable` on the way back in — a better fit than
+  the earlier "responsive-design"-adjacent name). As of `0.0.4` they're
+  namespaced subpaths of this package instead (`src/definable/`,
+  `src/matchable/`, `src/cyclable/`, `src/hydratable/`) — the four old
+  GitHub repos are archived and the four old npm packages are `npm
+  deprecate`d, both pointing back here. Import as
+  `@johnhenry/domkit/definable/<module>/...`, etc.
 
 ## License
 

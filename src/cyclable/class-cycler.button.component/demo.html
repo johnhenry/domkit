@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; transition: background 0.2s, color 0.2s; }
+  body.light { background: #fdfdfd; color: #111; }
+  body.dark { background: #16181d; color: #eee; }
+  body.system { background: #eef; color: #113; }
+  button { font: inherit; padding: 6px 12px; }
+</style>
+<script
+  type="module"
+  src="./global.mjs"
+></script>
+</head>
+<body class="light">
+<p>Self-contained button variant — no separate element needed, the button
+itself does the cycling:</p>
+<button
+  is="class-cycler-button"
+  select="body"
+  storage-key="cyclable-demo-theme-button"
+  classes="light,dark,system"
+>
+  Toggle theme
+</button>
+</body>
+</html>
