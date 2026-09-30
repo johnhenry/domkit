@@ -50,12 +50,22 @@ no shared barrel or build step; every module's `src/<module>/index.mjs`
 - **Several modules have known, documented, *not-yet-fixed* pre-existing
   quirks carried over from `lib`** — check each module's own `readme.md`
   before assuming a given behavior is a bug versus already-known. One
-  confirmed example: `xy-grapher/component.mjs` calls a `genSVG()`
-  function that's never defined or imported anywhere, so `render()`
-  throws — inherited from `lib`, not introduced here. Its `demo.html`
-  used to mask this by accidentally registering `chernoff-face`'s
-  component under the `xy-grapher` tag (a copy-paste bug); fixed to
-  register the real, still-broken component instead of hiding it.
+  confirmed example: `xy-grapher.component/component.mjs` calls a
+  `genSVG()` function that's never defined or imported anywhere, so
+  `render()` throws — inherited from `lib`, not introduced here. Its
+  `demo.html` used to mask this by accidentally registering
+  `chernoff-face.component`'s component under the `xy-grapher` tag (a
+  copy-paste bug); fixed to register the real, still-broken component
+  instead of hiding it.
+- **`internal-timer.component` never ticks unless it has real light-DOM
+  content** — its tick loop only ever starts from a `slotchange` event on
+  its internal (hidden) `<slot>`, and an empty `<internal-timer></internal-timer>`
+  never fires one. This isn't documented anywhere in the component's own
+  code or (until 0.0.7) its demo — `demo/fragments/internal-timer.html`
+  had genuinely never ticked, with no error thrown, since this package's
+  original extraction. If you add another demo/consumer of this element,
+  give it *some* child content (text is enough) or it will silently do
+  nothing.
 - **`simple-element`/`create-element`/`text-to-DOM-nodes`/
   `DOM-nodes-to-text`/`react-to-dom`/`dom-to-React` are NOT in this
   package** (removed in 0.0.1) — they duplicated
@@ -75,8 +85,9 @@ no shared barrel or build step; every module's `src/<module>/index.mjs`
   `src/<cluster>/<module>/...` here. `matchable` was `respondable` when it
   was its own package — renamed on the way back in (see README's
   Provenance note for why).
-  - `chernoff-face`, `xy-grapher`, and `animate-paths.component` (still
-    flat under `src/`) import from `src/definable/` via relative paths
+  - `chernoff-face.component`, `xy-grapher.component`, and
+    `animate-paths.component` (still flat under `src/`) import from
+    `src/definable/` via relative paths
     (e.g. `../definable/definetag/index.mjs`) — not a package dependency.
     Only `@johnhenry/domable` is a real `package.json` dependency now;
     definable/matchable/cyclable/hydratable are internal.
@@ -171,8 +182,9 @@ no shared barrel or build step; every module's `src/<module>/index.mjs`
   part of the initial extraction.
 - The visual/canvas experiment modules (`canvasrenderer.component`,
   `animate-paths.component`, `pixelshader.component`,
-  `imagedata-emitter.component`, `xy-grapher`, `chernoff-face`, `brains`)
-  are demo-grade, not hardened library code — treat them as examples, not
+  `imagedata-emitter.component`, `xy-grapher.component`,
+  `chernoff-face.component`) are demo-grade, not hardened library code —
+  treat them as examples, not
   a stable API, unless/until someone gives them the same documentation
   and correctness pass the rest of this package got.
 

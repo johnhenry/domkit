@@ -1,5 +1,5 @@
-import pause from "../pause/index.mjs";
-import pauseframespersecond from "../pauseframespersecond/index.mjs";
+import delay from "../delay/index.mjs";
+import frameDelay from "../frame-delay/index.mjs";
 
 export default class extends HTMLElement {
   constructor() {
@@ -30,7 +30,7 @@ export default class extends HTMLElement {
   async reset() {
     this.break = false;
     while (true) {
-      await pauseframespersecond(this.fps);
+      await frameDelay(this.fps);
       if (this.break) {
         this.dispatchEvent(new Event("paused"));
         break;
@@ -44,7 +44,7 @@ export default class extends HTMLElement {
       case "pause":
         this.break = true;
         if (detail) {
-          await pause(detail);
+          await delay(detail);
           this.reset();
         }
         break;

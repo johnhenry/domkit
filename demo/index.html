@@ -81,10 +81,10 @@
     </div>
   </div>
 
-  <h2 id="shadow">Shadow DOM &amp; lifecycle <span class="count">shadow-dom.element · internal-timer.component</span></h2>
+  <h2 id="shadow">Shadow DOM &amp; lifecycle <span class="count">shadow-dom.component · internal-timer.component</span></h2>
   <div class="grid">
     <div class="card">
-      <h3>shadow-dom.element</h3>
+      <h3>shadow-dom.component</h3>
       <p>Deprecated alias for domable's <code>simple-element</code> <code>shadowOpen</code>.</p>
       <iframe src="fragments/shadow-dom.html"></iframe>
     </div>
@@ -118,7 +118,7 @@
       <iframe src="fragments/hotkey-modal.html"></iframe>
     </div>
     <div class="card tall">
-      <h3>menu-component.component + hash.mjs</h3>
+      <h3>menu.component + hash.mjs</h3>
       <p>Keyboard-navigable stateful menu, synced to <code>location.hash</code> via its <code>attach()</code>/<code>detach()</code> companion.</p>
       <iframe src="fragments/menu-component.html"></iframe>
     </div>
@@ -149,7 +149,7 @@
     </div>
   </div>
 
-  <h2 id="visual">Visual/canvas experiments <span class="count">animate-paths.component · xy-grapher · chernoff-face</span></h2>
+  <h2 id="visual">Visual/canvas experiments <span class="count">animate-paths.component · xy-grapher.component · chernoff-face.component</span></h2>
   <div class="grid">
     <div class="card tall">
       <h3>animate-paths.component</h3>
@@ -157,21 +157,21 @@
       <iframe src="../src/animate-paths.component/demo.htm"></iframe>
     </div>
     <div class="card tall">
-      <h3>xy-grapher</h3>
+      <h3>xy-grapher.component</h3>
       <p><strong>Known broken</strong> — <code>component.mjs</code> calls a
       <code>genSVG()</code> function that's never defined anywhere, so
       <code>render()</code> throws. Inherited from <code>lib</code>, predates
       this package. The demo used to silently mask this by accidentally
-      registering <em>chernoff-face's</em> component under the
+      registering <em>chernoff-face.component's</em> component under the
       <code>xy-grapher</code> tag (a copy-paste bug in the original
       <code>demo.html</code>) — fixed to register the real component, which
       surfaces the render bug instead of hiding it.</p>
-      <iframe src="../src/xy-grapher/demo.html"></iframe>
+      <iframe src="../src/xy-grapher.component/demo.html"></iframe>
     </div>
     <div class="card">
-      <h3>chernoff-face</h3>
+      <h3>chernoff-face.component</h3>
       <p>Parametric faces as a data-visualization technique.</p>
-      <iframe src="../src/chernoff-face/demo.html"></iframe>
+      <iframe src="../src/chernoff-face.component/demo.html"></iframe>
     </div>
     <div class="card">
       <h3>graph.component</h3>
@@ -181,10 +181,12 @@
   </div>
   <p class="unimplemented">
     <code>canvasrenderer.component</code>, <code>pixelshader.component</code>,
-    <code>imagedata-emitter.component</code>, and <code>brains</code> have no
-    README or demo file yet (demo-grade experiments, carried over as-is from
-    the original extraction) — not included here to avoid guessing at an
-    undocumented API. See their source under <code>src/</code>.
+    and <code>imagedata-emitter.component</code> have no README or demo file
+    yet (demo-grade experiments, carried over as-is from the original
+    extraction) — not included here to avoid guessing at an undocumented
+    API. See their source under <code>src/</code>. (<code>brains</code>, a
+    similarly-undocumented input-abstraction experiment, was removed
+    outright rather than kept around unlabeled.)
   </p>
 
   <h2 id="interop">DOM ⇄ React interop <span class="count">domable · src/hydratable/*</span></h2>

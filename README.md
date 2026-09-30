@@ -87,8 +87,9 @@ real dependency of this package — rather than as domkit modules. See
 
 Four related ways to get behavior onto a page declaratively, from four
 different kinds of source, plus the primitive they're built on.
-`chernoff-face`, `xy-grapher`, and `animate-paths.component` (below) use
-`definetag`/`define-component.component` to register themselves.
+`chernoff-face.component`, `xy-grapher.component`, and
+`animate-paths.component` (below) use `definetag`/`define-component.component`
+to register themselves.
 
 | Module | Description |
 |---|---|
@@ -113,7 +114,7 @@ dependency.
 
 | Module | Description |
 |---|---|
-| [shadow-dom.element](src/shadow-dom.element/readme.md) | Deprecated alias for domable's `simple-element` `shadowOpen` |
+| [shadow-dom.component](src/shadow-dom.component/readme.md) | Deprecated alias for domable's `simple-element` `shadowOpen` |
 | [internal-timer.component](src/internal-timer.component/readme.md) | A pause/frame-timer element (shadow-DOM+slot plumbing) |
 
 ### Widgets
@@ -130,7 +131,7 @@ it.
 | [cyclable/localstorage-class-cycler](src/cyclable/localstorage-class-cycler/readme.md) | Applies a cycled value as a class on a given element |
 | [cyclable/localstorage-cycler](src/cyclable/localstorage-cycler/readme.md) | The base engine: cycle a localStorage value through a fixed list |
 | [hotkey-modal.dialog.component](src/hotkey-modal.dialog.component/readme.md) | A `<dialog>` opened/closed by a keyboard shortcut |
-| [menu-component.component](src/menu-component.component/readme.md) | Keyboard-navigable stateful menu/wizard, with a `hash.mjs` location-hash companion |
+| [menu.component](src/menu.component/readme.md) | Keyboard-navigable stateful menu/wizard, with a `hash.mjs` location-hash companion (registers the `menu-component` tag) |
 | [stylable-select.component](src/stylable-select.component/readme.md) | A `<select>`-like element whose options can actually be styled |
 | [tabbed-ui.component](src/tabbed-ui.component/readme.md) | Tabs/panels element |
 | [infinite-combo.component](src/infinite-combo.component/readme.md) | A combo-box that loads more options on demand |
@@ -141,7 +142,7 @@ it.
 ### Visual/canvas experiments
 
 `canvasrenderer.component`, `animate-paths.component`, `pixelshader.component`,
-`imagedata-emitter.component`, `xy-grapher`, `chernoff-face`, `brains` —
+`imagedata-emitter.component`, `xy-grapher.component`, `chernoff-face.component` —
 demo/experiment-grade custom elements (canvas rendering, SVG path
 animation, pixel shaders, generative graphics). No individual READMEs yet;
 see each module's own `demo.html`/`demo.htm`.
@@ -159,8 +160,9 @@ here — see `## Family` below.
 
 ### Support utilities
 
-`clamp`, `pause`, `pauseframespersecond` — small helpers a handful of the
-modules above depend on. See their own directories.
+[`clamp`](src/clamp/readme.md), [`delay`](src/delay/readme.md),
+[`frame-delay`](src/frame-delay/readme.md) — small helpers a handful of
+the modules above depend on.
 
 ## Family
 

@@ -32,7 +32,10 @@
 <body>
 <p>Dispatches a bubbling <code>tick</code> event every frame (paced to
 <code>fps</code>) while connected:</p>
-<internal-timer fps="10" id="clock"></internal-timer>
+<!-- internal-timer only starts ticking once its internal (hidden) <slot>
+     receives a slotchange event, which requires actual light-DOM content
+     to assign -- an empty element never ticks at all. -->
+<internal-timer fps="10" id="clock">running</internal-timer>
 <div>Ticks: <span id="count">0</span></div>
 <button id="pause-1s">Pause for 1s</button>
 <button id="pause">Pause indefinitely</button>

@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.7] - 2026-09-30
+
+A naming pass across individual modules (not the clusters — those were
+settled in `0.0.4`/`0.0.5`), following the same `.component`-suffix and
+kebab-case conventions already applied everywhere else, plus one removal
+and one more real bug found while verifying the renames didn't break
+anything.
+
+**Removed:**
+- `brains` — a 12-file input-abstraction experiment (AI vs. human input
+  sources: random/gamepad/keyboard/swipe, behind a common interface), with
+  no README, no demo, and nothing else in the package depending on it.
+  Deleted outright rather than kept around unlabeled — domkit doesn't
+  carry `lib`'s no-deletion contract, and this was genuinely never
+  documented or used.
+
+**Renamed** (all six confirmed to have zero external cross-references
+before moving; internal cross-references and every demo/README fixed):
+- `shadow-dom.element` → `shadow-dom.component` — every other custom
+  element in the package uses `.component`; this was the one exception.
+- `xy-grapher` → `xy-grapher.component`, `chernoff-face` → `chernoff-face.component`
+  — both are real custom elements that had simply never gotten the suffix.
+- `pauseframespersecond` → `frame-delay` — the one name in the codebase
+  with zero word separators, and "pause frames per second" doesn't parse
+  as an action. Also gained a readme (had none).
+- `pause` → `delay` — "pause" implies suspending something already
+  running; this is a standalone async sleep primitive. Also gained a
+  readme (had none). `clamp` also gained a readme while touching this
+  area (no rename needed — the name was already fine).
+- `menu-component.component` → `menu.component` — the base name already
+  said "component" before `.component` was appended a second time. The
+  registered custom-element **tag name stays `menu-component`** — only
+  the module/import path changed; `<menu>` is a real native HTML element
+  and custom element names are required to contain a hyphen anyway, so
+  the tag couldn't have become `<menu>` even if that were otherwise
+  desirable.
+
+**Found and fixed while verifying the renames** (unrelated to any of the
+above — pure luck of re-testing everything thoroughly): `internal-timer.component`'s
+tick loop is only ever started by a `slotchange` event on its internal
+(hidden) `<slot>`, but `demo/fragments/internal-timer.html` gave it zero
+light-DOM content — so its demo had *never*, since this package's original
+extraction, actually ticked at all. No error was ever thrown; it just sat
+at 0 forever. Fixed by giving the element real (if invisible) slotted
+content in the demo, verified against a real browser with an actual
+tick/pause/resume sequence, not just a syntax check.
+
 ## [0.0.6] - 2026-09-30
 
 Extended every 0.0.5 demo to actually exercise what 0.0.5 added
