@@ -93,5 +93,21 @@
         >Term</query-component
       >
     </query-component>
+
+    <hr />
+    <h2>Bracket-less section (used to throw here)</h2>
+    <p>
+      A bare selector with no <code>[query]</code> prefix always applies --
+      <code>attribute-provider.component</code> always supported this, but
+      <code>query-component</code> didn't and threw a <code>TypeError</code>
+      immediately on page load if you tried it. Both now share one parser
+      (<code>matchable/query-sections.mjs</code>), so this works:
+    </p>
+    <query-component class="until-window-load" query="p.always-matches">
+      <p>
+        If you can see this text, the bracket-less section resolved without
+        throwing.
+      </p>
+    </query-component>
   </body>
 </html>

@@ -59,6 +59,15 @@ The following elements are considered "unsuitable" for mounting:
 - link
 - noscript
 
+Whitespace-only text nodes and comments are also skipped over when looking
+for body's first/last *meaningful* child -- without this, `first`/`last`
+would almost never actually reuse anything in a normally-formatted HTML
+document (the newline + indentation right after `<body>`, or right before
+`</body>`, is a real text-node child, and is virtually universal), and
+would silently create a new div every time instead. Found while building
+this module's demo and verified against a real browser's DOM for an
+ordinary, normally-indented page.
+
 ### Unmounting
 
 `first`/`last`'s default exports are one-shot snapshots resolved once, at

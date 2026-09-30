@@ -114,6 +114,22 @@ no shared barrel or build step; every module's `src/<module>/index.mjs`
   0.0.5** (it was `false` before, permanently — the whole point of adding
   `dehydrate()` was making it undoable). If you're diffing against an
   older copy of this module elsewhere, don't "fix" this back.
+- **`mounts/first.mjs`/`last.mjs` skip whitespace-only text nodes and
+  comments before checking `nodeType`/`unsuitable`, via
+  `mounts/skip-insignificant.mjs` (0.0.5).** Without this, `firstChild`/
+  `lastChild` almost never actually land on a real element in a normally
+  formatted HTML document — the newline + indentation right after `<body>`
+  (or right before `</body>`) is a real text-node child, and is virtually
+  universal. Before this fix, "reuse an existing suitable element" was
+  effectively dead code in practice: any ordinarily-formatted page would
+  hit the whitespace text node first, fail the `nodeType` check, and
+  create a new div every time — found while building this module's own
+  demo, not by inspection; the bug was invisible reading the code alone
+  because it only manifests against a real DOM with realistic whitespace,
+  which `node --check` and a plain import-resolution smoke test both miss
+  entirely. If you touch this resolution logic again, test it against an
+  actual browser DOM for a normally-indented page, not a hand-built one
+  with no whitespace to trip over.
 - **`demo/` is a repo-root sibling of `src/`, not published to npm**
   (`files` is still just `["src/"]`). It's a live gallery
   (`demo/index.html`) running most modules simultaneously, each isolated

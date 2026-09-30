@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.6] - 2026-09-30
+
+Extended every 0.0.5 demo to actually exercise what 0.0.5 added
+(`.previous()`/`.peek()`/`.set()` in `cyclable`'s demo, `dehydrate()` in
+`hydratable`'s, `unmount()` in `mounts`', the bracket-less-section fix in
+`matchable`'s) -- and building the `mounts` demo surfaced a real,
+previously-undetected bug in `mounts` itself, not just the demo:
+
+- **`mounts/first.mjs`/`last.mjs` now skip whitespace-only text nodes and
+  comments before checking whether `body.firstChild`/`lastChild` is a
+  reusable element.** Without this, the "reuse an existing suitable
+  element" path was effectively dead code in any normally-formatted HTML
+  document: the newline + indentation right after `<body>` (or right
+  before `</body>`) is a real text-node child, fails the `nodeType`
+  check, and forces a new div to be created every time -- even when a
+  perfectly good element sits right past the whitespace. New shared
+  `mounts/skip-insignificant.mjs`, used by both. This is exactly the kind
+  of bug that's invisible from reading the code (it only manifests
+  against a real DOM with realistic whitespace) and invisible to
+  `node --check`/import-resolution smoke tests -- it took actually
+  running the demo in a real browser to catch.
+
 ## [0.0.5] - 2026-09-30
 
 A completeness pass (duals/complements/supplements) across the four
