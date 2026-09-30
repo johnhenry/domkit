@@ -3,7 +3,7 @@
 Declarative import to remove loading classes once the window has loaded.
 
 Useful to avoid content flash for custom components that arrange content
-after loading. Used by [polyfill-window.component](../polyfill-window.component/readme.md)'s
+after loading. Used by [polyfill-window](../polyfill-window/readme.md)'s
 own demo.
 
 ## Usage

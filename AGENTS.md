@@ -50,14 +50,14 @@ no shared barrel or build step; every module's `src/<module>/index.mjs`
 - **Several modules have known, documented, *not-yet-fixed* pre-existing
   quirks carried over from `lib`** — check each module's own `readme.md`
   before assuming a given behavior is a bug versus already-known. One
-  confirmed example: `xy-grapher.component/component.mjs` calls a
+  confirmed example: `xy-grapher/component.mjs` calls a
   `genSVG()` function that's never defined or imported anywhere, so
   `render()` throws — inherited from `lib`, not introduced here. Its
   `demo.html` used to mask this by accidentally registering
-  `chernoff-face.component`'s component under the `xy-grapher` tag (a
+  `chernoff-face`'s component under the `xy-grapher` tag (a
   copy-paste bug); fixed to register the real, still-broken component
   instead of hiding it.
-- **`internal-timer.component` never ticks unless it has real light-DOM
+- **`internal-timer` never ticks unless it has real light-DOM
   content** — its tick loop only ever starts from a `slotchange` event on
   its internal (hidden) `<slot>`, and an empty `<internal-timer></internal-timer>`
   never fires one. This isn't documented anywhere in the component's own
@@ -85,8 +85,8 @@ no shared barrel or build step; every module's `src/<module>/index.mjs`
   `src/<cluster>/<module>/...` here. `matchable` was `respondable` when it
   was its own package — renamed on the way back in (see README's
   Provenance note for why).
-  - `chernoff-face.component`, `xy-grapher.component`, and
-    `animate-paths.component` (still flat under `src/`) import from
+  - `chernoff-face`, `xy-grapher`, and
+    `animate-paths` (still flat under `src/`) import from
     `src/definable/` via relative paths
     (e.g. `../definable/definetag/index.mjs`) — not a package dependency.
     Only `@johnhenry/domable` is a real `package.json` dependency now;
@@ -105,18 +105,18 @@ no shared barrel or build step; every module's `src/<module>/index.mjs`
   loaded module boundary**, even same-origin. Getting either of these
   wrong is exactly how two real bugs shipped and got caught during the
   `0.0.4` merge — see `demo/fragments/shadow-dom.html`,
-  `src/infinite-combo.component/demo.htm`,
-  `src/definable/define-component-by-content.component/demo.html`,
-  `src/matchable/query-container.component/demo.htm`,
-  `src/matchable/attribute-provider.component/demo.htm` for the current,
+  `src/infinite-combo/demo.htm`,
+  `src/definable/define-component-by-content/demo.html`,
+  `src/matchable/query-container/demo.htm`,
+  `src/matchable/attribute-provider/demo.htm` for the current,
   correct pattern. domable's package is flat (one `.mjs` file per subpath,
   e.g. `src/simple-element.mjs`) so its import-map entries must be exact
   subpath matches, not a trailing-slash prefix.
 - **`matchable/query-sections.mjs` is the one place the `[query] value`
-  pipe-delimited grammar is parsed — `query-container.component` and
-  `attribute-provider.component` both use it, on purpose.** They used to
+  pipe-delimited grammar is parsed — `query-container` and
+  `attribute-provider` both use it, on purpose.** They used to
   each hand-roll their own copy, which is exactly how they silently
-  diverged (0.0.5: `query-container.component` had no fallback for a
+  diverged (0.0.5: `query-container` had no fallback for a
   bracket-less section and threw). If you touch this grammar, touch the
   shared parser, not either component's own code — and reuse the `mql` it
   hands back for both state and `.onchange` rather than calling
@@ -180,10 +180,10 @@ no shared barrel or build step; every module's `src/<module>/index.mjs`
   exist yet. Given how many real bugs turned up in code that had never
   been exercised by a test, this is a natural, real follow-up — just not
   part of the initial extraction.
-- The visual/canvas experiment modules (`canvasrenderer.component`,
-  `animate-paths.component`, `pixelshader.component`,
-  `imagedata-emitter.component`, `xy-grapher.component`,
-  `chernoff-face.component`) are demo-grade, not hardened library code —
+- The visual/canvas experiment modules (`canvas-renderer`,
+  `animate-paths`, `pixel-shader`,
+  `imagedata-emitter`, `xy-grapher`,
+  `chernoff-face`) are demo-grade, not hardened library code —
   treat them as examples, not
   a stable API, unless/until someone gives them the same documentation
   and correctness pass the rest of this package got.

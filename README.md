@@ -32,7 +32,16 @@ Full documentation: [opensource.johnhenry.me/domkit](https://opensource.johnhenr
 > undifferentiated pile — was still worth doing; it just didn't need to be
 > four separate npm identities. The four old repos are archived, and the
 > four old npm packages are deprecated, both pointing back here — see
-> `## Family` below for the full account.
+> `## Family` below for the full account. A naming pass (`0.0.7`) then made
+> the `.component` suffix convention consistent everywhere; a follow-up
+> pass (`0.0.8`) reversed course and dropped the `.component`/`.element`
+> suffix from every module directory entirely (registered custom-element
+> tag names were never dotted and are unaffected either way), keeping a
+> hyphen in every resulting name — `canvasrenderer` → `canvas-renderer`,
+> `pixelshader` → `pixel-shader`, and `graph`/`menu` (no natural word
+> break to hyphenate) kept `-component` as a literal suffix word instead
+> of a dot, landing `menu.component` back on `menu-component` — this time
+> to match its own tag name, not to fix a stutter.
 
 A toolkit of small, independent DOM/HTML-component modules — custom
 elements, shadow-DOM/component-authoring primitives, and DOM⇄React
@@ -48,7 +57,7 @@ or, in a browser with no build step, via a CDN:
 ```html
 <script
   type="module"
-  src="https://esm.sh/@johnhenry/domkit/tabbed-ui.component/global.mjs"
+  src="https://esm.sh/@johnhenry/domkit/tabbed-ui/global.mjs"
 ></script>
 ```
 
@@ -87,16 +96,15 @@ real dependency of this package — rather than as domkit modules. See
 
 Four related ways to get behavior onto a page declaratively, from four
 different kinds of source, plus the primitive they're built on.
-`chernoff-face.component`, `xy-grapher.component`, and
-`animate-paths.component` (below) use `definetag`/`define-component.component`
-to register themselves.
+`chernoff-face`, `xy-grapher`, and `animate-paths` (below) use
+`definetag`/`define-component` to register themselves.
 
 | Module | Description |
 |---|---|
 | [definetag](src/definable/definetag/readme.md) | Curried `customElements.define` wrapper |
-| [define-component.component](src/definable/define-component.component/readme.md) | Load a module by URL, register its export as a custom element |
-| [define-component-by-content.component](src/definable/define-component-by-content.component/readme.md) | Define a custom element from an inline HTML string attribute |
-| [polyfill-window.component](src/definable/polyfill-window.component/readme.md) | Load a module by URL, assign its export to a global (not a custom-element registrar) |
+| [define-component](src/definable/define-component/readme.md) | Load a module by URL, register its export as a custom element |
+| [define-component-by-content](src/definable/define-component-by-content/readme.md) | Define a custom element from an inline HTML string attribute |
+| [polyfill-window](src/definable/polyfill-window/readme.md) | Load a module by URL, assign its export to a global (not a custom-element registrar) |
 | [until-window-load](src/definable/until-window-load/readme.md) | Remove a "hidden until loaded" class once `window` fires `load` |
 
 ### Responsive containers — `src/matchable/`
@@ -107,15 +115,15 @@ dependency.
 
 | Module | Description |
 |---|---|
-| [query-container.component](src/matchable/query-container.component/readme.md) | Swap the rendered child element by media query |
-| [attribute-provider.component](src/matchable/attribute-provider.component/readme.md) | Apply classes/styles/attributes to children by media query |
+| [query-container](src/matchable/query-container/readme.md) | Swap the rendered child element by media query |
+| [attribute-provider](src/matchable/attribute-provider/readme.md) | Apply classes/styles/attributes to children by media query |
 
 ### Shadow DOM / slots
 
 | Module | Description |
 |---|---|
-| [shadow-dom.component](src/shadow-dom.component/readme.md) | Deprecated alias for domable's `simple-element` `shadowOpen` |
-| [internal-timer.component](src/internal-timer.component/readme.md) | A pause/frame-timer element (shadow-DOM+slot plumbing) |
+| [shadow-dom](src/shadow-dom/readme.md) | Deprecated alias for domable's `simple-element` `shadowOpen` |
+| [internal-timer](src/internal-timer/readme.md) | A pause/frame-timer element (shadow-DOM+slot plumbing) |
 
 ### Widgets
 
@@ -126,23 +134,23 @@ it.
 
 | Module | Description |
 |---|---|
-| [cyclable/class-cycler.component](src/cyclable/class-cycler.component/readme.md) | Global-function class cycler |
-| [cyclable/class-cycler.button.component](src/cyclable/class-cycler.button.component/readme.md) | Self-contained button variant |
+| [cyclable/class-cycler](src/cyclable/class-cycler/readme.md) | Global-function class cycler |
+| [cyclable/class-cycler-button](src/cyclable/class-cycler-button/readme.md) | Self-contained button variant |
 | [cyclable/localstorage-class-cycler](src/cyclable/localstorage-class-cycler/readme.md) | Applies a cycled value as a class on a given element |
 | [cyclable/localstorage-cycler](src/cyclable/localstorage-cycler/readme.md) | The base engine: cycle a localStorage value through a fixed list |
-| [hotkey-modal.dialog.component](src/hotkey-modal.dialog.component/readme.md) | A `<dialog>` opened/closed by a keyboard shortcut |
-| [menu.component](src/menu.component/readme.md) | Keyboard-navigable stateful menu/wizard, with a `hash.mjs` location-hash companion (registers the `menu-component` tag) |
-| [stylable-select.component](src/stylable-select.component/readme.md) | A `<select>`-like element whose options can actually be styled |
-| [tabbed-ui.component](src/tabbed-ui.component/readme.md) | Tabs/panels element |
-| [infinite-combo.component](src/infinite-combo.component/readme.md) | A combo-box that loads more options on demand |
-| [event-consumer.component](src/event-consumer.component/readme.md) | Declaratively wire event listeners without JavaScript setup |
-| [code-color.component](src/code-color.component/readme.md) | Syntax-highlight contents, re-highlighting on change |
-| [graph.component](src/graph.component/readme.md) | Unimplemented placeholder |
+| [hotkey-modal-dialog](src/hotkey-modal-dialog/readme.md) | A `<dialog>` opened/closed by a keyboard shortcut |
+| [menu-component](src/menu-component/readme.md) | Keyboard-navigable stateful menu/wizard, with a `hash.mjs` location-hash companion (registers the `menu-component` tag) |
+| [stylable-select](src/stylable-select/readme.md) | A `<select>`-like element whose options can actually be styled |
+| [tabbed-ui](src/tabbed-ui/readme.md) | Tabs/panels element |
+| [infinite-combo](src/infinite-combo/readme.md) | A combo-box that loads more options on demand |
+| [event-consumer](src/event-consumer/readme.md) | Declaratively wire event listeners without JavaScript setup |
+| [code-color](src/code-color/readme.md) | Syntax-highlight contents, re-highlighting on change |
+| [graph-component](src/graph-component/readme.md) | Unimplemented placeholder |
 
 ### Visual/canvas experiments
 
-`canvasrenderer.component`, `animate-paths.component`, `pixelshader.component`,
-`imagedata-emitter.component`, `xy-grapher.component`, `chernoff-face.component` —
+`canvas-renderer`, `animate-paths`, `pixel-shader`,
+`imagedata-emitter`, `xy-grapher`, `chernoff-face` —
 demo/experiment-grade custom elements (canvas rendering, SVG path
 animation, pixel shaders, generative graphics). No individual READMEs yet;
 see each module's own `demo.html`/`demo.htm`.

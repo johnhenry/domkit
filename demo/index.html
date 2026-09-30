@@ -45,19 +45,19 @@
   </p>
   <div class="grid">
     <div class="card">
-      <h3>define-component.component</h3>
+      <h3>define-component</h3>
       <p>Load a module by URL, register its export as a custom element. Own demo — bootstraps itself via this exact pattern.</p>
-      <iframe src="../src/definable/define-component.component/demo.html"></iframe>
+      <iframe src="../src/definable/define-component/demo.html"></iframe>
     </div>
     <div class="card">
-      <h3>define-component-by-content.component</h3>
+      <h3>define-component-by-content</h3>
       <p>Define a custom element from an inline HTML string attribute.</p>
-      <iframe src="../src/definable/define-component-by-content.component/demo.html"></iframe>
+      <iframe src="../src/definable/define-component-by-content/demo.html"></iframe>
     </div>
     <div class="card">
-      <h3>polyfill-window.component</h3>
+      <h3>polyfill-window</h3>
       <p>Load a module by URL, assign its export to a global — not a custom-element registrar.</p>
-      <iframe src="../src/definable/polyfill-window.component/demo.html"></iframe>
+      <iframe src="../src/definable/polyfill-window/demo.html"></iframe>
     </div>
     <div class="card">
       <h3>until-window-load</h3>
@@ -70,26 +70,26 @@
   <p class="group-note">Resize your browser window — these frames re-evaluate their media queries live.</p>
   <div class="grid">
     <div class="card tall">
-      <h3>query-container.component</h3>
+      <h3>query-container</h3>
       <p>Swap the rendered child element entirely by media query.</p>
-      <iframe src="../src/matchable/query-container.component/demo.htm"></iframe>
+      <iframe src="../src/matchable/query-container/demo.htm"></iframe>
     </div>
     <div class="card tall">
-      <h3>attribute-provider.component</h3>
+      <h3>attribute-provider</h3>
       <p>Apply classes/styles/attributes to existing children by media query.</p>
-      <iframe src="../src/matchable/attribute-provider.component/demo.htm"></iframe>
+      <iframe src="../src/matchable/attribute-provider/demo.htm"></iframe>
     </div>
   </div>
 
-  <h2 id="shadow">Shadow DOM &amp; lifecycle <span class="count">shadow-dom.component · internal-timer.component</span></h2>
+  <h2 id="shadow">Shadow DOM &amp; lifecycle <span class="count">shadow-dom · internal-timer</span></h2>
   <div class="grid">
     <div class="card">
-      <h3>shadow-dom.component</h3>
+      <h3>shadow-dom</h3>
       <p>Deprecated alias for domable's <code>simple-element</code> <code>shadowOpen</code>.</p>
       <iframe src="fragments/shadow-dom.html"></iframe>
     </div>
     <div class="card">
-      <h3>internal-timer.component</h3>
+      <h3>internal-timer</h3>
       <p>A frame-paced <code>tick</code> emitter with pause/resume — a worked example of the disconnectedCallback lifecycle-symmetry fixes from the completeness audit.</p>
       <iframe src="fragments/internal-timer.html"></iframe>
     </div>
@@ -103,85 +103,85 @@
   </p>
   <div class="grid">
     <div class="card">
-      <h3>class-cycler.component</h3>
+      <h3>class-cycler</h3>
       <p>Global-function class cycler, persisted to localStorage.</p>
-      <iframe src="../src/cyclable/class-cycler.component/demo.html"></iframe>
+      <iframe src="../src/cyclable/class-cycler/demo.html"></iframe>
     </div>
     <div class="card">
-      <h3>class-cycler.button.component</h3>
+      <h3>class-cycler-button</h3>
       <p>Self-contained button variant.</p>
-      <iframe src="../src/cyclable/class-cycler.button.component/demo.html"></iframe>
+      <iframe src="../src/cyclable/class-cycler-button/demo.html"></iframe>
     </div>
     <div class="card">
-      <h3>hotkey-modal.dialog.component</h3>
+      <h3>hotkey-modal-dialog</h3>
       <p>A native &lt;dialog&gt; opened/closed by a keyboard shortcut.</p>
       <iframe src="fragments/hotkey-modal.html"></iframe>
     </div>
     <div class="card tall">
-      <h3>menu.component + hash.mjs</h3>
+      <h3>menu-component + hash.mjs</h3>
       <p>Keyboard-navigable stateful menu, synced to <code>location.hash</code> via its <code>attach()</code>/<code>detach()</code> companion.</p>
       <iframe src="fragments/menu-component.html"></iframe>
     </div>
     <div class="card">
-      <h3>stylable-select.component</h3>
+      <h3>stylable-select</h3>
       <p>A &lt;select&gt;-like element whose options can actually be styled.</p>
-      <iframe src="../src/stylable-select.component/demo.htm"></iframe>
+      <iframe src="../src/stylable-select/demo.htm"></iframe>
     </div>
     <div class="card">
-      <h3>tabbed-ui.component</h3>
+      <h3>tabbed-ui</h3>
       <p>Tabs/panels element, matched by position.</p>
       <iframe src="fragments/tabbed-ui.html"></iframe>
     </div>
     <div class="card">
-      <h3>infinite-combo.component</h3>
+      <h3>infinite-combo</h3>
       <p>A combo-box that loads more options on demand.</p>
-      <iframe src="../src/infinite-combo.component/demo.htm"></iframe>
+      <iframe src="../src/infinite-combo/demo.htm"></iframe>
     </div>
     <div class="card">
-      <h3>event-consumer.component</h3>
+      <h3>event-consumer</h3>
       <p>Declaratively wire event listeners without JS setup code.</p>
       <iframe src="fragments/event-consumer.html"></iframe>
     </div>
     <div class="card">
-      <h3>code-color.component</h3>
+      <h3>code-color</h3>
       <p>Syntax-highlights its contents, re-highlighting on change.</p>
       <iframe src="fragments/code-color.html"></iframe>
     </div>
   </div>
 
-  <h2 id="visual">Visual/canvas experiments <span class="count">animate-paths.component · xy-grapher.component · chernoff-face.component</span></h2>
+  <h2 id="visual">Visual/canvas experiments <span class="count">animate-paths · xy-grapher · chernoff-face</span></h2>
   <div class="grid">
     <div class="card tall">
-      <h3>animate-paths.component</h3>
+      <h3>animate-paths</h3>
       <p>SVG path animation — the domkit logo, animated.</p>
-      <iframe src="../src/animate-paths.component/demo.htm"></iframe>
+      <iframe src="../src/animate-paths/demo.htm"></iframe>
     </div>
     <div class="card tall">
-      <h3>xy-grapher.component</h3>
+      <h3>xy-grapher</h3>
       <p><strong>Known broken</strong> — <code>component.mjs</code> calls a
       <code>genSVG()</code> function that's never defined anywhere, so
       <code>render()</code> throws. Inherited from <code>lib</code>, predates
       this package. The demo used to silently mask this by accidentally
-      registering <em>chernoff-face.component's</em> component under the
+      registering <em>chernoff-face's</em> component under the
       <code>xy-grapher</code> tag (a copy-paste bug in the original
       <code>demo.html</code>) — fixed to register the real component, which
       surfaces the render bug instead of hiding it.</p>
-      <iframe src="../src/xy-grapher.component/demo.html"></iframe>
+      <iframe src="../src/xy-grapher/demo.html"></iframe>
     </div>
     <div class="card">
-      <h3>chernoff-face.component</h3>
+      <h3>chernoff-face</h3>
       <p>Parametric faces as a data-visualization technique.</p>
-      <iframe src="../src/chernoff-face.component/demo.html"></iframe>
+      <iframe src="../src/chernoff-face/demo.html"></iframe>
     </div>
     <div class="card">
-      <h3>graph.component</h3>
+      <h3>graph-component</h3>
       <p>Unimplemented placeholder — kept per the repo's no-deletion policy.</p>
-      <iframe src="../src/graph.component/demo.html"></iframe>
+      <iframe src="../src/graph-component/demo.html"></iframe>
     </div>
   </div>
   <p class="unimplemented">
-    <code>canvasrenderer.component</code>, <code>pixelshader.component</code>,
-    and <code>imagedata-emitter.component</code> have no README or demo file
+    <code>canvas-renderer</code>, <code>pixel-shader</code>,
+    and <code>imagedata-emitter</code> have no README or demo file
     yet (demo-grade experiments, carried over as-is from the original
     extraction) — not included here to avoid guessing at an undocumented
     API. See their source under <code>src/</code>. (<code>brains</code>, a

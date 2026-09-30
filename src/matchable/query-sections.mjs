@@ -1,5 +1,5 @@
-// Shared [media query] value grammar for query-container.component and
-// attribute-provider.component -- a pipe (|)-delimited list of sections,
+// Shared [media query] value grammar for query-container and
+// attribute-provider -- a pipe (|)-delimited list of sections,
 // each either "[query] value" or a bare "value" with no query (which
 // always applies). This is the ONE place that grammar is parsed; both
 // components used to hand-roll their own copy, which is how they ended up

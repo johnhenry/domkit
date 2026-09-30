@@ -2,6 +2,55 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.8] - 2026-09-30
+
+A second naming pass, reversing the direction of `0.0.7`: dropped the
+`.component`/`.element` suffix convention entirely rather than applying it
+more consistently, with one hard constraint — every resulting module name
+keeps a hyphen (custom-element tag names are required to have one; the
+module/directory names follow the same rule for consistency, even though
+none of the actual registered tag strings were ever dotted or affected by
+this pass either way).
+
+**Renamed** (24 module directories; all cluster-internal imports,
+`demo/index.html`, `demo/fragments/*`, and every affected `readme.md`
+updated in the same change; verified with a full relative-import/HTML-src
+resolution scan plus a headless-browser scan of all 27 gallery frames —
+zero broken references, zero console/page errors):
+- Plain suffix drop (hyphen already present): `animate-paths.component` →
+  `animate-paths`, `chernoff-face.component` → `chernoff-face`,
+  `code-color.component` → `code-color`, `event-consumer.component` →
+  `event-consumer`, `imagedata-emitter.component` → `imagedata-emitter`,
+  `infinite-combo.component` → `infinite-combo`, `internal-timer.component`
+  → `internal-timer`, `shadow-dom.component` → `shadow-dom`,
+  `stylable-select.component` → `stylable-select`, `tabbed-ui.component` →
+  `tabbed-ui`, `xy-grapher.component` → `xy-grapher`,
+  `definable/define-component.component` → `definable/define-component`,
+  `definable/define-component-by-content.component` →
+  `definable/define-component-by-content`,
+  `definable/polyfill-window.component` → `definable/polyfill-window`,
+  `matchable/query-container.component` → `matchable/query-container`,
+  `matchable/attribute-provider.component` → `matchable/attribute-provider`,
+  `cyclable/class-cycler.component` → `cyclable/class-cycler`.
+- Compound rename (dotted qualifier collapsed to a hyphen):
+  `cyclable/class-cycler.button.component` → `cyclable/class-cycler-button`,
+  `hotkey-modal.dialog.component` → `hotkey-modal-dialog`.
+- Hyphen-preserving exceptions — a bare suffix drop would have left these
+  with no hyphen at all, which the custom-elements spec forbids for a real
+  tag name and which this pass treats as a naming rule for module
+  directories too: `canvasrenderer.component` → `canvas-renderer`,
+  `pixelshader.component` → `pixel-shader` (natural word-break
+  hyphenation); `graph.component` → `graph-component`, `menu.component` →
+  `menu-component` (no natural word break, so `-component` was kept as a
+  literal suffix word instead of a dot — `menu-component` also now
+  exactly matches its own registered `menu-component` tag, for a
+  different reason than the `0.0.7` rename that produced the same name).
+
+None of this changes any registered `customElements.define(...)` tag
+string — every tag in this package was already plain-hyphenated before
+this pass (confirmed via a repo-wide scan), so this was purely an
+import-path/module-directory change.
+
 ## [0.0.7] - 2026-09-30
 
 A naming pass across individual modules (not the clusters — those were

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="https://johnhenry.github.io/lib/css/blank-slate/0.0.0/index.css" />
+    <link
+      rel="stylesheet"
+      href="../stylable-select/index.css"
+    />
+    <script type="importmap">
+      {
+        "imports": {
+          "@johnhenry/domable/text-to-dom": "../../node_modules/@johnhenry/domable/src/text-to-dom.mjs"
+        }
+      }
+    </script>
+    <script
+      type="module"
+      src="../stylable-select/global.mjs"
+    ></script>
+    <script
+      type="module"
+      src="../hotkey-modal-dialog/global.mjs"
+    ></script>
+    <scirpt
+      src="https://johnhenry.github.io/lib/vendor/js/custom-elements/1.1.0/index.js"
+    >
+    </scirpt>
+    <link rel="stylesheet" href="./index.css" />
+    <script type="module" src="./global.mjs"></script>
+    <style>
+      #application {
+        font-size: 16px;
+        font-family: -apple-system, "system-ui", "Segoe UI", Helvetica, Arial,
+          sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+        background-color: #0d1117;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        gap: 64px;
+        padding: 64px;
+        justify-content: center;
+        color: #c9d1d9;
+      }
+      #application::backdrop {
+        background-color: black;
+      }
+      dialog {
+        width: 50%;
+        background: transparent;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        padding: 0;
+      }
+      dialog::backdrop {
+        width: 100%;
+        height: 100%;
+        background-color: rgba(1, 4, 9, 0.8);
+      }
+      .github-panel {
+        width: 100%;
+        height: 256px;
+        margin: auto;
+        background-color: #0e1117;
+        /* border: 1px solid #c9d1d9; */
+        color: #c9d1d9;
+        border-radius: 8px;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #c9d1d9;
+      }
+      .github-panel > * {
+        background-color: inherit;
+        color: inherit;
+        outline: inherit;
+      }
+      .github-panel > input {
+        padding: 8px 32px;
+        outline: none;
+      }
+      .github-panel::before {
+        position: absolute;
+        content: "⌕";
+        left: 8px;
+        top: 8px;
+        transform: translate(8px) scale(1.75);
+        text-emphasis: center;
+      }
+      .github-panel > :is(select, stylable-select) {
+        padding: 8px;
+        outline: none;
+        border-radius: 8px;
+      }
+      .github-panel
+        > :is(select, stylable-select)
+        :is(option:checked, [role="option"][data-checked]) {
+        color: inherit;
+        background-color: #161b22;
+      }
+      .github-panel
+        > :is(select, stylable-select)
+        :is(option, [role="option"])::before {
+        content: "☵";
+      }
+      .github-panel
+        > :is(select, stylable-select)
+        :is(option, [role="option"]) {
+        padding: 10px 8px;
+        margin: 0 8px;
+        gap: 4px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+      .github-panel > :is(select, stylable-select) div {
+        padding: 16px 16px;
+      }
+      .github-panel
+        > :is(select, stylable-select)
+        :is(option, [role="option"]) {
+        border-radius: 8px;
+      }
+      .github-panel
+        > :is(select, stylable-select)
+        :is(option, [role="option"]):hover {
+        background-color: #161b22;
+      }
+      .github-panel
+        > :is(select, stylable-select)
+        :is(option, [role="option"]):hover::after {
+        content: "Jump to";
+        color: #8b949e;
+        margin-left: auto;
+      }
+      .github-panel > :is(select, stylable-select) > div {
+        line-height: 2rem;
+      }
+    </style>
+    <script type="module">
+      window.search = async (event) => {
+        return `<option>${event.data}</option>${event.initialString}`;
+      };
+      window.search2 = async (event) => {
+        return `<div role="option">${event.data}</div>${event.initialString}`;
+      };
+      document.querySelectorAll(".github-panel").forEach((element) => {
+        element.addEventListener("select", (event) =>
+          console.info(event.target.selected.element?.innerText)
+        );
+        element.addEventListener("change", (event) =>
+          console.warn(event.target.value)
+        );
+      });
+      window.showModal = (id) => {
+        document.getElementById(id).showModal();
+      };
+    </script>
+  </head>
+  <body>
+    <div id="application">
+      <div>
+        <dl>
+          <dt>select-tag:</dt>
+          <dd>select (default)</dd>
+          <dt>click-to-close:</dt>
+          <dd>set!</dd>
+          <dt>no-escape-close:</dt>
+          <dd>set!</dd>
+        </dl>
+        <button onclick="showModal('select')">show: ⊞/⌘ + j</button>
+      </div>
+      <dialog
+        id="select"
+        is="hotkey-modal"
+        hotkey="meta+j"
+        click-to-close
+        no-esc-close
+        tabindex="-1"
+      >
+        <infinite-combo class="github-panel" onsearch="search(event)" size="5">
+          <optgroup label="Pages">
+            <option value="pages-dashboard">Dashboard</option>
+            <option value="pages-notifications">Notifications</option>
+            <option value="pages-issues">Issues</option>
+            <option value="pages-pullrequests">Pull Requests</option>
+            <option value="pages-discussions">Discussions</option>
+          </optgroup>
+
+          <optgroup label="Repositories">
+            <option value="repositories-johnhenry/lib">johnhenry/lib</option>
+          </optgroup>
+          <optgroup label="Organizations">
+            <option value="organizations-fornsakengine">Forsnakengine</option>
+            <option value="organizations-iamjohnenry">iamjohnhenry</option>
+            <option value="organizations-epicgames">epicgames</option>
+          </optgroup>
+          <optgroup label="Users">
+            <option value="users-johnhenry">@johnhenry -- john</option>
+          </optgroup>
+        </infinite-combo>
+      </dialog>
+      <div>
+        <dl>
+          <dt>select-tag:</dt>
+          <dd>stylable-select</dd>
+          <dt>click-to-close:</dt>
+          <dd>(unset)</dd>
+          <dt>no-escape-close:</dt>
+          <dd>(unset)</dd>
+        </dl>
+        <button onclick="showModal('stylable-select')">show: ⊞/⌘ + k</button>
+      </div>
+      <dialog id="stylable-select" is="hotkey-modal" hotkey="meta+k">
+        <infinite-combo
+          class="github-panel"
+          onsearch="search2(event)"
+          onselect=""
+          size="3"
+          role="listbox group"
+          select-tag="stylable-select"
+        >
+          <h1>Pages</h1>
+          <span role="" label="Pages">
+            <div role="option" data-value="pages-dashboard">Dashboard</div>
+            <div role="option" data-value="pages-notifications">
+              Notifications
+            </div>
+            <div role="option" data-value="pages-issues">Issues</div>
+            <div role="option" data-value="pages-pullrequests">
+              Pull Requests
+            </div>
+            <div role="option" data-value="pages-discussions">Discussions</div>
+          </span>
+          <span label="Repositories">
+            <div role="option" data-value="repositories-johnhenry/lib">
+              johnhenry/lib
+            </div>
+          </span>
+          <h1>Organizations</h1>
+          <span label="Organizations">
+            <div role="option" data-value="organizations-fornsakengine">
+              Forsnakengine
+            </div>
+            <div role="option" data-value="organizations-iamjohnenry">
+              iamjohnhenry
+            </div>
+            <div role="option" data-value="organizations-epicgames">
+              epicgames
+            </div>
+          </span>
+          <h1>Users</h1>
+          <span label="Users">
+            <div role="option" data-value="users-johnhenry">
+              @johnhenry -- john
+            </div>
+          </span>
+        </infinite-combo>
+      </dialog>
+    </div>
+  </body>
+</html>
