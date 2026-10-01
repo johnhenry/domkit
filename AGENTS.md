@@ -119,7 +119,8 @@ module and the principles disagree, the module is wrong.
   its `append(...nodes)` started throwing on every search, and nobody
   noticed until 0.0.9. Check return shapes when swapping a dependency.
 - **`Event.path` is gone** (Chrome removed it in v109). Use
-  `event.composedPath()`. `menu-component/hash.mjs` used `.path` and threw
+  `event.composedPath()`. `menu-component/hash.mjs` (since replaced by
+  `drill-menu`'s `sync-hash`) used `.path` and threw
   on every push/pop until 0.0.9.
 - **Never use customized built-ins (`is="…"`): Safari doesn't support
   them.** The two that existed (`hotkey-modal-dialog`, `class-cycler-button`)
@@ -131,7 +132,7 @@ module and the principles disagree, the module is wrong.
     connect before their children and later attributes exist. Use
     `render()` from `test/dom.mjs` (template + append, like a browser).
   - It fires `slotchange` synchronously (browsers queue it).
-    `menu-component` guards against the resulting re-entrancy.
+    (The old `menu-component` needed a re-entrancy guard for this.)
   - `MediaQueryList`: `onchange` is ignored (use `addEventListener`), and
     `change` only fires when a query *starts* matching. Write viewport
     tests in that direction (see `families.test.mjs`).

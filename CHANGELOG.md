@@ -115,6 +115,21 @@ rebuilt to meet it.
     - Removed: the `global` attribute and its window function, and the
       `selector` attribute (use `target`).
 
+- **`menu-component` is now `<drill-menu>`**, rebuilt in the light DOM:
+  - Items are its children. An item with a `<template>` drills into that
+    screen, and any other item (a link, a button) behaves as itself.
+  - Back via `[data-back]`, Esc, `pop()`, or a `--back` invoker command,
+    with focus moved into the screen and restored to the opening item.
+  - One tab stop with arrow/Home/End roving focus.
+  - A reflected `screen` attribute. `push`/`pop` events
+    (`detail: { key, item }`) fire on every change, like `toggle`.
+  - `sync-hash` adds history entries so the browser's Back button works,
+    and `#key` links open screens. It replaces `hash.mjs`.
+  - Removed: the shadow DOM and `::part`s, the `pushed` attribute (now
+    `screen`), the `pushed`/`popped`/`reset` events (now `push`/`pop`),
+    the `end` event and `data-end-event` (use `data-back`), and `hash.mjs`
+    with `attach`/`detach` (use `sync-hash`).
+
 ## [0.0.9] - 2026-09-30
 
 A shape-and-documentation pass. The modules were reorganized only where the

@@ -1,46 +1,17 @@
-// The remaining stable modules: menu-component, definable's loaders, and
-// the deprecated shadow-dom alias. (hotkey-dialog and class-cycler are
-// covered in test/browser/.)
+// definable's loaders and the deprecated shadow-dom alias. (The rebuilt
+// elements are covered in test/browser/.)
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { render, tick } from "./dom.mjs";
 
-await import("../src/menu-component/global.mjs");
 await import("../src/definable/define-component/global.mjs");
 await import("../src/definable/polyfill-window/global.mjs");
 const definetag = (await import("../src/definable/definetag/index.mjs")).default;
 const untilWindowLoad = (await import("../src/definable/until-window-load/index.mjs"))
   .default;
-const { attach, detach } = await import("../src/menu-component/hash.mjs");
 
 const moduleURL = (source) =>
   `data:text/javascript,${encodeURIComponent(source)}`;
-
-test("menu-component pushes a template screen, pops on its end event, and syncs the hash", async () => {
-  render(`<menu-component id="menu">
-    <div data-key="profile">Profile<template><button id="back">back</button></template></div>
-    <div>Leaf</div>
-  </menu-component>`);
-  const menu = document.getElementById("menu");
-  await tick();
-  const events = [];
-  for (const type of ["pushed", "popped"]) {
-    menu.addEventListener(type, (e) => events.push([type, e.detail.pushed]));
-  }
-  attach(menu);
-  menu.push("profile");
-  await tick(20); // let the push's own hashchange round-trip settle
-  assert.equal(menu.getAttribute("pushed"), "profile");
-  assert.equal(location.hash, "#profile");
-  const back = menu.shadowRoot.querySelector("#back");
-  assert.ok(back, "template content is rendered in the shadow root");
-  back.dispatchEvent(new Event("end", { bubbles: true }));
-  await tick();
-  assert.equal(menu.getAttribute("pushed"), null);
-  assert.deepEqual(events, [["pushed", "profile"], ["popped", "profile"]]);
-  detach(menu);
-  assert.equal(window.onhashchange, null, "detach removes the handler it installed");
-});
 
 test("define-component imports a module and registers its export", async () => {
   const src = moduleURL(

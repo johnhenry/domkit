@@ -86,6 +86,27 @@
       ]
     },
     {
+      "name": "drill-menu",
+      "description": "A list that drills into sub-screens and back.\n\nEvents: `push`, `pop`",
+      "attributes": [
+        {
+          "name": "screen",
+          "description": "Key of the screen currently shown (absent = the list). Reflects; set it to navigate."
+        },
+        {
+          "name": "sync-hash",
+          "description": "Mirror the current screen in `location.hash`, so links and the browser's Back button work.",
+          "valueSet": "v"
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/drill-menu"
+        }
+      ]
+    },
+    {
       "name": "hotkey-dialog",
       "description": "Toggle a native dialog with a keyboard shortcut.",
       "attributes": [
