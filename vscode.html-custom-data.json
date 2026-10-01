@@ -128,6 +128,50 @@
       ]
     },
     {
+      "name": "attribute-provider",
+      "description": "Add classes, styles, and attributes to children by media query.",
+      "attributes": [
+        {
+          "name": "classes",
+          "description": "`[media query] class class | …` sections. Bracket-less sections always apply."
+        },
+        {
+          "name": "styles",
+          "description": "`[media query] property: value; … | …` sections."
+        },
+        {
+          "name": "attributes",
+          "description": "`[media query] name=value; name; name=null | …` sections. `null` removes the attribute while the query matches."
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/matchable/attribute-provider"
+        }
+      ]
+    },
+    {
+      "name": "query-container",
+      "description": "Swap the element wrapping some content by media query.",
+      "attributes": [
+        {
+          "name": "default",
+          "description": "Wrapper when no query matches, as a simple selector (`ul`, `ol.steps`, `div#x[data-y=z]`). Defaults to the first section's."
+        },
+        {
+          "name": "query",
+          "description": "`[media query] selector` sections separated by `|`. The last matching section wins."
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/matchable/query-container"
+        }
+      ]
+    },
+    {
       "name": "stylable-select",
       "description": "A fully stylable listbox that works like a native select.\n\nEvents: `input`, `change`",
       "attributes": [

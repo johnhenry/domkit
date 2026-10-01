@@ -1,48 +1,17 @@
-import { tokenize } from "parsel-js";
 import { parseQuerySections } from "../query-sections.mjs";
-/*
-  <query-component
-    default="ul"
-    query="[(min-width:300px) and (max-width:1200px)] ol.ordered[style=color:blue];"
-  ></query-component>
-  -- see readme.md for the full example.
-*/
-const elementFromSelector = (selector = "") => {
-  let tag = "template";
-  let id = undefined;
-  const classes = [];
-  const attributes = {};
-  if (selector) {
-    for (const token of tokenize(selector)) {
-      switch (token.type) {
-        case "id":
-          id = token.name;
-          break;
-        case "type":
-          tag = token.content;
-          break;
-        case "class":
-          classes.push(token.name);
-          break;
-        case "attribute":
-          attributes[token.name] = token.value;
-          break;
-      }
-    }
-  }
-  const element = globalThis.document.createElement(tag); //tag
-  if (id) {
-    element.id = id;
-  }
-  element.classList.add(...classes); //classes
-  for (const [key, value] of Object.entries(attributes)) {
-    // attributes
-    element.setAttribute(key, value);
-  }
-  return element;
-};
+import { elementFromSelector } from "../simple-selector.mjs";
 
-export default class extends HTMLElement {
+/**
+ * Wraps its children in a different element depending on media queries:
+ * the same items in a `<ul>` on small screens and an `<ol>` on large ones.
+ *
+ * @tag query-container
+ * @summary Swap the element wrapping some content by media query.
+ *
+ * @attr {string} default - Wrapper when no query matches, as a simple selector (`ul`, `ol.steps`, `div#x[data-y=z]`). Defaults to the first section's.
+ * @attr {string} query - `[media query] selector` sections separated by `|`. The last matching section wins.
+ */
+export default class QueryContainer extends HTMLElement {
   #content;
   #queries;
   #default;

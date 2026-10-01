@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>query-container</title>
+    <script type="module" src="./global.mjs"></script>
+    <style>
+      body { font: 15px/1.5 system-ui, sans-serif; margin: 16px; }
+      .steps { color: teal; }
+      dl { display: grid; grid-template-columns: max-content 1fr; gap: 0.25em 1em; }
+      dt { font-weight: 600; }
+      dd { margin: 0; }
+    </style>
+  </head>
+  <body>
+    <p>Resize the window: the wrapper changes element, the content stays.</p>
+
+    <h2>Bullets, then numbered steps from 600px</h2>
+    <query-container default="ul" query="[(min-width: 600px)] ol.steps">
+      <li>Preheat the oven</li>
+      <li>Mix the batter</li>
+      <li>Bake for 30 minutes</li>
+    </query-container>
+
+    <h2>A definition list only when there's room</h2>
+    <p>Below 600px the terms and details are plain paragraphs; from 600px
+    they become a <code>&lt;dl&gt;</code> of <code>&lt;dt&gt;</code>/<code>&lt;dd&gt;</code> pairs.</p>
+    <query-container default="div" query="[(min-width: 600px)] dl">
+      <query-container default="p" query="[(min-width: 600px)] dt">Width</query-container>
+      <query-container default="p" query="[(min-width: 600px)] dd">How wide the window is.</query-container>
+      <query-container default="p" query="[(min-width: 600px)] dt">Height</query-container>
+      <query-container default="p" query="[(min-width: 600px)] dd">How tall the window is.</query-container>
+    </query-container>
+  </body>
+</html>

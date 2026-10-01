@@ -130,6 +130,20 @@ rebuilt to meet it.
     the `end` event and `data-end-event` (use `data-back`), and `hash.mjs`
     with `attach`/`detach` (use `sync-hash`).
 
+- **`matchable`: no dependencies, and `attribute-provider` no longer
+  overwrites anything**:
+  - `query-container` parses its wrapper selectors itself
+    (`matchable/simple-selector.mjs`), so the `parsel-js` dependency and
+    its import map are gone. Quoted attribute values are now supported,
+    and unsupported selectors throw a clear `SyntaxError`.
+  - `attribute-provider` adds to each child's own classes, inline styles,
+    and attributes, and restores exactly what it changed when a query
+    stops matching. Previously it replaced the whole `class` and `style`
+    attributes and never restored attributes. Children added later get
+    the current state, and children that leave are restored.
+    `!important` is honored in `styles`.
+  - New demos, with no import maps. Removed the empty `index.css` files.
+
 ## [0.0.9] - 2026-09-30
 
 A shape-and-documentation pass. The modules were reorganized only where the

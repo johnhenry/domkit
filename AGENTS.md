@@ -155,9 +155,11 @@ module and the principles disagree, the module is wrong.
   silently diverged (0.0.5). Its bracket match is non-greedy on purpose:
   a media query never contains `]`, but a selector value can
   (`ol[data-x=1].wide`).
-- **`attribute-provider` replaces children's whole `class` and `style`
-  attributes** on every update. That's documented, not a bug. Don't
-  "fix" it into a merge without also changing the README and tests.
+- **`attribute-provider` only adds, and undoes exactly what it added.** It
+  tracks, per child, the classes it added and the original value of every
+  style property and attribute it touched (`#addedClasses`,
+  `#savedStyles`, `#savedAttributes`). Never write to a child without
+  recording the original first.
 - **`hydratable`'s `HYDRATED` symbol is `configurable: true`** (0.0.5), so
   that `dehydrate()` can delete it. Don't "fix" it back.
 - **`mounts/first.mjs`/`last.mjs` run at import time and skip
@@ -166,13 +168,12 @@ module and the principles disagree, the module is wrong.
   normally indented page, the first child is a whitespace text node.
   Test against realistic markup (the test does).
 - **Bare specifiers in demos need import maps.** `@johnhenry/domable/*`
-  and `parsel-js` resolve under Node via `node_modules`, but not in a
+  resolves under Node via `node_modules`, but not in a
   browser loading raw source. Every demo that transitively imports them
   carries a `<script type="importmap">` whose relative paths count from
   *that file's* directory. Import maps are per document, so each demo
   page and each gallery iframe needs its own. domable's exports are flat files, so map exact
   subpaths (`src/simple-element.mjs`), not a prefix. Working examples:
-  `src/matchable/*/demo.htm`,
   `src/definable/define-component-by-content/demo.html`,
   `demo/fragments/shadow-dom.html`.
 - **Things that are NOT in this package**: `simple-element`,

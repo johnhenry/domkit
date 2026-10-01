@@ -1,188 +1,175 @@
+// <attribute-provider>: add classes, inline styles, and attributes to its
+// direct children while media queries match, and take them away again
+// when they stop matching -- without disturbing anything the children
+// already had. See readme.md.
 import { parseQuerySections } from "../query-sections.mjs";
 
-const stripQuotes = (string, quotes = ["'", '"', "`"]) => {
-  for (const quote of quotes) {
-    if (string.startsWith(quote) && string.endsWith(quote)) {
+const stripQuotes = (string) => {
+  for (const quote of ["'", '"', "`"]) {
+    if (string.length >= 2 && string.startsWith(quote) && string.endsWith(quote)) {
       return string.slice(1, -1);
     }
   }
   return string;
 };
 
-export default class extends HTMLElement {
-  #classes;
-  #styles;
-  #attributes;
-  #observer;
-  #mediaMatches;
-  #handlers;
-  constructor() {
-    super();
-    this.#observer = new globalThis.MutationObserver(this.setAll.bind(this));
-    this.#mediaMatches = {};
-    this.#handlers = {
-      classes: () => this.triggerClass(),
-      styles: () => this.triggerStyle(),
-      attributes: () => this.triggerAttribute(),
-    };
-  }
+const parsers = {
+  classes: (value) => value.split(/\s+/).filter(Boolean),
+  // "color: red; border: 1px solid" -> [["color", "red"], ["border", "1px solid"]]
+  styles: (value) =>
+    value
+      .split(";")
+      .map((declaration) => {
+        const colon = declaration.indexOf(":");
+        return colon < 0 ? null : [declaration.slice(0, colon).trim(), declaration.slice(colon + 1).trim()];
+      })
+      .filter((pair) => pair && pair[0]),
+  // "disabled; placeholder='Search'; hidden=null" -> [[name, value | null]]
+  attributes: (value) =>
+    value
+      .split(";")
+      .map((part) => part.trim())
+      .filter(Boolean)
+      .map((part) => {
+        const equals = part.indexOf("=");
+        const name = (equals < 0 ? part : part.slice(0, equals)).trim();
+        const raw = equals < 0 ? "" : part.slice(equals + 1).trim();
+        return [name, raw === "null" ? null : stripQuotes(raw)];
+      })
+      .filter(([name]) => name),
+};
+
+/**
+ * Applies classes, inline styles, and attributes to its direct children
+ * while media queries match, restoring what was there when they stop.
+ *
+ * @tag attribute-provider
+ * @summary Add classes, styles, and attributes to children by media query.
+ *
+ * @attr {string} classes - `[media query] class class | …` sections. Bracket-less sections always apply.
+ * @attr {string} styles - `[media query] property: value; … | …` sections.
+ * @attr {string} attributes - `[media query] name=value; name; name=null | …` sections. `null` removes the attribute while the query matches.
+ */
+export default class AttributeProvider extends HTMLElement {
+  static observedAttributes = ["classes", "styles", "attributes"];
+
+  #sections = { classes: [], styles: [], attributes: [] };
+  #onChange = () => this.#apply();
+  #observer = new MutationObserver(() => this.#apply());
+  // What this element changed on each child, so it can be undone exactly.
+  #addedClasses = new WeakMap(); // child -> Set(class)
+  #savedStyles = new WeakMap(); // child -> Map(property -> [value, priority])
+  #savedAttributes = new WeakMap(); // child -> Map(name -> original value | null)
+  #touched = new Set();
+
   connectedCallback() {
-    // (Re)start here, not in the constructor: disconnectedCallback stops
-    // both the observer and every media-query listener, and nothing used
-    // to restart them -- a moved element silently stopped responding.
+    for (const kind of Object.keys(parsers)) this.#parse(kind);
     this.#observer.observe(this, { childList: true });
-    this.setAll();
+    this.#apply();
   }
+
   disconnectedCallback() {
     this.#observer.disconnect();
-    for (const key of Object.keys(this.#mediaMatches)) {
-      this.#release(key);
+    for (const kind of Object.keys(parsers)) this.#release(kind);
+  }
+
+  attributeChangedCallback(name) {
+    if (!this.isConnected) return;
+    this.#parse(name);
+    this.#apply();
+  }
+
+  #parse(kind) {
+    this.#release(kind);
+    this.#sections[kind] = parseQuerySections(this.getAttribute(kind) ?? "").map(({ mql, value }) => {
+      mql.addEventListener("change", this.#onChange);
+      return { mql, items: parsers[kind](value) };
+    });
+  }
+
+  #release(kind) {
+    for (const { mql } of this.#sections[kind]) mql.removeEventListener("change", this.#onChange);
+    this.#sections[kind] = [];
+  }
+
+  #active(kind) {
+    return this.#sections[kind].filter(({ mql }) => mql.matches).flatMap(({ items }) => items);
+  }
+
+  get #children() {
+    return [...this.children];
+  }
+
+  #apply() {
+    const classes = new Set(this.#active("classes"));
+    const styles = new Map(this.#active("styles")); // later sections win
+    const attributes = new Map(this.#active("attributes"));
+    const children = new Set(this.#children);
+
+    // Children that left: undo everything first.
+    for (const child of this.#touched) {
+      if (!children.has(child)) this.#restore(child, new Set(), new Map(), new Map());
+    }
+    this.#touched = new Set();
+    for (const child of children) {
+      this.#restore(child, classes, styles, attributes);
+      this.#applyTo(child, classes, styles, attributes);
+      this.#touched.add(child);
     }
   }
-  // Detach the media-query listeners from a previous parse of `key` before
-  // replacing them, so re-parsing (on reconnect or attribute change) never
-  // leaves stale handlers attached.
-  #release(key) {
-    for (const m of this.#mediaMatches[key] ?? []) {
-      m.removeEventListener("change", this.#handlers[key]);
+
+  // Undo what's no longer wanted.
+  #restore(child, classes, styles, attributes) {
+    const added = this.#addedClasses.get(child);
+    for (const name of added ?? []) {
+      if (!classes.has(name)) {
+        child.classList.remove(name);
+        added.delete(name);
+      }
     }
-    this.#mediaMatches[key] = new Set();
-  }
-  static get observedAttributes() {
-    return ["classes", "styles", "attributes"];
-  }
-  setClasses() {
-    const queries = this.getAttribute("classes") || "";
-    this.#classes = new Map();
-    this.#release("classes");
-    const mediaMatches = (this.#mediaMatches["classes"] = new Set());
-    for (const { mql, value } of parseQuerySections(queries)) {
-      this.#classes.set(mql, value.split(" ").filter(Boolean));
-      mql.addEventListener("change", this.#handlers.classes);
-      mediaMatches.add(mql);
+    const savedStyles = this.#savedStyles.get(child);
+    for (const [property, [value, priority]] of savedStyles ?? []) {
+      if (!styles.has(property)) {
+        if (value) child.style.setProperty(property, value, priority);
+        else child.style.removeProperty(property);
+        savedStyles.delete(property);
+      }
     }
-    this.triggerClass();
-  }
-  setStyles() {
-    const queries = this.getAttribute("styles") || "";
-    this.#styles = new Map();
-    this.#release("styles");
-    const mediaMatches = (this.#mediaMatches["styles"] = new Set());
-    for (const { mql, value } of parseQuerySections(queries)) {
-      this.#styles.set(
-        mql,
-        value
-          .split(";")
-          .map((x) => x.trim())
-          .filter(Boolean)
-      );
-      mql.addEventListener("change", this.#handlers.styles);
-      mediaMatches.add(mql);
-    }
-    this.triggerStyle();
-  }
-  setAttributes() {
-    const queries = this.getAttribute("attributes") || "";
-    this.#attributes = new Map();
-    this.#release("attributes");
-    const mediaMatches = (this.#mediaMatches["attributes"] = new Set());
-    for (const { mql, value } of parseQuerySections(queries)) {
-      this.#attributes.set(
-        mql,
-        value
-          .split(";")
-          .map((x) => x.trim())
-          .filter(Boolean)
-          .reduce((acc, curr) => {
-            let [key, value] = curr.split("=", 2);
-            key = (key ?? "").trim();
-            if (!key) {
-              // Malformed segment (e.g. "=foo" with no key) -- skip it,
-              // don't drop the accumulator. Returning `acc` here (not
-              // `undefined`) is the fix: the old code returned bare
-              // `undefined` on this branch, which became the next
-              // iteration's accumulator and crashed on the next .push().
-              return acc;
-            }
-            if (value === undefined) {
-              value = "";
-            }
-            if (value === "null") {
-              value = null;
-            }
-            if (value) {
-              value = stripQuotes(value.trim());
-            }
-            acc.push([key, value]);
-            return acc;
-          }, [])
-      );
-      mql.addEventListener("change", this.#handlers.attributes);
-      mediaMatches.add(mql);
-    }
-    this.triggerAttribute();
-  }
-  triggerClass() {
-    const classArray = this.getByKey("classes");
-    for (const kid of this.kids) {
-      const { classList } = kid;
-      classList.remove(...classList);
-      classList.add(...classArray);
-    }
-  }
-  triggerStyle() {
-    const styleArray = this.getByKey("styles");
-    for (const kid of this.kids) {
-      kid.setAttribute("style", styleArray.join(";"));
-    }
-  }
-  triggerAttribute() {
-    const attributeArray = this.getByKey("attributes");
-    for (const kid of this.kids) {
-      for (const [key, value] of attributeArray) {
-        if (value === null) {
-          kid.removeAttribute(key);
-        } else {
-          kid.setAttribute(key, value);
-        }
+    const savedAttributes = this.#savedAttributes.get(child);
+    for (const [name, original] of savedAttributes ?? []) {
+      if (!attributes.has(name)) {
+        if (original === null) child.removeAttribute(name);
+        else child.setAttribute(name, original);
+        savedAttributes.delete(name);
       }
     }
   }
-  setAll() {
-    this.setClasses();
-    this.setStyles();
-    this.setAttributes();
-  }
-  attributeChangedCallback(name, prev, current) {
-    this.setAll();
-  }
-  get kids() {
-    return Array.prototype.filter.call(
-      this.childNodes,
-      (x) => x.nodeType === 1
-    );
-  }
-  getByKey(key) {
-    let result = [];
-    let arr;
-    switch (key) {
-      case "classes":
-        arr = this.#classes;
-        break;
-      case "styles":
-        arr = this.#styles;
-        break;
-      case "attributes":
-        arr = this.#attributes;
-        break;
-    }
-    if (arr) {
-      for (const [query, items] of arr) {
-        if (query.matches) {
-          result.push(...items);
-        }
+
+  // Apply what's wanted, remembering what was there first.
+  #applyTo(child, classes, styles, attributes) {
+    if (!this.#addedClasses.has(child)) this.#addedClasses.set(child, new Set());
+    const added = this.#addedClasses.get(child);
+    for (const name of classes) {
+      if (!child.classList.contains(name)) {
+        child.classList.add(name);
+        added.add(name);
       }
     }
-    return result;
+    if (!this.#savedStyles.has(child)) this.#savedStyles.set(child, new Map());
+    const savedStyles = this.#savedStyles.get(child);
+    for (const [property, value] of styles) {
+      if (!savedStyles.has(property)) {
+        savedStyles.set(property, [child.style.getPropertyValue(property), child.style.getPropertyPriority(property)]);
+      }
+      const important = /!\s*important\s*$/i.test(value);
+      child.style.setProperty(property, value.replace(/!\s*important\s*$/i, "").trim(), important ? "important" : "");
+    }
+    if (!this.#savedAttributes.has(child)) this.#savedAttributes.set(child, new Map());
+    const savedAttributes = this.#savedAttributes.get(child);
+    for (const [name, value] of attributes) {
+      if (!savedAttributes.has(name)) savedAttributes.set(name, child.getAttribute(name));
+      if (value === null) child.removeAttribute(name);
+      else child.setAttribute(name, value);
+    }
   }
 }

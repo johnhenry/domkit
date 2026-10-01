@@ -119,14 +119,14 @@ test("attribute-provider applies, survives a move, and follows the viewport", as
   const provider = document.querySelector("attribute-provider");
   const probe = document.getElementById("probe");
   await tick();
-  assert.deepEqual([...probe.classList], ["base", "wide"], "replaces markup classes");
+  assert.deepEqual([...probe.classList], ["from-markup", "base", "wide"], "adds to the child's own classes");
   assert.equal(probe.dataset.size, "wide");
 
   document.body.prepend(provider); // disconnect + reconnect
   await tick();
   window.happyDOM.setViewport({ width: 500 });
   await tick();
-  assert.deepEqual([...probe.classList], ["base", "narrow"], "still live after a move");
+  assert.deepEqual([...probe.classList], ["from-markup", "base", "narrow"], "still live after a move");
   assert.equal(probe.dataset.size, "narrow");
   assert.equal(probe.style.color, "red");
   window.happyDOM.setViewport({ width: 1024 });
