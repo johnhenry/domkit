@@ -1671,17 +1671,60 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "",
-          "name": "",
+          "description": "A listbox whose options are ordinary, fully stylable elements, with the\nsame API, form behavior, and events as a native `<select>` listbox.",
+          "name": "StylableSelect",
+          "cssProperties": [
+            {
+              "description": "Visible rows, from the `size` attribute.",
+              "name": "--domkit-select-size"
+            },
+            {
+              "description": "Background of selected options (index.css).",
+              "name": "--domkit-select-accent"
+            }
+          ],
           "members": [
             {
               "kind": "field",
-              "name": "#value",
+              "name": "formAssociated",
+              "type": {
+                "text": "boolean"
+              },
+              "static": true,
+              "default": "true"
+            },
+            {
+              "kind": "field",
+              "name": "#internals",
               "privacy": "private"
             },
             {
               "kind": "field",
-              "name": "#selectedIndex",
+              "name": "#observer",
+              "privacy": "private",
+              "default": "new MutationObserver(() => this.#refresh())"
+            },
+            {
+              "kind": "field",
+              "name": "#active",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#formDisabled",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#typeahead",
               "privacy": "private",
               "type": {
                 "text": "string"
@@ -1690,99 +1733,443 @@
             },
             {
               "kind": "field",
-              "name": "#onClickBound",
-              "privacy": "private"
-            },
-            {
-              "kind": "field",
-              "name": "#onKeyDownBound",
-              "privacy": "private"
-            },
-            {
-              "kind": "field",
-              "name": "#observer",
+              "name": "#typeaheadAt",
               "privacy": "private",
-              "default": "new MutationObserver(this.observe.bind(this))"
-            },
-            {
-              "kind": "method",
-              "name": "observe",
-              "parameters": [
-                {
-                  "name": "mutationList"
-                }
-              ]
-            },
-            {
-              "kind": "field",
-              "name": "selectedIndex"
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
             },
             {
               "kind": "field",
               "name": "options",
+              "description": "Every option, in document order (including those in groups).",
+              "type": {
+                "text": "Element[]"
+              },
               "readonly": true
             },
             {
               "kind": "field",
+              "name": "selectedOptions",
+              "description": "The selected options.",
+              "type": {
+                "text": "Element[]"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "selectedIndex",
+              "description": "Index of the first selected option, or -1. Setting it selects only that\noption. Script changes don't fire events.",
+              "type": {
+                "text": "number"
+              }
+            },
+            {
+              "kind": "field",
               "name": "value",
+              "description": "Value of the first selected option, or \"\". Setting it selects the first\noption with that value (or nothing, if none matches).",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "length",
+              "description": "Number of options.",
+              "type": {
+                "text": "number"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "type",
+              "description": "\"select-one\" or \"select-multiple\", like a native select.",
+              "type": {
+                "text": "string"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "multiple",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "required",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "size",
+              "type": {
+                "text": "number"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "item",
+              "parameters": [
+                {
+                  "name": "index",
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ],
+              "description": "The option at `index`.",
+              "return": {
+                "type": {
+                  "text": "Element | null"
+                }
+              }
+            },
+            {
+              "kind": "field",
+              "name": "form",
+              "description": "The form this element belongs to.",
+              "type": {
+                "text": "HTMLFormElement | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "labels",
+              "description": "Labels associated with this element.",
+              "type": {
+                "text": "NodeList"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "validity",
+              "type": {
+                "text": "ValidityState"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "validationMessage",
+              "type": {
+                "text": "string"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "willValidate",
+              "type": {
+                "text": "boolean"
+              },
               "readonly": true
             },
             {
               "kind": "method",
-              "name": "onClick",
+              "name": "checkValidity",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "reportValidity",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "setCustomValidity",
               "parameters": [
                 {
-                  "name": "e"
+                  "name": "message",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "#customError",
+              "privacy": "private",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\""
+            },
+            {
+              "kind": "method",
+              "name": "formResetCallback"
+            },
+            {
+              "kind": "method",
+              "name": "formDisabledCallback",
+              "parameters": [
+                {
+                  "name": "disabled"
                 }
               ]
             },
             {
               "kind": "method",
-              "name": "onKeyDown",
+              "name": "formStateRestoreCallback",
+              "parameters": [
+                {
+                  "name": "state"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#valueOf",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "option"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#isSelected",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "option"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#isDisabled",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "option"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#isInteractive",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#enabled",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#mark",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "option"
+                },
+                {
+                  "name": "selected"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#refresh",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#ownTabindex",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#defaults",
+              "privacy": "private",
+              "default": "new WeakMap()"
+            },
+            {
+              "kind": "field",
+              "name": "#ownAriaDisabled",
+              "privacy": "private",
+              "default": "new WeakSet()"
+            },
+            {
+              "kind": "method",
+              "name": "#syncFormValue",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#updateValidity",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#setActive",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "option"
+                },
+                {
+                  "name": "{ scroll = true }",
+                  "default": "{}"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#userSelect",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "option"
+                },
+                {
+                  "name": "{ toggle = false }",
+                  "default": "{}"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "#clicking",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "method",
+              "name": "#onClick",
+              "privacy": "private",
               "parameters": [
                 {
                   "name": "event"
                 }
               ]
+            },
+            {
+              "kind": "method",
+              "name": "#onKeyDown",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#typeaheadMatch",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "key"
+                },
+                {
+                  "name": "enabled"
+                },
+                {
+                  "name": "current"
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "input",
+              "type": {
+                "text": "Event"
+              },
+              "description": "The user changed the selection."
+            },
+            {
+              "name": "change",
+              "type": {
+                "text": "Event"
+              },
+              "description": "The user changed the selection (fired right after `input`, like a native select)."
             }
           ],
           "attributes": [
             {
-              "name": "size"
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Blocks interaction and form submission. Also inherited from a disabled fieldset."
+            },
+            {
+              "name": "required",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "The form is invalid until an option is selected."
+            },
+            {
+              "name": "multiple",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Allow selecting more than one option."
+            },
+            {
+              "name": "size",
+              "type": {
+                "text": "number"
+              },
+              "description": "Number of visible rows (sets `--domkit-select-size`, used by index.css)."
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Name submitted with the form.",
+              "name": "name"
             }
           ],
           "superclass": {
             "name": "HTMLElement"
           },
-          "customElement": true
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
+          "tagName": "stylable-select",
+          "customElement": true,
+          "summary": "A fully stylable listbox that works like a native select."
         }
       ],
       "exports": [
@@ -1790,7 +2177,7 @@
           "kind": "js",
           "name": "default",
           "declaration": {
-            "name": "",
+            "name": "StylableSelect",
             "module": "src/stylable-select/index.mjs"
           }
         }

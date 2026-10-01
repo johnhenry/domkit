@@ -1,18 +1,44 @@
+/* Optional defaults for <stylable-select>. Selected options match
+   `option:checked` (and `[aria-selected="true"]` for role="option"
+   elements); the keyboard-active option has `[data-active]`. */
 stylable-select {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-auto-rows: 1fr;
-  flex-direction: column;
-  overflow: scroll;
-  outline: none;
+  --domkit-select-accent: color-mix(in srgb, currentColor 15%, transparent);
+  display: block;
+  overflow-y: auto;
+  max-block-size: calc(var(--domkit-select-size, 6) * 2em + 0.5em);
+  border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+  border-radius: 0.375em;
+  padding: 0.25em;
+  cursor: default;
 }
-stylable-select * {
-  outline: inherit;
+stylable-select:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+stylable-select optgroup {
+  display: block;
+  font-weight: 600;
+  padding: 0.25em 0.5em 0;
 }
 stylable-select :is(option, [role="option"]) {
-  cursor: pointer;
+  display: block;
+  min-block-size: 2em;
+  line-height: 2em;
+  padding-inline: 0.5em;
+  border-radius: 0.25em;
+  font-weight: normal;
 }
-stylable-select :is(option, [role="option"])[data-checked] {
-  background-color: #0ff0ff;
-  color: black;
+stylable-select :is(option:checked, [role="option"][aria-selected="true"]) {
+  background: var(--domkit-select-accent);
+  color: inherit;
+}
+stylable-select:focus-visible [data-active] {
+  outline: 1px dashed currentColor;
+  outline-offset: -1px;
+}
+stylable-select :is(option:disabled, [aria-disabled="true"]) {
+  opacity: 0.5;
+}
+stylable-select:is([disabled], :disabled) {
+  opacity: 0.6;
 }

@@ -11,7 +11,6 @@ const GLOBALS = {
   "infinite-combo": "infinite-combo",
   "internal-timer": "internal-timer",
   "menu-component": "menu-component",
-  "stylable-select": "stylable-select",
   "tabbed-ui": "tabbed-ui",
   "matchable/query-container": "query-container",
   "matchable/attribute-provider": "attribute-provider",
@@ -43,22 +42,8 @@ let y = obj.prop;</pre></code-color>`);
   );
 });
 
-test("stylable-select treats plain <option> and role=option as options", async () => {
-  render(`<stylable-select>
-    <optgroup label="g"><option value="a">A</option><option>B</option></optgroup>
-    <div role="option" data-value="c">C</div>
-  </stylable-select>`);
-  const select = document.querySelector("stylable-select");
-  assert.equal(select.options.length, 3);
-  const values = [];
-  select.addEventListener("change", (e) => values.push(e.detail));
-  select.selectedIndex = 1;
-  select.selectedIndex = 2;
-  select.selectedIndex = 99; // clamps
-  assert.deepEqual(values, ["B", "c", "c"]);
-  assert.ok(select.options[2].hasAttribute("data-checked"));
-  assert.equal(select.value, "c");
-});
+// stylable-select (and every form-associated element) is tested only in
+// test/browser/: happy-dom has no ElementInternals / attachInternals.
 
 test("infinite-combo replaces options with onsearch's HTML, via a loading placeholder", async () => {
   globalThis.search = async ({ data }) => {

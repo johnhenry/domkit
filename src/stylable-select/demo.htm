@@ -39,12 +39,12 @@
       stylable-select :is(option, [role="option"])::before {
         content: "○";
       }
-      stylable-select :is(option, [role="option"])[data-checked] {
+      stylable-select :is(option:checked, [role="option"][aria-selected="true"]) {
         background: #2a6;
         color: white;
         border-radius: 4px;
       }
-      stylable-select :is(option, [role="option"])[data-checked]::before {
+      stylable-select :is(option:checked, [role="option"][aria-selected="true"])::before {
         content: "●";
       }
     </style>
@@ -56,7 +56,8 @@
       <code>role="option"</code>) are selectable, and every one of them can be
       styled, including <code>::before</code> content.
     </p>
-    <stylable-select id="select" tabindex="0">
+    <label for="select">Produce</label>
+    <stylable-select id="select" name="produce">
       <optgroup label="Fruit">
         <option value="apple">Apple</option>
         <option value="banana">Banana</option>
@@ -71,8 +72,8 @@
     <p>value: <output id="value">(none)</output></p>
     <script type="module">
       const select = document.getElementById("select");
-      select.addEventListener("change", ({ detail }) => {
-        document.getElementById("value").textContent = detail;
+      select.addEventListener("change", () => {
+        document.getElementById("value").textContent = select.value;
       });
     </script>
   </body>
