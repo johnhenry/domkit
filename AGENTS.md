@@ -26,8 +26,16 @@ file.
   documented. `test/browser/consistency.spec.mjs` checks the cross-module
   rules (tag names, `hidden`, creation paths, forms) for every element at
   once. Add new elements to its `ELEMENTS` map.
-- `test/`: behavioral tests (`node:test` + happy-dom). `scripts/`: the
-  syntax and reference checkers.
+- `test/`: behavioral tests (`node:test` + happy-dom), `test/browser/`
+  (Playwright), and `test/types/` (a TypeScript consumer). `scripts/`: the
+  checkers, the dev server, and the generators.
+- Generated, committed, and drift-checked (never edit by hand; run
+  `npm run manifest`): `custom-elements.json`, `vscode.html-custom-data.json`,
+  `docs/reference.md`, element `index.d.mts`/`global.d.mts`
+  (`scripts/manifest-outputs.mjs`), and the plain-function modules'
+  `.d.mts` (`scripts/types.mjs`, from JSDoc, listed in
+  `tsconfig.types.json`). A new function module needs JSDoc types and an
+  entry in `tsconfig.types.json`.
 
 ## The contract
 
@@ -56,7 +64,7 @@ module and the principles disagree, the module is wrong.
    `scripts/serve.mjs`. CI runs both, plus a drift check that
    `npm run manifest` leaves every generated file unchanged.
 2. For DOM-touching changes, also check the module's own demo **in a real
-   browser**: `npx http-server . -c-1` from the repo root, then
+   browser**: `npm run serve` (port 4719, no caching), then
    `/src/<path>/demo.html` and the gallery at `/demo/`. happy-dom isn't a
    browser (see its gotchas below), and several bugs here were only ever
    visible in one.
@@ -95,6 +103,10 @@ module and the principles disagree, the module is wrong.
 
 ## Repo-specific gotchas
 
+- **The browser tests own port 4719 and never reuse a running server.**
+  With reuse on, another project's server on the old port (4173) was
+  silently "tested" instead of domkit, and every test failed confusingly.
+  If 4719 is taken, Playwright now fails up front; free the port.
 - **Playwright's Firefox may not launch on very new macOS** ("Could not
   find profile folder", in or out of a sandbox, even after
   `playwright install --force firefox`). Run
@@ -190,7 +202,7 @@ module and the principles disagree, the module is wrong.
   `CHANGELOG.md`.
 - **`npx serve .` breaks relative imports on bare directory URLs** unless
   `cleanUrls` is off. `serve.json` already does that, but
-  `npx http-server . -c-1` avoids the issue (and caching) entirely.
+  `npm run serve` (`scripts/serve.mjs`) avoids the issue and caching entirely.
 
 ## Non-goals
 

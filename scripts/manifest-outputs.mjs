@@ -94,6 +94,53 @@ for (const { path, declaration: d } of elements) {
   );
 }
 
+// --- docs/reference.md ------------------------------------------------------
+const cell = (text) => (text ?? "").replace(/\|/g, "\\|").replace(/\n+/g, " ").trim();
+const code = (text) => (text ? `\`${text}\`` : "");
+const sections = [...elements]
+  .sort((a, b) => a.declaration.tagName.localeCompare(b.declaration.tagName))
+  .map(({ path, declaration: d }) => {
+    const dir = dirname(path);
+    const members = (d.members ?? []).filter(
+      (m) => (m.privacy ?? "public") === "public" && !m.static && !/Callback$/.test(m.name),
+    );
+    const properties = members.filter((m) => m.kind === "field");
+    const methods = members.filter((m) => m.kind === "method");
+    const table = (head, rows) =>
+      rows.length ? `| ${head.join(" | ")} |\n|${head.map(() => "---").join("|")}|\n${rows.map((r) => `| ${r.join(" | ")} |`).join("\n")}\n` : "";
+    const ident = (name) => /^[A-Za-z_$][\w$]*$/.test(name);
+    // A property with no description of its own that mirrors an attribute.
+    const kebab = (name) => name.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`);
+    const describe = (m) =>
+      cell(m.description) ||
+      (d.attributes?.some((a) => a.name === kebab(m.name)) ? `Mirrors the \`${kebab(m.name)}\` attribute.` : "");
+    return [
+      `## \`<${d.tagName}>\``,
+      `${cell(d.summary ?? d.description)} [Guide](../${dir}/readme.md) · module \`@johnhenry/domkit/${dir.replace(/^src\//, "")}\``,
+      "",
+      d.attributes?.length ? "**Attributes**\n\n" + table(["Attribute", "Type", "Description"], d.attributes.map((a) => [code(a.name), code(a.type?.text), cell(a.description)])) : "",
+      properties.length ? "**Properties**\n\n" + table(["Property", "Type", "Description"], properties.map((m) => [code(m.name) + (m.readonly ? " (read-only)" : ""), code(m.type?.text), describe(m)])) : "",
+      methods.length ? "**Methods**\n\n" + table(["Method", "Description"], methods.map((m) => {
+        const params = (m.parameters ?? [])
+          .filter((p, i, all) => ident(p.name) || !(all[i + 1] && ident(all[i + 1].name) && all[i + 1].type))
+          .map((p, i) => (ident(p.name) ? p.name : i ? `options${i}` : "options"));
+        return [code(`${m.name}(${params.join(", ")})`), cell(m.description)];
+      })) : "",
+      d.events?.length ? "**Events**\n\n" + table(["Event", "Description"], d.events.map((e) => [code(e.name), cell(e.description)])) : "",
+      d.cssProperties?.length ? "**CSS custom properties**\n\n" + table(["Property", "Description"], d.cssProperties.map((c) => [code(c.name), cell(c.description)])) : "",
+    ]
+      .filter(Boolean)
+      .map((part) => part.trimEnd())
+      .join("\n\n");
+  });
+await writeFile(
+  join(ROOT, "docs/reference.md"),
+  `<!-- Generated from custom-elements.json by scripts/manifest-outputs.mjs. Do not edit: change the JSDoc and run \`npm run manifest\`. -->\n\n` +
+    `# Element reference\n\nEvery stable element's attributes, properties, methods, events, and CSS custom properties, generated from the code. Each element's guide (linked) explains how to use it.\n\n` +
+    sections.join("\n\n") +
+    "\n",
+);
+
 console.log(
   `✅ ${elements.length} element(s): ${elements.map((e) => e.declaration.tagName).join(", ")} -> vscode.html-custom-data.json, ${elements
     .map((e) => relative(ROOT, join(ROOT, e.path.replace(/\.mjs$/, ".d.mts"))))

@@ -5,6 +5,7 @@ const TEARDOWN = Symbol("hydratable.teardown");
  * @param {(this: object, opts: { finalizer: (fn: Function) => void, dehydrator: (fn: Function) => void }) => Promise<void>} hydrate
  * @param {string} [name] Method name for the hydrate operation.
  * @param {string} [dehydrateName] Method name for its counterpart. Defaults to `de${name}`.
+ * @returns {Record<string, () => Promise<object>>} methods to mix into a prototype
  */
 const Hydratable = (hydrate, name = "hydrate", dehydrateName = `de${name}`) => {
   const PROTOTYPE = {

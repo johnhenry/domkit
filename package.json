@@ -1,6 +1,6 @@
 {
   "name": "@johnhenry/domkit",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "Small, independent custom elements and DOM utilities -- drop-in UI widgets, media-query-driven containers, persisted UI state, declarative loaders -- shipped as source, no build step.",
   "type": "module",
   "exports": {
@@ -22,7 +22,7 @@
     "check": "node scripts/check-syntax.mjs && node scripts/check-links.mjs && eslint . && tsc -p test/types",
     "test:dom": "node --test \"test/*.test.mjs\"",
     "test:browser": "playwright test",
-    "manifest": "cem analyze && node scripts/manifest-outputs.mjs",
+    "manifest": "cem analyze && node scripts/manifest-outputs.mjs && node scripts/types.mjs",
     "serve": "node scripts/serve.mjs"
   },
   "keywords": [

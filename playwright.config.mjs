@@ -7,11 +7,13 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   reporter: process.env.CI ? "github" : "list",
-  use: { baseURL: "http://localhost:4173/" },
+  use: { baseURL: "http://localhost:4719/" },
   webServer: {
     command: "node scripts/serve.mjs",
-    url: "http://localhost:4173/package.json",
-    reuseExistingServer: !process.env.CI,
+    url: "http://localhost:4719/package.json",
+    // Never reuse whatever already listens on the port: another project's
+    // server there would silently serve the wrong files.
+    reuseExistingServer: false,
   },
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
