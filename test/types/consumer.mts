@@ -119,3 +119,10 @@ const spans: [string, number, number][] = tokenize("let x", "js");
 // @ts-expect-error -- clamp needs numbers
 clamp("a", 1);
 void pct, waited, framed, stepped, peeked, mixin, spans;
+
+// matchable container mode.
+import { compileQuery, ContainerQueryList } from "@johnhenry/domkit/matchable/container-query.mjs";
+const fits: boolean = compileQuery("(min-width: 400px)")({ width: 500, height: 100, em: 16, rem: 16 });
+const cql = new ContainerQueryList("(min-width: 400px)", document.body);
+const cqlMatches: boolean = cql.matches;
+void fits, cqlMatches;

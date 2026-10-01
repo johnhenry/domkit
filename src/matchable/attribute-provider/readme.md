@@ -78,6 +78,36 @@ each attribute goes back to its original value (or absence).
 </attribute-provider>
 ```
 
+## Container mode
+
+Add a `container` attribute to evaluate the queries against an element's
+size instead of the viewport, like CSS container queries:
+
+```html
+<aside style="width: 18rem">
+  <attribute-provider container classes="[(max-width: 300px)] stacked">
+    <div class="card">…</div>
+  </attribute-provider>
+</aside>
+```
+
+- `container` (empty) measures the **parent element**, and
+  `container="selector"` measures the **closest ancestor** matching the
+  selector (e.g. `container=".card"`).
+- The queries use the same grammar: `min-`/`max-` width and height (or
+  `inline-size`/`block-size`), range syntax (`width >= 400px`,
+  `400px <= width < 800px`), `orientation`, `aspect-ratio`, `and`/`or`/`not`
+  and commas, with lengths in `px`, `em` (the container's font size), or
+  `rem`. Other media features (`hover`, `prefers-*`) don't apply to a
+  container and never match.
+- The size is the container's content box, tracked with a
+  `ResizeObserver`. Give the container a size that doesn't depend on this
+  element's content (a block-level element, or a set width), as you would
+  for CSS `container-type: inline-size`, or a swap could change the size
+  that triggered it.
+- After the element moves, the container is looked up again. If no
+  container is found, only bracket-less sections apply.
+
 ## Usage
 
 ```html

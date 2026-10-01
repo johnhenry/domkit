@@ -14,11 +14,16 @@
 // means each parse owns exactly the objects it attached handlers to.
 const BRACKET = /\[(.+?)\](.+)/; // non-greedy: a media query never contains "]"
 
+import { ContainerQueryList } from "./container-query.mjs";
+
 /**
  * @param {string} raw
- * @returns {{ mql: MediaQueryList, value: string }[]}
+ * @param {{ container?: Element | null }} [options] with `container` (an
+ *   element, or null for "container not found"), queries are evaluated
+ *   against that element's size instead of the viewport
+ * @returns {{ mql: MediaQueryList | ContainerQueryList, value: string }[]}
  */
-export function parseQuerySections(raw) {
+export function parseQuerySections(raw, { container } = {}) {
   const sections = (raw || "")
     .trim()
     .split("|")
@@ -35,7 +40,8 @@ export function parseQuerySections(raw) {
       query = query.trim();
       value = value.trim();
     }
-    results.push({ mql: globalThis.matchMedia(query), value });
+    const mql = container === undefined ? globalThis.matchMedia(query) : new ContainerQueryList(query, container);
+    results.push({ mql, value });
   }
   return results;
 }

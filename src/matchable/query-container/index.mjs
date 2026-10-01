@@ -1,4 +1,5 @@
 import { parseQuerySections } from "../query-sections.mjs";
+import { containerFor } from "../container-query.mjs";
 import { elementFromSelector } from "../simple-selector.mjs";
 
 /**
@@ -10,6 +11,7 @@ import { elementFromSelector } from "../simple-selector.mjs";
  *
  * @attr {string} default - Wrapper when no query matches, as a simple selector (`ul`, `ol.steps`, `div#x[data-y=z]`). Defaults to the first section's.
  * @attr {string} query - `[media query] selector` sections separated by `|`. The last matching section wins.
+ * @attr {string} container - Container mode: evaluate the queries against an element's size instead of the viewport. Empty = the parent element; otherwise a selector for the closest matching ancestor.
  */
 export default class QueryContainer extends HTMLElement {
   #content;
@@ -23,6 +25,12 @@ export default class QueryContainer extends HTMLElement {
   connectedCallback() {
     this.#observer = new globalThis.MutationObserver(this.update.bind(this));
     this.#observer.observe(this, { childList: true });
+    // In container mode, the container depends on where the element now is:
+    // re-parse against it.
+    if (this.hasAttribute("container") && this.hasAttribute("query")) {
+      this.setQueries(this.getAttribute("query"));
+      return;
+    }
     // disconnectedCallback clears every media-query listener; restore them
     // on reconnect, or a moved element stops responding to the viewport.
     if (this.#queries) {
@@ -41,7 +49,7 @@ export default class QueryContainer extends HTMLElement {
     }
   }
   static get observedAttributes() {
-    return ["default", "query"];
+    return ["default", "query", "container"];
   }
   setInitial(selector) {
     const previous = this.#content;
@@ -65,7 +73,7 @@ export default class QueryContainer extends HTMLElement {
     }
     this.#queries = new Map();
     let firstSelector = "";
-    for (const { mql, value: selector } of parseQuerySections(queries)) {
+    for (const { mql, value: selector } of parseQuerySections(queries, { container: containerFor(this) })) {
       firstSelector = firstSelector || selector;
       this.#queries.set(mql, elementFromSelector(selector));
       mql.addEventListener("change", this.#onQuery);
@@ -102,6 +110,9 @@ export default class QueryContainer extends HTMLElement {
         break;
       case "query":
         this.setQueries(current);
+        break;
+      case "container":
+        if (this.hasAttribute("query")) this.setQueries(this.getAttribute("query"));
         break;
     }
   }

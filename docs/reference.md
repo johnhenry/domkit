@@ -15,6 +15,7 @@ Add classes, styles, and attributes to children by media query. [Guide](../src/m
 | `classes` | `string` | `[media query] class class \| …` sections. Bracket-less sections always apply. |
 | `styles` | `string` | `[media query] property: value; … \| …` sections. |
 | `attributes` | `string` | `[media query] name=value; name; name=null \| …` sections. `null` removes the attribute while the query matches. |
+| `container` | `string` | Container mode: evaluate the queries against an element's size instead of the viewport. Empty = the parent element; otherwise a selector for the closest matching ancestor. |
 
 ## `<class-cycler>`
 
@@ -312,6 +313,7 @@ Swap the element wrapping some content by media query. [Guide](../src/matchable/
 |---|---|---|
 | `default` | `string` | Wrapper when no query matches, as a simple selector (`ul`, `ol.steps`, `div#x[data-y=z]`). Defaults to the first section's. |
 | `query` | `string` | `[media query] selector` sections separated by `\|`. The last matching section wins. |
+| `container` | `string` | Container mode: evaluate the queries against an element's size instead of the viewport. Empty = the parent element; otherwise a selector for the closest matching ancestor. |
 
 **Methods**
 

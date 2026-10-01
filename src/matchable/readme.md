@@ -11,6 +11,13 @@ no CSS `@media` blocks and no `matchMedia` listeners to manage:
 Both re-evaluate live as the viewport changes, and both stop listening
 when disconnected.
 
+**Container mode:** add a `container` attribute and the same queries are
+evaluated against an element's size instead of the viewport: the parent
+(`container`) or the closest ancestor matching a selector
+(`container=".card"`). CSS `@container` can only restyle, while these can
+change the wrapping element or any attribute, per container. See either
+element's README.
+
 ## The shared query grammar
 
 Every query attribute in this family is a pipe-separated (`|`) list of
