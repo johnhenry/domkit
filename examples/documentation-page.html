@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Recipe: documentation page</title>
+    <link rel="stylesheet" href="recipes.css" />
+    <link rel="stylesheet" href="../src/tabbed-ui/index.css" />
+    <link rel="stylesheet" href="../src/code-color/index.css" />
+    <!-- In your own page, load each from https://esm.sh/@johnhenry/domkit/<module>/global.mjs -->
+    <script type="module" src="../src/tabbed-ui/global.mjs"></script>
+    <script type="module" src="../src/code-color/global.mjs"></script>
+    <script type="module" src="../src/matchable/query-container/global.mjs"></script>
+    <style>
+      tabbed-ui { margin-block: 1rem; }
+      .steps li { margin-block: 0.25rem; }
+    </style>
+  </head>
+  <body>
+    <h1>Documentation page</h1>
+    <p class="lede">
+      The parts of a docs page that usually need a framework: code samples in
+      tabs, highlighted without touching the markup, and a list that becomes
+      numbered steps when there's room. Written as plain HTML, the way a
+      Markdown renderer would emit it.
+    </p>
+
+    <h2>Install</h2>
+    <tabbed-ui>
+      <div aria-label="Ways to install">
+        <button>CDN</button>
+        <button>npm</button>
+        <button>Usage</button>
+      </div>
+      <code-color>
+        <pre><code class="language-html">&lt;script type="module" src="https://esm.sh/@johnhenry/domkit/tabbed-ui/global.mjs"&gt;&lt;/script&gt;</code></pre>
+      </code-color>
+      <code-color>
+        <pre><code class="language-js">// npm install @johnhenry/domkit
+import "@johnhenry/domkit/tabbed-ui/global.mjs";</code></pre>
+      </code-color>
+      <code-color>
+        <pre><code class="language-css">/* Style it like anything else */
+tabbed-ui [role="tab"][aria-selected="true"] {
+  border-bottom: 2px solid currentColor;
+}</code></pre>
+      </code-color>
+    </tabbed-ui>
+
+    <h2>Getting started</h2>
+    <query-container default="ul" query="[(min-width: 640px)] ol.steps">
+      <li>Add one <code>&lt;script&gt;</code> tag per element you use.</li>
+      <li>Write the element's markup: it reads fine even before the script loads.</li>
+      <li>Style it with ordinary CSS, and listen for the same events as native controls.</li>
+    </query-container>
+
+    <p class="source">
+      Narrow the window below 640px: the steps turn back into a bulleted list,
+      because on a phone they read as tips, not a sequence.
+    </p>
+  </body>
+</html>

@@ -1,7 +1,7 @@
 /* Optional defaults for <combo-box>. The list is positioned under the
    input; the keyboard-active option has [data-active], the chosen one
    [aria-selected="true"]. */
-combo-box {
+combo-box:not([hidden]) {
   --domkit-combo-accent: color-mix(in srgb, currentColor 12%, transparent);
   position: relative;
   display: inline-block;
@@ -29,7 +29,7 @@ combo-box > [role="listbox"] {
 combo-box > [role="listbox"][aria-busy="true"] {
   opacity: 0.6;
 }
-combo-box :is(option, [role="option"]) {
+combo-box :is(option, [role="option"]):not([hidden]) {
   display: block;
   padding: 0.375em 0.5em;
   border-radius: 0.25em;

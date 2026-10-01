@@ -74,6 +74,11 @@ Any element that holds a value is **form-associated**
   `currentColor`, `system-ui`, `light-dark()`, and custom properties.
 - Internal state is also exposed as custom states (`:state(…)`) where
   attributes would be noisy.
+- **Stylesheets never defeat `hidden`.** Any author rule that sets
+  `display` beats the browser's `[hidden] { display: none }`, so every
+  `display` declaration in a domkit stylesheet is scoped to
+  `:not([hidden])`. One element can then hide another (a `tabbed-ui`
+  panel containing a `code-color`) and it stays hidden.
 
 ## 6. Composable
 

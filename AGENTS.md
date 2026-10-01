@@ -20,6 +20,12 @@ file.
   full path. Adding a module needs no `package.json` change.
 - `demo/`: a live gallery (repo-only, not published) running most modules
   at once, each in its own iframe.
+- `examples/`: recipes, complete pages combining modules (repo-only).
+  Each has a test in `test/browser/recipes.spec.mjs` that drives it like a
+  user. A recipe that breaks means modules stopped composing as
+  documented. `test/browser/consistency.spec.mjs` checks the cross-module
+  rules (tag names, `hidden`, creation paths, forms) for every element at
+  once. Add new elements to its `ELEMENTS` map.
 - `test/`: behavioral tests (`node:test` + happy-dom). `scripts/`: the
   syntax and reference checkers.
 

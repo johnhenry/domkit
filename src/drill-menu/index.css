@@ -1,6 +1,6 @@
 /* Optional defaults for <drill-menu>: a vertical list of full-width items,
    and a screen area. Items that open a screen get a chevron. */
-drill-menu {
+drill-menu:not([hidden]) {
   display: flex;
   flex-direction: column;
   gap: 0.125em;
@@ -25,10 +25,10 @@ drill-menu > :is(button, a, [role="button"]):is(:hover, :focus-visible) {
   background: color-mix(in srgb, currentColor 10%, transparent);
 }
 drill-menu > :focus-visible,
-drill-menu > [data-drill-screen]:focus-visible {
+drill-menu > :is([data-drill-screen], [data-screen]):focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 2px;
 }
-drill-menu > [data-drill-screen] {
+drill-menu > :is([data-drill-screen], [data-screen]) {
   padding: 0.5em 0.75em;
 }

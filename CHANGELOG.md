@@ -192,6 +192,29 @@ rebuilt to meet it.
   - Removed: the vendored 623-line W3Schools highlighter, its inline
     color styles, and the `mode` attribute (now `language`).
 
+### Added (recipes and consistency)
+
+- **`examples/`**: five recipes combining modules (theme switcher, command
+  palette, settings panel, documentation page, game loop), each driven by
+  a browser test.
+- **`drill-menu` live screens**: a `data-screen="key"` child is shown and
+  hidden in place, so form state persists across navigation and its
+  fields submit with an enclosing form. Submitting with an invalid field
+  in a hidden screen opens that screen, so the browser can show the
+  message.
+- **Cross-module consistency tests** (`consistency.spec.mjs`). Every
+  element's tag matches its module, `hidden` hides every element with its
+  stylesheet loaded, all creation paths and moves are error-free, and
+  form-associated elements behave like native ones in a shared `<form>`
+  and `<fieldset disabled>`.
+
+### Fixed
+
+- Every stylesheet's `display` rules are scoped to `:not([hidden])`.
+  Before, `code-color`, `stylable-select`, `combo-box`, `drill-menu`, and
+  `tabbed-ui` styles beat the browser's `[hidden]` rule, so for example a
+  `<code-color>` in a hidden `tabbed-ui` panel stayed visible.
+
 ## [0.0.9] - 2026-09-30
 
 A shape-and-documentation pass. The modules were reorganized only where the

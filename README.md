@@ -109,6 +109,23 @@ any release. A composable canvas pixel pipeline
 SVG), [xy-grapher](src/experimental/xy-grapher/readme.md) (CSS scatter
 plots), and [chernoff-face](src/experimental/chernoff-face/readme.md).
 
+## Recipes
+
+Complete pages in [`examples/`](examples/) that combine modules the way a
+real site would. Each is plain HTML you can read top to bottom:
+
+- [Theme switcher](examples/theme-switcher.html): `class-cycler` +
+  `color-scheme`, synced across tabs.
+- [Command palette](examples/command-palette.html): `hotkey-dialog` +
+  `combo-box` on ⌘K.
+- [Settings panel](examples/settings-panel.html): one `<form>` across
+  `drill-menu` screens, with `stylable-select`, `combo-box`, and
+  `class-cycler` submitting like native controls.
+- [Documentation page](examples/documentation-page.html): `tabbed-ui` code
+  samples highlighted by `code-color`, plus `query-container`.
+- [Game loop](examples/game-loop.html): `frame-timer` driving an
+  animation.
+
 ## How the package is laid out
 
 - **One directory per module**, under `src/`. Related modules are grouped

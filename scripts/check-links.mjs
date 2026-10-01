@@ -79,14 +79,15 @@ const files = await walk(ROOT);
 const CODE_REF =
   /(?:\bimport\s*(?:[^"'`;]*?\bfrom\s*)?|\bimport\(\s*|\bexport\s[^"'`;]*?\bfrom\s*|\b(?:src|href)\s*=\s*)["']([^"'`${}]+)["']/g;
 for (const file of files.filter((f) => /\.(mjs|html?)$/.test(f))) {
-  if (!/\/(src|demo)\//.test(file)) continue;
+  if (!/\/(src|demo|examples)\//.test(file)) continue;
   const text = await readFile(file, "utf8");
   for (const [, ref] of text.matchAll(CODE_REF)) {
     if (isExternal(ref) || !/^\.{1,2}\//.test(ref)) continue;
     const target = resolve(dirname(file), ref.split(/[?#]/)[0]);
     // A <define-component src="./x.mjs"> / <polyfill-window src="..."> is
     // resolved against the *page*, which for a demo is the file's own dir.
-    if (!(await exists(target))) report(file, ref, "no such file");
+    const directoryIndex = ref.endsWith("/") && (await exists(join(target, "index.html")));
+    if (!(await exists(target)) && !directoryIndex) report(file, ref, "no such file");
   }
 }
 

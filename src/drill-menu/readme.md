@@ -29,9 +29,28 @@ ordinary CSS styles it.
 </drill-menu>
 ```
 
-- **Items** are the element's children. An item with a `<template>`
-  drills into it; any other item (a link, a button with its own
-  `onclick`) is a *leaf* and simply behaves as itself.
+- **Items** are the element's children. An item with a screen drills
+  into it, and any other item (a link, a button with its own `onclick`) is
+  a *leaf* that simply behaves as itself.
+- **Screens** come in two kinds:
+  - a `<template>` inside the item, cloned fresh each time it opens
+    (lightweight, but any state inside resets), or
+  - a **live** child marked `data-screen="key"`, matching an item's
+    `data-key`. It's shown and hidden in place, so form values and other
+    state persist, and its fields stay in the DOM where an enclosing
+    `<form>` submits them:
+
+    ```html
+    <form>
+      <drill-menu>
+        <button type="button" data-key="name">Name</button>
+        <section data-screen="name">
+          <label>Name <input name="name" /></label>
+          <button type="button" data-back>Back</button>
+        </section>
+      </drill-menu>
+    </form>
+    ```
 - **Back:** a `[data-back]` element inside the screen, <kbd>Esc</kbd>
   inside the screen, `pop()`, or an invoker command
   (`<button commandfor="menu-id" command="--back">`).
@@ -75,12 +94,15 @@ between items, and <kbd>Enter</kbd>/<kbd>Space</kbd> activate.
 
 - Items that open a screen have `aria-expanded`, and `index.css` gives
   them a chevron.
-- The screen container is `[data-drill-screen]` (a labelled `region`).
+- Template screens render into `[data-drill-screen]`. Live screens are
+  your own `[data-screen]` elements. Both are labelled `region`s.
 - Items are hidden with the `hidden` attribute while a screen is open.
 
 ## Notes
 
-- Screens are re-created from the template each time they open, so form
-  state inside a screen doesn't persist between visits. Keep anything
-  that must persist outside the template.
+- `<template>` screens are re-created each time they open. Use a live
+  `data-screen` child when state must persist.
+- Form validation works across screens: if a form is submitted while a
+  field in a hidden live screen is invalid, that screen opens, so the
+  browser can focus the field and show its message.
 - Menus nest: a screen can contain another `<drill-menu>`.
