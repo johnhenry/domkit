@@ -1,0 +1,26 @@
+{
+  "version": 1.1,
+  "tags": [
+    {
+      "name": "tabbed-ui",
+      "description": "Accessible tabs and panels from plain children.\n\nEvents: `change`",
+      "attributes": [
+        {
+          "name": "selected-index",
+          "description": "Index of the selected tab. Reflects the current selection."
+        },
+        {
+          "name": "manual",
+          "description": "Arrow keys move focus only; Enter/Space selects (manual activation).",
+          "valueSet": "v"
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/tabbed-ui"
+        }
+      ]
+    }
+  ]
+}

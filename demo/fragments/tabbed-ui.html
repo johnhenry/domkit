@@ -4,24 +4,22 @@
 <meta charset="utf-8" />
 <style>
   body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
-  [slot="tab-bar"] button { font: inherit; padding: 4px 10px; }
-  tabbed-ui > div:not([slot]) { border: 1px solid #888; padding: 10px; margin-top: 6px; border-radius: 6px; }
 </style>
-<script
-  type="module"
-  src="../../src/tabbed-ui/global.mjs"
-></script>
+<link rel="stylesheet" href="../../src/tabbed-ui/index.css" />
+<script type="module" src="../../src/tabbed-ui/global.mjs"></script>
 </head>
 <body>
 <tabbed-ui>
-  <div slot="tab-bar">
+  <div>
     <button>One</button>
     <button>Two</button>
-    <button>Three</button>
+    <button aria-disabled="true">Disabled</button>
+    <button>Four</button>
   </div>
-  <div>Panel one — the tab bar and panels correspond by position.</div>
-  <div>Panel two — clicking a tab shows its panel and hides the rest.</div>
-  <div>Panel three.</div>
+  <section>Panel one. Focus a tab and use ←/→, Home, and End.</section>
+  <section>Panel two: the tab list and panels match by position.</section>
+  <section>Never shown: its tab is disabled.</section>
+  <section>Panel four. Hidden panels use the <code>hidden</code> attribute.</section>
 </tabbed-ui>
 </body>
 </html>

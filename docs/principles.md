@@ -1,0 +1,105 @@
+# Design principles
+
+domkit is for people writing HTML without a build step. Every element
+should feel like a native one: you write a tag, the browser gives it
+behavior, and everything you already know about HTML, CSS, forms, and
+accessibility keeps working. This document is the contract each stable
+module is held to. `test/browser/` checks it in Chromium, Firefox, and
+WebKit.
+
+When a rule here and a module disagree, the module is wrong.
+
+## 1. HTML is the interface
+
+- **One script tag is enough.** `global.mjs` registers the element, and
+  everything else is attributes and children. No JavaScript is *required*
+  to configure any stable element.
+- **Content stays readable before the element upgrades.** Children are
+  ordinary HTML that renders sensibly if the script is slow or fails, and
+  the element only *enhances* it. Authors can use `:not(:defined)` to
+  style the gap.
+- **The tag name is the module name.** Only autonomous custom elements
+  (`<x-y>`) are used, never customized built-ins (`is="…"`), which Safari
+  doesn't support.
+
+## 2. Behave like a native element
+
+When a native element already has a convention, domkit follows it rather
+than inventing one.
+
+| Concern | The native convention to follow |
+|---|---|
+| Attributes vs. properties | Every attribute has a matching property. Booleans are presence-based (`disabled`, `open`), and kebab-case attributes map to camelCase properties (`selected-index` ↔ `selectedIndex`) |
+| Reacting to changes | Every documented attribute takes effect whenever it changes, not only at connect. Children added, removed, or reordered later are picked up |
+| Reflection | State the user can change (the selected tab, an open panel, a value) is reflected to an attribute, so CSS and `querySelector` can see it |
+| Visibility | Hidden content gets the `hidden` attribute, never `style.display`, so author CSS stays in control and `[hidden]` rules keep working |
+| Events | Native names and semantics: `input` for continuous change, `change` for a committed change, `toggle` for open/closed state, `select`/`invalid`/`reset` where those apply. All of them bubble. State is read from the element (`event.target.value`), and `detail` is a convenience, never the only source |
+| Script-triggered changes | Setting a property or attribute from script does **not** fire `input`/`change`, just like `input.value = …` doesn't. Only user interaction does |
+| Inline handlers | An `on<event>` attribute behaves like a native event-handler attribute, with the body run as a function of `event` and `this` as the element, and a matching `.on<event>` property. For CSP, every inline-code attribute has a non-string alternative (a property or an event) |
+| Disabled | `disabled` blocks interaction, removes the element from the tab order, matches `:disabled`, and is inherited from an enclosing `<fieldset disabled>` when the element is form-associated |
+
+## 3. Forms just work
+
+Any element that holds a value is **form-associated**
+(`static formAssociated = true` + `ElementInternals`):
+
+- `name` and `value` are submitted with the form and appear in `FormData`
+  and `form.elements`.
+- `<label for>` and wrapping `<label>`s work.
+- `form.reset()` restores the initial value, the `required` and
+  `setCustomValidity()` constraints participate in validation (`:invalid`,
+  `reportValidity()`), and bfcache/autofill restore works
+  (`formStateRestoreCallback`).
+
+## 4. Accessible by construction
+
+- Each widget follows its [WAI-ARIA Authoring Practices
+  pattern](https://www.w3.org/WAI/ARIA/apg/patterns/): roles, states, and
+  the full keyboard interaction, including roving `tabindex`,
+  `Home`/`End`, and focus that is always visible.
+- Roles and states the element owns are set through `ElementInternals` or
+  on the parts it generates. Author-written ARIA is never overwritten.
+- Keyboard handlers only claim the keys they use and only `preventDefault`
+  what they handle. They never stop propagation of keys they don't handle.
+
+## 5. Styled with ordinary CSS
+
+- Light DOM by default, so children are styled like any other HTML.
+  Where shadow DOM is necessary, generated parts are exposed with `part`,
+  and theming uses CSS custom properties (`--domkit-…`).
+- No hard-coded colors, fonts, or sizes in JavaScript. An optional
+  `index.css` per module provides sensible defaults that use
+  `currentColor`, `system-ui`, `light-dark()`, and custom properties.
+- Internal state is also exposed as custom states (`:state(…)`) where
+  attributes would be noisy.
+
+## 6. Composable
+
+- **Shared contracts across modules.** An element that holds a list of
+  options exposes the same members as `HTMLSelectElement` (`options`,
+  `selectedIndex`, `value`, `size`), so modules that host a list (like
+  `infinite-combo`) accept native `<select>` and `stylable-select`
+  interchangeably.
+- Elements nest and coexist: no globals unless documented, no fixed IDs,
+  and nothing that assumes it's the only instance on the page.
+- Platform features come first. Where the platform now covers a module's
+  job (`<select>` with `appearance: base-select`, `<dialog closedby>`,
+  `popover`, `command`/`commandfor`, container queries), the module is a
+  thin layer over that feature, and its README says when you don't need it.
+
+## 7. Robust lifecycle
+
+- Connecting, disconnecting, reconnecting, and moving (both in one task)
+  are all safe. Everything started on connect is stopped on disconnect and
+  restarted on reconnect, and connecting twice never duplicates
+  listeners, children, or loops.
+- The element works however it was created: parsed with the page,
+  inserted with `innerHTML`, built with `createElement` with attributes
+  set in any order, or upgraded after its children already exist.
+
+## 8. Verified in every engine
+
+Each stable element has browser tests (`test/browser/`, Playwright) that
+run in Chromium, Firefox, and WebKit, covering its attributes, events,
+keyboard support, form behavior, and lifecycle. Fast `happy-dom` tests
+(`test/*.test.mjs`) cover the logic and utilities.

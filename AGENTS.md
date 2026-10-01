@@ -23,6 +23,15 @@ file.
 - `test/`: behavioral tests (`node:test` + happy-dom). `scripts/`: the
   syntax and reference checkers.
 
+## The contract
+
+[`docs/principles.md`](docs/principles.md) is the bar every stable element
+is held to: native-element behavior (attributes ↔ properties, reflection,
+`hidden`, native event names, forms), WAI-ARIA patterns, light-DOM styling
+with custom properties, composability, lifecycle robustness, and tests in
+all three engines. Modules are being upgraded to it one per PR. When a
+module and the principles disagree, the module is wrong.
+
 ## The verification loop (before every push)
 
 1. `npm test`. It runs, in order:
@@ -33,7 +42,13 @@ file.
      real file through the actual `exports` map. **Any rename, move, or
      deletion that leaves a stale reference fails here.**
    - `eslint .`: one rule, `no-undef` (see the gotcha below).
-   - `node --test "test/*.test.mjs"`: the DOM tests.
+   - `tsc -p test/types`: the generated `.d.mts` declarations type-check
+     when consumed through the package's own export paths.
+   - `node --test "test/*.test.mjs"`: the fast happy-dom tests.
+   Then `npm run test:browser`: Playwright, `test/browser/*.spec.mjs`, in
+   Chromium, Firefox, and WebKit, against the real modules served by
+   `scripts/serve.mjs`. CI runs both, plus a drift check that
+   `npm run manifest` leaves every generated file unchanged.
 2. For DOM-touching changes, also check the module's own demo **in a real
    browser**: `npx http-server . -c-1` from the repo root, then
    `/src/<path>/demo.html` and the gallery at `/demo/`. happy-dom isn't a
@@ -44,9 +59,17 @@ file.
 
 ## Definition of done (adding or changing a module)
 
-- `npm test` passes, and the change has a test in `test/` unless it's
-  under `experimental/` or happy-dom can't express it (then say so in the
-  test file, as `more-elements.test.mjs` does for customized built-ins).
+- The element meets `docs/principles.md`, and
+  `test/browser/<module>.spec.mjs` proves it in all three engines
+  (`tabbed-ui.spec.mjs` is the template: ARIA wiring, keyboard, events,
+  attribute/property reflection, dynamic children, move/reconnect, every
+  creation path, nesting, pre-upgrade readability).
+- Its class has JSDoc for the manifest (`@tag`, `@summary`, `@attr`,
+  `@fires`, `@cssprop`, `@csspart`, and `@type` on public properties),
+  and `npm run manifest` has been run and its output committed. That
+  generates `custom-elements.json`, `vscode.html-custom-data.json`, and
+  the module's `index.d.mts`/`global.d.mts`. Never edit those by hand.
+- `npm test` and `npm run test:browser` pass.
 - The module's `readme.md` is accurate: name, what it's for, real
   attributes/API/events, a working example using the package path
   (`@johnhenry/domkit/...` or the esm.sh URL, never `./index.mjs`).
@@ -65,6 +88,19 @@ file.
   (`demo/index.html`), and `CHANGELOG.md` are updated in the same change.
 
 ## Repo-specific gotchas
+
+- **Playwright's Firefox may not launch on very new macOS** ("Could not
+  find profile folder", in or out of a sandbox, even after
+  `playwright install --force firefox`). Run
+  `npx playwright test --project chromium --project webkit` locally and
+  let CI (Ubuntu) cover Firefox.
+- **`cem analyze` can't link a class to the tag `global.mjs` registers**
+  (the class is an anonymous default export defined in another file), so
+  the `@tag` JSDoc is what puts an element in the manifest. It also
+  mistakes runtime `customElements.define(name, …)` calls for tags, which
+  `scripts/manifest-outputs.mjs` filters out by requiring a valid
+  custom-element name. Module order in its output isn't stable, so the
+  script sorts it before writing.
 
 - **`no-undef` is the lint rule because undeclared variables are this
   codebase's most-shipped bug.** Under module strict mode they only throw

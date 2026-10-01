@@ -12,11 +12,17 @@ load only what you use.
 <script type="module" src="https://esm.sh/@johnhenry/domkit/tabbed-ui/global.mjs"></script>
 
 <tabbed-ui>
-  <div slot="tab-bar"><button>One</button><button>Two</button></div>
-  <div>First panel</div>
-  <div>Second panel</div>
+  <div><button>One</button><button>Two</button></div>
+  <section>First panel</section>
+  <section>Second panel</section>
 </tabbed-ui>
 ```
+
+Every element is held to the same contract: it behaves like a native
+HTML element (attributes, properties, events, forms, `hidden`, keyboard,
+and accessibility all work the way they do for built-ins), and it's tested
+in Chromium, Firefox, and WebKit. See [`docs/principles.md`](docs/principles.md).
+Modules are being brought up to it one at a time. `tabbed-ui` is the first.
 
 Full documentation: [opensource.johnhenry.me/domkit](https://opensource.johnhenry.me/domkit/)
 · Live gallery: [`demo/`](demo/) (see [Development](#development))
@@ -149,6 +155,23 @@ like the one in [`src/infinite-combo/demo.htm`](src/infinite-combo/demo.htm).
 with `new Function`, so they need `unsafe-eval` under a strict CSP. No
 other stable module evaluates strings.
 
+### Editor support
+
+The package ships [`custom-elements.json`](custom-elements.json), a
+standard manifest of every element's tag, attributes, properties, events,
+and CSS custom properties. Tools that read it (Storybook, many IDE
+plugins) work out of the box. For VS Code's HTML autocomplete and hover
+docs, add the generated data file to your settings:
+
+```json
+{ "html.customData": ["./node_modules/@johnhenry/domkit/vscode.html-custom-data.json"] }
+```
+
+TypeScript users get declarations for each element class and its
+`HTMLElementTagNameMap` entry, so `document.querySelector("tabbed-ui")` is
+typed. The manifest, types, and editor data cover each element as it's
+brought up to [the principles](docs/principles.md), currently `tabbed-ui`.
+
 ## Stability
 
 Everything outside `experimental/` is meant to be relied on: documented,
@@ -167,16 +190,23 @@ This runs, in order: a parse check of every module
 (`scripts/check-syntax.mjs`), a reference check that every relative
 import, Markdown link, and documented `@johnhenry/domkit/…` path resolves
 (`scripts/check-links.mjs`), ESLint's `no-undef` rule (the one rule
-configured, see `eslint.config.mjs`), and the behavioral tests in `test/`
-under [happy-dom](https://github.com/capricorn86/happy-dom).
+configured, see `eslint.config.mjs`), a TypeScript check of the generated
+declarations, and the fast behavioral tests in `test/` under
+[happy-dom](https://github.com/capricorn86/happy-dom).
+
+```bash
+npx playwright install   # once
+npm run test:browser     # test/browser/, in Chromium, Firefox, and WebKit
+npm run manifest         # regenerate custom-elements.json, types, editor data
+```
 
 The live gallery runs most modules at once, each in its own iframe:
 
 ```bash
-npx http-server . -c-1
+npm run serve
 ```
 
-then open `http://localhost:8080/demo/`. Module imports don't resolve over
+then open `http://localhost:4173/demo/`. Module imports don't resolve over
 `file://`. Each module directory also has its own `demo.html`/`demo.htm`.
 See [`AGENTS.md`](AGENTS.md) for the full verification loop and the
 repo's known gotchas.
