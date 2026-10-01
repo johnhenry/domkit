@@ -27,10 +27,11 @@ test("delay resolves with its value, after a timeout or a microtask", async () =
   assert.equal(microtaskRan, true);
 });
 
-test("frame-delay rejects rates that don't divide 120 or exceed 60", async () => {
-  assert.throws(() => frameDelay(7));
-  assert.throws(() => frameDelay(120));
+test("frame-delay accepts any positive fps and rejects the rest", async () => {
+  assert.throws(() => frameDelay(0), RangeError);
+  assert.throws(() => frameDelay(-5), RangeError);
   assert.equal(await frameDelay(60, "v"), "v");
+  assert.equal(await frameDelay(7, "any rate"), "any rate");
 });
 
 test("create-mutable-nodelist is a NodeList you can push/pop/shift/unshift", () => {

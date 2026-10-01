@@ -163,6 +163,20 @@ rebuilt to meet it.
     `parsel-js` are gone), so no-build pages never need an import map,
     and every module is CSP-safe.
 
+- **`internal-timer` is now `<frame-timer>`**, with a media-element-style
+  API:
+  - `play()`/`pause()`, a reflected `paused` attribute (also settable in
+    markup), `play`/`pause` events, and a `ticks` count.
+  - It no longer needs light-DOM content before it starts ticking.
+  - Ticks are scheduled by elapsed time and corrected for drift, so any
+    `fps` works on any refresh rate, and a backlog after the page was
+    hidden is skipped, not burst.
+  - Removed: the `pause` event you dispatched at it (use `pause()`, then
+    `play()` later).
+- **`frame-delay` paces by elapsed time**, so any positive `fps` works.
+  It used to accept only divisors of 120 up to 60, and assumed a 60Hz
+  display. A non-positive `fps` throws `RangeError`.
+
 ## [0.0.9] - 2026-09-30
 
 A shape-and-documentation pass. The modules were reorganized only where the

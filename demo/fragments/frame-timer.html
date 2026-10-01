@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
+  button { font: inherit; padding: 6px 12px; margin-right: 6px; }
+  output { font-family: ui-monospace, monospace; font-size: 20px; }
+</style>
+<script type="module" src="../../src/frame-timer/global.mjs"></script>
+</head>
+<body>
+<frame-timer id="clock" fps="10"></frame-timer>
+<p>Ticks: <output id="count">0</output> at <output id="rate">10</output> fps</p>
+<button id="toggle">Pause</button>
+<button id="faster">Faster</button>
+<button id="reset">Reset</button>
+<script type="module">
+  const clock = document.getElementById("clock");
+  clock.addEventListener("tick", () => (count.value = clock.ticks));
+  clock.addEventListener("play", () => (toggle.textContent = "Pause"));
+  clock.addEventListener("pause", () => (toggle.textContent = "Play"));
+  toggle.onclick = () => (clock.paused ? clock.play() : clock.pause());
+  faster.onclick = () => (rate.value = clock.fps = Math.min(clock.fps * 2, 60));
+  reset.onclick = () => (count.value = clock.ticks = 0);
+</script>
+</body>
+</html>

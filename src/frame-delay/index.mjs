@@ -1,24 +1,26 @@
-const STEP = 1 / 2;
-const frameTest = (FPS) => {
-  if (120 % FPS || FPS > 60) {
-    throw new Error(`FPS must be a divisor of 120 and less than or equal to 60:
-  1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30, 40, 60`);
-  }
-};
-// Function that builds atop the browser's native *requestAnimationFrame* to
-// Limits loops to a specified FPS when awaited.
-export default (FPS = 60, val) => {
-  frameTest(FPS);
+// await frameDelay(fps, value): resolve with `value` after one frame period
+// (1000 / fps milliseconds), on an animation frame. Paced by elapsed time,
+// so any fps works on any display refresh rate; like all
+// requestAnimationFrame work, it waits while the page is hidden.
+
+/**
+ * @template T
+ * @param {number} [fps=60] frames per second; must be > 0
+ * @param {T} [value]
+ * @returns {Promise<T>}
+ */
+export default (fps = 60, value) => {
+  if (!(fps > 0)) throw new RangeError(`fps must be a positive number, got ${fps}`);
+  const period = 1000 / fps;
   return new Promise((resolve) => {
-    let count = -STEP;
-    const loop = () => {
-      count += STEP;
-      if (count < 60 / 2 / FPS) {
-        return window.requestAnimationFrame(loop);
-      } else {
-        resolve(val);
-      }
+    let start;
+    const frame = (now) => {
+      start ??= now;
+      // Resolve on the frame closest to the target time (within half a
+      // 60Hz frame), rather than always overshooting by up to a frame.
+      if (now - start >= period - 8) resolve(value);
+      else requestAnimationFrame(frame);
     };
-    loop();
+    requestAnimationFrame(frame);
   });
 };

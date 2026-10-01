@@ -85,8 +85,8 @@ Or skip installing: every path above also works as
 | Module | What it's for | `global.mjs` registers |
 |---|---|---|
 | [delay](src/delay/readme.md) | `await delay(ms)` | |
-| [frame-delay](src/frame-delay/readme.md) | `await frameDelay(fps)`: an animation-frame-paced wait | |
-| [internal-timer](src/internal-timer/readme.md) | An element that emits `tick` events at a fixed rate, with pause/resume | `<internal-timer>` |
+| [frame-delay](src/frame-delay/readme.md) | `await frameDelay(fps)`: wait one frame period, on an animation frame | |
+| [frame-timer](src/frame-timer/readme.md) | A clock element: steady `tick` events with `play()`/`pause()`, like a media element | `<frame-timer>` |
 | [live-query-selector](src/live-query-selector/readme.md) | `querySelectorAll` that stays current | |
 | [create-mutable-nodelist](src/create-mutable-nodelist/readme.md) | A real `NodeList` you can push to and pop from | |
 | [clamp](src/clamp/readme.md) | `clamp(min, max)(value)` | |
