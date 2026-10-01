@@ -7,7 +7,7 @@ import { render, tick } from "./dom.mjs";
 
 const GLOBALS = {
   "code-color": "code-color",
-  "internal-timer": "internal-timer",
+  "frame-timer": "frame-timer",
   "drill-menu": "drill-menu",
   "tabbed-ui": "tabbed-ui",
   "matchable/query-container": "query-container",
@@ -60,43 +60,51 @@ test("tabbed-ui shows the clicked tab's panel (full contract: test/browser/tabbe
   assert.equal(document.querySelector("tabbed-ui").getAttribute("selected-index"), "0");
 });
 
-test("internal-timer ticks once per period, pauses, and keeps one loop across a move", async () => {
-  // Drive animation frames by hand so tick counts are exact, not timing.
-  const queued = [];
-  const realRAF = window.requestAnimationFrame;
-  window.requestAnimationFrame = (callback) => queued.push(callback);
-  const frames = async (n) => {
+test("frame-timer ticks at its fps, pauses/plays, and keeps one loop across a move", async () => {
+  // Drive animation frames and their timestamps by hand: exact counts.
+  let queued = [];
+  let clock = 0;
+  const real = [globalThis.requestAnimationFrame, globalThis.cancelAnimationFrame];
+  let id = 0;
+  globalThis.requestAnimationFrame = (callback) => (queued.push([++id, callback]), id);
+  globalThis.cancelAnimationFrame = (cancel) => (queued = queued.filter(([i]) => i !== cancel));
+  const frames = (n, ms = 1000 / 60) => {
     for (let i = 0; i < n; i++) {
-      for (const callback of queued.splice(0)) callback(performance.now());
-      await tick();
+      clock += ms;
+      for (const [, callback] of queued.splice(0)) callback(clock);
     }
   };
   try {
-    render(`<internal-timer fps="60">x</internal-timer>`);
-    const timer = document.querySelector("internal-timer");
-    let ticks = 0;
-    timer.addEventListener("tick", () => ticks++);
-    await tick();
-    await frames(10);
-    assert.ok(ticks >= 9 && ticks <= 10, `~1 tick per frame at 60fps (got ${ticks})`);
+    render(`<frame-timer fps="30"></frame-timer>`);
+    const timer = document.querySelector("frame-timer");
+    const events = [];
+    for (const type of ["play", "pause"]) timer.addEventListener(type, () => events.push(type));
+    const near = (actual, expected, why) =>
+      assert.ok(Math.abs(actual - expected) <= 1, `${why}: expected ~${expected}, got ${actual}`);
+    let before = timer.ticks;
+    frames(60); // one second of 60Hz frames
+    near(timer.ticks - before, 30, "30 ticks per second at fps=30, no content needed");
 
-    document.body.append(timer); // disconnect + reconnect in one task
-    await tick();
-    ticks = 0;
-    await frames(10);
-    assert.ok(ticks <= 10, `one loop after a move, not two (got ${ticks} ticks in 10 frames)`);
-    assert.equal(timer.shadowRoot.querySelectorAll("slot").length, 1);
+    document.body.append(timer); // disconnect + reconnect
+    before = timer.ticks;
+    frames(60);
+    near(timer.ticks - before, 30, "still one loop after a move");
 
-    let paused = 0;
-    timer.addEventListener("paused", () => paused++);
-    timer.dispatchEvent(new CustomEvent("pause"));
-    await frames(2);
-    ticks = 0;
-    await frames(10);
-    assert.equal(ticks, 0);
-    assert.equal(paused, 1);
+    timer.pause();
+    before = timer.ticks;
+    frames(60);
+    assert.equal(timer.ticks, before, "no ticks while paused");
+    assert.equal(timer.getAttribute("paused"), "");
+    timer.removeAttribute("paused"); // the attribute controls it too
+    frames(30);
+    near(timer.ticks - before, 15, "resumes at the same rate");
+    timer.fps = 60;
+    before = timer.ticks;
+    frames(60);
+    near(timer.ticks - before, 60, "fps changes apply");
+    assert.deepEqual(events, ["pause", "play"]);
   } finally {
-    window.requestAnimationFrame = realRAF;
+    [globalThis.requestAnimationFrame, globalThis.cancelAnimationFrame] = real;
   }
 });
 

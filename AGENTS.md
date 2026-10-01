@@ -81,7 +81,7 @@ module and the principles disagree, the module is wrong.
   on reconnect**. Moving an element (`parent.append(el)`) disconnects
   and reconnects it in one task. Both halves of this have shipped broken
   here: no stop (0.0.0), then no restart (fixed 0.0.9 in `matchable` and
-  `internal-timer`).
+  `internal-timer`, now `frame-timer`).
 - New element modules get a `global.mjs` registering the module's own name
   as the tag. Only autonomous custom elements, never `is="…"`.
 - The root `README.md` table, the family `readme.md` (if any), the gallery
@@ -142,13 +142,10 @@ module and the principles disagree, the module is wrong.
     form-associated elements can't even be constructed there. They're
     tested only in `test/browser/`.
   - `requestAnimationFrame` runs as fast as the CPU allows. Drive frames
-    by hand for anything rate-based (see the `internal-timer` test).
+    by hand for anything rate-based (see the `frame-timer` test).
 - **A hidden browser tab doesn't deliver `requestAnimationFrame` or
-  `matchMedia` change events.** When verifying `internal-timer`,
+  `matchMedia` change events.** When verifying `frame-timer`,
   `frame-delay`, or `matchable` in a real browser, the tab must be visible.
-- **`internal-timer` never ticks without light-DOM content.** Its loop
-  starts from a `slotchange` on its internal `<slot>`, and an empty element
-  never fires one, with no error. Give every consumer some child text.
 - **`matchable/query-sections.mjs` is the one place the
   `[query] value | …` grammar is parsed.** `query-container` and
   `attribute-provider` both use it. They once had separate copies that

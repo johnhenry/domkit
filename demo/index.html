@@ -125,14 +125,14 @@
   <h2 id="utilities">Utilities <span class="count">timing · collections</span></h2>
   <p class="group-note">
     <code>delay</code>, <code>frame-delay</code>, and <code>clamp</code> are
-    plain functions with nothing to show — <code>internal-timer</code> below
+    plain functions with nothing to show — <code>frame-timer</code> below
     is built on the first two.
   </p>
   <div class="grid">
     <div class="card">
-      <h3>internal-timer</h3>
-      <p>A frame-paced <code>tick</code> emitter with pause/resume.</p>
-      <iframe src="fragments/internal-timer.html"></iframe>
+      <h3>frame-timer</h3>
+      <p>A clock element: steady <code>tick</code> events, with <code>play()</code>/<code>pause()</code> like a media element.</p>
+      <iframe src="fragments/frame-timer.html"></iframe>
     </div>
     <div class="card">
       <h3>live-query-selector</h3>

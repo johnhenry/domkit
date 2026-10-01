@@ -1,21 +1,24 @@
 # frame-delay
 
-A `requestAnimationFrame`-driven delay, throttled to a target frame rate --
-resolves once roughly `1/FPS` seconds' worth of animation frames have
-elapsed. `FPS` must be a divisor of 120 and no greater than 60 (1, 2, 3, 4,
-5, 6, 8, 10, 12, 15, 20, 24, 30, 40, or 60). Any other value throws.
-Timing assumes a 60Hz display, and it runs slower when the page is hidden
-and the browser stops delivering frames. (Called `pauseframespersecond`
-before 0.0.7.) [internal-timer](../internal-timer/readme.md) wraps this in
-an element.
+`await frameDelay(fps)` waits one frame period (`1000 / fps`
+milliseconds), finishing on an animation frame. Use it to pace a loop
+without `setInterval`. Like all `requestAnimationFrame` work, it waits
+while the page is hidden. [frame-timer](../frame-timer/readme.md) is the
+same idea as an element with play/pause.
 
 ## Usage
 
 ```javascript
 import frameDelay from "@johnhenry/domkit/frame-delay";
 
-while (!done) {
-  await frameDelay(30); // throttle a loop to ~30fps
-  // ... do one frame's worth of work ...
+while (running) {
+  await frameDelay(30); // ~30 iterations per second
+  step();
 }
+
+await frameDelay(10, "value"); // resolves with "value"
 ```
+
+`fps` defaults to `60` and can be any positive number. Pacing is by
+elapsed time, so it works on any display refresh rate. A non-positive
+`fps` throws a `RangeError`.

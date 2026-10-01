@@ -1680,6 +1680,174 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/frame-timer/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A frame-paced clock: fires `tick` at a steady rate while playing, with\na media-element-style API.",
+          "name": "FrameTimer",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#frame",
+              "privacy": "private",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "#next",
+              "privacy": "private",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "#ticks",
+              "privacy": "private",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "#reflecting",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#ready",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "fps",
+              "description": "Ticks per second.",
+              "type": {
+                "text": "number"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "paused",
+              "description": "Whether the timer is paused.",
+              "type": {
+                "text": "boolean"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "ticks",
+              "description": "Ticks fired since the element was created (pausing keeps the count).",
+              "type": {
+                "text": "number"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "play",
+              "description": "Start or resume ticking."
+            },
+            {
+              "kind": "method",
+              "name": "pause",
+              "description": "Stop ticking (the count is kept)."
+            },
+            {
+              "kind": "method",
+              "name": "#setPaused",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "paused"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#start",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#stop",
+              "privacy": "private"
+            }
+          ],
+          "events": [
+            {
+              "name": "play",
+              "type": {
+                "text": "Event"
+              },
+              "description": "The timer started (or resumed)."
+            },
+            {
+              "name": "pause",
+              "type": {
+                "text": "Event"
+              },
+              "description": "The timer paused."
+            },
+            {
+              "name": "tick",
+              "type": {
+                "text": "Event"
+              },
+              "description": "Once per period while playing. Read `ticks` for the count."
+            }
+          ],
+          "attributes": [
+            {
+              "name": "paused",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the timer is paused. Reflects; write it in markup to start paused."
+            },
+            {
+              "name": "fps",
+              "type": {
+                "text": "number"
+              },
+              "description": "Ticks per second. Default 60. Any positive number up to the display's refresh rate."
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "frame-timer",
+          "customElement": true,
+          "summary": "A frame-paced ticking clock with play/pause."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "FrameTimer",
+            "module": "src/frame-timer/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/hotkey-dialog/index.mjs",
       "declarations": [
         {
@@ -1928,76 +2096,6 @@
           "declaration": {
             "name": "TEARDOWN",
             "module": "src/hydratable/index.mjs"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/internal-timer/index.mjs",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "",
-          "name": "",
-          "members": [
-            {
-              "kind": "method",
-              "name": "slotChange"
-            },
-            {
-              "kind": "method",
-              "name": "reset"
-            },
-            {
-              "kind": "method",
-              "name": "handleEvent",
-              "parameters": [
-                {
-                  "name": "{ type, detail }"
-                }
-              ]
-            },
-            {
-              "kind": "field",
-              "name": "run",
-              "type": {
-                "text": "number"
-              },
-              "default": "0"
-            }
-          ],
-          "events": [
-            {
-              "name": "paused",
-              "type": {
-                "text": "Event"
-              }
-            },
-            {
-              "name": "tick",
-              "type": {
-                "text": "Event"
-              }
-            }
-          ],
-          "superclass": {
-            "name": "HTMLElement"
-          },
-          "customElement": true
-        },
-        {
-          "kind": "function",
-          "name": ""
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "default",
-          "declaration": {
-            "name": "",
-            "module": "src/internal-timer/index.mjs"
           }
         }
       ]

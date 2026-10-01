@@ -77,3 +77,11 @@ const cls: CustomElementConstructor = await definer.ready;
 const polyfill = document.querySelector("polyfill-window")!;
 const loaded: unknown = await polyfill.ready;
 void cls, loaded;
+
+// frame-timer.
+import "@johnhenry/domkit/frame-timer/global.mjs";
+const timer = document.querySelector("frame-timer")!;
+timer.play();
+const count: number = timer.ticks;
+const isPaused: boolean = timer.paused;
+void count, isPaused;

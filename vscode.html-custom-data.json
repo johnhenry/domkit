@@ -179,6 +179,27 @@
       ]
     },
     {
+      "name": "frame-timer",
+      "description": "A frame-paced ticking clock with play/pause.\n\nEvents: `play`, `pause`, `tick`",
+      "attributes": [
+        {
+          "name": "paused",
+          "description": "Whether the timer is paused. Reflects; write it in markup to start paused.",
+          "valueSet": "v"
+        },
+        {
+          "name": "fps",
+          "description": "Ticks per second. Default 60. Any positive number up to the display's refresh rate."
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/frame-timer"
+        }
+      ]
+    },
+    {
       "name": "hotkey-dialog",
       "description": "Toggle a native dialog with a keyboard shortcut.",
       "attributes": [
