@@ -379,6 +379,16 @@ export default class StylableSelect extends HTMLElement {
     setAttr(this, "aria-required", String(this.required));
     // Focusable like a native control (unless the author manages tabindex),
     // and out of the tab order while disabled.
+    // Name the listbox by its <label>s explicitly, too: browsers follow
+    // <label for> to form-associated elements, but some assistive tech and
+    // auditing tools don't. An author's own aria-label/labelledby wins.
+    const labels = [...(this.#internals.labels ?? [])];
+    if (labels.length && !this.hasAttribute("aria-label") &&
+        (!this.hasAttribute("aria-labelledby") || this.#ownLabelledby)) {
+      for (const label of labels) label.id ||= `stylable-select-label-${++uid}`;
+      setAttr(this, "aria-labelledby", labels.map((label) => label.id).join(" "));
+      this.#ownLabelledby = true;
+    }
     if (this.#ownTabindex === null) this.#ownTabindex = !this.hasAttribute("tabindex");
     if (this.#ownTabindex) {
       if (interactive) setAttr(this, "tabindex", "0");
@@ -387,6 +397,7 @@ export default class StylableSelect extends HTMLElement {
     this.#syncFormValue();
   }
   #ownTabindex = null;
+  #ownLabelledby = false;
   #defaults = new WeakMap();
   #ownAriaDisabled = new WeakSet();
 

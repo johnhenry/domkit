@@ -21,15 +21,9 @@ events all work as usual.
 </hotkey-dialog>
 ```
 
-## Attributes
+## Shortcut syntax
 
-| Attribute | Property | Description |
-|---|---|---|
-| `hotkey` | `hotkey` | One or more shortcuts, separated by spaces: `mod+k`, `ctrl+shift+p`, `?`, `mod+k /` |
-| `non-modal` | `nonModal` | Open with `show()` instead of `showModal()` |
-| `disabled` | `disabled` | The shortcut does nothing (the dialog is unaffected) |
-
-**Shortcut syntax:** modifiers joined by `+`, then a key (the
+Modifiers joined by `+`, then a key (the
 [`KeyboardEvent.key`](https://developer.mozilla.org/docs/Web/API/KeyboardEvent/key)
 value, case-insensitive). The modifiers are `ctrl` (or `control`), `alt`
 (or `option`), `shift`, `meta` (or `cmd`), and **`mod`**, which is
@@ -45,21 +39,36 @@ attribute: `closedby="any"` closes on a click outside (light dismiss),
 and `closedby="none"` blocks <kbd>Esc</kbd>. `<hotkey-dialog>` polyfills
 both in browsers that don't support `closedby` yet.
 
-## Methods
+## API
+
+<!-- api:start (generated from custom-elements.json by `npm run manifest`; edit the JSDoc instead) -->
+
+### Attributes
+
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `hotkey` | `hotkey` | `string` | One or more space-separated shortcuts, e.g. `mod+k /`. `mod` is ⌘ on Apple platforms and Ctrl elsewhere. |
+| `non-modal` | `nonModal` | `boolean` | Open with `show()` instead of `showModal()`. |
+| `disabled` | `disabled` | `boolean` | The shortcut does nothing. The dialog itself is unaffected. |
+
+### Properties
+
+| Property | Type | Description |
+|---|---|---|
+| `dialog` (read-only) | `HTMLDialogElement \| null` | The `<dialog>` this element controls: its first `<dialog>` descendant. |
+| `hotkey` | `string` | Mirrors the `hotkey` attribute. |
+| `disabled` | `boolean` | Mirrors the `disabled` attribute. |
+| `nonModal` | `boolean` | Mirrors the `non-modal` attribute. |
+
+### Methods
 
 | Method | Description |
 |---|---|
-| `show()` | Open the dialog (modally unless `non-modal`) |
-| `close(returnValue?)` | Close it |
-| `toggle()` | Open if closed, close if open |
+| `show()` | Open the dialog (modally, unless `non-modal`). |
+| `close(returnValue)` | Close the dialog. |
+| `toggle()` | Open the dialog if it's closed, close it if it's open. |
 
-`dialog` (read-only) is the controlled `<dialog>`, the first one inside
-the element.
-
-## Events
-
-None of its own: listen to the `<dialog>`'s native `close`, `cancel`,
-and `toggle` events.
+<!-- api:end -->
 
 ## Notes
 
@@ -70,3 +79,4 @@ and `toggle` events.
   visible control also opens the dialog.
 - Buttons can open the dialog without any script, using invoker commands:
   `<button commandfor="my-dialog" command="show-modal">`.
+- It has no events of its own: listen to the `<dialog>`'s native `close`, `cancel`, and `toggle` events.

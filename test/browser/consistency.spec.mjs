@@ -227,3 +227,30 @@ test("right-to-left: horizontal arrow keys follow the reading direction", async 
   await page.keyboard.press("ArrowRight");
   await expect(page.locator("#m1")).toBeFocused();
 });
+
+test("native event-handler attributes work on domkit elements for native-named events", async ({ page }) => {
+  await mount(
+    page,
+    `<tabbed-ui onchange="window.log.push('tabs change')"><div><button>A</button><button id="b">B</button></div><p>a</p><p>b</p></tabbed-ui>
+     <stylable-select oninput="window.log.push('select input')" onchange="window.log.push('select change')"><option>a</option><option id="o2">b</option></stylable-select>
+     <frame-timer id="t" paused onplay="window.log.push('timer play')" onpause="window.log.push('timer pause')"></frame-timer>
+     <infinite-combo-box ontoggle="window.log.push('combo toggle ' + event.newState)"><option>apple</option></infinite-combo-box>`,
+    MODULES,
+  );
+  await page.evaluate(() => (window.log = []));
+  await page.locator("#b").click();
+  await page.locator("#o2").click();
+  await page.evaluate(() => {
+    document.getElementById("t").play();
+    document.getElementById("t").pause();
+  });
+  await page.getByRole("combobox").fill("a");
+  expect(await page.evaluate(() => window.log)).toEqual([
+    "tabs change",
+    "select input",
+    "select change",
+    "timer play",
+    "timer pause",
+    "combo toggle open",
+  ]);
+});

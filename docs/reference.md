@@ -10,12 +10,12 @@ Add classes, styles, and attributes to children by media query. [Guide](../src/m
 
 **Attributes**
 
-| Attribute | Type | Description |
-|---|---|---|
-| `classes` | `string` | `[media query] class class \| …` sections. Bracket-less sections always apply. |
-| `styles` | `string` | `[media query] property: value; … \| …` sections. |
-| `attributes` | `string` | `[media query] name=value; name; name=null \| …` sections. `null` removes the attribute while the query matches. |
-| `container` | `string` | Container mode: evaluate the queries against an element's size instead of the viewport. Empty = the parent element; otherwise a selector for the closest matching ancestor. |
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `classes` |  | `string` | `[media query] class class \| …` sections. Bracket-less sections always apply. |
+| `styles` |  | `string` | `[media query] property: value; … \| …` sections. |
+| `attributes` |  | `string` | `[media query] name=value; name; name=null \| …` sections. `null` removes the attribute while the query matches. |
+| `container` |  | `string` | Container mode: evaluate the queries against an element's size instead of the viewport. Empty = the parent element; otherwise a selector for the closest matching ancestor. |
 
 ## `<class-cycler>`
 
@@ -23,13 +23,13 @@ A persisted class switch (e.g. a theme toggle) driven by buttons. [Guide](../src
 
 **Attributes**
 
-| Attribute | Type | Description |
-|---|---|---|
-| `classes` | `string` | Comma-separated values to cycle through. An empty entry means "no class". |
-| `target` | `string` | Selector for the element(s) whose class is set. Default `html`. |
-| `storage-key` | `string` | localStorage key to persist under. Without it, the value isn't persisted. |
-| `value` | `string` | The current value. Reflects; set it to choose the initial value when nothing is stored. |
-| `disabled` | `boolean` | Its buttons are disabled, and invoker commands are ignored. |
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `classes` |  | `string` | Comma-separated values to cycle through. An empty entry means "no class". |
+| `target` |  | `string` | Selector for the element(s) whose class is set. Default `html`. |
+| `storage-key` | `storageKey` | `string` | localStorage key to persist under. Without it, the value isn't persisted. |
+| `value` | `value` | `string` | The current value. Reflects; set it to choose the initial value when nothing is stored. |
+| `disabled` | `disabled` | `boolean` | Its buttons are disabled, and invoker commands are ignored. |
 
 **Properties**
 
@@ -60,15 +60,15 @@ Syntax highlighting that never touches your markup. [Guide](../src/code-color/re
 
 **Attributes**
 
-| Attribute | Type | Description |
-|---|---|---|
-| `language` | `string` | `js`, `css`, or `html` (plus aliases like `javascript`, `ts`, `json`, `xml`). Default: a `language-*` class on a `<code>` inside, else `html`. |
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `language` | `language` | `string` | `js`, `css`, or `html` (plus aliases like `javascript`, `ts`, `json`, `xml`). Default: a `language-*` class on a `<code>` inside, else `html`. |
 
 **Properties**
 
 | Property | Type | Description |
 |---|---|---|
-| `resolvedLanguage` (read-only) | `string | null` | The language in effect: `js`, `css`, `html`, or null if unrecognized. |
+| `resolvedLanguage` (read-only) | `string \| null` | The language in effect: `js`, `css`, `html`, or null if unrecognized. |
 | `language` | `string` | Mirrors the `language` attribute. |
 
 **Methods**
@@ -83,11 +83,11 @@ Register a custom element from a module URL, in HTML. [Guide](../src/definable/d
 
 **Attributes**
 
-| Attribute | Type | Description |
-|---|---|---|
-| `name` | `string` | The tag name to register. |
-| `src` | `string` | URL of the module, resolved against the document's base URL. |
-| `import` | `string` | Name of the export to register. Default `default`. |
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `name` |  | `string` | The tag name to register. |
+| `src` |  | `string` | URL of the module, resolved against the document's base URL. |
+| `import` |  | `string` | Name of the export to register. Default `default`. |
 
 **Properties**
 
@@ -108,11 +108,11 @@ Register a markup-only custom element from inline HTML. [Guide](../src/definable
 
 **Attributes**
 
-| Attribute | Type | Description |
-|---|---|---|
-| `name` | `string` | The tag name to register. |
-| `content` | `string` | The markup, if there's no `<template>` child. |
-| `mode` | `string` | `open` (default) or `closed` shadow root, or `none` to append the markup as light DOM. |
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `name` |  | `string` | The tag name to register. |
+| `content` |  | `string` | The markup, if there's no `<template>` child. |
+| `mode` |  | `string` | `open` (default) or `closed` shadow root, or `none` to append the markup as light DOM. |
 
 **Events**
 
@@ -127,18 +127,18 @@ A list that drills into sub-screens and back. [Guide](../src/drill-menu/readme.m
 
 **Attributes**
 
-| Attribute | Type | Description |
-|---|---|---|
-| `screen` | `string` | Key of the screen currently shown (absent = the list). Reflects; set it to navigate. |
-| `disabled` | `boolean` | Items can't be activated, leave the tab order, and are marked aria-disabled. `push()`/`pop()` still work from script. |
-| `sync-hash` | `boolean` | Mirror the current screen in `location.hash`, so links and the browser's Back button work. |
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `screen` | `screen` | `string` | Key of the screen currently shown (absent = the list). Reflects; set it to navigate. |
+| `disabled` | `disabled` | `boolean` | Items can't be activated, leave the tab order, and are marked aria-disabled. `push()`/`pop()` still work from script. |
+| `sync-hash` | `syncHash` | `boolean` | Mirror the current screen in `location.hash`, so links and the browser's Back button work. |
 
 **Properties**
 
 | Property | Type | Description |
 |---|---|---|
 | `items` (read-only) | `Element[]` | The items: element children other than templates and the screen. |
-| `screen` | `string | null` | Key of the open screen, or null. Setting it navigates. |
+| `screen` | `string \| null` | Key of the open screen, or null. Setting it navigates. |
 | `disabled` | `boolean` | Mirrors the `disabled` attribute. |
 | `syncHash` | `boolean` | Mirrors the `sync-hash` attribute. |
 
@@ -162,10 +162,10 @@ A frame-paced ticking clock with play/pause. [Guide](../src/frame-timer/readme.m
 
 **Attributes**
 
-| Attribute | Type | Description |
-|---|---|---|
-| `paused` | `boolean` | Whether the timer is paused. Reflects; write it in markup to start paused. |
-| `fps` | `number` | Ticks per second. Default 60. Any positive number up to the display's refresh rate. |
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `paused` | `paused` | `boolean` | Whether the timer is paused. Reflects; write it in markup to start paused. |
+| `fps` | `fps` | `number` | Ticks per second. Default 60. Any positive number up to the display's refresh rate. |
 
 **Properties**
 
@@ -196,17 +196,17 @@ Toggle a native dialog with a keyboard shortcut. [Guide](../src/hotkey-dialog/re
 
 **Attributes**
 
-| Attribute | Type | Description |
-|---|---|---|
-| `hotkey` | `string` | One or more space-separated shortcuts, e.g. `mod+k /`. `mod` is ⌘ on Apple platforms and Ctrl elsewhere. |
-| `non-modal` | `boolean` | Open with `show()` instead of `showModal()`. |
-| `disabled` | `boolean` | The shortcut does nothing. The dialog itself is unaffected. |
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `hotkey` | `hotkey` | `string` | One or more space-separated shortcuts, e.g. `mod+k /`. `mod` is ⌘ on Apple platforms and Ctrl elsewhere. |
+| `non-modal` | `nonModal` | `boolean` | Open with `show()` instead of `showModal()`. |
+| `disabled` | `disabled` | `boolean` | The shortcut does nothing. The dialog itself is unaffected. |
 
 **Properties**
 
 | Property | Type | Description |
 |---|---|---|
-| `dialog` (read-only) | `HTMLDialogElement | null` | The `<dialog>` this element controls: its first `<dialog>` descendant. |
+| `dialog` (read-only) | `HTMLDialogElement \| null` | The `<dialog>` this element controls: its first `<dialog>` descendant. |
 | `hotkey` | `string` | Mirrors the `hotkey` attribute. |
 | `disabled` | `boolean` | Mirrors the `disabled` attribute. |
 | `nonModal` | `boolean` | Mirrors the `non-modal` attribute. |
@@ -225,19 +225,19 @@ An accessible autocomplete with paged ("infinite") results. [Guide](../src/infin
 
 **Attributes**
 
-| Attribute | Type | Description |
-|---|---|---|
-| `placeholder` | `string` | Placeholder for the input. |
-| `disabled` | `boolean` | Blocks interaction and form submission. Also inherited from a disabled fieldset. |
-| `required` | `boolean` | The form is invalid until there's a value. |
-| `open` | `boolean` | Whether the option list is showing. Reflects. |
-| `value` | `string` | Initial value (the value of an option, or text with `allow-custom`). |
-| `src` | `string` | URL template for remote options: `{query}` and `{cursor}` are replaced (missing ones are added as `?q=`/`?cursor=`). JSON (an array, or `{ options, next, total }`) or HTML (with an optional `data-next` element). |
-| `name` | `string` | Name submitted with the form. |
-| `debounce` | `number` | Milliseconds to wait after typing before searching. Default 0 for local options, 200 for `src`/`searchFunction`. |
-| `page-size` | `number` | Show the element's own matching options this many at a time, loading more as the list scrolls. |
-| `min-length` | `number` | Characters needed before searching. Default 0. |
-| `allow-custom` | `boolean` | Typed text is a valid value even if it matches no option. |
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `placeholder` |  | `string` | Placeholder for the input. |
+| `disabled` | `disabled` | `boolean` | Blocks interaction and form submission. Also inherited from a disabled fieldset. |
+| `required` | `required` | `boolean` | The form is invalid until there's a value. |
+| `open` | `open` | `boolean` | Whether the option list is showing. Reflects. |
+| `value` | `value` | `string` | Initial value (the value of an option, or text with `allow-custom`). |
+| `src` | `src` | `string` | URL template for remote options: `{query}` and `{cursor}` are replaced (missing ones are added as `?q=`/`?cursor=`). JSON (an array, or `{ options, next, total }`) or HTML (with an optional `data-next` element). |
+| `name` | `name` | `string` | Name submitted with the form. |
+| `debounce` |  | `number` | Milliseconds to wait after typing before searching. Default 0 for local options, 200 for `src`/`searchFunction`. |
+| `page-size` |  | `number` | Show the element's own matching options this many at a time, loading more as the list scrolls. |
+| `min-length` |  | `number` | Characters needed before searching. Default 0. |
+| `allow-custom` | `allowCustom` | `boolean` | Typed text is a valid value even if it matches no option. |
 
 **Properties**
 
@@ -247,19 +247,19 @@ An accessible autocomplete with paged ("infinite") results. [Guide](../src/infin
 | `text` | `string` | The text in the input. |
 | `options` (read-only) | `Element[]` | The options currently in the list. |
 | `hasMore` (read-only) | `boolean` | Whether the source has more results for the current query. |
-| `selectedOption` (read-only) | `Element | null` | The chosen option element, if it's in the list. |
+| `selectedOption` (read-only) | `Element \| null` | The chosen option element, if it's in the list. |
 | `selectedOptions` (read-only) | `Element[]` | The chosen option as a list (0 or 1 items), like a select's. |
 | `selectedIndex` | `number` | Index of the chosen option among the options now in the list, or -1. Setting it chooses that option (-1 clears the value). Script changes don't fire events. |
 | `length` (read-only) | `number` | Number of options now in the list. |
-| `input` (read-only) | `HTMLInputElement | null` | The inner `<input>` (generated, or the one you wrote as a child). |
-| `searchFunction` | `((query: string, init: { signal: AbortSignal, cursor: string }) => unknown) | null` | A function that produces options for a query, instead of filtering the child `<option>`s or fetching `src`: `async (query, { signal }) =>` an HTML string, an array of strings / `{ value, label }` / Nodes, or a Node. `signal` aborts when a newer search starts. To page results, return `{ options, next, total? }`: `next` is the cursor passed back as `cursor` for the following page (null when there are no more). |
+| `input` (read-only) | `HTMLInputElement \| null` | The inner `<input>` (generated, or the one you wrote as a child). |
+| `searchFunction` | `((query: string, init: { signal: AbortSignal, cursor: string }) => unknown) \| null` | A function that produces options for a query, instead of filtering the child `<option>`s or fetching `src`: `async (query, { signal }) =>` an HTML string, an array of strings / `{ value, label }` / Nodes, or a Node. `signal` aborts when a newer search starts. To page results, return `{ options, next, total? }`: `next` is the cursor passed back as `cursor` for the following page (null when there are no more). |
 | `open` | `boolean` | Mirrors the `open` attribute. |
 | `name` | `string` | Mirrors the `name` attribute. |
 | `src` | `string` | Mirrors the `src` attribute. |
 | `allowCustom` | `boolean` | Mirrors the `allow-custom` attribute. |
 | `disabled` | `boolean` | Mirrors the `disabled` attribute. |
 | `required` | `boolean` | Mirrors the `required` attribute. |
-| `form` (read-only) | `HTMLFormElement | null` |  |
+| `form` (read-only) | `HTMLFormElement \| null` |  |
 | `labels` (read-only) | `NodeList` |  |
 | `validity` (read-only) | `ValidityState` |  |
 | `validationMessage` (read-only) | `string` |  |
@@ -298,11 +298,11 @@ Load a module's export onto window, in HTML. [Guide](../src/definable/polyfill-w
 
 **Attributes**
 
-| Attribute | Type | Description |
-|---|---|---|
-| `name` | `string` | The global to assign (`window[name]`). |
-| `src` | `string` | URL of the module, resolved against the document's base URL. |
-| `import` | `string` | Name of the export to assign. Default `default`. |
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `name` |  | `string` | The global to assign (`window[name]`). |
+| `src` |  | `string` | URL of the module, resolved against the document's base URL. |
+| `import` |  | `string` | Name of the export to assign. Default `default`. |
 
 **Properties**
 
@@ -323,11 +323,11 @@ Swap the element wrapping some content by media query. [Guide](../src/matchable/
 
 **Attributes**
 
-| Attribute | Type | Description |
-|---|---|---|
-| `default` | `string` | Wrapper when no query matches, as a simple selector (`ul`, `ol.steps`, `div#x[data-y=z]`). Defaults to the first section's. |
-| `query` | `string` | `[media query] selector` sections separated by `\|`. The last matching section wins. |
-| `container` | `string` | Container mode: evaluate the queries against an element's size instead of the viewport. Empty = the parent element; otherwise a selector for the closest matching ancestor. |
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `default` |  | `string` | Wrapper when no query matches, as a simple selector (`ul`, `ol.steps`, `div#x[data-y=z]`). Defaults to the first section's. |
+| `query` |  | `string` | `[media query] selector` sections separated by `\|`. The last matching section wins. |
+| `container` |  | `string` | Container mode: evaluate the queries against an element's size instead of the viewport. Empty = the parent element; otherwise a selector for the closest matching ancestor. |
 
 **Methods**
 
@@ -344,13 +344,13 @@ A fully stylable listbox that works like a native select. [Guide](../src/stylabl
 
 **Attributes**
 
-| Attribute | Type | Description |
-|---|---|---|
-| `disabled` | `boolean` | Blocks interaction and form submission. Also inherited from a disabled fieldset. |
-| `required` | `boolean` | The form is invalid until an option is selected. |
-| `multiple` | `boolean` | Allow selecting more than one option. |
-| `size` | `number` | Number of visible rows (sets `--domkit-select-size`, used by index.css). |
-| `name` | `string` | Name submitted with the form. |
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `disabled` | `disabled` | `boolean` | Blocks interaction and form submission. Also inherited from a disabled fieldset. |
+| `required` | `required` | `boolean` | The form is invalid until an option is selected. |
+| `multiple` | `multiple` | `boolean` | Allow selecting more than one option. |
+| `size` | `size` | `number` | Number of visible rows (sets `--domkit-select-size`, used by index.css). |
+| `name` | `name` | `string` | Name submitted with the form. |
 
 **Properties**
 
@@ -358,7 +358,7 @@ A fully stylable listbox that works like a native select. [Guide](../src/stylabl
 |---|---|---|
 | `options` (read-only) | `Element[]` | Every option, in document order (including those in groups). |
 | `selectedOptions` (read-only) | `Element[]` | The selected options. |
-| `selectedOption` (read-only) | `Element | null` | The first selected option, or null (like infinite-combo-box's). |
+| `selectedOption` (read-only) | `Element \| null` | The first selected option, or null (like infinite-combo-box's). |
 | `selectedIndex` | `number` | Index of the first selected option, or -1. Setting it selects only that option. Script changes don't fire events. |
 | `value` | `string` | Value of the first selected option, or "". Setting it selects the first option with that value (or nothing, if none matches). |
 | `length` (read-only) | `number` | Number of options. |
@@ -368,7 +368,7 @@ A fully stylable listbox that works like a native select. [Guide](../src/stylabl
 | `disabled` | `boolean` | Mirrors the `disabled` attribute. |
 | `required` | `boolean` | Mirrors the `required` attribute. |
 | `size` | `number` | Mirrors the `size` attribute. |
-| `form` (read-only) | `HTMLFormElement | null` | The form this element belongs to. |
+| `form` (read-only) | `HTMLFormElement \| null` | The form this element belongs to. |
 | `labels` (read-only) | `NodeList` | Labels associated with this element. |
 | `validity` (read-only) | `ValidityState` |  |
 | `validationMessage` (read-only) | `string` |  |
@@ -404,18 +404,18 @@ Accessible tabs and panels from plain children. [Guide](../src/tabbed-ui/readme.
 
 **Attributes**
 
-| Attribute | Type | Description |
-|---|---|---|
-| `selected-index` | `number` | Index of the selected tab. Reflects the current selection. |
-| `manual` | `boolean` | Arrow keys move focus only; Enter/Space selects (manual activation). |
-| `disabled` | `boolean` | No tab can be selected by the user, and the tabs leave the tab order. Panels stay as they are. |
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `selected-index` | `selectedIndex` | `number` | Index of the selected tab. Reflects the current selection. |
+| `manual` | `manual` | `boolean` | Arrow keys move focus only; Enter/Space selects (manual activation). |
+| `disabled` | `disabled` | `boolean` | No tab can be selected by the user, and the tabs leave the tab order. Panels stay as they are. |
 
 **Properties**
 
 | Property | Type | Description |
 |---|---|---|
 | `disabled` | `boolean` | Mirrors the `disabled` attribute. |
-| `tabList` (read-only) | `Element | null` | The tab list: the child with role="tablist", else the first element child. |
+| `tabList` (read-only) | `Element \| null` | The tab list: the child with role="tablist", else the first element child. |
 | `tabs` (read-only) | `Element[]` | The tabs, in order. |
 | `panels` (read-only) | `Element[]` | The panels, in order (every element child except the tab list). |
 | `selectedIndex` | `number` | Index of the selected tab. Setting it does not fire `change`. |

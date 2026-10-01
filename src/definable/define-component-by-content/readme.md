@@ -7,6 +7,8 @@ for markup-only components (a styled callout, a card frame, a signature
 line) that don't deserve a JavaScript file. Part of
 [definable](../readme.md).
 
+## Usage
+
 ```html
 <script type="module" src="https://esm.sh/@johnhenry/domkit/definable/define-component-by-content/global.mjs"></script>
 
@@ -22,21 +24,28 @@ line) that don't deserve a JavaScript file. Part of
 <x-callout>Heads up!</x-callout>
 ```
 
-## Attributes
+## API
 
-| Attribute | Description |
+<!-- api:start (generated from custom-elements.json by `npm run manifest`; edit the JSDoc instead) -->
+
+### Attributes
+
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `name` |  | `string` | The tag name to register. |
+| `content` |  | `string` | The markup, if there's no `<template>` child. |
+| `mode` |  | `string` | `open` (default) or `closed` shadow root, or `none` to append the markup as light DOM. |
+
+### Events
+
+| Event | Description |
 |---|---|
-| `name` | Tag name to register |
-| `mode` | `open` (default) or `closed` shadow root, or `none` to append the markup to each instance's light DOM (no slots, page styles apply) |
-| `content` | The markup as an HTML string, if there's no `<template>` child |
+| `load` | The element is registered (or the name already was). |
+| `error` | Missing/invalid name or mode. An `ErrorEvent`. |
 
-The markup is captured once, when the element first connects. If `name`
-is already registered, nothing happens.
+<!-- api:end -->
 
-## Events
+## Notes
 
-`load` once the tag is registered (or already was), and `error` (an
-`ErrorEvent`) for an invalid `name` or `mode`.
-
-Compare [define-component](../define-component/readme.md), which
-registers a class from a module, for components with behavior.
+- The markup is captured once, when the element first connects. If `name` is already registered, nothing happens.
+- Compare [define-component](../define-component/readme.md), which registers a class from a module, for components with behavior.

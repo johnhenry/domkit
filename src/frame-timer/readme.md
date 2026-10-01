@@ -23,23 +23,41 @@ writing the loop yourself.
 
 The element renders nothing. It's only a clock.
 
-## Attributes
+## API
 
-| Attribute | Property | Description |
+<!-- api:start (generated from custom-elements.json by `npm run manifest`; edit the JSDoc instead) -->
+
+### Attributes
+
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `paused` | `paused` | `boolean` | Whether the timer is paused. Reflects; write it in markup to start paused. |
+| `fps` | `fps` | `number` | Ticks per second. Default 60. Any positive number up to the display's refresh rate. |
+
+### Properties
+
+| Property | Type | Description |
 |---|---|---|
-| `fps` | `fps` | Ticks per second. Default `60`. Any positive number, up to the display's refresh rate |
-| `paused` | `paused` (read-only) | Whether it's paused. Reflects. Write it in markup to start paused, or add/remove it to pause/play |
+| `fps` | `number` | Ticks per second. |
+| `paused` (read-only) | `boolean` | Whether the timer is paused. |
+| `ticks` | `number` | Ticks fired since the element was created (pausing keeps the count). |
 
-Other properties: `ticks`, the number of ticks so far (settable, e.g. `0`
-to reset; pausing keeps it).
+### Methods
 
-## Methods and events
-
-| | |
+| Method | Description |
 |---|---|
-| `play()` / `pause()` | Start or resume, and pause |
-| `tick` event | Once per period while playing (bubbles). Read `event.target.ticks` |
-| `play` / `pause` events | The state changed, through a method or the `paused` attribute. Not fired for the initial markup state |
+| `play()` | Start or resume ticking. |
+| `pause()` | Stop ticking (the count is kept). |
+
+### Events
+
+| Event | Description |
+|---|---|
+| `play` | The timer started (or resumed). |
+| `pause` | The timer paused. |
+| `tick` | Once per period while playing. Read `ticks` for the count. |
+
+<!-- api:end -->
 
 ## Notes
 

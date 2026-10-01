@@ -34,14 +34,6 @@ grammar.
 Between 600px and 900px wide the items are in `<ol class="ordered">`.
 From 900px they're in a blue `<ol>`, and below 600px in a plain `<ul>`.
 
-## Attributes
-
-| Attribute | Description |
-|---|---|
-| `default` | The wrapper to use when no query matches, as a selector (below). If omitted, the first section's selector is the default |
-| `query` | `[media query] selector` sections, `|`-separated. The **last** matching section wins |
-| `container` | Evaluate the queries against an element's size instead of the viewport (see [Container mode](#container-mode)) |
-
 ## Container mode
 
 Add a `container` attribute to evaluate the queries against an element's
@@ -86,6 +78,29 @@ element to create:
 
 Use `template` as a wrapper to make the children inert (not rendered) for
 some breakpoints.
+
+## API
+
+<!-- api:start (generated from custom-elements.json by `npm run manifest`; edit the JSDoc instead) -->
+
+### Attributes
+
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `default` |  | `string` | Wrapper when no query matches, as a simple selector (`ul`, `ol.steps`, `div#x[data-y=z]`). Defaults to the first section's. |
+| `query` |  | `string` | `[media query] selector` sections separated by `\|`. The last matching section wins. |
+| `container` |  | `string` | Container mode: evaluate the queries against an element's size instead of the viewport. Empty = the parent element; otherwise a selector for the closest matching ancestor. |
+
+### Methods
+
+| Method | Description |
+|---|---|
+| `setInitial(selector)` |  |
+| `setQueries(queries)` |  |
+| `triggerQuery()` |  |
+| `update()` |  |
+
+<!-- api:end -->
 
 ## Notes
 

@@ -59,7 +59,8 @@ module and the principles disagree, the module is wrong.
    - `tsc -p test/types`: the generated `.d.mts` declarations type-check
      when consumed through the package's own export paths.
    - `node --test "test/*.test.mjs"`: the fast happy-dom tests.
-   Then `npm run test:browser`: Playwright, `test/browser/*.spec.mjs`, in
+   Then `npm run test:browser`: Playwright (with axe-core accessibility
+   audits), `test/browser/*.spec.mjs`, in
    Chromium, Firefox, and WebKit, against the real modules served by
    `scripts/serve.mjs`. CI runs both, plus a drift check that
    `npm run manifest` leaves every generated file unchanged.
@@ -83,10 +84,16 @@ module and the principles disagree, the module is wrong.
   and `npm run manifest` has been run and its output committed. That
   generates `custom-elements.json`, `vscode.html-custom-data.json`, and
   the module's `index.d.mts`/`global.d.mts`. Never edit those by hand.
-- `npm test` and `npm run test:browser` pass.
-- The module's `readme.md` is accurate: name, what it's for, real
-  attributes/API/events, a working example using the package path
-  (`@johnhenry/domkit/...` or the esm.sh URL, never `./index.mjs`).
+- `npm test` and `npm run test:browser` pass, including
+  `accessibility.spec.mjs`: add the new element to its `ALL` markup (and
+  its open/disabled states) so axe-core audits it.
+- The module's `readme.md` follows the shared structure: an intro, then
+  `## Usage` (a working example using the package path, never
+  `./index.mjs`), then any guide sections, then `## API`, a block between
+  `<!-- api:start -->` and `<!-- api:end -->` that `npm run manifest`
+  fills from the JSDoc (never edit it by hand), then optionally
+  `## Keyboard`, `## Styling`, and last `## Notes`. `check-links.mjs`
+  enforces the order.
   Inaccurate READMEs inherited from `lib` were this package's most common
   defect. Re-read the code when writing one, and check every claim.
 - Anything started in `connectedCallback` or a constructor

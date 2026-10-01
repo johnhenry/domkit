@@ -119,9 +119,23 @@ for (const file of files.filter((f) => /\.(md|mjs|html?)$/.test(f))) {
   }
 }
 
+// 4. Element README structure: every README with a generated API block
+// (i.e. every custom element) reads Usage first, then its guide sections,
+// then the API, and ends with Notes when it has them.
+for (const file of files.filter((f) => f.endsWith("readme.md") && /\/src\//.test(f))) {
+  const text = await readFile(file, "utf8");
+  if (!text.includes("<!-- api:start")) continue;
+  const headings = [...text.matchAll(/^## (.+)$/gm)].map((m) => m[1].trim());
+  if (headings[0] !== "Usage") report(file, "## Usage", "must be the first section");
+  if (!headings.includes("API")) report(file, "## API", "missing");
+  const notes = headings.indexOf("Notes");
+  if (notes >= 0 && notes !== headings.length - 1) report(file, "## Notes", "must be the last section");
+  if (notes >= 0 && notes < headings.indexOf("API")) report(file, "## Notes", "must come after ## API");
+}
+
 if (problems.length) {
   console.error(problems.map((p) => `✖ ${p}`).join("\n"));
   console.error(`${problems.length} broken reference(s)`);
   process.exit(1);
 }
-console.log("✅ every relative import, markdown link, and package subpath resolves");
+console.log("✅ every relative import, markdown link, and package subpath resolves; element READMEs are well-formed");

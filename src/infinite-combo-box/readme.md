@@ -92,42 +92,80 @@ the live region announces "20 more results loaded, 40 of 95". Options get
 `aria-setsize`/`aria-posinset` (setsize `-1` when the total is unknown).
 `hasMore` and `loadMore()` expose the same thing to scripts.
 
-## Attributes
+## API
 
-| Attribute | Property | Description |
+<!-- api:start (generated from custom-elements.json by `npm run manifest`; edit the JSDoc instead) -->
+
+### Attributes
+
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `placeholder` |  | `string` | Placeholder for the input. |
+| `disabled` | `disabled` | `boolean` | Blocks interaction and form submission. Also inherited from a disabled fieldset. |
+| `required` | `required` | `boolean` | The form is invalid until there's a value. |
+| `open` | `open` | `boolean` | Whether the option list is showing. Reflects. |
+| `value` | `value` | `string` | Initial value (the value of an option, or text with `allow-custom`). |
+| `src` | `src` | `string` | URL template for remote options: `{query}` and `{cursor}` are replaced (missing ones are added as `?q=`/`?cursor=`). JSON (an array, or `{ options, next, total }`) or HTML (with an optional `data-next` element). |
+| `name` | `name` | `string` | Name submitted with the form. |
+| `debounce` |  | `number` | Milliseconds to wait after typing before searching. Default 0 for local options, 200 for `src`/`searchFunction`. |
+| `page-size` |  | `number` | Show the element's own matching options this many at a time, loading more as the list scrolls. |
+| `min-length` |  | `number` | Characters needed before searching. Default 0. |
+| `allow-custom` | `allowCustom` | `boolean` | Typed text is a valid value even if it matches no option. |
+
+### Properties
+
+| Property | Type | Description |
 |---|---|---|
-| `name` | `name` | Name submitted with the form |
-| `value` | `value` | The value: the chosen option's `value`. The attribute is the default (restored by `form.reset()`), and the property is current. Setting it matches by value, then by label |
-| `placeholder` | | Passed to the input |
-| `src` | `src` | URL template for remote options: `{query}` and `{cursor}` are replaced. Missing ones are appended as `?q=`/`?cursor=` |
-| `page-size` | | Show the element's own matching options this many at a time (see Paging) |
-| `debounce` | | Milliseconds to wait after typing. Default `0` for local options, `200` for `src`/`searchFunction` |
-| `min-length` | | Characters needed before searching. Default `0` |
-| `allow-custom` | `allowCustom` | Free text: whatever is typed is the value, even if no option matches. Without it, only choosing an option sets the value |
-| `open` | `open` | Whether the list is showing. Reflects, and can be set |
-| `disabled` | `disabled` | Disables the input and stops submission. Also inherited from a disabled `<fieldset>` |
-| `required` | `required` | The form is invalid until there's a value |
+| `value` | `string` | The current value: the chosen option's value, or the typed text with `allow-custom`. Setting it chooses the matching option (by value, then by label). Script changes don't fire events. |
+| `text` | `string` | The text in the input. |
+| `options` (read-only) | `Element[]` | The options currently in the list. |
+| `hasMore` (read-only) | `boolean` | Whether the source has more results for the current query. |
+| `selectedOption` (read-only) | `Element \| null` | The chosen option element, if it's in the list. |
+| `selectedOptions` (read-only) | `Element[]` | The chosen option as a list (0 or 1 items), like a select's. |
+| `selectedIndex` | `number` | Index of the chosen option among the options now in the list, or -1. Setting it chooses that option (-1 clears the value). Script changes don't fire events. |
+| `length` (read-only) | `number` | Number of options now in the list. |
+| `input` (read-only) | `HTMLInputElement \| null` | The inner `<input>` (generated, or the one you wrote as a child). |
+| `searchFunction` | `((query: string, init: { signal: AbortSignal, cursor: string }) => unknown) \| null` | A function that produces options for a query, instead of filtering the child `<option>`s or fetching `src`: `async (query, { signal }) =>` an HTML string, an array of strings / `{ value, label }` / Nodes, or a Node. `signal` aborts when a newer search starts. To page results, return `{ options, next, total? }`: `next` is the cursor passed back as `cursor` for the following page (null when there are no more). |
+| `open` | `boolean` | Mirrors the `open` attribute. |
+| `name` | `string` | Mirrors the `name` attribute. |
+| `src` | `string` | Mirrors the `src` attribute. |
+| `allowCustom` | `boolean` | Mirrors the `allow-custom` attribute. |
+| `disabled` | `boolean` | Mirrors the `disabled` attribute. |
+| `required` | `boolean` | Mirrors the `required` attribute. |
+| `form` (read-only) | `HTMLFormElement \| null` |  |
+| `labels` (read-only) | `NodeList` |  |
+| `validity` (read-only) | `ValidityState` |  |
+| `validationMessage` (read-only) | `string` |  |
+| `willValidate` (read-only) | `boolean` |  |
 
-Other properties: `text` (the input's text), `options` (the options now
-in the list, not counting "Load more results"), and the same option API as
-`stylable-select`: `selectedOption`, `selectedOptions`, `selectedIndex`
-(get/set), `length`, and `item(i)`. Also `hasMore`, `loadMore()`, `selectedOption`, `input` (the inner `<input>`),
-`searchFunction`, `form`, `labels`, `validity`, `validationMessage`,
-`willValidate`, `checkValidity()`, `reportValidity()`,
-`setCustomValidity()`, and `focus()`.
+### Methods
 
-## Events
-
-| Event | When |
+| Method | Description |
 |---|---|
-| `input` | The value changed: an option was chosen, the text was cleared, or (with `allow-custom`) the user typed |
-| `change` | The value was committed: an option was chosen, or focus left / Enter was pressed after typing a new value |
-| `toggle` | The list opened or closed. A `ToggleEvent` with `oldState`/`newState`, like a popover's |
-| `error` | `src` or `searchFunction` failed. An `ErrorEvent`, and the list announces "Couldn't load results." |
+| `loadMore()` | Load the next page of results for the current query (what scrolling to the end of the list does). Resolves when it's appended. |
+| `item(index)` | The option at `index` in the list. |
+| `checkValidity()` |  |
+| `reportValidity()` |  |
+| `setCustomValidity(message)` |  |
+| `focus(options)` | Focus the input. |
 
-Script changes (setting `value`) fire nothing. The inner `<input>`'s own
-`input`/`change` events don't escape the element, so listeners only ever
-see the element's events. Native `oninput`/`onchange` attributes work.
+### Events
+
+| Event | Description |
+|---|---|
+| `error` |  |
+| `input` | The user changed the value (chose an option, or typed with `allow-custom`). |
+| `change` | The user committed a new value (chose an option, or left the field after typing with `allow-custom`). |
+| `toggle` | The list opened or closed (a ToggleEvent with `oldState`/`newState`, like a popover). |
+
+### CSS custom properties
+
+| Property | Description |
+|---|---|
+| `--domkit-highlight` | Background of the active option (shared token; see theme.css). |
+| `--domkit-surface` | Background of the popup list (shared token). |
+
+<!-- api:end -->
 
 ## Keyboard
 
@@ -161,3 +199,7 @@ available.") through a polite live region.
   list under the input, using `Canvas`/`CanvasText` colors and
   domkit's shared tokens (`--domkit-highlight`, `--domkit-surface`, …;
   see [`theme.css`](../theme.css)).
+
+## Notes
+
+- Script changes (setting `value`) fire nothing. The inner `<input>`'s own `input`/`change` events don't escape the element, so listeners only ever see the element's events. Native `oninput`/`onchange` attributes work.

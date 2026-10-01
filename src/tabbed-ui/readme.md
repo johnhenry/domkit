@@ -34,17 +34,10 @@ always readable.
 focus ring, and four custom properties (below). Without it the element
 adds no styling at all.
 
-## Attributes
+## Markup
 
-| Attribute | Property | Description |
-|---|---|---|
-| `selected-index` | `selectedIndex` | Index of the selected tab. Set it to choose the initial tab, or to switch from script. It always reflects the current selection |
-| `manual` | `manual` | Manual activation: arrow keys move focus, and <kbd>Enter</kbd>/<kbd>Space</kbd> selects. By default, moving focus selects |
-| `disabled` | `disabled` | No tab can be selected by the user, and the tabs leave the tab order (the shown panel stays readable) |
+Attributes you can write on the parts:
 
-Read-only properties: `tabList`, `tabs`, `panels`.
-
-On the markup:
 
 | On | Attribute | Effect |
 |---|---|---|
@@ -53,11 +46,46 @@ On the markup:
 | the tab list | `aria-orientation="vertical"` | <kbd>↑</kbd>/<kbd>↓</kbd> instead of <kbd>←</kbd>/<kbd>→</kbd> (index.css stacks it too) |
 | anything | `role`, `id`, `tabindex` you write | Kept. The element only fills in what's missing |
 
-## Events
+## API
 
-| Event | When |
+<!-- api:start (generated from custom-elements.json by `npm run manifest`; edit the JSDoc instead) -->
+
+### Attributes
+
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `selected-index` | `selectedIndex` | `number` | Index of the selected tab. Reflects the current selection. |
+| `manual` | `manual` | `boolean` | Arrow keys move focus only; Enter/Space selects (manual activation). |
+| `disabled` | `disabled` | `boolean` | No tab can be selected by the user, and the tabs leave the tab order. Panels stay as they are. |
+
+### Properties
+
+| Property | Type | Description |
+|---|---|---|
+| `disabled` | `boolean` | Mirrors the `disabled` attribute. |
+| `tabList` (read-only) | `Element \| null` | The tab list: the child with role="tablist", else the first element child. |
+| `tabs` (read-only) | `Element[]` | The tabs, in order. |
+| `panels` (read-only) | `Element[]` | The panels, in order (every element child except the tab list). |
+| `selectedIndex` | `number` | Index of the selected tab. Setting it does not fire `change`. |
+| `manual` | `boolean` | With `manual`, arrow keys move focus and Enter/Space selects. |
+
+### Events
+
+| Event | Description |
 |---|---|
-| `change` | The user selected a different tab. Read `event.target.selectedIndex`. Like a native `change`, it bubbles and isn't fired for script changes |
+| `change` | The user selected a different tab (click or keyboard). Not fired for script changes. |
+
+### CSS custom properties
+
+| Property | Description |
+|---|---|
+| `--domkit-tab-gap` | Space between tabs (index.css). |
+| `--domkit-tab-padding` | Padding inside each tab (index.css). |
+| `--domkit-accent` | Selected-tab indicator (shared token; see theme.css). |
+| `--domkit-border` | Line under the tab list (shared token). |
+| `--domkit-focus-ring` | Focus outline of tabs and panels (shared token). |
+
+<!-- api:end -->
 
 ## Keyboard
 
