@@ -58,6 +58,55 @@
       ]
     },
     {
+      "name": "class-cycler",
+      "description": "A persisted class switch (e.g. a theme toggle) driven by buttons.\n\nEvents: `change`",
+      "attributes": [
+        {
+          "name": "classes",
+          "description": "Comma-separated values to cycle through. An empty entry means \"no class\"."
+        },
+        {
+          "name": "target",
+          "description": "Selector for the element(s) whose class is set. Default `html`."
+        },
+        {
+          "name": "storage-key",
+          "description": "localStorage key to persist under. Without it, the value isn't persisted."
+        },
+        {
+          "name": "value",
+          "description": "The current value. Reflects; set it to choose the initial value when nothing is stored."
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/cyclable/class-cycler"
+        }
+      ]
+    },
+    {
+      "name": "hotkey-dialog",
+      "description": "Toggle a native dialog with a keyboard shortcut.",
+      "attributes": [
+        {
+          "name": "hotkey",
+          "description": "One or more space-separated shortcuts, e.g. `mod+k /`. `mod` is ⌘ on Apple platforms and Ctrl elsewhere."
+        },
+        {
+          "name": "non-modal",
+          "description": "Open with `show()` instead of `showModal()`.",
+          "valueSet": "v"
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/hotkey-dialog"
+        }
+      ]
+    },
+    {
       "name": "stylable-select",
       "description": "A fully stylable listbox that works like a native select.\n\nEvents: `input`, `change`",
       "attributes": [

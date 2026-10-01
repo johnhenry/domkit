@@ -83,7 +83,7 @@ module and the principles disagree, the module is wrong.
   here: no stop (0.0.0), then no restart (fixed 0.0.9 in `matchable` and
   `internal-timer`).
 - New element modules get a `global.mjs` registering the module's own name
-  as the tag. The two customized built-ins are the exception (see below).
+  as the tag. Only autonomous custom elements, never `is="…"`.
 - The root `README.md` table, the family `readme.md` (if any), the gallery
   (`demo/index.html`), and `CHANGELOG.md` are updated in the same change.
 
@@ -121,11 +121,10 @@ module and the principles disagree, the module is wrong.
 - **`Event.path` is gone** (Chrome removed it in v109). Use
   `event.composedPath()`. `menu-component/hash.mjs` used `.path` and threw
   on every push/pop until 0.0.9.
-- **Customized built-ins don't work in Safari.** `hotkey-modal-dialog`
-  (`<dialog is="hotkey-modal">`) and `cyclable/class-cycler-button`
-  (`<button is=…>`) are customized built-ins. Their READMEs say so, and
-  the root README footnotes them. `hotkey-modal-dialog`'s `global.mjs`
-  registers **`hotkey-modal`**, not the module name.
+- **Never use customized built-ins (`is="…"`): Safari doesn't support
+  them.** The two that existed (`hotkey-modal-dialog`, `class-cycler-button`)
+  were replaced by `<hotkey-dialog>` (wrapping a real `<dialog>`) and
+  buttons inside `<class-cycler>`.
 - **happy-dom differs from browsers in ways that matter here** (all
   checked against Chromium during 0.0.9):
   - Its `innerHTML` setter inserts node by node, so custom elements

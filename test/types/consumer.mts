@@ -40,3 +40,16 @@ const comboValue: string = combo.value;
 const chosenOption: Element | null = combo.selectedOption;
 combo.open = true;
 void comboValue, chosenOption;
+
+// hotkey-dialog and class-cycler.
+import "@johnhenry/domkit/hotkey-dialog/global.mjs";
+import "@johnhenry/domkit/cyclable/class-cycler/global.mjs";
+const hk = document.querySelector("hotkey-dialog")!;
+const dlg: HTMLDialogElement | null = hk.dialog;
+hk.toggle();
+hk.close("done");
+const cycler = document.querySelector("class-cycler")!;
+cycler.next();
+const theme: string = cycler.value;
+const values: string[] = cycler.values;
+void dlg, theme, values;

@@ -1,50 +1,191 @@
-import classCycler from "../localstorage-class-cycler/index.mjs";
-const DEFAULT_SELECTOR = "body";
-export default class extends globalThis.HTMLElement {
+// <class-cycler>: one setting, cycled through a fixed list of classes on
+// some target element(s), remembered in localStorage and kept in sync
+// across tabs. Typically a theme switch. See readme.md.
+//
+//   <class-cycler target="html" classes="light,dark" storage-key="theme">
+//     <button>Toggle theme</button>          <- cycles to the next value
+//     <button value="dark">Dark</button>     <- sets that value (aria-pressed)
+//     <output></output>                      <- shows the current value
+//   </class-cycler>
+//
+// Buttons elsewhere can drive it with invoker commands:
+//   <button commandfor="theme" command="--next">…</button>
+
+/**
+ * Cycles a class through a fixed list on target elements, persisted to
+ * localStorage, driven by buttons inside it or invoker commands.
+ *
+ * @tag class-cycler
+ * @summary A persisted class switch (e.g. a theme toggle) driven by buttons.
+ *
+ * @attr {string} classes - Comma-separated values to cycle through. An empty entry means "no class".
+ * @attr {string} target - Selector for the element(s) whose class is set. Default `html`.
+ * @attr {string} storage-key - localStorage key to persist under. Without it, the value isn't persisted.
+ * @attr {string} value - The current value. Reflects; set it to choose the initial value when nothing is stored.
+ *
+ * @fires change - The user changed the value with a button or command.
+ */
+export default class ClassCycler extends HTMLElement {
+  static observedAttributes = ["classes", "target", "storage-key", "value"];
+
+  #value = null;
+  #reflecting = false;
+  #onStorage = (event) => {
+    if (event.key && event.key === this.storageKey && event.newValue !== null) {
+      this.#set(event.newValue, { persist: false });
+    }
+  };
+
   constructor() {
     super();
+    this.addEventListener("click", (event) => this.#onClick(event));
+    // Invoker commands: <button commandfor="id" command="--next|--previous|--set">
+    this.addEventListener("command", (event) => {
+      const command = event.command;
+      if (command === "--next") this.#userSet(this.#step(1));
+      else if (command === "--previous") this.#userSet(this.#step(-1));
+      else if (command === "--set") this.#userSet(event.source?.value ?? "");
+    });
   }
+
   connectedCallback() {
-    this.reset();
+    window.addEventListener("storage", this.#onStorage);
+    this.#set(this.#initial(), { persist: false });
   }
-  reset() {
-    const global = this.getAttribute("global");
-    const storageKey = this.getAttribute("storage-key");
-    // Wait until connected and fully configured: attributes set one at a
-    // time (createElement + setAttribute) used to throw "key is required"
-    // from the cycler the moment `global` was set before `storage-key`.
-    if (global && storageKey && this.isConnected) {
-      const selector = this.getAttribute("selector") || DEFAULT_SELECTOR;
-      const classes = (this.getAttribute("classes") || "").split(",");
-      globalThis[global] = classCycler(
-        document.querySelector(selector),
-        storageKey,
-        ...classes
-      );
-    }
-  }
+
   disconnectedCallback() {
-    delete globalThis[this.getAttribute("global")];
+    window.removeEventListener("storage", this.#onStorage);
   }
-  static get observedAttributes() {
-    return ["global", "selector", "storage-key", "classes"];
-  }
-  attributeChangedCallback(name, old, current) {
-    switch (name) {
-      case "global":
-        // Covers both "global" being removed AND being renamed to a
-        // different value -- the old branch here only cleared the old
-        // global when it was removed entirely, leaking a stale global
-        // function under the previous name whenever `global` was renamed
-        // from one non-empty value directly to another.
-        if (old && old !== current) {
-          delete globalThis[old];
-        }
-        if (!current) {
-          return;
-        }
-        break;
+
+  attributeChangedCallback(name, previous, current) {
+    if (!this.isConnected || this.#reflecting) return;
+    if (name === "value") {
+      if (current !== null && current !== this.#value) this.#set(current);
+    } else {
+      // classes, target, or storage-key changed: clear the old class from
+      // the old targets, then re-apply.
+      if (name === "target" && previous !== null) {
+        for (const element of this.#query(previous)) element.classList.remove(...this.values.filter(Boolean));
+      }
+      this.#set(this.values.includes(this.#value) ? this.#value : this.#initial(), { persist: false });
     }
-    this.reset();
+  }
+
+  /**
+   * The values to cycle through, in order.
+   * @type {string[]}
+   * @readonly
+   */
+  get values() {
+    return (this.getAttribute("classes") ?? "").split(",").map((value) => value.trim());
+  }
+
+  /**
+   * The current value. Setting it applies and persists it, without an event.
+   * @type {string}
+   */
+  get value() {
+    return this.#value ?? "";
+  }
+  set value(value) {
+    this.#set(String(value));
+  }
+
+  /**
+   * The elements whose class is set.
+   * @type {Element[]}
+   * @readonly
+   */
+  get targets() {
+    return this.#query(this.getAttribute("target") ?? "html");
+  }
+
+  /** @type {string} */
+  get storageKey() {
+    return this.getAttribute("storage-key") ?? "";
+  }
+  set storageKey(value) {
+    this.setAttribute("storage-key", value);
+  }
+
+  /** Move to the next value (wrapping), without an event. */
+  next() {
+    this.#set(this.#step(1));
+  }
+
+  /** Move to the previous value (wrapping), without an event. */
+  previous() {
+    this.#set(this.#step(-1));
+  }
+
+  #query(selector) {
+    try {
+      return [...document.querySelectorAll(selector)];
+    } catch {
+      return [];
+    }
+  }
+
+  #stored() {
+    if (!this.storageKey) return null;
+    try {
+      return localStorage.getItem(this.storageKey);
+    } catch {
+      return null; // storage blocked
+    }
+  }
+
+  #initial() {
+    const values = this.values;
+    for (const candidate of [this.#stored(), this.getAttribute("value")]) {
+      if (candidate !== null && values.includes(candidate)) return candidate;
+    }
+    return values[0] ?? "";
+  }
+
+  #step(delta) {
+    const values = this.values;
+    const index = values.indexOf(this.#value);
+    return values[(index + delta + values.length) % values.length] ?? "";
+  }
+
+  #set(value, { persist = true } = {}) {
+    const values = this.values;
+    if (!values.includes(value)) return false;
+    const previous = this.#value;
+    this.#value = value;
+    for (const element of this.targets) {
+      element.classList.remove(...values.filter(Boolean));
+      if (value) element.classList.add(value);
+    }
+    if (persist && this.storageKey) {
+      try {
+        localStorage.setItem(this.storageKey, value);
+      } catch {
+        // storage blocked: the value still applies for this page
+      }
+    }
+    this.#reflecting = true;
+    this.setAttribute("value", value);
+    this.#reflecting = false;
+    for (const output of this.querySelectorAll("output")) output.value = value;
+    for (const button of this.querySelectorAll("button[value]")) {
+      button.setAttribute("aria-pressed", String(button.value === value));
+    }
+    return value !== previous;
+  }
+
+  #userSet(value) {
+    if (this.#set(value)) this.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  #onClick(event) {
+    const button = event.target instanceof Element ? event.target.closest("button") : null;
+    if (!button || !this.contains(button) || button.disabled) return;
+    // Buttons with an invoker command are handled by the command event.
+    if (button.hasAttribute("commandfor")) return;
+    if (button.hasAttribute("value")) this.#userSet(button.value);
+    else if (button.dataset.cycle === "previous") this.#userSet(this.#step(-1));
+    else this.#userSet(this.#step(1));
   }
 }

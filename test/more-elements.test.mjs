@@ -1,12 +1,11 @@
-// The remaining stable modules: menu-component, the customized built-ins,
-// definable's loaders, and the deprecated shadow-dom alias.
+// The remaining stable modules: menu-component, definable's loaders, and
+// the deprecated shadow-dom alias. (hotkey-dialog and class-cycler are
+// covered in test/browser/.)
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { render, tick } from "./dom.mjs";
 
 await import("../src/menu-component/global.mjs");
-await import("../src/hotkey-modal-dialog/global.mjs");
-await import("../src/cyclable/class-cycler-button/global.mjs");
 await import("../src/definable/define-component/global.mjs");
 await import("../src/definable/polyfill-window/global.mjs");
 const definetag = (await import("../src/definable/definetag/index.mjs")).default;
@@ -41,45 +40,6 @@ test("menu-component pushes a template screen, pops on its end event, and syncs 
   assert.deepEqual(events, [["pushed", "profile"], ["popped", "profile"]]);
   detach(menu);
   assert.equal(window.onhashchange, null, "detach removes the handler it installed");
-});
-
-// happy-dom constructs customized built-ins (`is="…"`) but never runs their
-// lifecycle callbacks, so these two can't run here. They're kept, skipped,
-// as the spec of what to verify in a real browser (both pass in Chromium:
-// see the gallery's hotkey-modal and class-cycler-button cards).
-const BUILTINS = {
-  skip: "happy-dom runs no lifecycle callbacks for customized built-ins",
-};
-test("hotkey-modal toggles on its shortcut, honoring modifiers", BUILTINS, () => {
-  render("");
-  const dialog = document.createElement("dialog", { is: "hotkey-modal" });
-  dialog.setAttribute("hotkey", "ctrl+k");
-  document.body.append(dialog);
-  const press = (init) =>
-    document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", ...init }));
-  press({});
-  assert.equal(dialog.open, false, "modifier required");
-  press({ ctrlKey: true });
-  assert.equal(dialog.open, true);
-  press({ ctrlKey: true });
-  assert.equal(dialog.open, false);
-  dialog.remove();
-  press({ ctrlKey: true });
-  assert.equal(dialog.open, false, "listener removed on disconnect");
-});
-
-test("class-cycler-button cycles its target's class on click", BUILTINS, () => {
-  localStorage.clear();
-  render(`<p id="t"></p>`);
-  const button = document.createElement("button", { is: "class-cycler-button" });
-  button.setAttribute("classes", "on,off");
-  button.setAttribute("storage-key", "b");
-  button.setAttribute("select", "#t");
-  document.body.append(button);
-  const target = document.getElementById("t");
-  assert.ok(target.classList.contains("on"));
-  button.click();
-  assert.ok(target.classList.contains("off"));
 });
 
 test("define-component imports a module and registers its export", async () => {

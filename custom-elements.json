@@ -791,63 +791,189 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/cyclable/class-cycler-button/index.mjs",
+      "path": "src/cyclable/class-cycler/index.mjs",
       "declarations": [
         {
-          "kind": "function",
-          "name": ""
-        },
-        {
           "kind": "class",
-          "description": "",
-          "name": "",
+          "description": "Cycles a class through a fixed list on target elements, persisted to\nlocalStorage, driven by buttons inside it or invoker commands.",
+          "name": "ClassCycler",
           "members": [
             {
               "kind": "field",
-              "name": "updateBound",
+              "name": "#value",
+              "privacy": "private",
               "type": {
                 "text": "null"
               },
               "default": "null"
             },
             {
-              "kind": "method",
-              "name": "update"
+              "kind": "field",
+              "name": "#reflecting",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#onStorage",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "values",
+              "description": "The values to cycle through, in order.",
+              "type": {
+                "text": "string[]"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "description": "The current value. Setting it applies and persists it, without an event.",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "targets",
+              "description": "The elements whose class is set.",
+              "type": {
+                "text": "Element[]"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "storageKey",
+              "type": {
+                "text": "string"
+              }
             },
             {
               "kind": "method",
-              "name": "init"
+              "name": "next",
+              "description": "Move to the next value (wrapping), without an event."
+            },
+            {
+              "kind": "method",
+              "name": "previous",
+              "description": "Move to the previous value (wrapping), without an event."
+            },
+            {
+              "kind": "method",
+              "name": "#query",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "selector"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#stored",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#initial",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#step",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "delta"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#set",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "value"
+                },
+                {
+                  "name": "{ persist = true }",
+                  "default": "{}"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#userSet",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "value"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#onClick",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "change",
+              "type": {
+                "text": "Event"
+              },
+              "description": "The user changed the value with a button or command."
             }
           ],
           "attributes": [
             {
-              "name": "select"
+              "name": "classes",
+              "type": {
+                "text": "string"
+              },
+              "description": "Comma-separated values to cycle through. An empty entry means \"no class\"."
             },
             {
-              "name": "storage-key"
+              "name": "target",
+              "type": {
+                "text": "string"
+              },
+              "description": "Selector for the element(s) whose class is set. Default `html`."
             },
             {
-              "name": "select-all"
+              "name": "storage-key",
+              "type": {
+                "text": "string"
+              },
+              "description": "localStorage key to persist under. Without it, the value isn't persisted."
             },
             {
-              "name": "classes"
+              "name": "value",
+              "type": {
+                "text": "string"
+              },
+              "description": "The current value. Reflects; set it to choose the initial value when nothing is stored."
             }
           ],
           "superclass": {
-            "module": "src/cyclable/class-cycler-button/index.mjs"
-          }
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
+            "name": "HTMLElement"
+          },
+          "tagName": "class-cycler",
+          "customElement": true,
+          "summary": "A persisted class switch (e.g. a theme toggle) driven by buttons."
         }
       ],
       "exports": [
@@ -855,71 +981,7 @@
           "kind": "js",
           "name": "default",
           "declaration": {
-            "name": "",
-            "module": "src/cyclable/class-cycler-button/index.mjs"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/cyclable/class-cycler/index.mjs",
-      "declarations": [
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "class",
-          "description": "",
-          "name": "",
-          "members": [
-            {
-              "kind": "method",
-              "name": "reset"
-            }
-          ],
-          "attributes": [
-            {
-              "name": "global"
-            },
-            {
-              "name": "selector"
-            },
-            {
-              "name": "storage-key"
-            },
-            {
-              "name": "classes"
-            }
-          ],
-          "superclass": {
-            "module": "src/cyclable/class-cycler/index.mjs"
-          }
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "default",
-          "declaration": {
-            "name": "",
+            "name": "ClassCycler",
             "module": "src/cyclable/class-cycler/index.mjs"
           }
         }
@@ -1308,36 +1370,20 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/hotkey-modal-dialog/index.mjs",
+      "path": "src/hotkey-dialog/index.mjs",
       "declarations": [
         {
+          "kind": "variable",
+          "name": "key"
+        },
+        {
           "kind": "class",
-          "description": "",
-          "name": "",
+          "description": "Opens and closes the `<dialog>` inside it with a keyboard shortcut,\nkeeping the dialog fully native. Polyfills `closedby=\"any\"`/`\"none\"`.",
+          "name": "HotkeyDialog",
           "members": [
             {
               "kind": "field",
-              "name": "#keydownBound",
-              "privacy": "private"
-            },
-            {
-              "kind": "field",
-              "name": "#clickBound",
-              "privacy": "private"
-            },
-            {
-              "kind": "field",
-              "name": "#cancelBound",
-              "privacy": "private"
-            },
-            {
-              "kind": "field",
-              "name": "#hotkey",
-              "privacy": "private"
-            },
-            {
-              "kind": "field",
-              "name": "#modifiers",
+              "name": "#shortcuts",
               "privacy": "private",
               "type": {
                 "text": "array"
@@ -1345,12 +1391,105 @@
               "default": "[]"
             },
             {
-              "kind": "method",
-              "name": "init"
+              "kind": "field",
+              "name": "#onKeyDown",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#onPointerDown",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#pointerStart",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#onClick",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#onCancel",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#bound",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "dialog",
+              "description": "The `<dialog>` this element controls: its first `<dialog>` descendant.",
+              "type": {
+                "text": "HTMLDialogElement | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "hotkey",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "nonModal",
+              "type": {
+                "text": "boolean"
+              }
             },
             {
               "kind": "method",
-              "name": "cancel",
+              "name": "show",
+              "description": "Open the dialog (modally, unless `non-modal`)."
+            },
+            {
+              "kind": "method",
+              "name": "close",
+              "parameters": [
+                {
+                  "name": "returnValue",
+                  "optional": true,
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Close the dialog."
+            },
+            {
+              "kind": "method",
+              "name": "toggle",
+              "description": "Open the dialog if it's closed, close it if it's open."
+            },
+            {
+              "kind": "method",
+              "name": "#bindDialog",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "dialog",
+                  "default": "this.dialog"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#handleKey",
+              "privacy": "private",
               "parameters": [
                 {
                   "name": "event"
@@ -1359,7 +1498,8 @@
             },
             {
               "kind": "method",
-              "name": "keydown",
+              "name": "#outside",
+              "privacy": "private",
               "parameters": [
                 {
                   "name": "event"
@@ -1368,7 +1508,8 @@
             },
             {
               "kind": "method",
-              "name": "click",
+              "name": "#handleClick",
+              "privacy": "private",
               "parameters": [
                 {
                   "name": "event"
@@ -1378,19 +1519,26 @@
           ],
           "attributes": [
             {
-              "name": "hotkey"
+              "name": "hotkey",
+              "type": {
+                "text": "string"
+              },
+              "description": "One or more space-separated shortcuts, e.g. `mod+k /`. `mod` is ⌘ on Apple platforms and Ctrl elsewhere."
             },
             {
-              "name": "click-to-close"
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Open with `show()` instead of `showModal()`.",
+              "name": "non-modal"
             }
           ],
           "superclass": {
-            "module": "src/hotkey-modal-dialog/index.mjs"
-          }
-        },
-        {
-          "kind": "function",
-          "name": ""
+            "name": "HTMLElement"
+          },
+          "tagName": "hotkey-dialog",
+          "customElement": true,
+          "summary": "Toggle a native dialog with a keyboard shortcut."
         }
       ],
       "exports": [
@@ -1398,8 +1546,8 @@
           "kind": "js",
           "name": "default",
           "declaration": {
-            "name": "",
-            "module": "src/hotkey-modal-dialog/index.mjs"
+            "name": "HotkeyDialog",
+            "module": "src/hotkey-dialog/index.mjs"
           }
         }
       ]
