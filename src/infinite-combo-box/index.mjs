@@ -1,4 +1,4 @@
-// <combo-box>: a text input with a popup list of options, following the
+// <infinite-combo-box>: a text input with a popup list of options, following the
 // WAI-ARIA combobox pattern (list autocomplete).
 // https://www.w3.org/WAI/ARIA/apg/patterns/combobox/
 //
@@ -23,14 +23,15 @@ const VISUALLY_HIDDEN =
  * `<option>` children, fetched from a URL, or produced by a function.
  * Form-associated, with the WAI-ARIA combobox keyboard pattern.
  *
- * @tag combo-box
- * @summary An accessible autocomplete/search input with a popup option list.
+ * @tag infinite-combo-box
+ * @summary An accessible autocomplete with paged ("infinite") results.
  *
  * @attr {string} name - Name submitted with the form.
  * @attr {string} value - Initial value (the value of an option, or text with `allow-custom`).
  * @attr {string} placeholder - Placeholder for the input.
- * @attr {string} src - URL template for remote options; `{query}` is replaced with the encoded text. JSON or HTML responses.
+ * @attr {string} src - URL template for remote options: `{query}` and `{cursor}` are replaced (missing ones are added as `?q=`/`?cursor=`). JSON (an array, or `{ options, next, total }`) or HTML (with an optional `data-next` element).
  * @attr {number} debounce - Milliseconds to wait after typing before searching. Default 0 for local options, 200 for `src`/`searchFunction`.
+ * @attr {number} page-size - Show the element's own matching options this many at a time, loading more as the list scrolls.
  * @attr {number} min-length - Characters needed before searching. Default 0.
  * @attr {boolean} allow-custom - Typed text is a valid value even if it matches no option.
  * @attr {boolean} open - Whether the option list is showing. Reflects.
@@ -43,7 +44,7 @@ const VISUALLY_HIDDEN =
  *
  * @cssprop --domkit-combo-accent - Background of the active option (index.css).
  */
-export default class ComboBox extends HTMLElement {
+export default class InfiniteComboBox extends HTMLElement {
   static formAssociated = true;
   static observedAttributes = ["placeholder", "disabled", "required", "open", "value", "src"];
 
@@ -61,6 +62,17 @@ export default class ComboBox extends HTMLElement {
   #abort = null;
   #formDisabled = false;
   #searchFunction = null;
+  // Paging: the query being paged, the cursor for its next page (null = no
+  // more), the total if the source reported one, local matches for
+  // page-size paging, and the "Load more results" option.
+  #query = "";
+  #next = null;
+  #total = null;
+  #localMatches = null;
+  #loadingMore = false;
+  #more = null;
+  #moreObserver = null;
+  #lastGroup = null;
   #labelClick = () => this.#input?.focus();
   #observedLabels = [];
 
@@ -146,7 +158,27 @@ export default class ComboBox extends HTMLElement {
    * @readonly
    */
   get options() {
-    return this.#list ? [...this.#list.querySelectorAll('option, [role="option"]')] : [];
+    return this.#list
+      ? [...this.#list.querySelectorAll('option, [role="option"]')].filter((option) => option !== this.#more)
+      : [];
+  }
+
+  /**
+   * Whether the source has more results for the current query.
+   * @type {boolean}
+   * @readonly
+   */
+  get hasMore() {
+    return this.#next !== null;
+  }
+
+  /**
+   * Load the next page of results for the current query (what scrolling to
+   * the end of the list does). Resolves when it's appended.
+   * @returns {Promise<void>}
+   */
+  loadMore() {
+    return this.#loadMore();
   }
 
   /**
@@ -172,7 +204,10 @@ export default class ComboBox extends HTMLElement {
    * child `<option>`s or fetching `src`: `async (query, { signal }) =>`
    * an HTML string, an array of strings / `{ value, label }` / Nodes, or a
    * Node. `signal` aborts when a newer search starts.
-   * @type {((query: string, init: { signal: AbortSignal }) => unknown) | null}
+   * To page results, return `{ options, next, total? }`: `next` is the
+   * cursor passed back as `cursor` for the following page (null when
+   * there are no more).
+   * @type {((query: string, init: { signal: AbortSignal, cursor: string }) => unknown) | null}
    */
   get searchFunction() {
     return this.#searchFunction;
@@ -316,12 +351,12 @@ export default class ComboBox extends HTMLElement {
     input.setAttribute("role", "combobox");
     input.setAttribute("aria-autocomplete", "list");
     input.setAttribute("aria-expanded", "false");
-    input.id ||= `combo-box-input-${++uid}`;
+    input.id ||= `infinite-combo-box-input-${++uid}`;
     if (this.hasAttribute("placeholder")) input.placeholder = this.getAttribute("placeholder");
 
     this.#list = document.createElement("div");
     this.#list.setAttribute("role", "listbox");
-    this.#list.id = `combo-box-list-${++uid}`;
+    this.#list.id = `infinite-combo-box-list-${++uid}`;
     this.#list.hidden = true;
     input.setAttribute("aria-controls", this.#list.id);
 
@@ -358,6 +393,10 @@ export default class ComboBox extends HTMLElement {
     this.#list.addEventListener("pointerdown", (event) => event.preventDefault()); // keep focus in the input
     this.#list.addEventListener("click", (event) => {
       const option = this.#optionFrom(event.target);
+      if (option && option === this.#more) {
+        this.#loadMore({ activateFirst: true });
+        return;
+      }
       if (option && !this.#isDisabled(option)) {
         this.#choose(option, { user: true });
         this.#setOpen(false);
@@ -380,7 +419,7 @@ export default class ComboBox extends HTMLElement {
     // Name the combobox input by the element's labels (they point at the
     // element, but the input is what assistive technology focuses).
     if (this.#observedLabels.length && !this.#input.hasAttribute("aria-label")) {
-      for (const label of this.#observedLabels) label.id ||= `combo-box-label-${++uid}`;
+      for (const label of this.#observedLabels) label.id ||= `infinite-combo-box-label-${++uid}`;
       this.#input.setAttribute("aria-labelledby", this.#observedLabels.map((l) => l.id).join(" "));
     } else if (this.hasAttribute("aria-label") && !this.#input.hasAttribute("aria-label")) {
       this.#input.setAttribute("aria-label", this.getAttribute("aria-label"));
@@ -432,6 +471,37 @@ export default class ComboBox extends HTMLElement {
   }
 
   // Normalize any supported result shape into option elements.
+  // A page: { options, next, total }. A plain result is one final page; an
+  // object with `options` (or `items`) can carry `next` and `total`; HTML
+  // can carry them on an element with data-next / data-total.
+  #toPage(result) {
+    if (result && typeof result === "object" && !(result instanceof Node) && !Array.isArray(result) &&
+        ("options" in result || "items" in result)) {
+      return {
+        options: this.#toOptions(result.options ?? result.items),
+        next: result.next ?? null,
+        total: Number.isFinite(result.total) ? result.total : null,
+      };
+    }
+    let fragment = null;
+    if (typeof result === "string") {
+      const template = document.createElement("template");
+      template.innerHTML = result;
+      fragment = template.content;
+    } else if (result instanceof DocumentFragment) {
+      fragment = result;
+    }
+    let next = null;
+    let total = null;
+    const marker = fragment?.querySelector("[data-next], [data-total]");
+    if (marker) {
+      next = marker.getAttribute("data-next") || null;
+      total = marker.hasAttribute("data-total") ? Number(marker.getAttribute("data-total")) : null;
+      marker.remove();
+    }
+    return { options: this.#toOptions(fragment ?? result), next, total };
+  }
+
   #toOptions(result) {
     if (result == null) return [];
     if (typeof result === "string") {
@@ -464,28 +534,128 @@ export default class ComboBox extends HTMLElement {
     return element.localName === "option" || element.getAttribute("role") === "option";
   }
 
-  #render(options) {
-    this.#list.replaceChildren(...options);
-    let group = null;
+  #render(options, { append = false } = {}) {
+    if (!append) {
+      this.#list.replaceChildren();
+      this.#lastGroup = null;
+    }
+    this.#more?.remove();
+    this.#list.append(...options);
     for (const option of options) {
       if (!option.hasAttribute("role")) option.setAttribute("role", "option");
-      option.id ||= `combo-box-option-${++uid}`;
+      option.id ||= `infinite-combo-box-option-${++uid}`;
       const selected = this.#value !== "" && this.#valueOf(option) === this.#value;
       if (selected) this.#selected = option;
       setAttr(option, "aria-selected", String(selected));
       if (option.localName === "option") option.selected = selected;
       if (this.#isDisabled(option)) setAttr(option, "aria-disabled", "true");
       // Re-create local <optgroup> headings as presentation-only labels.
-      if (option.dataset.group && option.dataset.group !== group) {
-        group = option.dataset.group;
+      if (option.dataset.group && option.dataset.group !== this.#lastGroup) {
+        this.#lastGroup = option.dataset.group;
         const heading = document.createElement("div");
         heading.setAttribute("role", "presentation");
         heading.dataset.groupLabel = "";
-        heading.textContent = group;
+        heading.textContent = this.#lastGroup;
         option.before(heading);
       }
     }
-    this.#setActive(null);
+    // Positions: known total -> setsize; more pages of unknown size -> -1.
+    const all = this.options;
+    const setsize = this.#total ?? (this.#next !== null ? -1 : null);
+    all.forEach((option, i) => {
+      if (setsize === null) {
+        option.removeAttribute("aria-setsize");
+        option.removeAttribute("aria-posinset");
+      } else {
+        setAttr(option, "aria-setsize", String(setsize));
+        setAttr(option, "aria-posinset", String(i + 1));
+      }
+    });
+    if (this.#next !== null) this.#list.append(this.#moreOption());
+    if (!append) this.#setActive(null);
+  }
+
+  // The last item while more pages exist: an option (so keyboard and
+  // screen-reader users reach it like any other) that loads the next page
+  // when it's scrolled into view, arrowed onto, or chosen.
+  #moreOption() {
+    if (!this.#more) {
+      this.#more = document.createElement("div");
+      this.#more.setAttribute("role", "option");
+      this.#more.id = `infinite-combo-box-more-${++uid}`;
+      this.#more.dataset.loadMore = "";
+      this.#more.setAttribute("aria-selected", "false");
+      this.#more.textContent = "Load more results";
+      this.#moreObserver = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((entry) => entry.isIntersecting) && !this.#list.hidden) this.#loadMore();
+        },
+        { root: this.#list, rootMargin: "0px 0px 48px 0px" },
+      );
+      this.#moreObserver.observe(this.#more);
+    }
+    return this.#more;
+  }
+
+  async #loadMore({ activateFirst = false } = {}) {
+    if (this.#next === null || this.#loadingMore) return;
+    const controller = this.#abort;
+    const signal = controller?.signal;
+    if (!signal || signal.aborted) return;
+    this.#loadingMore = true;
+    this.#setBusy(true, { announce: false });
+    this.#announce("Loading more results…");
+    let page;
+    try {
+      page = this.#localMatches ? this.#localPage(this.#next) : await this.#remotePage(this.#query, this.#next, signal);
+    } catch (error) {
+      this.#loadingMore = false;
+      if (signal.aborted) return;
+      this.#setBusy(false);
+      this.#announce("Couldn't load more results.");
+      this.dispatchEvent(new ErrorEvent("error", { error, message: String(error?.message ?? error) }));
+      return;
+    }
+    this.#loadingMore = false;
+    if (signal.aborted || controller !== this.#abort) return; // a newer search took over
+    this.#setBusy(false);
+    this.#next = page.next;
+    if (page.total !== null) this.#total = page.total;
+    const wasOnMore = this.#active === this.#more;
+    this.#render(page.options, { append: true });
+    if ((activateFirst || wasOnMore) && page.options.length) this.#setActive(page.options[0]);
+    else if (wasOnMore) this.#setActive(this.options.at(-1) ?? null);
+    const count = page.options.length;
+    this.#announce(
+      `${count} more result${count === 1 ? "" : "s"} loaded` +
+        (this.#total !== null ? `, ${this.options.length} of ${this.#total}.` : "."),
+    );
+  }
+
+  // Local paging (page-size): the cursor is an offset into the matches.
+  #localPage(cursor) {
+    const size = this.#pageSize();
+    const start = Number(cursor) || 0;
+    const slice = this.#localMatches.slice(start, start + size);
+    const end = start + slice.length;
+    return {
+      options: slice.map((option) => option.cloneNode(true)),
+      next: end < this.#localMatches.length ? String(end) : null,
+      total: this.#localMatches.length,
+    };
+  }
+
+  #pageSize() {
+    const size = Number.parseInt(this.getAttribute("page-size") ?? "", 10);
+    return size > 0 ? size : Infinity;
+  }
+
+  async #remotePage(query, cursor, signal) {
+    return this.#toPage(
+      this.#searchFunction
+        ? await this.#searchFunction(query, { signal, cursor })
+        : await this.#fetch(query, signal, cursor),
+    );
   }
 
   // --- searching ------------------------------------------------------------
@@ -524,18 +694,19 @@ export default class ComboBox extends HTMLElement {
     const controller = new AbortController();
     this.#abort = controller;
     const { signal } = controller;
-    let results;
+    this.#query = query;
+    this.#next = null;
+    this.#total = null;
+    this.#localMatches = null;
+    this.#loadingMore = false;
+    let page;
     if (this.#searchFunction || this.src) {
       if (!query && this.#source.length) {
-        results = this.#source.map((option) => option.cloneNode(true));
+        page = { options: this.#source.map((option) => option.cloneNode(true)), next: null, total: null };
       } else {
         this.#setBusy(true);
         try {
-          results = this.#toOptions(
-            this.#searchFunction
-              ? await this.#searchFunction(query, { signal })
-              : await this.#fetch(query, signal),
-          );
+          page = await this.#remotePage(query, "", signal);
         } catch (error) {
           if (signal.aborted) return;
           this.#setBusy(false);
@@ -548,32 +719,41 @@ export default class ComboBox extends HTMLElement {
       }
     } else {
       const needle = query.trim().toLowerCase();
-      results = this.#source
-        .filter((option) => !needle || this.#labelOf(option).toLowerCase().includes(needle))
-        .map((option) => option.cloneNode(true));
+      this.#localMatches = this.#source.filter(
+        (option) => !needle || this.#labelOf(option).toLowerCase().includes(needle),
+      );
+      page = this.#localPage(0);
+      if (page.next === null) page.total = null; // everything is shown; no positions needed
     }
-    this.#render(results);
+    this.#next = page.next;
+    this.#total = page.total;
+    this.#render(page.options);
+    const shown = page.options.length;
     this.#announce(
-      results.length ? `${results.length} result${results.length === 1 ? "" : "s"} available.` : "No results.",
+      !shown
+        ? "No results."
+        : this.#total !== null
+          ? `${shown} of ${this.#total} results shown.`
+          : `${shown} result${shown === 1 ? "" : "s"} available${this.#next !== null ? ", more can be loaded" : ""}.`,
     );
-    this.#setOpen(results.length > 0 || Boolean(query));
+    this.#setOpen(shown > 0 || Boolean(query));
   }
 
-  async #fetch(query, signal) {
+  async #fetch(query, signal, cursor = "") {
     const template = this.src;
-    const encoded = encodeURIComponent(query);
-    const url = new URL(
-      template.includes("{query}") ? template.replaceAll("{query}", encoded) : template,
-      document.baseURI,
-    );
+    const filled = template
+      .replaceAll("{query}", encodeURIComponent(query))
+      .replaceAll("{cursor}", encodeURIComponent(cursor));
+    const url = new URL(filled, document.baseURI);
     if (!template.includes("{query}")) url.searchParams.set("q", query);
+    if (cursor && !template.includes("{cursor}")) url.searchParams.set("cursor", cursor);
     const response = await fetch(url, { signal, headers: { accept: "application/json, text/html;q=0.9" } });
     if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
     const type = response.headers.get("content-type") ?? "";
     return type.includes("json") ? response.json() : response.text();
   }
 
-  #setBusy(busy) {
+  #setBusy(busy, { announce = true } = {}) {
     setAttr(this.#list, "aria-busy", String(busy));
     try {
       if (busy) this.#internals.states.add("loading");
@@ -581,7 +761,7 @@ export default class ComboBox extends HTMLElement {
     } catch {
       // CustomStateSet unsupported: aria-busy is still set.
     }
-    if (busy) this.#announce("Loading…");
+    if (busy && announce) this.#announce("Loading…");
   }
 
   #announce(message) {
@@ -653,6 +833,7 @@ export default class ComboBox extends HTMLElement {
   #onKeyDown(event) {
     if (event.target !== this.#input || this.#input.disabled) return;
     const enabled = this.options.filter((option) => !this.#isDisabled(option));
+    if (this.#next !== null && this.#more) enabled.push(this.#more);
     const index = enabled.indexOf(this.#active);
     switch (event.key) {
       case "ArrowDown":
@@ -663,6 +844,7 @@ export default class ComboBox extends HTMLElement {
         }
         if (event.altKey) return;
         this.#setActive(enabled[index + 1] ?? enabled[0] ?? null);
+        if (this.#active === this.#more) this.#loadMore(); // arrowing to the end loads more
         return;
       case "ArrowUp":
         event.preventDefault();
@@ -677,6 +859,11 @@ export default class ComboBox extends HTMLElement {
         this.#setActive(enabled[index - 1] ?? enabled[enabled.length - 1] ?? null);
         return;
       case "Enter":
+        if (this.open && this.#active === this.#more) {
+          event.preventDefault();
+          this.#loadMore({ activateFirst: true });
+          return;
+        }
         if (this.open && this.#active) {
           event.preventDefault(); // don't submit the form while choosing
           this.#choose(this.#active, { user: true });

@@ -8,7 +8,7 @@ import { mount } from "./helpers.mjs";
 const ELEMENTS = {
   "tabbed-ui": "<div><button>A</button></div><section>a</section>",
   "stylable-select": "<option>a</option>",
-  "combo-box": "<option>a</option>",
+  "infinite-combo-box": "<option>a</option>",
   "hotkey-dialog": "<dialog>d</dialog>",
   "drill-menu": "<button>a<template>x</template></button>",
   "code-color": "<pre>let a</pre>",
@@ -19,7 +19,7 @@ const ELEMENTS = {
 };
 const tagOf = (path) => path.split("/").pop();
 const MODULES = Object.keys(ELEMENTS).map((path) => `src/${path}/global.mjs`);
-const STYLES = ["tabbed-ui", "stylable-select", "combo-box", "drill-menu", "code-color"];
+const STYLES = ["tabbed-ui", "stylable-select", "infinite-combo-box", "drill-menu", "code-color"];
 
 const loadStyles = (page) =>
   page.evaluate((styles) => {
@@ -59,9 +59,9 @@ test("elements nested in a hidden tabbed-ui panel stay hidden", async ({ page })
   const visible = await page.evaluate(() => {
     document.body.innerHTML = `<tabbed-ui><div><button>1</button><button>2</button></div>
       <section>first</section>
-      <section><code-color><pre>let x</pre></code-color><stylable-select><option>a</option></stylable-select><combo-box></combo-box></section>
+      <section><code-color><pre>let x</pre></code-color><stylable-select><option>a</option></stylable-select><infinite-combo-box></infinite-combo-box></section>
     </tabbed-ui>`;
-    return [...document.querySelectorAll("code-color, stylable-select, combo-box")].filter((el) => el.checkVisibility()).length;
+    return [...document.querySelectorAll("code-color, stylable-select, infinite-combo-box")].filter((el) => el.checkVisibility()).length;
   });
   expect(visible).toBe(0);
 });
@@ -103,7 +103,7 @@ test("form-associated elements behave alike in one form", async ({ page }) => {
        <input name="native" value="n" />
        <select name="select"><option>s</option></select>
        <stylable-select name="stylable"><option selected>a</option></stylable-select>
-       <combo-box name="combo" value="c"><option>c</option></combo-box>
+       <infinite-combo-box name="combo" value="c"><option>c</option></infinite-combo-box>
      </form>`,
     MODULES,
   );
@@ -122,5 +122,5 @@ test("form-associated elements behave alike in one form", async ({ page }) => {
   expect(result.before).toEqual(["native", "select", "stylable", "combo"]);
   expect(result.disabled, "a disabled fieldset disables all of them").toEqual([]);
   expect(result.matches).toEqual([true, true, true, true]);
-  expect(result.elements).toEqual(expect.arrayContaining(["stylable-select", "combo-box"]));
+  expect(result.elements).toEqual(expect.arrayContaining(["stylable-select", "infinite-combo-box"]));
 });

@@ -87,7 +87,7 @@ Any element that holds a value is **form-associated**
   `role="option"`) elements, with the same option-value rules, the same
   `options`/`value` members as `HTMLSelectElement`, the same
   `[data-active]`/`aria-selected` styling hooks, and the same
-  `input`/`change` timing. `stylable-select` and `combo-box` are
+  `input`/`change` timing. `stylable-select` and `infinite-combo-box` are
   interchangeable for code that reads a value or styles options, and
   either can stand in for a native `<select>`.
 - Elements nest and coexist: no globals unless documented, no fixed IDs,

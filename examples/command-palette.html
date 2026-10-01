@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Recipe: command palette</title>
     <link rel="stylesheet" href="recipes.css" />
-    <link rel="stylesheet" href="../src/combo-box/index.css" />
-    <!-- In your own page: https://esm.sh/@johnhenry/domkit/hotkey-dialog/global.mjs, …/combo-box/global.mjs -->
+    <link rel="stylesheet" href="../src/infinite-combo-box/index.css" />
+    <!-- In your own page: https://esm.sh/@johnhenry/domkit/hotkey-dialog/global.mjs, …/infinite-combo-box/global.mjs -->
     <script type="module" src="../src/hotkey-dialog/global.mjs"></script>
-    <script type="module" src="../src/combo-box/global.mjs"></script>
+    <script type="module" src="../src/infinite-combo-box/global.mjs"></script>
     <style>
       #palette-dialog {
         inline-size: min(32rem, 90vw);
@@ -33,7 +33,7 @@
       Press <kbd>⌘K</kbd> / <kbd>Ctrl K</kbd> (or <kbd>/</kbd>) to open it. Type to
       filter, use the arrow keys and <kbd>Enter</kbd> to run a command. <kbd>Esc</kbd>
       closes the list, then clears the text, then closes the dialog. A native
-      <code>&lt;dialog&gt;</code> holds a <code>&lt;combo-box&gt;</code>; a few lines
+      <code>&lt;dialog&gt;</code> holds a <code>&lt;infinite-combo-box&gt;</code>; a few lines
       of script run the chosen command.
     </p>
 
@@ -41,7 +41,7 @@
 
     <hotkey-dialog hotkey="mod+k /">
       <dialog id="palette-dialog" closedby="any" aria-label="Command palette">
-        <combo-box id="palette" aria-label="Command">
+        <infinite-combo-box id="palette" aria-label="Command">
           <input autofocus placeholder="Type a command…" />
           <optgroup label="Page">
             <option value="top">Scroll to top</option>
@@ -53,7 +53,7 @@
             <option value="dark">Switch to dark theme</option>
             <option value="system">Use the system theme</option>
           </optgroup>
-        </combo-box>
+        </infinite-combo-box>
       </dialog>
     </hotkey-dialog>
 

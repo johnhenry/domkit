@@ -29,9 +29,9 @@ const owner: HTMLFormElement | null = select.form;
 select.setCustomValidity("");
 void chosen, many, ok, owner;
 
-// combo-box: value contract + a typed search function.
-import "@johnhenry/domkit/combo-box/global.mjs";
-const combo = document.querySelector("combo-box")!;
+// infinite-combo-box: value contract + a typed search function.
+import "@johnhenry/domkit/infinite-combo-box/global.mjs";
+const combo = document.querySelector("infinite-combo-box")!;
 combo.searchFunction = async (query: string, { signal }: { signal: AbortSignal }) => {
   void signal;
   return [query];
@@ -126,3 +126,13 @@ const fits: boolean = compileQuery("(min-width: 400px)")({ width: 500, height: 1
 const cql = new ContainerQueryList("(min-width: 400px)", document.body);
 const cqlMatches: boolean = cql.matches;
 void fits, cqlMatches;
+
+// infinite-combo-box paging.
+const paged = document.querySelector("infinite-combo-box")!;
+paged.searchFunction = async (query: string, { cursor }: { signal: AbortSignal; cursor: string }) => ({
+  options: [query],
+  next: cursor ? null : "2",
+});
+const more: boolean = paged.hasMore;
+await paged.loadMore();
+void more;
