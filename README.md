@@ -53,7 +53,7 @@ Or skip installing: every path above also works as
 | [combo-box](src/combo-box/readme.md) | Autocomplete input: filters its own options, or searches a URL or function as you type | `<combo-box>` |
 | [hotkey-dialog](src/hotkey-dialog/readme.md) | Toggle a native `<dialog>` with a keyboard shortcut (`mod+k`, `/`) | `<hotkey-dialog>` |
 | [drill-menu](src/drill-menu/readme.md) | A list that drills into sub-screens and back (settings menus, mobile nav), optionally synced to the URL hash | `<drill-menu>` |
-| [code-color](src/code-color/readme.md) | Syntax highlighting for HTML, CSS, or JS | `<code-color>` |
+| [code-color](src/code-color/readme.md) | Syntax highlighting (JS, CSS, HTML) that never changes your markup, themable with CSS | `<code-color>` |
 
 ### Responding to screen size: [`matchable/`](src/matchable/readme.md)
 

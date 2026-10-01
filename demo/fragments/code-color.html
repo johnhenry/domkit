@@ -4,22 +4,20 @@
 <meta charset="utf-8" />
 <style>
   body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
-  pre { font-family: ui-monospace, monospace; padding: 10px; border-radius: 6px; background: #f6f6f6; border: 1px solid #ddd; overflow: auto; }
+  pre { padding: 10px; border-radius: 6px; background: #f6f8fa; border: 1px solid #ddd; overflow: auto; margin: 6px 0; }
 </style>
-<script
-  type="module"
-  src="../../src/code-color/global.mjs"
-></script>
+<link rel="stylesheet" href="../../src/code-color/index.css" />
+<script type="module" src="../../src/code-color/global.mjs"></script>
 </head>
 <body>
-<p>Syntax-highlights its contents, re-highlighting whenever the content
-changes:</p>
-<code-color mode="js">
-<pre>function greet(name) {
-  // say hello
-  return `Hello, ${name}!`;
-}
-console.log(greet("domkit"));</pre>
+<code-color>
+<pre><code class="language-js">// The text is untouched: select and copy it.
+const greet = (name) => `Hello, ${name}!`;
+console.log(greet("domkit"), 42);</code></pre>
+</code-color>
+<code-color language="css">
+<pre contenteditable spellcheck="false">/* Editable: it re-highlights as you type */
+.card:hover { color: #0a3069; padding: 1em !important; }</pre>
 </code-color>
 </body>
 </html>

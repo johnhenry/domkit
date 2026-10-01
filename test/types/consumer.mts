@@ -85,3 +85,11 @@ timer.play();
 const count: number = timer.ticks;
 const isPaused: boolean = timer.paused;
 void count, isPaused;
+
+// code-color.
+import "@johnhenry/domkit/code-color/global.mjs";
+const highlighter = document.querySelector("code-color")!;
+highlighter.language = "css";
+const resolved: string | null = highlighter.resolvedLanguage;
+const found: { type: string; text: string }[] = highlighter.tokens();
+void resolved, found;

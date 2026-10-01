@@ -177,6 +177,21 @@ rebuilt to meet it.
   It used to accept only divisors of 120 up to 60, and assumed a 60Hz
   display. A non-positive `fps` throws `RangeError`.
 
+- **`code-color` rebuilt on the CSS Custom Highlight API**:
+  - It never modifies the DOM. Tokens are ranges painted by
+    `::highlight(domkit-<type>)`, so copy/paste, find-in-page, assistive
+    technology, and editing work as on plain text.
+  - Re-highlights on any text change, including `contenteditable`.
+  - Takes the language from `language`, or a `<code class="language-…">`
+    (Markdown/Prism output). Aliases like `javascript`, `ts`, `json`,
+    `xml`, and `scss` work.
+  - Themable with plain CSS, with `light-dark()` defaults in `index.css`.
+  - A new dependency-free tokenizer (`code-color/tokenize.mjs`) covers
+    JavaScript, CSS (including at-rule preludes and nesting), and HTML
+    (including embedded `<style>`/`<script>`). It never throws.
+  - Removed: the vendored 623-line W3Schools highlighter, its inline
+    color styles, and the `mode` attribute (now `language`).
+
 ## [0.0.9] - 2026-09-30
 
 A shape-and-documentation pass. The modules were reorganized only where the

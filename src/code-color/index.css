@@ -1,0 +1,16 @@
+/* Default colors for <code-color>. Each token type is a named highlight;
+   override any of them with ordinary CSS. Only a few properties are
+   allowed in ::highlight() (color, background-color, text-decoration,
+   text-shadow). light-dark() follows the page's color-scheme. */
+code-color {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+::highlight(domkit-comment) { color: light-dark(#6a737d, #8b949e); }
+::highlight(domkit-keyword) { color: light-dark(#cf222e, #ff7b72); }
+::highlight(domkit-string) { color: light-dark(#0a3069, #a5d6ff); }
+::highlight(domkit-number) { color: light-dark(#0550ae, #79c0ff); }
+::highlight(domkit-function) { color: light-dark(#8250df, #d2a8ff); }
+::highlight(domkit-property) { color: light-dark(#0550ae, #79c0ff); }
+::highlight(domkit-tag) { color: light-dark(#116329, #7ee787); }
+::highlight(domkit-attribute) { color: light-dark(#953800, #ffa657); }

@@ -2,6 +2,22 @@
   "version": 1.1,
   "tags": [
     {
+      "name": "code-color",
+      "description": "Syntax highlighting that never touches your markup.",
+      "attributes": [
+        {
+          "name": "language",
+          "description": "`js`, `css`, or `html` (plus aliases like `javascript`, `ts`, `json`, `xml`). Default: a `language-*` class on a `<code>` inside, else `html`."
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/code-color"
+        }
+      ]
+    },
+    {
       "name": "combo-box",
       "description": "An accessible autocomplete/search input with a popup option list.\n\nEvents: `input`, `error`, `change`, `toggle`",
       "attributes": [
