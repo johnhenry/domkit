@@ -1,0 +1,53 @@
+/* Optional defaults for <combo-box>. The list is positioned under the
+   input; the keyboard-active option has [data-active], the chosen one
+   [aria-selected="true"]. */
+combo-box {
+  --domkit-combo-accent: color-mix(in srgb, currentColor 12%, transparent);
+  position: relative;
+  display: inline-block;
+}
+combo-box > input {
+  font: inherit;
+  inline-size: 100%;
+  box-sizing: border-box;
+}
+combo-box > [role="listbox"] {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 100%;
+  z-index: 1;
+  max-block-size: 16em;
+  overflow-y: auto;
+  margin-block-start: 0.25em;
+  padding: 0.25em;
+  background: Canvas;
+  color: CanvasText;
+  border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+  border-radius: 0.375em;
+  box-shadow: 0 0.5em 1.5em color-mix(in srgb, CanvasText 15%, transparent);
+}
+combo-box > [role="listbox"][aria-busy="true"] {
+  opacity: 0.6;
+}
+combo-box :is(option, [role="option"]) {
+  display: block;
+  padding: 0.375em 0.5em;
+  border-radius: 0.25em;
+  cursor: pointer;
+}
+combo-box :is(option, [role="option"])[data-active] {
+  background: var(--domkit-combo-accent);
+}
+combo-box :is(option, [role="option"])[aria-selected="true"] {
+  font-weight: 600;
+}
+combo-box :is(option, [role="option"])[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+combo-box [data-group-label] {
+  font-size: 0.85em;
+  font-weight: 600;
+  opacity: 0.7;
+  padding: 0.5em 0.5em 0.125em;
+}

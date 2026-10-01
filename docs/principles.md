@@ -77,11 +77,14 @@ Any element that holds a value is **form-associated**
 
 ## 6. Composable
 
-- **Shared contracts across modules.** An element that holds a list of
-  options exposes the same members as `HTMLSelectElement` (`options`,
-  `selectedIndex`, `value`, `size`), so modules that host a list (like
-  `infinite-combo`) accept native `<select>` and `stylable-select`
-  interchangeably.
+- **Shared contracts across modules, modeled on the native ones.** Every
+  element that holds options exposes them as real `<option>` (or
+  `role="option"`) elements, with the same option-value rules, the same
+  `options`/`value` members as `HTMLSelectElement`, the same
+  `[data-active]`/`aria-selected` styling hooks, and the same
+  `input`/`change` timing. `stylable-select` and `combo-box` are
+  interchangeable for code that reads a value or styles options, and
+  either can stand in for a native `<select>`.
 - Elements nest and coexist: no globals unless documented, no fixed IDs,
   and nothing that assumes it's the only instance on the page.
 - Platform features come first. Where the platform now covers a module's

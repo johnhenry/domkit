@@ -15,14 +15,15 @@ export async function mount(page, html, modules = []) {
 }
 
 /**
- * Record events of the given types (from anywhere in the page, captured at
- * the window) into window.__events as [type, target id] pairs.
+ * Record events of the given types that bubble up to the window -- what an
+ * ordinary listener on the element or any ancestor sees -- into
+ * window.__events as [type, target id] pairs.
  */
 export async function recordEvents(page, types) {
   await page.evaluate((types) => {
     window.__events = [];
     for (const type of types) {
-      window.addEventListener(type, (e) => window.__events.push([type, e.target.id]), true);
+      window.addEventListener(type, (e) => window.__events.push([type, e.target.id]));
     }
   }, types);
   return {

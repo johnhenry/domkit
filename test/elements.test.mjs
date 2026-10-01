@@ -8,7 +8,6 @@ import { render, tick } from "./dom.mjs";
 const GLOBALS = {
   "code-color": "code-color",
   "event-consumer": "event-consumer",
-  "infinite-combo": "infinite-combo",
   "internal-timer": "internal-timer",
   "menu-component": "menu-component",
   "tabbed-ui": "tabbed-ui",
@@ -42,34 +41,8 @@ let y = obj.prop;</pre></code-color>`);
   );
 });
 
-// stylable-select (and every form-associated element) is tested only in
+// stylable-select, combo-box (every form-associated element) are tested only in
 // test/browser/: happy-dom has no ElementInternals / attachInternals.
-
-test("infinite-combo replaces options with onsearch's HTML, via a loading placeholder", async () => {
-  globalThis.search = async ({ data }) => {
-    await tick(20);
-    return `<option value="r">result for ${data}</option>`;
-  };
-  render(`<infinite-combo onsearch="search(event)" loading="'<option>loading</option>'">
-    <option value="i">initial</option>
-  </infinite-combo>`);
-  const combo = document.querySelector("infinite-combo");
-  const input = combo.querySelector("input");
-  const list = combo.querySelector("select");
-  input.value = "abc";
-  input.dispatchEvent(new Event("input"));
-  await tick();
-  assert.equal(list.textContent.trim(), "loading");
-  assert.ok(combo.hasAttribute("loading"));
-  await tick(40);
-  assert.equal(list.options.length, 1);
-  assert.equal(list.options[0].textContent, "result for abc");
-  assert.ok(!combo.hasAttribute("loading"));
-  input.value = "";
-  input.dispatchEvent(new Event("input"));
-  await tick();
-  assert.equal(list.options[0].value, "i", "empty input restores the initial options");
-});
 
 test("tabbed-ui shows the clicked tab's panel (full contract: test/browser/tabbed-ui.spec.mjs)", () => {
   render(`<tabbed-ui selected-index="1">

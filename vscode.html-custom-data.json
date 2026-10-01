@@ -2,6 +2,62 @@
   "version": 1.1,
   "tags": [
     {
+      "name": "combo-box",
+      "description": "An accessible autocomplete/search input with a popup option list.\n\nEvents: `input`, `error`, `change`, `toggle`",
+      "attributes": [
+        {
+          "name": "placeholder",
+          "description": "Placeholder for the input."
+        },
+        {
+          "name": "disabled",
+          "description": "Blocks interaction and form submission. Also inherited from a disabled fieldset.",
+          "valueSet": "v"
+        },
+        {
+          "name": "required",
+          "description": "The form is invalid until there's a value.",
+          "valueSet": "v"
+        },
+        {
+          "name": "open",
+          "description": "Whether the option list is showing. Reflects.",
+          "valueSet": "v"
+        },
+        {
+          "name": "value",
+          "description": "Initial value (the value of an option, or text with `allow-custom`)."
+        },
+        {
+          "name": "src",
+          "description": "URL template for remote options; `{query}` is replaced with the encoded text. JSON or HTML responses."
+        },
+        {
+          "name": "name",
+          "description": "Name submitted with the form."
+        },
+        {
+          "name": "debounce",
+          "description": "Milliseconds to wait after typing before searching. Default 0 for local options, 200 for `src`/`searchFunction`."
+        },
+        {
+          "name": "min-length",
+          "description": "Characters needed before searching. Default 0."
+        },
+        {
+          "name": "allow-custom",
+          "description": "Typed text is a valid value even if it matches no option.",
+          "valueSet": "v"
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/combo-box"
+        }
+      ]
+    },
+    {
       "name": "stylable-select",
       "description": "A fully stylable listbox that works like a native select.\n\nEvents: `input`, `change`",
       "attributes": [

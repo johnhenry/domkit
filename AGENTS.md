@@ -111,10 +111,11 @@ module and the principles disagree, the module is wrong.
   when that exact line runs, so they survive `node --check` and casual
   testing: `react` (react-to-dom), `children` (dom-to-React), `cc` and
   `result` (code-color's vendored highlighter, broken since extraction),
-  `loadStr` (infinite-combo), `genSVG` (xy-grapher).
+  `loadStr` (infinite-combo, now combo-box), `genSVG` (xy-grapher).
 - **`@johnhenry/domable`'s `textToDom` returns a `DocumentFragment`, not a
   `NodeList`.** `lib`'s original `text-to-DOM-nodes` returned an iterable
-  `NodeList`. When 0.0.1 switched `infinite-combo` to domable's version,
+  `NodeList`. When 0.0.1 switched `infinite-combo` (now `combo-box`, which
+  no longer uses domable) to domable's version,
   its `append(...nodes)` started throwing on every search, and nobody
   noticed until 0.0.9. Check return shapes when swapping a dependency.
 - **`Event.path` is gone** (Chrome removed it in v109). Use
@@ -171,7 +172,7 @@ module and the principles disagree, the module is wrong.
   *that file's* directory. Import maps are per document, so each demo
   page and each gallery iframe needs its own. domable's exports are flat files, so map exact
   subpaths (`src/simple-element.mjs`), not a prefix. Working examples:
-  `src/infinite-combo/demo.htm`, `src/matchable/*/demo.htm`,
+  `src/matchable/*/demo.htm`,
   `src/definable/define-component-by-content/demo.html`,
   `demo/fragments/shadow-dom.html`.
 - **Things that are NOT in this package**: `simple-element`,
