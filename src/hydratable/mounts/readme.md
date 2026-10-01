@@ -101,5 +101,4 @@ const target = resolveFirst(); // a fresh read of body's current first child
 
 ## See also
 
-- [`@johnhenry/domable`](https://github.com/johnhenry/domable)'s `domToReact`/`reactToDom` — converting between real DOM and React-element-shaped objects (domkit doesn't vendor its own copy of these; domable's is the maintained one)
 - [hydratable](../readme.md) — a generic hydration mixin

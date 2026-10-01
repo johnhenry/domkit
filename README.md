@@ -79,7 +79,6 @@ Or skip installing: every path above also works as
 | [polyfill-window](src/definable/polyfill-window/readme.md) | Load a module onto `window` | `<polyfill-window>` |
 | [until-window-load](src/definable/until-window-load/readme.md) | Hide content until the page has loaded | (strips the `until-window-load` class) |
 | [definetag](src/definable/definetag/readme.md) | Curried `customElements.define` | |
-| [event-consumer](src/event-consumer/readme.md) | Handle (and by default stop) events with inline code | `<event-consumer>` |
 
 ### Timing, collections, and small helpers
 
@@ -110,12 +109,6 @@ any release. A composable canvas pixel pipeline
 SVG), [xy-grapher](src/experimental/xy-grapher/readme.md) (CSS scatter
 plots), and [chernoff-face](src/experimental/chernoff-face/readme.md).
 
-### Deprecated
-
-[shadow-dom](src/shadow-dom/readme.md) is an alias for
-[`@johnhenry/domable`](https://github.com/johnhenry/domable)'s
-`` shadowOpen`<slot />` ``. Use domable directly.
-
 ## How the package is laid out
 
 - **One directory per module**, under `src/`. Related modules are grouped
@@ -134,20 +127,16 @@ plots), and [chernoff-face](src/experimental/chernoff-face/readme.md).
 - **Source is what ships.** There's no build step: modern JS, ES modules
   only.
 
-### Using the raw source without a CDN or bundler
+### No dependencies
 
-Two modules import a package by bare name: `shadow-dom` and
-`definable/define-component-by-content` import
-[`@johnhenry/domable`](https://github.com/johnhenry/domable). esm.sh and bundlers
-resolve those for you. To serve `src/` directly to a browser, add an
-[import map](https://developer.mozilla.org/docs/Web/HTML/Element/script/type/importmap)
-like the one in [`test/browser/fixture.html`](test/browser/fixture.html).
+domkit has no runtime dependencies, so you can serve `src/` directly, copy
+a module's directory into your project, or load it from any CDN, with no
+import map and no build step.
 
 ### Content-Security-Policy
 
-`event-consumer` compiles its `onevent` attribute with `new Function`, so
-it needs `unsafe-eval` under a strict CSP. No other stable module
-evaluates strings.
+No module evaluates strings as code, so domkit works under a strict
+Content-Security-Policy.
 
 ### Editor support
 

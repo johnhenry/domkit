@@ -7,7 +7,6 @@ import { render, tick } from "./dom.mjs";
 
 const GLOBALS = {
   "code-color": "code-color",
-  "event-consumer": "event-consumer",
   "internal-timer": "internal-timer",
   "drill-menu": "drill-menu",
   "tabbed-ui": "tabbed-ui",
@@ -59,20 +58,6 @@ test("tabbed-ui shows the clicked tab's panel (full contract: test/browser/tabbe
   assert.equal(p2.hidden, true);
   assert.equal(b1.getAttribute("aria-selected"), "true");
   assert.equal(document.querySelector("tabbed-ui").getAttribute("selected-index"), "0");
-});
-
-test("event-consumer runs onevent and stops propagation unless `bubbles`", () => {
-  render(`<div id="outer">
-    <event-consumer id="a" events="click" onevent="this.dataset.hit = event.type"><button id="b1"></button></event-consumer>
-    <event-consumer id="c" events="click" onevent="" bubbles><button id="b2"></button></event-consumer>
-  </div>`);
-  let reachedOuter = 0;
-  document.getElementById("outer").addEventListener("click", () => reachedOuter++);
-  document.getElementById("b1").click();
-  assert.equal(document.getElementById("a").dataset.hit, "click");
-  assert.equal(reachedOuter, 0, "stopped by default");
-  document.getElementById("b2").click();
-  assert.equal(reachedOuter, 1, "bubbles attribute lets it through");
 });
 
 test("internal-timer ticks once per period, pauses, and keeps one loop across a move", async () => {

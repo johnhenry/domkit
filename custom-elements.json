@@ -1021,44 +1021,91 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "",
-          "name": "",
+          "description": "Registers a markup-only custom element whose content comes from a\n`<template>` child (or a `content` attribute).",
+          "name": "DefineComponentByContent",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#done",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "method",
+              "name": "#define",
+              "privacy": "private"
+            }
+          ],
+          "events": [
+            {
+              "name": "load",
+              "type": {
+                "text": "Event"
+              },
+              "description": "The element is registered (or the name already was)."
+            },
+            {
+              "name": "error",
+              "type": {
+                "text": "ErrorEvent"
+              },
+              "description": "Missing/invalid name or mode. An `ErrorEvent`."
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The tag name to register.",
+              "name": "name"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The markup, if there's no `<template>` child.",
+              "name": "content"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "`open` (default) or `closed` shadow root, or `none` to append the markup as light DOM.",
+              "name": "mode"
+            }
+          ],
           "superclass": {
-            "module": "src/definable/define-component-by-content/index.mjs"
-          }
-        },
-        {
-          "kind": "function",
-          "name": ""
+            "name": "HTMLElement"
+          },
+          "tagName": "define-component-by-content",
+          "customElement": true,
+          "summary": "Register a markup-only custom element from inline HTML."
         },
         {
           "kind": "variable",
           "name": "name"
         },
         {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
           "kind": "class",
           "description": "",
           "name": "anonymous_0",
-          "mixins": [
+          "members": [
             {
-              "name": "constructSuperclass",
-              "package": "@johnhenry/domable/simple-element"
+              "kind": "field",
+              "name": "#filled",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
             }
           ],
           "superclass": {
-            "module": "src/definable/define-component-by-content/index.mjs"
+            "name": "HTMLElement"
           },
           "tagName": "name",
           "customElement": true
@@ -1069,7 +1116,7 @@
           "kind": "js",
           "name": "default",
           "declaration": {
-            "name": "",
+            "name": "DefineComponentByContent",
             "module": "src/definable/define-component-by-content/index.mjs"
           }
         },
@@ -1088,52 +1135,13 @@
       "path": "src/definable/define-component/index.mjs",
       "declarations": [
         {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "variable",
-          "name": "ElementClass",
-          "default": "module[imp ?? \"default\"]"
-        },
-        {
           "kind": "class",
-          "description": "",
-          "name": "",
+          "description": "Imports a module and registers its export as a custom element. Fires\n`load`/`error` like `<script src>`.",
+          "name": "DefineComponent",
           "members": [
             {
               "kind": "field",
-              "name": "#name",
-              "privacy": "private",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\""
-            },
-            {
-              "kind": "field",
-              "name": "#src",
-              "privacy": "private",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\""
-            },
-            {
-              "kind": "field",
-              "name": "#import",
+              "name": "#ready",
               "privacy": "private",
               "type": {
                 "text": "null"
@@ -1142,33 +1150,81 @@
             },
             {
               "kind": "field",
-              "name": "#force",
-              "privacy": "private",
+              "name": "ready",
+              "description": "Resolves with the registered class once the element is defined; rejects\nif it couldn't be.",
               "type": {
-                "text": "boolean"
+                "text": "Promise<CustomElementConstructor>"
               },
-              "default": "false"
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "#define",
+              "privacy": "private"
+            }
+          ],
+          "events": [
+            {
+              "name": "load",
+              "type": {
+                "text": "Event"
+              },
+              "description": "The element is registered (or the name already was)."
+            },
+            {
+              "description": "The module failed to load, lacked the export, or the export isn't a class. An `ErrorEvent`.",
+              "name": "error"
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The tag name to register.",
+              "name": "name"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "URL of the module, resolved against the document's base URL.",
+              "name": "src"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Name of the export to register. Default `default`.",
+              "name": "import"
             }
           ],
           "superclass": {
-            "module": "src/definable/define-component/index.mjs"
-          }
+            "name": "HTMLElement"
+          },
+          "tagName": "define-component",
+          "customElement": true,
+          "summary": "Register a custom element from a module URL, in HTML."
+        },
+        {
+          "kind": "variable",
+          "name": "name"
         }
       ],
       "exports": [
         {
-          "kind": "custom-element-definition",
-          "name": "name",
+          "kind": "js",
+          "name": "default",
           "declaration": {
-            "name": "ElementClass",
+            "name": "DefineComponent",
             "module": "src/definable/define-component/index.mjs"
           }
         },
         {
-          "kind": "js",
-          "name": "default",
+          "kind": "custom-element-definition",
+          "name": "name",
           "declaration": {
-            "name": "",
+            "name": "exported",
             "module": "src/definable/define-component/index.mjs"
           }
         }
@@ -1201,43 +1257,13 @@
       "path": "src/definable/polyfill-window/index.mjs",
       "declarations": [
         {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
           "kind": "class",
-          "description": "",
-          "name": "",
+          "description": "Imports a module and assigns its export to a global, unless the global\nalready exists. Fires `load`/`error` like `<script src>`.",
+          "name": "PolyfillWindow",
           "members": [
             {
               "kind": "field",
-              "name": "#name",
-              "privacy": "private",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\""
-            },
-            {
-              "kind": "field",
-              "name": "#src",
-              "privacy": "private",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\""
-            },
-            {
-              "kind": "field",
-              "name": "#import",
+              "name": "#ready",
               "privacy": "private",
               "type": {
                 "text": "null"
@@ -1246,26 +1272,64 @@
             },
             {
               "kind": "field",
-              "name": "#force",
-              "privacy": "private",
+              "name": "ready",
+              "description": "Resolves with the global's value once it's in place.",
               "type": {
-                "text": "boolean"
+                "text": "Promise<unknown>"
               },
-              "default": "false"
+              "readonly": true
             },
             {
-              "kind": "field",
-              "name": "#noImport",
-              "privacy": "private",
+              "kind": "method",
+              "name": "#load",
+              "privacy": "private"
+            }
+          ],
+          "events": [
+            {
+              "name": "error",
               "type": {
-                "text": "boolean"
+                "text": "ErrorEvent"
               },
-              "default": "false"
+              "description": "The module failed to load or lacked the export. An `ErrorEvent`."
+            },
+            {
+              "name": "load",
+              "type": {
+                "text": "Event"
+              },
+              "description": "The global is in place (assigned now, or already there)."
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The global to assign (`window[name]`).",
+              "name": "name"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "URL of the module, resolved against the document's base URL.",
+              "name": "src"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Name of the export to assign. Default `default`.",
+              "name": "import"
             }
           ],
           "superclass": {
-            "module": "src/definable/polyfill-window/index.mjs"
-          }
+            "name": "HTMLElement"
+          },
+          "tagName": "polyfill-window",
+          "customElement": true,
+          "summary": "Load a module's export onto window, in HTML."
         }
       ],
       "exports": [
@@ -1273,7 +1337,7 @@
           "kind": "js",
           "name": "default",
           "declaration": {
-            "name": "",
+            "name": "PolyfillWindow",
             "module": "src/definable/polyfill-window/index.mjs"
           }
         }
@@ -1596,53 +1660,6 @@
           "declaration": {
             "name": "DrillMenu",
             "module": "src/drill-menu/index.mjs"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/event-consumer/index.mjs",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "",
-          "name": "",
-          "members": [
-            {
-              "kind": "field",
-              "name": "events",
-              "type": {
-                "text": "array"
-              },
-              "default": "[]"
-            },
-            {
-              "kind": "field",
-              "name": "callback"
-            }
-          ],
-          "attributes": [
-            {
-              "name": "events"
-            },
-            {
-              "name": "onevent"
-            }
-          ],
-          "superclass": {
-            "name": "HTMLElement"
-          },
-          "customElement": true
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "default",
-          "declaration": {
-            "name": "",
-            "module": "src/event-consumer/index.mjs"
           }
         }
       ]
@@ -2285,20 +2302,6 @@
           "declaration": {
             "name": "QueryContainer",
             "module": "src/matchable/query-container/index.mjs"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/shadow-dom/index.mjs",
-      "declarations": [],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "default",
-          "declaration": {
-            "module": "src/shadow-dom/index.mjs"
           }
         }
       ]
