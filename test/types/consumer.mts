@@ -61,3 +61,10 @@ const opened: boolean = drill.push("profile");
 drill.pop();
 drill.screen = null;
 void opened;
+
+// matchable.
+import "@johnhenry/domkit/matchable/query-container/global.mjs";
+import "@johnhenry/domkit/matchable/attribute-provider/global.mjs";
+const qc: HTMLElement | null = document.querySelector("query-container");
+const ap: HTMLElement | null = document.querySelector("attribute-provider");
+void qc, ap;

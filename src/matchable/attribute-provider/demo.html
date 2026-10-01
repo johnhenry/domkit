@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>attribute-provider</title>
+    <script type="module" src="./global.mjs"></script>
+    <style>
+      body { font: 15px/1.5 system-ui, sans-serif; margin: 16px; }
+      .card { border: 1px solid #ccc; border-radius: 8px; padding: 12px; margin-block: 8px; }
+      .compact { padding: 4px; font-size: 0.9em; }
+      .wide { display: inline-block; inline-size: 40%; margin-inline-end: 8px; }
+    </style>
+  </head>
+  <body>
+    <p>Resize the window. The cards keep their own <code>card</code> class and
+    inline color; <code>attribute-provider</code> adds and removes only what
+    its queries say.</p>
+    <attribute-provider
+      classes="[(max-width: 599px)] compact | [(min-width: 600px)] wide"
+      styles="[(orientation: portrait)] border-color: tomato"
+      attributes="[(max-width: 599px)] title=Narrow window"
+    >
+      <div class="card" style="color: navy">One</div>
+      <div class="card" style="color: navy">Two</div>
+    </attribute-provider>
+    <attribute-provider attributes="[(max-width: 599px)] disabled; placeholder='Widen the window to type'">
+      <input placeholder="Type here" />
+    </attribute-provider>
+  </body>
+</html>

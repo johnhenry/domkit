@@ -9,11 +9,15 @@ Part of [matchable](../readme.md), which describes the shared query
 grammar. Compare [query-container](../query-container/readme.md), which
 swaps the wrapping element instead of styling the children.
 
-> **`classes` and `styles` replace, they don't merge.** On every update,
-> each child's entire `class` list is replaced by the matching sections'
-> classes, and its entire `style` attribute by the matching declarations.
-> Classes or inline styles written on the children in markup are lost.
-> Put anything permanent in a bracket-less section, which always applies.
+It only ever **adds** to what the children already have, and remembers
+what it changed: when a query stops matching, its classes are removed,
+and inline styles and attributes go back to their original values. The
+children's own classes, styles, and attributes are never lost.
+
+> **Do you need it?** For pure styling, CSS `@media` and `@container`
+> rules are simpler. Use `attribute-provider` when the thing that should
+> change isn't a style: utility classes from a CSS framework, or
+> attributes like `hidden`, `disabled`, `placeholder`, or `aria-*`.
 
 ## Attributes
 
@@ -23,8 +27,8 @@ Each of `classes`/`styles`/`attributes` accepts one or more
 
 ### `classes`
 
-Space-delimited class names per section. Classes reset automatically when
-no longer matched.
+Space-delimited class names per section. Removed when no longer matched
+(unless the child had the class to begin with).
 
 ```html
 <attribute-provider
@@ -40,8 +44,9 @@ no longer matched.
 
 ### `styles`
 
-Semicolon-delimited `property:value` declarations per section. Styles
-reset automatically when no longer matched.
+Semicolon-delimited `property: value` declarations per section
+(`!important` is honored). Restored to the child's own inline value when
+no longer matched.
 
 ```html
 <attribute-provider
@@ -56,10 +61,10 @@ reset automatically when no longer matched.
 
 ### `attributes`
 
-Semicolon-delimited `name=value` pairs per section. Use `null` (no quotes)
-to remove an attribute. **Attributes do NOT reset automatically** —
-unlike `classes`/`styles`, every query case must explicitly say what to do
-with each attribute.
+Semicolon-delimited `name=value` pairs per section. A bare `name` sets an
+empty (boolean) attribute, values can be quoted, and `name=null` *removes*
+the attribute while the query matches. When the query stops matching,
+each attribute goes back to its original value (or absence).
 
 ```html
 <attribute-provider

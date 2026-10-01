@@ -41,8 +41,4 @@ import "@johnhenry/domkit/matchable/query-container/global.mjs";
 import "@johnhenry/domkit/matchable/attribute-provider/global.mjs";
 ```
 
-`query-container` depends on [`parsel-js`](https://github.com/LeaVerou/parsel)
-(a real npm dependency of this package) to parse its selector values. If
-you load the raw source in a browser without a CDN or bundler, map that
-bare specifier with an import map, as these demos do:
-[`query-container/demo.htm`](./query-container/demo.htm).
+Neither element has any dependency, so no import map is needed.

@@ -136,13 +136,12 @@ plots), and [chernoff-face](src/experimental/chernoff-face/readme.md).
 
 ### Using the raw source without a CDN or bundler
 
-Three modules import packages by bare name: `shadow-dom` and
+Two modules import a package by bare name: `shadow-dom` and
 `definable/define-component-by-content` import
-[`@johnhenry/domable`](https://github.com/johnhenry/domable), and
-`matchable/query-container` imports `parsel-js`. esm.sh and bundlers
+[`@johnhenry/domable`](https://github.com/johnhenry/domable). esm.sh and bundlers
 resolve those for you. To serve `src/` directly to a browser, add an
 [import map](https://developer.mozilla.org/docs/Web/HTML/Element/script/type/importmap)
-like the one in [`src/matchable/query-container/demo.htm`](src/matchable/query-container/demo.htm).
+like the one in [`test/browser/fixture.html`](test/browser/fixture.html).
 
 ### Content-Security-Policy
 

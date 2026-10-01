@@ -43,23 +43,27 @@ From 900px they're in a blue `<ol>`, and below 600px in a plain `<ul>`.
 
 ## Wrapper selectors
 
-Each wrapper is written as a simple CSS selector and parsed with
-[`parsel-js`](https://github.com/LeaVerou/parsel):
+Each wrapper is written as one compound CSS selector describing the
+element to create:
 
 | Part | Becomes |
 |---|---|
 | `ol` | the tag (`template` if there's no tag at all) |
 | `#id` | `id` |
 | `.a.b` | classes |
-| `[name=value]` | attributes, e.g. `[style=color:blue]` |
+| `[name=value]`, `[name="quoted value"]`, `[name]` | attributes. Unquoted values run to the `]`, so `[style=color:blue;font-weight:bold]` works |
 
 Use `template` as a wrapper to make the children inert (not rendered) for
 some breakpoints.
 
 ## Notes
 
-- Nesting works. A `query-container` can wrap others, as `demo.htm` does
+- Nesting works. A `query-container` can wrap others, as `demo.html` does
   to build a `<dl>` from nested `<dt>`/`<dd>` containers on wide screens.
 - Children added later are moved into the current wrapper automatically.
-- When loading the raw source in a browser without a bundler or CDN, the
-  bare `parsel-js` import needs an import map (see `demo.htm`).
+- Combinators and pseudo-classes (`ul > li`, `:hover`) aren't
+  supported: a wrapper is one element.
+- **Do you need it?** To restyle the same element, use CSS `@media` or
+  `@container`. `query-container` is for when the *element itself*
+  should change, because the semantics differ (a list vs. numbered steps,
+  a `<dl>` vs. paragraphs).

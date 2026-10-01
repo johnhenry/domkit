@@ -2024,47 +2024,62 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "",
-          "name": "",
+          "description": "Applies classes, inline styles, and attributes to its direct children\nwhile media queries match, restoring what was there when they stop.",
+          "name": "AttributeProvider",
           "members": [
             {
               "kind": "field",
-              "name": "#classes",
-              "privacy": "private"
+              "name": "#sections",
+              "privacy": "private",
+              "type": {
+                "text": "object"
+              },
+              "default": "{ classes: [], styles: [], attributes: [] }"
             },
             {
               "kind": "field",
-              "name": "#styles",
-              "privacy": "private"
-            },
-            {
-              "kind": "field",
-              "name": "#attributes",
+              "name": "#onChange",
               "privacy": "private"
             },
             {
               "kind": "field",
               "name": "#observer",
               "privacy": "private",
-              "default": "new globalThis.MutationObserver(this.setAll.bind(this))"
+              "default": "new MutationObserver(() => this.#apply())"
             },
             {
               "kind": "field",
-              "name": "#mediaMatches",
+              "name": "#addedClasses",
               "privacy": "private",
-              "type": {
-                "text": "object"
-              },
-              "default": "{}"
+              "default": "new WeakMap()"
             },
             {
               "kind": "field",
-              "name": "#handlers",
+              "name": "#savedStyles",
               "privacy": "private",
-              "type": {
-                "text": "object"
-              },
-              "default": "{ classes: () => this.triggerClass(), styles: () => this.triggerStyle(), attributes: () => this.triggerAttribute(), }"
+              "default": "new WeakMap()"
+            },
+            {
+              "kind": "field",
+              "name": "#savedAttributes",
+              "privacy": "private",
+              "default": "new WeakMap()"
+            },
+            {
+              "kind": "field",
+              "name": "#touched",
+              "privacy": "private",
+              "default": "new Set()"
+            },
+            {
+              "kind": "method",
+              "name": "#parse",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "kind"
+                }
+              ]
             },
             {
               "kind": "method",
@@ -2072,116 +2087,99 @@
               "privacy": "private",
               "parameters": [
                 {
-                  "name": "key"
+                  "name": "kind"
                 }
               ]
             },
             {
               "kind": "method",
-              "name": "setClasses"
-            },
-            {
-              "kind": "method",
-              "name": "setStyles"
-            },
-            {
-              "kind": "method",
-              "name": "setAttributes"
-            },
-            {
-              "kind": "method",
-              "name": "triggerClass"
-            },
-            {
-              "kind": "method",
-              "name": "triggerStyle"
-            },
-            {
-              "kind": "method",
-              "name": "triggerAttribute"
-            },
-            {
-              "kind": "method",
-              "name": "setAll"
+              "name": "#active",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "kind"
+                }
+              ]
             },
             {
               "kind": "field",
-              "name": "kids",
+              "name": "#children",
+              "privacy": "private",
               "readonly": true
             },
             {
               "kind": "method",
-              "name": "getByKey",
+              "name": "#apply",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#restore",
+              "privacy": "private",
               "parameters": [
                 {
-                  "name": "key"
+                  "name": "child"
+                },
+                {
+                  "name": "classes"
+                },
+                {
+                  "name": "styles"
+                },
+                {
+                  "name": "attributes"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#applyTo",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "child"
+                },
+                {
+                  "name": "classes"
+                },
+                {
+                  "name": "styles"
+                },
+                {
+                  "name": "attributes"
                 }
               ]
             }
           ],
           "attributes": [
             {
-              "name": "classes"
+              "name": "classes",
+              "type": {
+                "text": "string"
+              },
+              "description": "`[media query] class class | …` sections. Bracket-less sections always apply."
             },
             {
-              "name": "styles"
+              "name": "styles",
+              "type": {
+                "text": "string"
+              },
+              "description": "`[media query] property: value; … | …` sections."
             },
             {
-              "name": "attributes"
+              "name": "attributes",
+              "type": {
+                "text": "string"
+              },
+              "description": "`[media query] name=value; name; name=null | …` sections. `null` removes the attribute while the query matches."
             }
           ],
           "superclass": {
             "name": "HTMLElement"
           },
-          "customElement": true
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
+          "tagName": "attribute-provider",
+          "customElement": true,
+          "summary": "Add classes, styles, and attributes to children by media query."
         }
       ],
       "exports": [
@@ -2189,7 +2187,7 @@
           "kind": "js",
           "name": "default",
           "declaration": {
-            "name": "",
+            "name": "AttributeProvider",
             "module": "src/matchable/attribute-provider/index.mjs"
           }
         }
@@ -2200,29 +2198,9 @@
       "path": "src/matchable/query-container/index.mjs",
       "declarations": [
         {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
           "kind": "class",
-          "description": "",
-          "name": "",
+          "description": "Wraps its children in a different element depending on media queries:\nthe same items in a `<ul>` on small screens and an `<ol>` on large ones.",
+          "name": "QueryContainer",
           "members": [
             {
               "kind": "field",
@@ -2278,28 +2256,26 @@
           ],
           "attributes": [
             {
-              "name": "default"
+              "name": "default",
+              "type": {
+                "text": "string"
+              },
+              "description": "Wrapper when no query matches, as a simple selector (`ul`, `ol.steps`, `div#x[data-y=z]`). Defaults to the first section's."
             },
             {
-              "name": "query"
+              "name": "query",
+              "type": {
+                "text": "string"
+              },
+              "description": "`[media query] selector` sections separated by `|`. The last matching section wins."
             }
           ],
           "superclass": {
             "name": "HTMLElement"
           },
-          "customElement": true
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
+          "tagName": "query-container",
+          "customElement": true,
+          "summary": "Swap the element wrapping some content by media query."
         }
       ],
       "exports": [
@@ -2307,7 +2283,7 @@
           "kind": "js",
           "name": "default",
           "declaration": {
-            "name": "",
+            "name": "QueryContainer",
             "module": "src/matchable/query-container/index.mjs"
           }
         }

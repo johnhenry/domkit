@@ -43,8 +43,7 @@
     "node": ">=26.0.0"
   },
   "dependencies": {
-    "@johnhenry/domable": "^0.0.1",
-    "parsel-js": "^1.2.3"
+    "@johnhenry/domable": "^0.0.1"
   },
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "^0.11.0",
