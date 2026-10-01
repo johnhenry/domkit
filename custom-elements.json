@@ -1484,6 +1484,24 @@
             },
             {
               "kind": "field",
+              "name": "#shown",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#invalidHandled",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
               "name": "#hid",
               "privacy": "private",
               "default": "new Set()"
@@ -1622,6 +1640,26 @@
               "parameters": [
                 {
                   "name": "key"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#liveScreenOf",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "item"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#hasScreen",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "item"
                 }
               ]
             },

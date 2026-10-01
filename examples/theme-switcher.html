@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Recipe: theme switcher</title>
+    <link rel="stylesheet" href="recipes.css" />
+    <!-- In your own page: https://esm.sh/@johnhenry/domkit/cyclable/class-cycler/global.mjs -->
+    <script type="module" src="../src/cyclable/class-cycler/global.mjs"></script>
+    <style>
+      /* recipes.css sets `color-scheme: light dark` on :root, so "system"
+         needs no CSS at all: html.light / html.dark override it. */
+      .switcher { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+    </style>
+  </head>
+  <body>
+    <h1>Theme switcher</h1>
+    <p class="lede">
+      Light, dark, or follow the system: remembered across visits and
+      synced across open tabs. One element, no script.
+    </p>
+
+    <class-cycler id="theme" target="html" classes="system,light,dark" storage-key="recipe-theme">
+      <div class="switcher" role="group" aria-label="Theme">
+        <button type="button" value="system">System</button>
+        <button type="button" value="light">Light</button>
+        <button type="button" value="dark">Dark</button>
+      </div>
+      <p>Current theme: <output></output></p>
+    </class-cycler>
+
+    <div class="panel">
+      <p>
+        Each button with a <code>value</code> sets that theme and gets
+        <code>aria-pressed</code>, so together they're an accessible toggle
+        group. A button anywhere else can drive the same element with an
+        invoker command:
+      </p>
+      <button type="button" commandfor="theme" command="--next">Next theme ↻</button>
+    </div>
+
+    <p class="source">
+      The whole recipe is the <code>&lt;class-cycler&gt;</code> above plus
+      <code>color-scheme</code> in CSS. Open this page in a second tab and
+      switch themes in one of them.
+    </p>
+  </body>
+</html>

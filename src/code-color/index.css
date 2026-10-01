@@ -2,7 +2,7 @@
    override any of them with ordinary CSS. Only a few properties are
    allowed in ::highlight() (color, background-color, text-decoration,
    text-shadow). light-dark() follows the page's color-scheme. */
-code-color {
+code-color:not([hidden]) {
   display: block;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }

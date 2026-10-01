@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Recipe: command palette</title>
+    <link rel="stylesheet" href="recipes.css" />
+    <link rel="stylesheet" href="../src/combo-box/index.css" />
+    <!-- In your own page: https://esm.sh/@johnhenry/domkit/hotkey-dialog/global.mjs, …/combo-box/global.mjs -->
+    <script type="module" src="../src/hotkey-dialog/global.mjs"></script>
+    <script type="module" src="../src/combo-box/global.mjs"></script>
+    <style>
+      #palette-dialog {
+        inline-size: min(32rem, 90vw);
+        margin-block-start: 15vh;
+        padding: 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: 0.75em;
+        background: Canvas;
+        color: CanvasText;
+      }
+      #palette-dialog::backdrop { background: rgb(0 0 0 / 0.35); }
+      #palette { display: block; }
+      #palette > input { inline-size: 100%; font-size: 1.1rem; padding: 0.6em 0.8em; }
+      /* In a palette the list sits in the dialog, not floating over the page. */
+      #palette > [role="listbox"] { position: static; box-shadow: none; border: none; max-block-size: 50vh; }
+      #log { min-block-size: 3em; }
+    </style>
+  </head>
+  <body>
+    <h1>Command palette</h1>
+    <p class="lede">
+      Press <kbd>⌘K</kbd> / <kbd>Ctrl K</kbd> (or <kbd>/</kbd>) to open it. Type to
+      filter, use the arrow keys and <kbd>Enter</kbd> to run a command. <kbd>Esc</kbd>
+      closes the list, then clears the text, then closes the dialog. A native
+      <code>&lt;dialog&gt;</code> holds a <code>&lt;combo-box&gt;</code>; a few lines
+      of script run the chosen command.
+    </p>
+
+    <p><button type="button" commandfor="palette-dialog" command="show-modal" aria-keyshortcuts="Meta+K Control+K /">Open palette</button></p>
+
+    <hotkey-dialog hotkey="mod+k /">
+      <dialog id="palette-dialog" closedby="any" aria-label="Command palette">
+        <combo-box id="palette" aria-label="Command">
+          <input autofocus placeholder="Type a command…" />
+          <optgroup label="Page">
+            <option value="top">Scroll to top</option>
+            <option value="print">Print this page</option>
+            <option value="copy-link">Copy link to this page</option>
+          </optgroup>
+          <optgroup label="Appearance">
+            <option value="light">Switch to light theme</option>
+            <option value="dark">Switch to dark theme</option>
+            <option value="system">Use the system theme</option>
+          </optgroup>
+        </combo-box>
+      </dialog>
+    </hotkey-dialog>
+
+    <div class="panel"><strong>Last command:</strong> <output id="log">(none yet)</output></div>
+
+    <script type="module">
+      const palette = document.getElementById("palette");
+      const dialog = document.getElementById("palette-dialog");
+      const commands = {
+        top: () => scrollTo({ top: 0, behavior: "smooth" }),
+        print: () => print(),
+        "copy-link": () => navigator.clipboard?.writeText(location.href),
+        light: () => (document.documentElement.className = "light"),
+        dark: () => (document.documentElement.className = "dark"),
+        system: () => (document.documentElement.className = ""),
+      };
+      palette.addEventListener("change", () => {
+        const command = palette.value;
+        if (!command) return;
+        document.getElementById("log").value = palette.selectedOption.textContent;
+        dialog.close();
+        palette.value = ""; // ready for next time
+        commands[command]?.();
+      });
+    </script>
+  </body>
+</html>

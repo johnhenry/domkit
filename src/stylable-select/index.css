@@ -1,7 +1,7 @@
 /* Optional defaults for <stylable-select>. Selected options match
    `option:checked` (and `[aria-selected="true"]` for role="option"
    elements); the keyboard-active option has `[data-active]`. */
-stylable-select {
+stylable-select:not([hidden]) {
   --domkit-select-accent: color-mix(in srgb, currentColor 15%, transparent);
   display: block;
   overflow-y: auto;
@@ -15,12 +15,12 @@ stylable-select:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 2px;
 }
-stylable-select optgroup {
+stylable-select optgroup:not([hidden]) {
   display: block;
   font-weight: 600;
   padding: 0.25em 0.5em 0;
 }
-stylable-select :is(option, [role="option"]) {
+stylable-select :is(option, [role="option"]):not([hidden]) {
   display: block;
   min-block-size: 2em;
   line-height: 2em;

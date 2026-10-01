@@ -132,3 +132,46 @@ test("invoker commands --push and --back, where supported", async ({ page }) => 
   await page.locator("#up").click();
   expect((await state(page)).screen).toBe(null);
 });
+
+test("live data-screen children keep their state and submit with the form", async ({ page }) => {
+  await mount(
+    page,
+    `<form id="f"><drill-menu id="m">
+       <button type="button" data-key="name">Name</button>
+       <button type="button" data-key="color">Color</button>
+       <section data-screen="name"><label>Name <input name="name" id="name" /></label><button type="button" data-back>Back</button></section>
+       <section data-screen="color" aria-label="Pick a color"><input name="color" value="teal" /><button type="button" data-back>Back</button></section>
+     </drill-menu></form>`,
+    MODULES,
+  );
+  await expect(page.locator("section[data-screen]").first()).toBeHidden();
+  expect(await page.evaluate(() => document.getElementById("m").items.length), "screens aren't items").toBe(2);
+  await page.getByRole("button", { name: "Name" }).click();
+  await expect(page.locator("#name")).toBeFocused();
+  await page.locator("#name").fill("Ada");
+  await page.getByRole("button", { name: "Back" }).first().click();
+  await page.getByRole("button", { name: "Name" }).click();
+  await expect(page.locator("#name"), "the value survived navigating away").toHaveValue("Ada");
+  await expect(page.getByRole("region", { name: "Name" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  expect(await page.evaluate(() => [...new FormData(document.getElementById("f"))])).toEqual([["name", "Ada"], ["color", "teal"]]);
+  await page.getByRole("button", { name: "Color" }).click();
+  await expect(page.getByRole("region", { name: "Pick a color" }), "an authored label is kept").toBeVisible();
+});
+
+test("submitting with an invalid field in a hidden screen opens that screen", async ({ page }) => {
+  await mount(
+    page,
+    `<form id="f"><drill-menu id="m">
+       <button type="button" data-key="a">A</button>
+       <button type="button" data-key="b">B</button>
+       <section data-screen="a"><input name="x" /></section>
+       <section data-screen="b"><input name="required-one" id="req" required /></section>
+     </drill-menu><button id="save">Save</button></form>`,
+    MODULES,
+  );
+  await page.locator("#save").click();
+  expect(await page.evaluate(() => document.getElementById("m").screen)).toBe("b");
+  await expect(page.locator("#req")).toBeVisible();
+  await expect(page.locator("#req"), "the browser can focus it to show the message").toBeFocused();
+});

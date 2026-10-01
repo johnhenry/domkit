@@ -1,13 +1,13 @@
 /* Optional defaults for <tabbed-ui>. Everything is overridable with plain
    CSS; the custom properties are the quick knobs. */
-tabbed-ui {
+tabbed-ui:not([hidden]) {
   --domkit-tab-gap: 0.25rem;
   --domkit-tab-padding: 0.5em 1em;
   --domkit-tab-accent: currentColor;
   --domkit-tab-border: color-mix(in srgb, currentColor 25%, transparent);
   display: block;
 }
-tabbed-ui > [role="tablist"] {
+tabbed-ui > [role="tablist"]:not([hidden]) {
   display: flex;
   gap: var(--domkit-tab-gap);
   border-bottom: 1px solid var(--domkit-tab-border);

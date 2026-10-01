@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Recipe: game loop</title>
+    <link rel="stylesheet" href="recipes.css" />
+    <!-- In your own page: https://esm.sh/@johnhenry/domkit/frame-timer/global.mjs -->
+    <script type="module" src="../src/frame-timer/global.mjs"></script>
+    <style>
+      #field { position: relative; block-size: 12rem; border: 1px solid var(--border); border-radius: 0.6em; overflow: hidden; background: var(--surface); }
+      #ball { position: absolute; inline-size: 1.5rem; block-size: 1.5rem; border-radius: 50%; background: var(--accent); }
+      .controls { display: flex; gap: 0.5rem; align-items: center; margin-block: 1rem; flex-wrap: wrap; }
+    </style>
+  </head>
+  <body>
+    <h1>Game loop</h1>
+    <p class="lede">
+      A bouncing ball driven by <code>&lt;frame-timer&gt;</code>: the loop, its
+      pacing, and play/pause come from the element, so the script is only the
+      physics. It stops by itself while the tab is hidden.
+    </p>
+
+    <frame-timer id="clock" fps="60"></frame-timer>
+    <div id="field"><div id="ball"></div></div>
+
+    <div class="controls">
+      <button type="button" id="toggle" aria-pressed="false">Pause</button>
+      <label>Speed
+        <select id="fps">
+          <option value="15">15 fps</option>
+          <option value="30">30 fps</option>
+          <option value="60" selected>60 fps</option>
+        </select>
+      </label>
+      <span>Ticks: <output id="ticks">0</output></span>
+    </div>
+
+    <script type="module">
+      const clock = document.getElementById("clock");
+      const field = document.getElementById("field");
+      const ball = document.getElementById("ball");
+      let x = 20, y = 20, dx = 3, dy = 2;
+      clock.addEventListener("tick", () => {
+        const maxX = field.clientWidth - ball.offsetWidth;
+        const maxY = field.clientHeight - ball.offsetHeight;
+        x += dx; y += dy;
+        if (x < 0 || x > maxX) dx = -dx;
+        if (y < 0 || y > maxY) dy = -dy;
+        ball.style.translate = `${Math.max(0, Math.min(x, maxX))}px ${Math.max(0, Math.min(y, maxY))}px`;
+        document.getElementById("ticks").value = clock.ticks;
+      });
+      // The button follows the clock's own play/pause events.
+      const toggle = document.getElementById("toggle");
+      clock.addEventListener("pause", () => { toggle.textContent = "Play"; toggle.setAttribute("aria-pressed", "true"); });
+      clock.addEventListener("play", () => { toggle.textContent = "Pause"; toggle.setAttribute("aria-pressed", "false"); });
+      toggle.onclick = () => (clock.paused ? clock.play() : clock.pause());
+      document.getElementById("fps").onchange = (event) => (clock.fps = event.target.value);
+    </script>
+  </body>
+</html>
