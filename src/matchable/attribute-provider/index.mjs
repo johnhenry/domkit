@@ -3,6 +3,7 @@
 // when they stop matching -- without disturbing anything the children
 // already had. See readme.md.
 import { parseQuerySections } from "../query-sections.mjs";
+import { containerFor } from "../container-query.mjs";
 
 const stripQuotes = (string) => {
   for (const quote of ["'", '"', "`"]) {
@@ -49,9 +50,10 @@ const parsers = {
  * @attr {string} classes - `[media query] class class | …` sections. Bracket-less sections always apply.
  * @attr {string} styles - `[media query] property: value; … | …` sections.
  * @attr {string} attributes - `[media query] name=value; name; name=null | …` sections. `null` removes the attribute while the query matches.
+ * @attr {string} container - Container mode: evaluate the queries against an element's size instead of the viewport. Empty = the parent element; otherwise a selector for the closest matching ancestor.
  */
 export default class AttributeProvider extends HTMLElement {
-  static observedAttributes = ["classes", "styles", "attributes"];
+  static observedAttributes = ["classes", "styles", "attributes", "container"];
 
   #sections = { classes: [], styles: [], attributes: [] };
   #onChange = () => this.#apply();
@@ -75,13 +77,15 @@ export default class AttributeProvider extends HTMLElement {
 
   attributeChangedCallback(name) {
     if (!this.isConnected) return;
-    this.#parse(name);
+    if (name === "container") for (const kind of Object.keys(parsers)) this.#parse(kind);
+    else this.#parse(name);
     this.#apply();
   }
 
   #parse(kind) {
     this.#release(kind);
-    this.#sections[kind] = parseQuerySections(this.getAttribute(kind) ?? "").map(({ mql, value }) => {
+    const container = containerFor(this);
+    this.#sections[kind] = parseQuerySections(this.getAttribute(kind) ?? "", { container }).map(({ mql, value }) => {
       mql.addEventListener("change", this.#onChange);
       return { mql, items: parsers[kind](value) };
     });

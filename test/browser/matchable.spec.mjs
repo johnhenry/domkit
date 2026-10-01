@@ -137,3 +137,73 @@ test.describe("attribute-provider", () => {
     await expect.poll(() => read(page).then((r) => r.classes)).toEqual(["card", "base", "narrow"]);
   });
 });
+
+test.describe("container mode", () => {
+  const setWidth = (page, id, px) => page.evaluate(([id, px]) => (document.getElementById(id).style.width = `${px}px`), [id, px]);
+
+  test("query-container follows its parent's width, not the viewport", async ({ page }) => {
+    await page.setViewportSize(WIDE);
+    await mount(
+      page,
+      `<div id="box" style="width: 300px">
+         <query-container id="q" container default="ul" query="[(min-width: 400px)] ol.wide"><li>a</li></query-container>
+       </div>`,
+      MODULES,
+    );
+    const tag = () => page.evaluate(() => document.getElementById("q").firstElementChild.localName);
+    expect(await tag(), "a 1000px viewport doesn't matter; the 300px box does").toBe("ul");
+    await setWidth(page, "box", 500);
+    await expect.poll(tag).toBe("ol");
+    await setWidth(page, "box", 300);
+    await expect.poll(tag).toBe("ul");
+  });
+
+  test("a selector picks the closest matching ancestor; range syntax and em work", async ({ page }) => {
+    await mount(
+      page,
+      `<section id="card" style="width: 300px; font-size: 20px"><div><div>
+         <attribute-provider id="ap" container="#card" classes="[(width >= 20em)] roomy | [(width < 20em)] cramped"><p id="p"></p></attribute-provider>
+       </div></div></section>`,
+      MODULES,
+    );
+    const classes = () => page.evaluate(() => document.getElementById("p").className);
+    expect(await classes()).toBe("cramped");
+    await setWidth(page, "card", 400);
+    await expect.poll(classes).toBe("roomy");
+  });
+
+  test("re-resolves its container after a move, and stops observing when removed", async ({ page }) => {
+    await mount(
+      page,
+      `<div id="small" style="width: 200px"><query-container id="q" container default="ul" query="[(min-width: 400px)] ol"><li>a</li></query-container></div>
+       <div id="large" style="width: 600px"></div>`,
+      MODULES,
+    );
+    const tag = () => page.evaluate(() => document.getElementById("q").firstElementChild.localName);
+    expect(await tag()).toBe("ul");
+    await page.evaluate(() => document.getElementById("large").append(document.getElementById("q")));
+    await expect.poll(tag).toBe("ol");
+    // removed: resizing its old container must not throw or update it
+    const errors = [];
+    page.on("pageerror", (e) => errors.push(e.message));
+    await page.evaluate(() => document.getElementById("q").remove());
+    await setWidth(page, "large", 100);
+    await page.waitForTimeout(100);
+    expect(errors).toEqual([]);
+  });
+
+  test("toggling the container attribute switches between viewport and container", async ({ page }) => {
+    await page.setViewportSize(WIDE);
+    await mount(
+      page,
+      `<div style="width: 300px"><query-container id="q" default="ul" query="[(min-width: 400px)] ol"><li>a</li></query-container></div>`,
+      MODULES,
+    );
+    const tag = () => page.evaluate(() => document.getElementById("q").firstElementChild.localName);
+    expect(await tag(), "viewport mode: 1000px matches").toBe("ol");
+    await page.evaluate(() => document.getElementById("q").setAttribute("container", ""));
+    await expect.poll(tag).toBe("ul");
+    await page.evaluate(() => document.getElementById("q").removeAttribute("container"));
+    await expect.poll(tag).toBe("ol");
+  });
+});

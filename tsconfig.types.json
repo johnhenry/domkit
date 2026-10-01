@@ -30,6 +30,7 @@
     "src/hydratable/mounts/first.mjs",
     "src/hydratable/mounts/last.mjs",
     "src/hydratable/mounts/unmount.mjs",
-    "src/code-color/tokenize.mjs"
+    "src/code-color/tokenize.mjs",
+    "src/matchable/container-query.mjs"
   ]
 }

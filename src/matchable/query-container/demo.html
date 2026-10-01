@@ -32,5 +32,16 @@
       <query-container default="p" query="[(min-width: 600px)] dt">Height</query-container>
       <query-container default="p" query="[(min-width: 600px)] dd">How tall the window is.</query-container>
     </query-container>
+
+    <h2>Container mode: drag the box's corner</h2>
+    <p>With <code>container</code>, the same query is measured against the
+    box, not the window.</p>
+    <div style="resize: horizontal; overflow: auto; width: 320px; min-width: 150px; max-width: 100%; border: 1px dashed #999; padding: 8px">
+      <query-container container default="ul" query="[(min-width: 400px)] ol.steps">
+        <li>Measure the box</li>
+        <li>Swap the wrapper at 400px</li>
+        <li>Keep the content</li>
+      </query-container>
+    </div>
   </body>
 </html>

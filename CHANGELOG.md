@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+
+- **Container mode for `matchable`.** A `container` attribute on
+  `query-container` and `attribute-provider` evaluates their queries
+  against an element's size instead of the viewport: the parent, or the
+  closest ancestor matching a selector (`container=".card"`). The grammar
+  covers `min-`/`max-` width and height (and logical sizes), range syntax
+  (`400px <= width < 800px`), `orientation`, `aspect-ratio`,
+  `and`/`or`/`not`/commas, and `px`/`em`/`rem`. Sizes are tracked with one
+  shared `ResizeObserver`, containers are unobserved when nothing listens,
+  and the container is looked up again after a move.
+  `matchable/container-query.mjs` exports the evaluator (`compileQuery`)
+  and the `MediaQueryList`-shaped `ContainerQueryList`.
+
 ## [0.1.0] - 2026-09-30
 
 The library-wide upgrade, and the first release with a stability

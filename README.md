@@ -62,6 +62,9 @@ Or skip installing: every path above also works as
 | [query-container](src/matchable/query-container/readme.md) | Change the element that wraps content (`ul` → `ol`, …) by media query | `<query-container>` |
 | [attribute-provider](src/matchable/attribute-provider/readme.md) | Change children's classes, styles, and attributes by media query | `<attribute-provider>` |
 
+Both also have a **container mode** (`container` attribute): the same
+queries, evaluated against an element's size instead of the viewport.
+
 ### Remembering a user's choice (e.g. a theme toggle): [`cyclable/`](src/cyclable/readme.md)
 
 | Module | What it's for | `global.mjs` registers |

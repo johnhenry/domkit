@@ -2452,6 +2452,13 @@
                 "text": "string"
               },
               "description": "`[media query] name=value; name; name=null | …` sections. `null` removes the attribute while the query matches."
+            },
+            {
+              "name": "container",
+              "type": {
+                "text": "string"
+              },
+              "description": "Container mode: evaluate the queries against an element's size instead of the viewport. Empty = the parent element; otherwise a selector for the closest matching ancestor."
             }
           ],
           "superclass": {
@@ -2548,6 +2555,13 @@
                 "text": "string"
               },
               "description": "`[media query] selector` sections separated by `|`. The last matching section wins."
+            },
+            {
+              "name": "container",
+              "type": {
+                "text": "string"
+              },
+              "description": "Container mode: evaluate the queries against an element's size instead of the viewport. Empty = the parent element; otherwise a selector for the closest matching ancestor."
             }
           ],
           "superclass": {
