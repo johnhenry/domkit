@@ -3,7 +3,7 @@
 // variable that was never declared, which only throws (a ReferenceError
 // under module strict mode) when that exact line runs: `react` in
 // react-to-dom, `children` in dom-to-React, `cc`/`result` in code-color's
-// highlighter, `loadStr` in infinite-combo (now combo-box), `genSVG` in xy-grapher.
+// highlighter, `loadStr` in infinite-combo (now infinite-combo-box), `genSVG` in xy-grapher.
 import globals from "globals";
 
 export default [

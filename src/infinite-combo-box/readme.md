@@ -1,7 +1,8 @@
-# combo-box
+# infinite-combo-box
 
 An autocomplete input: type, and a list of matching options pops up to
-choose from. It follows the
+choose from. Results can be **paged**: the list loads more as you scroll
+or arrow to its end, so result sets can be any size. It follows the
 [WAI-ARIA combobox pattern](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/)
 and works in forms like a native control (`name`, `required`, `disabled`,
 `<label>`, `form.reset()`). Options can come from three places, and none
@@ -13,15 +14,15 @@ of them requires writing JavaScript.
 a `<datalist>` you can style:
 
 ```html
-<script type="module" src="https://esm.sh/@johnhenry/domkit/combo-box/global.mjs"></script>
-<link rel="stylesheet" href="https://esm.sh/@johnhenry/domkit/combo-box/index.css" />
+<script type="module" src="https://esm.sh/@johnhenry/domkit/infinite-combo-box/global.mjs"></script>
+<link rel="stylesheet" href="https://esm.sh/@johnhenry/domkit/infinite-combo-box/index.css" />
 
 <label for="city">City</label>
-<combo-box id="city" name="city" placeholder="Start typing…">
+<infinite-combo-box id="city" name="city" placeholder="Start typing…">
   <option value="nyc">New York</option>
   <option value="sf">San Francisco</option>
   <option value="sea">Seattle</option>
-</combo-box>
+</infinite-combo-box>
 ```
 
 **Search a URL as the user types.** `{query}` is replaced with the
@@ -29,13 +30,13 @@ encoded text. The response can be JSON (an array of strings or
 `{ value, label }`) or HTML (`<option>` markup):
 
 ```html
-<combo-box name="user" src="/api/users?search={query}" min-length="2"></combo-box>
+<infinite-combo-box name="user" src="/api/users?search={query}" min-length="2"></infinite-combo-box>
 ```
 
 **Use any async function**, set as a property:
 
 ```js
-document.querySelector("combo-box").searchFunction = async (query, { signal }) => {
+document.querySelector("infinite-combo-box").searchFunction = async (query, { signal }) => {
   const response = await fetch(`/search?q=${encodeURIComponent(query)}`, { signal });
   return response.json(); // or an HTML string, or option elements
 };
@@ -46,6 +47,51 @@ Searches are debounced, and starting a new one aborts the previous one
 `src` or `searchFunction`, the options written in the markup are shown as
 suggestions while the input is empty.
 
+## Paging ("infinite" results)
+
+When a source has more results than fit in one response, return them a
+page at a time. The list loads the next page when its end scrolls into
+view, when the keyboard reaches the end, or when "Load more results" (the
+last option while more exist) is chosen.
+
+**From a URL**, put `{cursor}` in `src` and reply with JSON carrying the
+next cursor. It's `""` for the first page, and `null` or omitted when
+there are no more. `total` is optional:
+
+```html
+<infinite-combo-box name="user" src="/api/users?q={query}&cursor={cursor}"></infinite-combo-box>
+```
+
+```json
+{ "options": [{ "value": "u41", "label": "Ada" }], "next": "eyJvZmZzZXQiOjIwfQ", "total": 95 }
+```
+
+An HTML response can carry the cursor (and total) on any element marked
+`data-next`/`data-total`, which is removed before rendering:
+
+```html
+<option value="u41">Ada</option> … <span data-next="eyJvZmZzZXQiOjIwfQ" data-total="95"></span>
+```
+
+**From a function**, it receives the cursor and returns the same shape:
+
+```js
+combo.searchFunction = async (query, { cursor, signal }) => {
+  const { items, nextCursor } = await api.users(query, cursor, { signal });
+  return { options: items, next: nextCursor };
+};
+```
+
+**From your own options**, `page-size="50"` shows matches 50 at a time,
+which helps with lists of thousands of `<option>`s.
+
+Cursors are opaque, so page numbers, offsets, or API tokens all work.
+Typing a new query aborts any page still loading, so a page for an old
+query can never appear. While pages load, the list has `aria-busy`, and
+the live region announces "20 more results loaded, 40 of 95". Options get
+`aria-setsize`/`aria-posinset` (setsize `-1` when the total is unknown).
+`hasMore` and `loadMore()` expose the same thing to scripts.
+
 ## Attributes
 
 | Attribute | Property | Description |
@@ -53,7 +99,8 @@ suggestions while the input is empty.
 | `name` | `name` | Name submitted with the form |
 | `value` | `value` | The value: the chosen option's `value`. The attribute is the default (restored by `form.reset()`), and the property is current. Setting it matches by value, then by label |
 | `placeholder` | | Passed to the input |
-| `src` | `src` | URL template for remote options. Without `{query}`, the text is appended as `?q=` |
+| `src` | `src` | URL template for remote options: `{query}` and `{cursor}` are replaced. Missing ones are appended as `?q=`/`?cursor=` |
+| `page-size` | | Show the element's own matching options this many at a time (see Paging) |
 | `debounce` | | Milliseconds to wait after typing. Default `0` for local options, `200` for `src`/`searchFunction` |
 | `min-length` | | Characters needed before searching. Default `0` |
 | `allow-custom` | `allowCustom` | Free text: whatever is typed is the value, even if no option matches. Without it, only choosing an option sets the value |
@@ -62,7 +109,7 @@ suggestions while the input is empty.
 | `required` | `required` | The form is invalid until there's a value |
 
 Other properties: `text` (the input's text), `options` (the options now
-in the list), `selectedOption`, `input` (the inner `<input>`),
+in the list, not counting "Load more results"), `hasMore`, `loadMore()`, `selectedOption`, `input` (the inner `<input>`),
 `searchFunction`, `form`, `labels`, `validity`, `validationMessage`,
 `willValidate`, `checkValidity()`, `reportValidity()`,
 `setCustomValidity()`, and `focus()`.
@@ -104,8 +151,9 @@ available.") through a polite live region.
   `role="option"` elements, value from `value`/`data-value`/text, and
   `disabled`. Local `<optgroup>`s become group headings
   (`[data-group-label]`).
-- Hooks: `[role="listbox"]` (the list, `hidden` when closed,
-  `aria-busy="true"` while loading, plus `combo-box:state(loading)`),
+- Hooks: `[data-load-more]` (the "Load more results" option),
+  `[role="listbox"]` (the list, `hidden` when closed,
+  `aria-busy="true"` while loading, plus `infinite-combo-box:state(loading)`),
   `[data-active]` (the keyboard-active option), and
   `[aria-selected="true"]` (the chosen option). `index.css` positions the
   list under the input, using `Canvas`/`CanvasText` colors and

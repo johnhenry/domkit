@@ -1,16 +1,16 @@
 import { test, expect } from "@playwright/test";
 import { axNames, mount, recordEvents } from "./helpers.mjs";
 
-const MODULES = ["src/combo-box/global.mjs"];
+const MODULES = ["src/infinite-combo-box/global.mjs"];
 const LOCAL = `
   <form id="f">
     <label for="c">City</label>
-    <combo-box id="c" name="city" placeholder="Search cities">
+    <infinite-combo-box id="c" name="city" placeholder="Search cities">
       <option value="nyc">New York</option>
       <option value="sf">San Francisco</option>
       <option value="sea">Seattle</option>
       <option value="nor" disabled>Nowhere</option>
-    </combo-box>
+    </infinite-combo-box>
     <button id="submit">Submit</button>
   </form>`;
 
@@ -167,7 +167,7 @@ test("src: fetches JSON results for the typed query, debounced, newest wins", as
     if (q === "b") await new Promise((r) => setTimeout(r, 300));
     await route.fulfill({ json: [{ value: `${q}-1`, label: `${q} one` }, `${q} two`] });
   });
-  await mount(page, `<combo-box id="c" src="/api/cities?q={query}" debounce="0"></combo-box>`, MODULES);
+  await mount(page, `<infinite-combo-box id="c" src="/api/cities?q={query}" debounce="0"></infinite-combo-box>`, MODULES);
   await input(page).pressSequentially("b");
   await input(page).pressSequentially("o");
   await expect(page.getByRole("option", { name: "bo one" })).toBeVisible();
@@ -188,7 +188,7 @@ test("src: HTML responses work too, and errors are reported, not thrown", async 
     route.fulfill({ contentType: "text/html", body: '<option value="a">Alpha</option><option value="b">Beta</option>' }),
   );
   await page.route("**/broken?**", (route) => route.fulfill({ status: 500 }));
-  await mount(page, `<combo-box id="c" src="/html?q={query}" debounce="0"></combo-box>`, MODULES);
+  await mount(page, `<infinite-combo-box id="c" src="/html?q={query}" debounce="0"></infinite-combo-box>`, MODULES);
   await input(page).fill("x");
   await page.getByRole("option", { name: "Beta" }).click();
   expect(await page.evaluate(() => document.getElementById("c").value)).toBe("b");
@@ -207,7 +207,7 @@ test("src: HTML responses work too, and errors are reported, not thrown", async 
 });
 
 test("searchFunction: any async source, with cancellation", async ({ page }) => {
-  await mount(page, `<combo-box id="c" debounce="0"></combo-box>`, MODULES);
+  await mount(page, `<infinite-combo-box id="c" debounce="0"></infinite-combo-box>`, MODULES);
   const aborted = await page.evaluate(async () => {
     const c = document.getElementById("c");
     let aborts = 0;
@@ -240,13 +240,144 @@ test("toggle events report open/closed like a popover", async ({ page }) => {
 test("an author-written input is used, and the element survives a move", async ({ page }) => {
   await mount(
     page,
-    `<form id="f"><combo-box id="c" name="city"><input type="search" class="mine" /><option value="1">One</option></combo-box></form>`,
+    `<form id="f"><infinite-combo-box id="c" name="city"><input type="search" class="mine" /><option value="1">One</option></infinite-combo-box></form>`,
     MODULES,
   );
-  expect(await page.evaluate(() => document.querySelectorAll("combo-box input").length)).toBe(1);
+  expect(await page.evaluate(() => document.querySelectorAll("infinite-combo-box input").length)).toBe(1);
   await expect(page.locator("input.mine")).toHaveAttribute("role", "combobox");
   await page.evaluate(() => document.body.append(document.getElementById("f")));
   await input(page).fill("o");
   await page.getByRole("option", { name: "One" }).click();
   expect((await read(page)).form).toEqual([["city", "1"]]);
+});
+
+test.describe("paging", () => {
+  // 95 results, pages of 20: next cursor = offset, total reported.
+  const routePages = (page, { delayFor } = {}) =>
+    page.route("**/api/items?**", async (route) => {
+      const url = new URL(route.request().url());
+      const q = url.searchParams.get("q");
+      const cursor = Number(url.searchParams.get("cursor") || 0);
+      if (delayFor && delayFor(q, cursor)) await new Promise((r) => setTimeout(r, 400));
+      const items = Array.from({ length: Math.min(20, 95 - cursor) }, (_, i) => ({ value: `${q}-${cursor + i}`, label: `${q} ${cursor + i}` }));
+      const next = cursor + 20 < 95 ? String(cursor + 20) : null;
+      await route.fulfill({ json: { options: items, next, total: 95 } });
+    });
+  const SETUP = (attrs) =>
+    `<link rel="stylesheet" href="/src/infinite-combo-box/index.css" /><infinite-combo-box id="c" debounce="0" ${attrs}></infinite-combo-box>`;
+  const count = (page) => page.evaluate(() => document.getElementById("c").options.length);
+
+  test("scrolling to the end loads the next page, until there are no more", async ({ page }) => {
+    await routePages(page);
+    await mount(page, SETUP('src="/api/items?q={query}&cursor={cursor}"'), MODULES);
+    await input(page).fill("x");
+    await expect.poll(() => count(page)).toBe(20);
+    expect(await page.evaluate(() => document.getElementById("c").hasMore)).toBe(true);
+    await expect(page.getByRole("status")).toHaveText("20 of 95 results shown.");
+    for (const expected of [40, 60, 80, 95]) {
+      await page.locator("[data-load-more]").scrollIntoViewIfNeeded();
+      await expect.poll(() => count(page)).toBe(expected);
+    }
+    await expect(page.locator("[data-load-more]")).toHaveCount(0);
+    expect(await page.evaluate(() => document.getElementById("c").hasMore)).toBe(false);
+    const positions = await page.evaluate(() => {
+      const options = document.getElementById("c").options;
+      return [options[0].getAttribute("aria-posinset"), options[94].getAttribute("aria-posinset"), options[94].getAttribute("aria-setsize")];
+    });
+    expect(positions).toEqual(["1", "95", "95"]);
+  });
+
+  test("arrowing onto 'Load more results' loads the next page and keeps the keyboard there", async ({ page }) => {
+    await routePages(page);
+    await mount(page, SETUP('src="/api/items?q={query}"'), MODULES);
+    await input(page).fill("k");
+    await expect.poll(() => count(page)).toBe(20);
+    // Stop the scroll trigger so only the keyboard drives this test.
+    await page.evaluate(() => (document.querySelector("[role=listbox]").style.maxBlockSize = "none"));
+    for (let i = 0; i < 21; i++) await page.keyboard.press("ArrowDown");
+    await expect.poll(() => count(page)).toBeGreaterThanOrEqual(40);
+    const active = await page.evaluate(() => document.getElementById(document.getElementById("c").input.getAttribute("aria-activedescendant"))?.textContent);
+    expect(active, "the first newly loaded option is active").toBe("k 20");
+    await expect(page.getByRole("status")).toContainText("more results loaded");
+  });
+
+  test("a new query cancels an in-flight page; stale pages never appear", async ({ page }) => {
+    await routePages(page, { delayFor: (q, cursor) => q === "a" && cursor === 20 });
+    await mount(page, SETUP('src="/api/items?q={query}"'), MODULES);
+    await page.evaluate(() => (document.querySelector("[role=listbox]") ?? document.body).style.setProperty("max-block-size", "none"));
+    await input(page).fill("a");
+    await expect.poll(() => count(page)).toBe(20);
+    const loading = page.evaluate(() => document.getElementById("c").loadMore()); // slow page 2 of "a"
+    await input(page).fill("b");
+    await loading;
+    await page.waitForTimeout(500);
+    const labels = await page.evaluate(() => document.getElementById("c").options.map((o) => o.textContent));
+    expect(labels.every((label) => label.startsWith("b ")), "no 'a' results leaked in").toBe(true);
+  });
+
+  test("searchFunction gets the cursor; HTML responses carry it with data-next", async ({ page }) => {
+    await page.route("**/html?**", (route) => {
+      const cursor = new URL(route.request().url()).searchParams.get("cursor");
+      route.fulfill({
+        contentType: "text/html",
+        body: cursor ? '<option value="b">Beta</option>' : '<option value="a">Alpha</option><span data-next="p2"></span>',
+      });
+    });
+    await mount(page, SETUP('src="/html?q={query}"'), MODULES);
+    await input(page).fill("x");
+    // Page 1 is short, so "Load more" is already in view and page 2 loads by itself.
+    await expect
+      .poll(() => page.evaluate(() => document.getElementById("c").options.map((o) => o.textContent)))
+      .toEqual(["Alpha", "Beta"]);
+    expect(await page.evaluate(() => document.getElementById("c").hasMore)).toBe(false);
+
+    const cursors = await page.evaluate(async () => {
+      const c = document.getElementById("c");
+      const seen = [];
+      c.searchFunction = async (query, { cursor }) => {
+        seen.push(cursor);
+        return { options: [`${query}${cursor || 0}`], next: cursor ? null : "1" };
+      };
+      c.input.value = "q";
+      c.input.dispatchEvent(new Event("input"));
+      await new Promise((r) => setTimeout(r, 50));
+      await c.loadMore();
+      return { seen, labels: c.options.map((o) => o.textContent) };
+    });
+    expect(cursors).toEqual({ seen: ["", "1"], labels: ["q0", "q1"] });
+  });
+
+  test("page-size pages through the markup's own options", async ({ page }) => {
+    const options = Array.from({ length: 120 }, (_, i) => `<option>Item ${i}</option>`).join("");
+    await mount(page, `<link rel="stylesheet" href="/src/infinite-combo-box/index.css" /><infinite-combo-box id="c" page-size="25">${options}</infinite-combo-box>`, MODULES);
+    await input(page).fill("item");
+    await expect.poll(() => count(page)).toBe(25);
+    await page.locator("[data-load-more]").scrollIntoViewIfNeeded();
+    await expect.poll(() => count(page)).toBe(50);
+    await input(page).fill("item 1");
+    await expect.poll(() => count(page), "a new query starts again at one page").toBe(25);
+    expect(await page.evaluate(() => document.getElementById("c").options[0].getAttribute("aria-setsize"))).toBe("31");
+  });
+
+  test("a failing later page reports an error and keeps what's loaded", async ({ page }) => {
+    await page.route("**/flaky?**", (route) => {
+      const cursor = new URL(route.request().url()).searchParams.get("cursor");
+      return cursor ? route.fulfill({ status: 503 }) : route.fulfill({ json: { options: ["one", "two"], next: "2" } });
+    });
+    await mount(page, SETUP('src="/flaky?q={query}"'), MODULES);
+    const errors = await page.evaluate(() => {
+      window.errs = [];
+      document.getElementById("c").addEventListener("error", (e) => window.errs.push(e.message));
+    });
+    void errors;
+    await input(page).fill("z");
+    await expect.poll(() => count(page)).toBe(2);
+    // "Load more" is in view, so page 2 is requested automatically and fails.
+    await expect.poll(() => page.evaluate(() => window.errs)).toEqual(["503 Service Unavailable"]);
+    await page.waitForTimeout(300);
+    expect(await page.evaluate(() => window.errs.length), "a failed page isn't retried in a loop").toBe(1);
+    expect(await count(page)).toBe(2);
+    await expect(page.getByRole("status")).toHaveText("Couldn't load more results.");
+    await expect(page.locator("[data-load-more]"), "can retry").toHaveCount(1);
+  });
 });

@@ -7,11 +7,11 @@
     <link rel="stylesheet" href="recipes.css" />
     <link rel="stylesheet" href="../src/drill-menu/index.css" />
     <link rel="stylesheet" href="../src/stylable-select/index.css" />
-    <link rel="stylesheet" href="../src/combo-box/index.css" />
+    <link rel="stylesheet" href="../src/infinite-combo-box/index.css" />
     <!-- In your own page, load each from https://esm.sh/@johnhenry/domkit/<module>/global.mjs -->
     <script type="module" src="../src/drill-menu/global.mjs"></script>
     <script type="module" src="../src/stylable-select/global.mjs"></script>
-    <script type="module" src="../src/combo-box/global.mjs"></script>
+    <script type="module" src="../src/infinite-combo-box/global.mjs"></script>
     <script type="module" src="../src/cyclable/class-cycler/global.mjs"></script>
     <style>
       form { display: grid; gap: 1rem; }
@@ -19,7 +19,7 @@
       [data-screen] h2 { font-size: 1.1rem; margin-block: 0 0.75rem; }
       [data-screen] label { display: block; font-weight: 600; margin-block: 0.75rem 0.25rem; }
       stylable-select { --domkit-select-size: 4; }
-      combo-box { inline-size: 100%; }
+      infinite-combo-box { inline-size: 100%; }
       .actions { display: flex; gap: 0.5rem; }
       html.compact { font-size: 14px; }
     </style>
@@ -57,14 +57,14 @@
             <option value="ja">日本語</option>
           </stylable-select>
           <label for="timezone">Time zone</label>
-          <combo-box id="timezone" name="timezone" value="Europe/London" placeholder="Search time zones">
+          <infinite-combo-box id="timezone" name="timezone" value="Europe/London" placeholder="Search time zones">
             <option>America/New_York</option>
             <option>America/Los_Angeles</option>
             <option>Europe/London</option>
             <option>Europe/Paris</option>
             <option>Asia/Tokyo</option>
             <option>Australia/Sydney</option>
-          </combo-box>
+          </infinite-combo-box>
           <p><button type="button" data-back>‹ Back</button></p>
         </section>
 

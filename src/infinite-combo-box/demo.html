@@ -3,20 +3,20 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>combo-box</title>
+    <title>infinite-combo-box</title>
     <link rel="stylesheet" href="./index.css" />
     <script type="module" src="./global.mjs"></script>
     <style>
       body { font: 15px/1.5 system-ui, sans-serif; margin: 16px; max-inline-size: 36rem; }
       label { display: block; font-weight: 600; margin-block: 1rem 0.25rem; }
-      combo-box { inline-size: 100%; }
+      infinite-combo-box { inline-size: 100%; }
       output { font-family: ui-monospace, monospace; }
     </style>
   </head>
   <body>
     <form id="form">
       <label for="city">City (local options, filtered as you type)</label>
-      <combo-box id="city" name="city" placeholder="Start typing…" required>
+      <infinite-combo-box id="city" name="city" placeholder="Start typing…" required>
         <optgroup label="West">
           <option value="sf">San Francisco</option>
           <option value="sea">Seattle</option>
@@ -27,17 +27,20 @@
           <option value="bos">Boston</option>
           <option value="mia" disabled>Miami (unavailable)</option>
         </optgroup>
-      </combo-box>
+      </infinite-combo-box>
 
       <label for="color">Color (free text allowed)</label>
-      <combo-box id="color" name="color" allow-custom>
+      <infinite-combo-box id="color" name="color" allow-custom>
         <option>red</option>
         <option>green</option>
         <option>blue</option>
-      </combo-box>
+      </infinite-combo-box>
 
       <label for="word">Word (an async function, debounced)</label>
-      <combo-box id="word" name="word" min-length="1" placeholder="Try “ca”"></combo-box>
+      <infinite-combo-box id="word" name="word" min-length="1" placeholder="Try “ca”"></infinite-combo-box>
+
+      <label for="number">Number (10,000 results, paged 25 at a time: scroll the list)</label>
+      <infinite-combo-box id="number" name="number" placeholder="Type a digit, e.g. 7"></infinite-combo-box>
 
       <p><button>Submit</button> <button type="reset">Reset</button></p>
       <p>FormData: <output id="out">(submit to see)</output></p>
@@ -48,6 +51,17 @@
         await new Promise((resolve) => setTimeout(resolve, 250)); // pretend it's a server
         if (signal.aborted) return [];
         return WORDS.filter((word) => word.startsWith(query.toLowerCase()));
+      };
+      // A pretend server: every number containing the query, a page at a time.
+      document.getElementById("number").searchFunction = async (query, { cursor }) => {
+        await new Promise((resolve) => setTimeout(resolve, 150));
+        const start = Number(cursor) || 0;
+        const matches = [];
+        for (let n = start; n < 10000 && matches.length < 25; n++) {
+          if (String(n).includes(query)) matches.push(String(n));
+          if (matches.length === 25) return { options: matches, next: String(n + 1) };
+        }
+        return { options: matches, next: null };
       };
       document.getElementById("form").addEventListener("submit", (event) => {
         event.preventDefault();

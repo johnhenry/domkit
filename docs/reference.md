@@ -75,71 +75,6 @@ Syntax highlighting that never touches your markup. [Guide](../src/code-color/re
 |---|---|
 | `tokens()` | The current token ranges, by type (for tests and tooling). |
 
-## `<combo-box>`
-
-An accessible autocomplete/search input with a popup option list. [Guide](../src/combo-box/readme.md) · module `@johnhenry/domkit/combo-box`
-
-**Attributes**
-
-| Attribute | Type | Description |
-|---|---|---|
-| `placeholder` | `string` | Placeholder for the input. |
-| `disabled` | `boolean` | Blocks interaction and form submission. Also inherited from a disabled fieldset. |
-| `required` | `boolean` | The form is invalid until there's a value. |
-| `open` | `boolean` | Whether the option list is showing. Reflects. |
-| `value` | `string` | Initial value (the value of an option, or text with `allow-custom`). |
-| `src` | `string` | URL template for remote options; `{query}` is replaced with the encoded text. JSON or HTML responses. |
-| `name` | `string` | Name submitted with the form. |
-| `debounce` | `number` | Milliseconds to wait after typing before searching. Default 0 for local options, 200 for `src`/`searchFunction`. |
-| `min-length` | `number` | Characters needed before searching. Default 0. |
-| `allow-custom` | `boolean` | Typed text is a valid value even if it matches no option. |
-
-**Properties**
-
-| Property | Type | Description |
-|---|---|---|
-| `value` | `string` | The current value: the chosen option's value, or the typed text with `allow-custom`. Setting it chooses the matching option (by value, then by label). Script changes don't fire events. |
-| `text` | `string` | The text in the input. |
-| `options` (read-only) | `Element[]` | The options currently in the list. |
-| `selectedOption` (read-only) | `Element | null` | The chosen option element, if it's in the list. |
-| `input` (read-only) | `HTMLInputElement | null` | The inner `<input>` (generated, or the one you wrote as a child). |
-| `searchFunction` | `((query: string, init: { signal: AbortSignal }) => unknown) | null` | A function that produces options for a query, instead of filtering the child `<option>`s or fetching `src`: `async (query, { signal }) =>` an HTML string, an array of strings / `{ value, label }` / Nodes, or a Node. `signal` aborts when a newer search starts. |
-| `open` | `boolean` | Mirrors the `open` attribute. |
-| `name` | `string` | Mirrors the `name` attribute. |
-| `src` | `string` | Mirrors the `src` attribute. |
-| `allowCustom` | `boolean` | Mirrors the `allow-custom` attribute. |
-| `disabled` | `boolean` | Mirrors the `disabled` attribute. |
-| `required` | `boolean` | Mirrors the `required` attribute. |
-| `form` (read-only) | `HTMLFormElement | null` |  |
-| `labels` (read-only) | `NodeList` |  |
-| `validity` (read-only) | `ValidityState` |  |
-| `validationMessage` (read-only) | `string` |  |
-| `willValidate` (read-only) | `boolean` |  |
-
-**Methods**
-
-| Method | Description |
-|---|---|
-| `checkValidity()` |  |
-| `reportValidity()` |  |
-| `setCustomValidity(message)` |  |
-| `focus(options)` | Focus the input. |
-
-**Events**
-
-| Event | Description |
-|---|---|
-| `input` | The user changed the value (chose an option, or typed with `allow-custom`). |
-| `error` |  |
-| `change` | The user committed a new value (chose an option, or left the field after typing with `allow-custom`). |
-| `toggle` | The list opened or closed (a ToggleEvent with `oldState`/`newState`, like a popover). |
-
-**CSS custom properties**
-
-| Property | Description |
-|---|---|
-| `--domkit-combo-accent` | Background of the active option (index.css). |
-
 ## `<define-component>`
 
 Register a custom element from a module URL, in HTML. [Guide](../src/definable/define-component/readme.md) · module `@johnhenry/domkit/definable/define-component`
@@ -277,6 +212,74 @@ Toggle a native dialog with a keyboard shortcut. [Guide](../src/hotkey-dialog/re
 | `show()` | Open the dialog (modally, unless `non-modal`). |
 | `close(returnValue)` | Close the dialog. |
 | `toggle()` | Open the dialog if it's closed, close it if it's open. |
+
+## `<infinite-combo-box>`
+
+An accessible autocomplete with paged ("infinite") results. [Guide](../src/infinite-combo-box/readme.md) · module `@johnhenry/domkit/infinite-combo-box`
+
+**Attributes**
+
+| Attribute | Type | Description |
+|---|---|---|
+| `placeholder` | `string` | Placeholder for the input. |
+| `disabled` | `boolean` | Blocks interaction and form submission. Also inherited from a disabled fieldset. |
+| `required` | `boolean` | The form is invalid until there's a value. |
+| `open` | `boolean` | Whether the option list is showing. Reflects. |
+| `value` | `string` | Initial value (the value of an option, or text with `allow-custom`). |
+| `src` | `string` | URL template for remote options: `{query}` and `{cursor}` are replaced (missing ones are added as `?q=`/`?cursor=`). JSON (an array, or `{ options, next, total }`) or HTML (with an optional `data-next` element). |
+| `name` | `string` | Name submitted with the form. |
+| `debounce` | `number` | Milliseconds to wait after typing before searching. Default 0 for local options, 200 for `src`/`searchFunction`. |
+| `page-size` | `number` | Show the element's own matching options this many at a time, loading more as the list scrolls. |
+| `min-length` | `number` | Characters needed before searching. Default 0. |
+| `allow-custom` | `boolean` | Typed text is a valid value even if it matches no option. |
+
+**Properties**
+
+| Property | Type | Description |
+|---|---|---|
+| `value` | `string` | The current value: the chosen option's value, or the typed text with `allow-custom`. Setting it chooses the matching option (by value, then by label). Script changes don't fire events. |
+| `text` | `string` | The text in the input. |
+| `options` (read-only) | `Element[]` | The options currently in the list. |
+| `hasMore` (read-only) | `boolean` | Whether the source has more results for the current query. |
+| `selectedOption` (read-only) | `Element | null` | The chosen option element, if it's in the list. |
+| `input` (read-only) | `HTMLInputElement | null` | The inner `<input>` (generated, or the one you wrote as a child). |
+| `searchFunction` | `((query: string, init: { signal: AbortSignal, cursor: string }) => unknown) | null` | A function that produces options for a query, instead of filtering the child `<option>`s or fetching `src`: `async (query, { signal }) =>` an HTML string, an array of strings / `{ value, label }` / Nodes, or a Node. `signal` aborts when a newer search starts. To page results, return `{ options, next, total? }`: `next` is the cursor passed back as `cursor` for the following page (null when there are no more). |
+| `open` | `boolean` | Mirrors the `open` attribute. |
+| `name` | `string` | Mirrors the `name` attribute. |
+| `src` | `string` | Mirrors the `src` attribute. |
+| `allowCustom` | `boolean` | Mirrors the `allow-custom` attribute. |
+| `disabled` | `boolean` | Mirrors the `disabled` attribute. |
+| `required` | `boolean` | Mirrors the `required` attribute. |
+| `form` (read-only) | `HTMLFormElement | null` |  |
+| `labels` (read-only) | `NodeList` |  |
+| `validity` (read-only) | `ValidityState` |  |
+| `validationMessage` (read-only) | `string` |  |
+| `willValidate` (read-only) | `boolean` |  |
+
+**Methods**
+
+| Method | Description |
+|---|---|
+| `loadMore()` | Load the next page of results for the current query (what scrolling to the end of the list does). Resolves when it's appended. |
+| `checkValidity()` |  |
+| `reportValidity()` |  |
+| `setCustomValidity(message)` |  |
+| `focus(options)` | Focus the input. |
+
+**Events**
+
+| Event | Description |
+|---|---|
+| `error` |  |
+| `input` | The user changed the value (chose an option, or typed with `allow-custom`). |
+| `change` | The user committed a new value (chose an option, or left the field after typing with `allow-custom`). |
+| `toggle` | The list opened or closed (a ToggleEvent with `oldState`/`newState`, like a popover). |
+
+**CSS custom properties**
+
+| Property | Description |
+|---|---|
+| `--domkit-combo-accent` | Background of the active option (index.css). |
 
 ## `<polyfill-window>`
 

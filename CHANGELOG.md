@@ -4,7 +4,26 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed (breaking)
+
+- **`combo-box` is now `<infinite-combo-box>`** (module
+  `@johnhenry/domkit/infinite-combo-box`), named for its new paging.
+
 ### Added
+
+- **Paged ("infinite") results in `infinite-combo-box`.** A source can
+  return `{ options, next, total }`, and the list then loads the next page
+  when its end scrolls into view, when the keyboard reaches it, or when
+  "Load more results" (the last option) is chosen.
+  - `src` takes a `{cursor}` placeholder, and HTML responses can carry
+    the cursor on a `data-next` element. `searchFunction` receives
+    `{ cursor, signal }`.
+  - `page-size` pages through the element's own options.
+  - A new query aborts in-flight pages, so stale pages never appear, and
+    a failed page fires `error` without retrying in a loop.
+  - Options get `aria-setsize`/`aria-posinset`, the list gets
+    `aria-busy` while loading, and each page is announced.
+  - New `hasMore` and `loadMore()`.
 
 - **Container mode for `matchable`.** A `container` attribute on
   `query-container` and `attribute-provider` evaluates their queries

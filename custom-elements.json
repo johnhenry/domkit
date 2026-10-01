@@ -152,700 +152,6 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/combo-box/index.mjs",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "A text input with a popup list of options: filtered from its own\n`<option>` children, fetched from a URL, or produced by a function.\nForm-associated, with the WAI-ARIA combobox keyboard pattern.",
-          "name": "ComboBox",
-          "cssProperties": [
-            {
-              "description": "Background of the active option (index.css).",
-              "name": "--domkit-combo-accent"
-            }
-          ],
-          "members": [
-            {
-              "kind": "field",
-              "name": "formAssociated",
-              "type": {
-                "text": "boolean"
-              },
-              "static": true,
-              "default": "true"
-            },
-            {
-              "kind": "field",
-              "name": "#internals",
-              "privacy": "private"
-            },
-            {
-              "kind": "field",
-              "name": "#input",
-              "privacy": "private",
-              "type": {
-                "text": "null"
-              },
-              "default": "null"
-            },
-            {
-              "kind": "field",
-              "name": "#list",
-              "privacy": "private",
-              "type": {
-                "text": "null"
-              },
-              "default": "null"
-            },
-            {
-              "kind": "field",
-              "name": "#status",
-              "privacy": "private",
-              "type": {
-                "text": "null"
-              },
-              "default": "null"
-            },
-            {
-              "kind": "field",
-              "name": "#source",
-              "privacy": "private",
-              "type": {
-                "text": "array"
-              },
-              "default": "[]"
-            },
-            {
-              "kind": "field",
-              "name": "#value",
-              "privacy": "private",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\""
-            },
-            {
-              "kind": "field",
-              "name": "#defaultValue",
-              "privacy": "private",
-              "type": {
-                "text": "null"
-              },
-              "default": "null"
-            },
-            {
-              "kind": "field",
-              "name": "#selected",
-              "privacy": "private",
-              "type": {
-                "text": "null"
-              },
-              "default": "null"
-            },
-            {
-              "kind": "field",
-              "name": "#committed",
-              "privacy": "private",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\""
-            },
-            {
-              "kind": "field",
-              "name": "#active",
-              "privacy": "private",
-              "type": {
-                "text": "null"
-              },
-              "default": "null"
-            },
-            {
-              "kind": "field",
-              "name": "#timer",
-              "privacy": "private",
-              "type": {
-                "text": "number"
-              },
-              "default": "0"
-            },
-            {
-              "kind": "field",
-              "name": "#abort",
-              "privacy": "private",
-              "type": {
-                "text": "null"
-              },
-              "default": "null"
-            },
-            {
-              "kind": "field",
-              "name": "#formDisabled",
-              "privacy": "private",
-              "type": {
-                "text": "boolean"
-              },
-              "default": "false"
-            },
-            {
-              "kind": "field",
-              "name": "#searchFunction",
-              "privacy": "private",
-              "type": {
-                "text": "null"
-              },
-              "default": "null"
-            },
-            {
-              "kind": "field",
-              "name": "#labelClick",
-              "privacy": "private"
-            },
-            {
-              "kind": "field",
-              "name": "#observedLabels",
-              "privacy": "private",
-              "type": {
-                "text": "array"
-              },
-              "default": "[]"
-            },
-            {
-              "kind": "field",
-              "name": "value",
-              "description": "The current value: the chosen option's value, or the typed text with\n`allow-custom`. Setting it chooses the matching option (by value, then\nby label). Script changes don't fire events.",
-              "type": {
-                "text": "string"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "text",
-              "description": "The text in the input.",
-              "type": {
-                "text": "string"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "options",
-              "description": "The options currently in the list.",
-              "type": {
-                "text": "Element[]"
-              },
-              "readonly": true
-            },
-            {
-              "kind": "field",
-              "name": "selectedOption",
-              "description": "The chosen option element, if it's in the list.",
-              "type": {
-                "text": "Element | null"
-              },
-              "readonly": true
-            },
-            {
-              "kind": "field",
-              "name": "input",
-              "description": "The inner `<input>` (generated, or the one you wrote as a child).",
-              "type": {
-                "text": "HTMLInputElement | null"
-              },
-              "readonly": true
-            },
-            {
-              "kind": "field",
-              "name": "searchFunction",
-              "description": "A function that produces options for a query, instead of filtering the\nchild `<option>`s or fetching `src`: `async (query, { signal }) =>`\nan HTML string, an array of strings / `{ value, label }` / Nodes, or a\nNode. `signal` aborts when a newer search starts.",
-              "type": {
-                "text": "((query: string, init: { signal: AbortSignal }) => unknown) | null"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "open",
-              "type": {
-                "text": "boolean"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "name",
-              "type": {
-                "text": "string"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "src",
-              "type": {
-                "text": "string"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "allowCustom",
-              "type": {
-                "text": "boolean"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "disabled",
-              "type": {
-                "text": "boolean"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "required",
-              "type": {
-                "text": "boolean"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "form",
-              "type": {
-                "text": "HTMLFormElement | null"
-              },
-              "readonly": true
-            },
-            {
-              "kind": "field",
-              "name": "labels",
-              "type": {
-                "text": "NodeList"
-              },
-              "readonly": true
-            },
-            {
-              "kind": "field",
-              "name": "validity",
-              "type": {
-                "text": "ValidityState"
-              },
-              "readonly": true
-            },
-            {
-              "kind": "field",
-              "name": "validationMessage",
-              "type": {
-                "text": "string"
-              },
-              "readonly": true
-            },
-            {
-              "kind": "field",
-              "name": "willValidate",
-              "type": {
-                "text": "boolean"
-              },
-              "readonly": true
-            },
-            {
-              "kind": "method",
-              "name": "checkValidity",
-              "return": {
-                "type": {
-                  "text": "boolean"
-                }
-              }
-            },
-            {
-              "kind": "method",
-              "name": "reportValidity",
-              "return": {
-                "type": {
-                  "text": "boolean"
-                }
-              }
-            },
-            {
-              "kind": "method",
-              "name": "setCustomValidity",
-              "parameters": [
-                {
-                  "name": "message",
-                  "type": {
-                    "text": "string"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "field",
-              "name": "#customError",
-              "privacy": "private",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\""
-            },
-            {
-              "kind": "method",
-              "name": "focus",
-              "parameters": [
-                {
-                  "name": "options",
-                  "optional": true,
-                  "type": {
-                    "text": "FocusOptions"
-                  }
-                }
-              ],
-              "description": "Focus the input."
-            },
-            {
-              "kind": "method",
-              "name": "formResetCallback"
-            },
-            {
-              "kind": "method",
-              "name": "formDisabledCallback",
-              "parameters": [
-                {
-                  "name": "disabled"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "formStateRestoreCallback",
-              "parameters": [
-                {
-                  "name": "state"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "#build",
-              "privacy": "private"
-            },
-            {
-              "kind": "method",
-              "name": "#bindLabels",
-              "privacy": "private"
-            },
-            {
-              "kind": "method",
-              "name": "#refresh",
-              "privacy": "private"
-            },
-            {
-              "kind": "method",
-              "name": "#valueOf",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "option"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "#labelOf",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "option"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "#isDisabled",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "option"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "#optionFrom",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "target"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "#findOption",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "value"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "#toOptions",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "result"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "#looksLikeOption",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "element"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "#render",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "options"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "#onType",
-              "privacy": "private"
-            },
-            {
-              "kind": "method",
-              "name": "#search",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "query"
-                },
-                {
-                  "name": "{ immediate = false }",
-                  "default": "{}"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "#runSearch",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "query"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "#fetch",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "query"
-                },
-                {
-                  "name": "signal"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "#setBusy",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "busy"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "#announce",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "message"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "#choose",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "option"
-                },
-                {
-                  "name": "{ user }"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "#onLeave",
-              "privacy": "private"
-            },
-            {
-              "kind": "method",
-              "name": "#setOpen",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "open"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "#setActive",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "option"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "#onKeyDown",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "event"
-                }
-              ]
-            }
-          ],
-          "events": [
-            {
-              "name": "input",
-              "type": {
-                "text": "Event"
-              },
-              "description": "The user changed the value (chose an option, or typed with `allow-custom`)."
-            },
-            {
-              "name": "error",
-              "type": {
-                "text": "ErrorEvent"
-              }
-            },
-            {
-              "name": "change",
-              "type": {
-                "text": "Event"
-              },
-              "description": "The user committed a new value (chose an option, or left the field after typing with `allow-custom`)."
-            },
-            {
-              "name": "toggle",
-              "type": {
-                "text": "ToggleEvent"
-              },
-              "description": "The list opened or closed (a ToggleEvent with `oldState`/`newState`, like a popover)."
-            }
-          ],
-          "attributes": [
-            {
-              "name": "placeholder",
-              "type": {
-                "text": "string"
-              },
-              "description": "Placeholder for the input."
-            },
-            {
-              "name": "disabled",
-              "type": {
-                "text": "boolean"
-              },
-              "description": "Blocks interaction and form submission. Also inherited from a disabled fieldset."
-            },
-            {
-              "name": "required",
-              "type": {
-                "text": "boolean"
-              },
-              "description": "The form is invalid until there's a value."
-            },
-            {
-              "name": "open",
-              "type": {
-                "text": "boolean"
-              },
-              "description": "Whether the option list is showing. Reflects."
-            },
-            {
-              "name": "value",
-              "type": {
-                "text": "string"
-              },
-              "description": "Initial value (the value of an option, or text with `allow-custom`)."
-            },
-            {
-              "name": "src",
-              "type": {
-                "text": "string"
-              },
-              "description": "URL template for remote options; `{query}` is replaced with the encoded text. JSON or HTML responses."
-            },
-            {
-              "type": {
-                "text": "string"
-              },
-              "description": "Name submitted with the form.",
-              "name": "name"
-            },
-            {
-              "type": {
-                "text": "number"
-              },
-              "description": "Milliseconds to wait after typing before searching. Default 0 for local options, 200 for `src`/`searchFunction`.",
-              "name": "debounce"
-            },
-            {
-              "type": {
-                "text": "number"
-              },
-              "description": "Characters needed before searching. Default 0.",
-              "name": "min-length"
-            },
-            {
-              "type": {
-                "text": "boolean"
-              },
-              "description": "Typed text is a valid value even if it matches no option.",
-              "name": "allow-custom"
-            }
-          ],
-          "superclass": {
-            "name": "HTMLElement"
-          },
-          "tagName": "combo-box",
-          "customElement": true,
-          "summary": "An accessible autocomplete/search input with a popup option list."
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "default",
-          "declaration": {
-            "name": "ComboBox",
-            "module": "src/combo-box/index.mjs"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
       "path": "src/create-mutable-nodelist/index.mjs",
       "declarations": [
         {
@@ -2242,6 +1548,867 @@
           "declaration": {
             "name": "TEARDOWN",
             "module": "src/hydratable/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/infinite-combo-box/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A text input with a popup list of options: filtered from its own\n`<option>` children, fetched from a URL, or produced by a function.\nForm-associated, with the WAI-ARIA combobox keyboard pattern.",
+          "name": "InfiniteComboBox",
+          "cssProperties": [
+            {
+              "description": "Background of the active option (index.css).",
+              "name": "--domkit-combo-accent"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "formAssociated",
+              "type": {
+                "text": "boolean"
+              },
+              "static": true,
+              "default": "true"
+            },
+            {
+              "kind": "field",
+              "name": "#internals",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#input",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#list",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#status",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#source",
+              "privacy": "private",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "#value",
+              "privacy": "private",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\""
+            },
+            {
+              "kind": "field",
+              "name": "#defaultValue",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#selected",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#committed",
+              "privacy": "private",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\""
+            },
+            {
+              "kind": "field",
+              "name": "#active",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#timer",
+              "privacy": "private",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "#abort",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#formDisabled",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#searchFunction",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#query",
+              "privacy": "private",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\""
+            },
+            {
+              "kind": "field",
+              "name": "#next",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#total",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#localMatches",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#loadingMore",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#more",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#moreObserver",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#lastGroup",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#labelClick",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#observedLabels",
+              "privacy": "private",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "description": "The current value: the chosen option's value, or the typed text with\n`allow-custom`. Setting it chooses the matching option (by value, then\nby label). Script changes don't fire events.",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "text",
+              "description": "The text in the input.",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "options",
+              "description": "The options currently in the list.",
+              "type": {
+                "text": "Element[]"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "hasMore",
+              "description": "Whether the source has more results for the current query.",
+              "type": {
+                "text": "boolean"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "loadMore",
+              "description": "Load the next page of results for the current query (what scrolling to\nthe end of the list does). Resolves when it's appended.",
+              "return": {
+                "type": {
+                  "text": "Promise<void>"
+                }
+              }
+            },
+            {
+              "kind": "field",
+              "name": "selectedOption",
+              "description": "The chosen option element, if it's in the list.",
+              "type": {
+                "text": "Element | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "input",
+              "description": "The inner `<input>` (generated, or the one you wrote as a child).",
+              "type": {
+                "text": "HTMLInputElement | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "searchFunction",
+              "description": "A function that produces options for a query, instead of filtering the\nchild `<option>`s or fetching `src`: `async (query, { signal }) =>`\nan HTML string, an array of strings / `{ value, label }` / Nodes, or a\nNode. `signal` aborts when a newer search starts.\nTo page results, return `{ options, next, total? }`: `next` is the\ncursor passed back as `cursor` for the following page (null when\nthere are no more).",
+              "type": {
+                "text": "((query: string, init: { signal: AbortSignal, cursor: string }) => unknown) | null"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "open",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "src",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "allowCustom",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "required",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "form",
+              "type": {
+                "text": "HTMLFormElement | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "labels",
+              "type": {
+                "text": "NodeList"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "validity",
+              "type": {
+                "text": "ValidityState"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "validationMessage",
+              "type": {
+                "text": "string"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "willValidate",
+              "type": {
+                "text": "boolean"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "checkValidity",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "reportValidity",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "setCustomValidity",
+              "parameters": [
+                {
+                  "name": "message",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "#customError",
+              "privacy": "private",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\""
+            },
+            {
+              "kind": "method",
+              "name": "focus",
+              "parameters": [
+                {
+                  "name": "options",
+                  "optional": true,
+                  "type": {
+                    "text": "FocusOptions"
+                  }
+                }
+              ],
+              "description": "Focus the input."
+            },
+            {
+              "kind": "method",
+              "name": "formResetCallback"
+            },
+            {
+              "kind": "method",
+              "name": "formDisabledCallback",
+              "parameters": [
+                {
+                  "name": "disabled"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "formStateRestoreCallback",
+              "parameters": [
+                {
+                  "name": "state"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#build",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#bindLabels",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#refresh",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#valueOf",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "option"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#labelOf",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "option"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#isDisabled",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "option"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#optionFrom",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "target"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#findOption",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "value"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#toPage",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "result"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#toOptions",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "result"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#looksLikeOption",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "element"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#render",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "options"
+                },
+                {
+                  "name": "{ append = false }",
+                  "default": "{}"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#moreOption",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#loadMore",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "{ activateFirst = false }",
+                  "default": "{}"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#localPage",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "cursor"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#pageSize",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#remotePage",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "query"
+                },
+                {
+                  "name": "cursor"
+                },
+                {
+                  "name": "signal"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#onType",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#search",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "query"
+                },
+                {
+                  "name": "{ immediate = false }",
+                  "default": "{}"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#runSearch",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "query"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#fetch",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "query"
+                },
+                {
+                  "name": "signal"
+                },
+                {
+                  "name": "cursor",
+                  "default": "\"\""
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#setBusy",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "busy"
+                },
+                {
+                  "name": "{ announce = true }",
+                  "default": "{}"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#announce",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "message"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#choose",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "option"
+                },
+                {
+                  "name": "{ user }"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#onLeave",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#setOpen",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "open"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#setActive",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "option"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#onKeyDown",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "error",
+              "type": {
+                "text": "ErrorEvent"
+              }
+            },
+            {
+              "name": "input",
+              "type": {
+                "text": "Event"
+              },
+              "description": "The user changed the value (chose an option, or typed with `allow-custom`)."
+            },
+            {
+              "name": "change",
+              "type": {
+                "text": "Event"
+              },
+              "description": "The user committed a new value (chose an option, or left the field after typing with `allow-custom`)."
+            },
+            {
+              "name": "toggle",
+              "type": {
+                "text": "ToggleEvent"
+              },
+              "description": "The list opened or closed (a ToggleEvent with `oldState`/`newState`, like a popover)."
+            }
+          ],
+          "attributes": [
+            {
+              "name": "placeholder",
+              "type": {
+                "text": "string"
+              },
+              "description": "Placeholder for the input."
+            },
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Blocks interaction and form submission. Also inherited from a disabled fieldset."
+            },
+            {
+              "name": "required",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "The form is invalid until there's a value."
+            },
+            {
+              "name": "open",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the option list is showing. Reflects."
+            },
+            {
+              "name": "value",
+              "type": {
+                "text": "string"
+              },
+              "description": "Initial value (the value of an option, or text with `allow-custom`)."
+            },
+            {
+              "name": "src",
+              "type": {
+                "text": "string"
+              },
+              "description": "URL template for remote options: `{query}` and `{cursor}` are replaced (missing ones are added as `?q=`/`?cursor=`). JSON (an array, or `{ options, next, total }`) or HTML (with an optional `data-next` element)."
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Name submitted with the form.",
+              "name": "name"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "Milliseconds to wait after typing before searching. Default 0 for local options, 200 for `src`/`searchFunction`.",
+              "name": "debounce"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "Show the element's own matching options this many at a time, loading more as the list scrolls.",
+              "name": "page-size"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "Characters needed before searching. Default 0.",
+              "name": "min-length"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Typed text is a valid value even if it matches no option.",
+              "name": "allow-custom"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "infinite-combo-box",
+          "customElement": true,
+          "summary": "An accessible autocomplete with paged (\"infinite\") results."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "InfiniteComboBox",
+            "module": "src/infinite-combo-box/index.mjs"
           }
         }
       ]
