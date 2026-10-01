@@ -42,7 +42,8 @@ const VISUALLY_HIDDEN =
  * @fires change - The user committed a new value (chose an option, or left the field after typing with `allow-custom`).
  * @fires toggle - The list opened or closed (a ToggleEvent with `oldState`/`newState`, like a popover).
  *
- * @cssprop --domkit-combo-accent - Background of the active option (index.css).
+ * @cssprop --domkit-highlight - Background of the active option (shared token; see theme.css).
+ * @cssprop --domkit-surface - Background of the popup list (shared token).
  */
 export default class InfiniteComboBox extends HTMLElement {
   static formAssociated = true;
@@ -188,6 +189,48 @@ export default class InfiniteComboBox extends HTMLElement {
    */
   get selectedOption() {
     return this.#selected;
+  }
+
+  /**
+   * The chosen option as a list (0 or 1 items), like a select's.
+   * @type {Element[]}
+   * @readonly
+   */
+  get selectedOptions() {
+    return this.#selected && this.options.includes(this.#selected) ? [this.#selected] : [];
+  }
+
+  /**
+   * Index of the chosen option among the options now in the list, or -1.
+   * Setting it chooses that option (-1 clears the value). Script changes
+   * don't fire events.
+   * @type {number}
+   */
+  get selectedIndex() {
+    return this.#selected ? this.options.indexOf(this.#selected) : -1;
+  }
+  set selectedIndex(index) {
+    const option = this.options[Number(index)];
+    if (option) this.#choose(option, { user: false });
+    else this.value = "";
+  }
+
+  /**
+   * Number of options now in the list.
+   * @type {number}
+   * @readonly
+   */
+  get length() {
+    return this.options.length;
+  }
+
+  /**
+   * The option at `index` in the list.
+   * @param {number} index
+   * @returns {Element | null}
+   */
+  item(index) {
+    return this.options[index] ?? null;
   }
 
   /**

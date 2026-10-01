@@ -59,6 +59,7 @@ const isEditable = (element) =>
  *
  * @attr {string} hotkey - One or more space-separated shortcuts, e.g. `mod+k /`. `mod` is ⌘ on Apple platforms and Ctrl elsewhere.
  * @attr {boolean} non-modal - Open with `show()` instead of `showModal()`.
+ * @attr {boolean} disabled - The shortcut does nothing. The dialog itself is unaffected.
  */
 export default class HotkeyDialog extends HTMLElement {
   static observedAttributes = ["hotkey"];
@@ -102,6 +103,17 @@ export default class HotkeyDialog extends HTMLElement {
   }
   set hotkey(value) {
     this.setAttribute("hotkey", value);
+  }
+
+  /**
+   * Mirrors the `disabled` attribute.
+   * @type {boolean}
+   */
+  get disabled() {
+    return this.hasAttribute("disabled");
+  }
+  set disabled(value) {
+    this.toggleAttribute("disabled", Boolean(value));
   }
 
   /** @type {boolean} */
@@ -152,6 +164,7 @@ export default class HotkeyDialog extends HTMLElement {
   }
 
   #handleKey(event) {
+    if (this.disabled) return;
     if (event.defaultPrevented || event.repeat || !this.#shortcuts.length) return;
     const shortcut = this.#shortcuts.find((s) => matches(s, event));
     if (!shortcut) return;

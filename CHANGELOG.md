@@ -9,7 +9,24 @@ All notable changes to this project will be documented in this file.
 - **`combo-box` is now `<infinite-combo-box>`** (module
   `@johnhenry/domkit/infinite-combo-box`), named for its new paging.
 
+- **Element stylesheets share one set of design tokens**
+  (`--domkit-accent`, `--domkit-highlight`, `--domkit-border`,
+  `--domkit-radius`, `--domkit-focus-ring`, `--domkit-surface`,
+  `--domkit-surface-text`, `--domkit-disabled-opacity`). These replace
+  `--domkit-tab-accent`, `--domkit-tab-border`, `--domkit-select-accent`,
+  and `--domkit-combo-accent`.
+
 ### Added
+
+- **`theme.css`** (`@johnhenry/domkit/theme.css`): ready-made,
+  `light-dark()`-aware values for the shared tokens. Every `index.css`
+  also works without it.
+- **`disabled` on `tabbed-ui`, `drill-menu`, `class-cycler`, and
+  `hotkey-dialog`**, meaning the same thing as everywhere else: no user
+  interaction, out of the tab order, no events, still announced.
+- **One option API** for `stylable-select` and `infinite-combo-box`:
+  `selectedOption` on the select, and `selectedOptions`, `selectedIndex`
+  (get/set), `length`, and `item()` on the combo box.
 
 - **Paged ("infinite") results in `infinite-combo-box`.** A source can
   return `{ options, next, total }`, and the list then loads the next page
@@ -36,6 +53,11 @@ All notable changes to this project will be documented in this file.
   and the container is looked up again after a move.
   `matchable/container-query.mjs` exports the evaluator (`compileQuery`)
   and the `MediaQueryList`-shaped `ContainerQueryList`.
+
+### Fixed
+
+- **Right-to-left:** ←/→ now follow the reading direction in `tabbed-ui`
+  and `drill-menu`, and `drill-menu`'s chevron mirrors.
 
 ## [0.1.0] - 2026-09-30
 

@@ -1,41 +1,37 @@
-/* Optional defaults for <tabbed-ui>. Everything is overridable with plain
-   CSS; the custom properties are the quick knobs. */
+/* Optional defaults for <tabbed-ui>. Colors and focus come from the shared
+   tokens in ../theme.css (with currentColor fallbacks); --domkit-tab-gap
+   and --domkit-tab-padding are this element's own knobs. */
 tabbed-ui:not([hidden]) {
-  --domkit-tab-gap: 0.25rem;
-  --domkit-tab-padding: 0.5em 1em;
-  --domkit-tab-accent: currentColor;
-  --domkit-tab-border: color-mix(in srgb, currentColor 25%, transparent);
   display: block;
 }
 tabbed-ui > [role="tablist"]:not([hidden]) {
   display: flex;
-  gap: var(--domkit-tab-gap);
-  border-bottom: 1px solid var(--domkit-tab-border);
+  gap: var(--domkit-tab-gap, 0.25rem);
+  border-block-end: 1px solid var(--domkit-border, color-mix(in srgb, currentColor 25%, transparent));
 }
 tabbed-ui > [role="tablist"][aria-orientation="vertical"] {
   flex-direction: column;
-  border-bottom: none;
+  border-block-end: none;
 }
 tabbed-ui [role="tab"] {
   font: inherit;
   color: inherit;
   background: none;
   border: none;
-  border-bottom: 2px solid transparent;
-  padding: var(--domkit-tab-padding);
+  border-block-end: 2px solid transparent;
+  padding: var(--domkit-tab-padding, 0.5em 1em);
   cursor: pointer;
 }
 tabbed-ui [role="tab"][aria-selected="true"] {
-  border-bottom-color: var(--domkit-tab-accent);
+  border-block-end-color: var(--domkit-accent, currentColor);
   font-weight: 600;
 }
-tabbed-ui [role="tab"]:is([disabled], [aria-disabled="true"]) {
-  opacity: 0.5;
+tabbed-ui :is([role="tab"]:is([disabled], [aria-disabled="true"]), [aria-disabled="true"] [role="tab"]) {
+  opacity: var(--domkit-disabled-opacity, 0.5);
   cursor: not-allowed;
 }
-tabbed-ui [role="tab"]:focus-visible,
-tabbed-ui [role="tabpanel"]:focus-visible {
-  outline: 2px solid var(--domkit-tab-accent);
+tabbed-ui :is([role="tab"], [role="tabpanel"]):focus-visible {
+  outline: var(--domkit-focus-ring, 2px solid currentColor);
   outline-offset: 2px;
 }
 tabbed-ui > [role="tabpanel"] {

@@ -158,6 +158,20 @@ import map and no build step.
 No module evaluates strings as code, so domkit works under a strict
 Content-Security-Policy.
 
+### Theming
+
+Every element's optional `index.css` reads one shared set of design
+tokens (accent, highlight, border, radius, focus ring, popup surface,
+disabled opacity). Load `theme.css` for ready-made, `light-dark()`-aware
+values, or set the tokens yourself to theme every element at once:
+
+```html
+<link rel="stylesheet" href="https://esm.sh/@johnhenry/domkit/theme.css" />
+<style>
+  :root { --domkit-accent: rebeccapurple; --domkit-radius: 0; }
+</style>
+```
+
 ### Editor support
 
 The package ships [`custom-elements.json`](custom-elements.json), a

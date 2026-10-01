@@ -40,6 +40,7 @@ adds no styling at all.
 |---|---|---|
 | `selected-index` | `selectedIndex` | Index of the selected tab. Set it to choose the initial tab, or to switch from script. It always reflects the current selection |
 | `manual` | `manual` | Manual activation: arrow keys move focus, and <kbd>Enter</kbd>/<kbd>Space</kbd> selects. By default, moving focus selects |
+| `disabled` | `disabled` | No tab can be selected by the user, and the tabs leave the tab order (the shown panel stays readable) |
 
 Read-only properties: `tabList`, `tabs`, `panels`.
 
@@ -62,7 +63,7 @@ On the markup:
 
 | Key | Action |
 |---|---|
-| <kbd>←</kbd> / <kbd>→</kbd> | Previous/next tab, wrapping, skipping disabled tabs |
+| <kbd>←</kbd> / <kbd>→</kbd> | Previous/next tab, wrapping, skipping disabled tabs. Swapped in right-to-left text |
 | <kbd>Home</kbd> / <kbd>End</kbd> | First/last tab |
 | <kbd>Tab</kbd> | Leaves the tab list for the selected panel |
 | <kbd>Enter</kbd> / <kbd>Space</kbd> | Select the focused tab (needed with `manual`, or for non-button tabs) |
@@ -71,14 +72,11 @@ On the markup:
 
 Style it with ordinary CSS: `[role="tab"][aria-selected="true"]` is the
 selected tab, and `[role="tabpanel"]` (with `[hidden]`) the panels.
-`index.css` also reads these custom properties:
-
-| Property | Default | |
-|---|---|---|
-| `--domkit-tab-accent` | `currentColor` | Selected-tab underline and focus ring |
-| `--domkit-tab-border` | 25% `currentColor` | Line under the tab list |
-| `--domkit-tab-gap` | `0.25rem` | Space between tabs |
-| `--domkit-tab-padding` | `0.5em 1em` | Padding inside each tab |
+`index.css` takes its colors and focus ring from domkit's shared tokens
+(`--domkit-accent`, `--domkit-border`, `--domkit-focus-ring`, …; see
+[`theme.css`](../theme.css)), with `currentColor` fallbacks. Its own
+knobs are `--domkit-tab-gap` (default `0.25rem`) and
+`--domkit-tab-padding` (default `0.5em 1em`).
 
 ## Notes
 

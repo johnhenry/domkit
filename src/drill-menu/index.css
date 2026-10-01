@@ -1,5 +1,6 @@
 /* Optional defaults for <drill-menu>: a vertical list of full-width items,
-   and a screen area. Items that open a screen get a chevron. */
+   and a screen area. Items that open a screen get a chevron (mirrored in
+   right-to-left text). Colors come from the shared tokens in ../theme.css. */
 drill-menu:not([hidden]) {
   display: flex;
   flex-direction: column;
@@ -12,7 +13,7 @@ drill-menu > :is(button, a, [role="button"]) {
   text-decoration: none;
   background: none;
   border: none;
-  border-radius: 0.25em;
+  border-radius: var(--domkit-radius, 0.375em);
   padding: 0.5em 0.75em;
   cursor: pointer;
 }
@@ -21,14 +22,20 @@ drill-menu > [aria-expanded]::after {
   float: inline-end;
   opacity: 0.6;
 }
+drill-menu > [aria-expanded]:dir(rtl)::after {
+  content: "‹";
+}
 drill-menu > :is(button, a, [role="button"]):is(:hover, :focus-visible) {
-  background: color-mix(in srgb, currentColor 10%, transparent);
+  background: var(--domkit-highlight, color-mix(in srgb, currentColor 10%, transparent));
 }
 drill-menu > :focus-visible,
 drill-menu > :is([data-drill-screen], [data-screen]):focus-visible {
-  outline: 2px solid currentColor;
+  outline: var(--domkit-focus-ring, 2px solid currentColor);
   outline-offset: 2px;
 }
 drill-menu > :is([data-drill-screen], [data-screen]) {
   padding: 0.5em 0.75em;
+}
+drill-menu[disabled] {
+  opacity: var(--domkit-disabled-opacity, 0.5);
 }

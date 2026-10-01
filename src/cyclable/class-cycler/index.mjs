@@ -21,12 +21,14 @@
  * @attr {string} classes - Comma-separated values to cycle through. An empty entry means "no class".
  * @attr {string} target - Selector for the element(s) whose class is set. Default `html`.
  * @attr {string} storage-key - localStorage key to persist under. Without it, the value isn't persisted.
+ * @attr {boolean} disabled - Its buttons are disabled, and invoker commands are ignored.
  * @attr {string} value - The current value. Reflects; set it to choose the initial value when nothing is stored.
  *
  * @fires change - The user changed the value with a button or command.
  */
 export default class ClassCycler extends HTMLElement {
-  static observedAttributes = ["classes", "target", "storage-key", "value"];
+  static observedAttributes = ["classes", "target", "storage-key", "value", "disabled"];
+  #disabledButtons = new Set(); // buttons this element disabled
 
   #value = null;
   #reflecting = false;
@@ -41,6 +43,7 @@ export default class ClassCycler extends HTMLElement {
     this.addEventListener("click", (event) => this.#onClick(event));
     // Invoker commands: <button commandfor="id" command="--next|--previous|--set">
     this.addEventListener("command", (event) => {
+      if (this.disabled) return;
       const command = event.command;
       if (command === "--next") this.#userSet(this.#step(1));
       else if (command === "--previous") this.#userSet(this.#step(-1));
@@ -49,6 +52,7 @@ export default class ClassCycler extends HTMLElement {
   }
 
   connectedCallback() {
+    this.#applyDisabled();
     window.addEventListener("storage", this.#onStorage);
     this.#set(this.#initial(), { persist: false });
   }
@@ -58,6 +62,10 @@ export default class ClassCycler extends HTMLElement {
   }
 
   attributeChangedCallback(name, previous, current) {
+    if (name === "disabled") {
+      this.#applyDisabled();
+      return;
+    }
     if (!this.isConnected || this.#reflecting) return;
     if (name === "value") {
       if (current !== null && current !== this.#value) this.#set(current);
@@ -98,6 +106,17 @@ export default class ClassCycler extends HTMLElement {
    */
   get targets() {
     return this.#query(this.getAttribute("target") ?? "html");
+  }
+
+  /**
+   * Mirrors the `disabled` attribute.
+   * @type {boolean}
+   */
+  get disabled() {
+    return this.hasAttribute("disabled");
+  }
+  set disabled(value) {
+    this.toggleAttribute("disabled", Boolean(value));
   }
 
   /** @type {string} */
@@ -179,7 +198,25 @@ export default class ClassCycler extends HTMLElement {
     if (this.#set(value)) this.dispatchEvent(new Event("change", { bubbles: true }));
   }
 
+  // Disabled: its buttons are disabled too (native buttons then can't be
+  // clicked or focused), and restored afterwards. Buttons the author had
+  // disabled themselves stay disabled.
+  #applyDisabled() {
+    if (this.disabled) {
+      for (const button of this.querySelectorAll("button")) {
+        if (!button.disabled) {
+          button.disabled = true;
+          this.#disabledButtons.add(button);
+        }
+      }
+    } else {
+      for (const button of this.#disabledButtons) button.disabled = false;
+      this.#disabledButtons.clear();
+    }
+  }
+
   #onClick(event) {
+    if (this.disabled) return;
     const button = event.target instanceof Element ? event.target.closest("button") : null;
     if (!button || !this.contains(button) || button.disabled) return;
     // Buttons with an invoker command are handled by the command event.

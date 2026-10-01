@@ -1,18 +1,19 @@
 /* Optional defaults for <stylable-select>. Selected options match
    `option:checked` (and `[aria-selected="true"]` for role="option"
-   elements); the keyboard-active option has `[data-active]`. */
+   elements); the keyboard-active option has `[data-active]`. Colors come
+   from the shared tokens in ../theme.css; --domkit-select-size (set from
+   the `size` attribute) is this element's own. */
 stylable-select:not([hidden]) {
-  --domkit-select-accent: color-mix(in srgb, currentColor 15%, transparent);
   display: block;
   overflow-y: auto;
   max-block-size: calc(var(--domkit-select-size, 6) * 2em + 0.5em);
-  border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
-  border-radius: 0.375em;
+  border: 1px solid var(--domkit-border, color-mix(in srgb, currentColor 25%, transparent));
+  border-radius: var(--domkit-radius, 0.375em);
   padding: 0.25em;
   cursor: default;
 }
 stylable-select:focus-visible {
-  outline: 2px solid currentColor;
+  outline: var(--domkit-focus-ring, 2px solid currentColor);
   outline-offset: 2px;
 }
 stylable-select optgroup:not([hidden]) {
@@ -25,20 +26,18 @@ stylable-select :is(option, [role="option"]):not([hidden]) {
   min-block-size: 2em;
   line-height: 2em;
   padding-inline: 0.5em;
-  border-radius: 0.25em;
+  border-radius: var(--domkit-radius, 0.375em);
   font-weight: normal;
 }
 stylable-select :is(option:checked, [role="option"][aria-selected="true"]) {
-  background: var(--domkit-select-accent);
+  background: var(--domkit-highlight, color-mix(in srgb, currentColor 15%, transparent));
   color: inherit;
 }
 stylable-select:focus-visible [data-active] {
-  outline: 1px dashed currentColor;
+  outline: 1px dashed var(--domkit-accent, currentColor);
   outline-offset: -1px;
 }
-stylable-select :is(option:disabled, [aria-disabled="true"]) {
-  opacity: 0.5;
-}
+stylable-select :is(option:disabled, [aria-disabled="true"]),
 stylable-select:is([disabled], :disabled) {
-  opacity: 0.6;
+  opacity: var(--domkit-disabled-opacity, 0.5);
 }

@@ -55,7 +55,8 @@ depth, typically in `<optgroup>`s. An option's value is its `value`
 ## Properties and methods
 
 The same as `HTMLSelectElement`: `value` (get/set), `selectedIndex`
-(get/set; `-1` = nothing), `options`, `selectedOptions`, `length`,
+(get/set; `-1` = nothing), `options`, `selectedOptions`, `selectedOption`
+(the first selected option, as on `infinite-combo-box`), `length`,
 `item(i)`, `type` (`"select-one"`/`"select-multiple"`), `form`, `labels`,
 `validity`, `validationMessage`, `willValidate`, `checkValidity()`,
 `reportValidity()`, `setCustomValidity()`.
@@ -95,7 +96,9 @@ Ordinary CSS on ordinary elements:
 | `stylable-select:invalid`, `:disabled` | Form states, as on native controls |
 
 `index.css` is an optional starting point using `currentColor`, plus
-`--domkit-select-accent` (selected background) and `--domkit-select-size`.
+domkit's shared tokens (`--domkit-highlight` for the selected background,
+`--domkit-focus-ring`, …; see [`theme.css`](../theme.css)), plus its own
+`--domkit-select-size`.
 
 ## Notes
 

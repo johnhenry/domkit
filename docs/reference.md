@@ -29,6 +29,7 @@ A persisted class switch (e.g. a theme toggle) driven by buttons. [Guide](../src
 | `target` | `string` | Selector for the element(s) whose class is set. Default `html`. |
 | `storage-key` | `string` | localStorage key to persist under. Without it, the value isn't persisted. |
 | `value` | `string` | The current value. Reflects; set it to choose the initial value when nothing is stored. |
+| `disabled` | `boolean` | Its buttons are disabled, and invoker commands are ignored. |
 
 **Properties**
 
@@ -37,6 +38,7 @@ A persisted class switch (e.g. a theme toggle) driven by buttons. [Guide](../src
 | `values` (read-only) | `string[]` | The values to cycle through, in order. |
 | `value` | `string` | The current value. Setting it applies and persists it, without an event. |
 | `targets` (read-only) | `Element[]` | The elements whose class is set. |
+| `disabled` | `boolean` | Mirrors the `disabled` attribute. |
 | `storageKey` | `string` | Mirrors the `storage-key` attribute. |
 
 **Methods**
@@ -128,6 +130,7 @@ A list that drills into sub-screens and back. [Guide](../src/drill-menu/readme.m
 | Attribute | Type | Description |
 |---|---|---|
 | `screen` | `string` | Key of the screen currently shown (absent = the list). Reflects; set it to navigate. |
+| `disabled` | `boolean` | Items can't be activated, leave the tab order, and are marked aria-disabled. `push()`/`pop()` still work from script. |
 | `sync-hash` | `boolean` | Mirror the current screen in `location.hash`, so links and the browser's Back button work. |
 
 **Properties**
@@ -136,6 +139,7 @@ A list that drills into sub-screens and back. [Guide](../src/drill-menu/readme.m
 |---|---|---|
 | `items` (read-only) | `Element[]` | The items: element children other than templates and the screen. |
 | `screen` | `string | null` | Key of the open screen, or null. Setting it navigates. |
+| `disabled` | `boolean` | Mirrors the `disabled` attribute. |
 | `syncHash` | `boolean` | Mirrors the `sync-hash` attribute. |
 
 **Methods**
@@ -196,6 +200,7 @@ Toggle a native dialog with a keyboard shortcut. [Guide](../src/hotkey-dialog/re
 |---|---|---|
 | `hotkey` | `string` | One or more space-separated shortcuts, e.g. `mod+k /`. `mod` is ⌘ on Apple platforms and Ctrl elsewhere. |
 | `non-modal` | `boolean` | Open with `show()` instead of `showModal()`. |
+| `disabled` | `boolean` | The shortcut does nothing. The dialog itself is unaffected. |
 
 **Properties**
 
@@ -203,6 +208,7 @@ Toggle a native dialog with a keyboard shortcut. [Guide](../src/hotkey-dialog/re
 |---|---|---|
 | `dialog` (read-only) | `HTMLDialogElement | null` | The `<dialog>` this element controls: its first `<dialog>` descendant. |
 | `hotkey` | `string` | Mirrors the `hotkey` attribute. |
+| `disabled` | `boolean` | Mirrors the `disabled` attribute. |
 | `nonModal` | `boolean` | Mirrors the `non-modal` attribute. |
 
 **Methods**
@@ -242,6 +248,9 @@ An accessible autocomplete with paged ("infinite") results. [Guide](../src/infin
 | `options` (read-only) | `Element[]` | The options currently in the list. |
 | `hasMore` (read-only) | `boolean` | Whether the source has more results for the current query. |
 | `selectedOption` (read-only) | `Element | null` | The chosen option element, if it's in the list. |
+| `selectedOptions` (read-only) | `Element[]` | The chosen option as a list (0 or 1 items), like a select's. |
+| `selectedIndex` | `number` | Index of the chosen option among the options now in the list, or -1. Setting it chooses that option (-1 clears the value). Script changes don't fire events. |
+| `length` (read-only) | `number` | Number of options now in the list. |
 | `input` (read-only) | `HTMLInputElement | null` | The inner `<input>` (generated, or the one you wrote as a child). |
 | `searchFunction` | `((query: string, init: { signal: AbortSignal, cursor: string }) => unknown) | null` | A function that produces options for a query, instead of filtering the child `<option>`s or fetching `src`: `async (query, { signal }) =>` an HTML string, an array of strings / `{ value, label }` / Nodes, or a Node. `signal` aborts when a newer search starts. To page results, return `{ options, next, total? }`: `next` is the cursor passed back as `cursor` for the following page (null when there are no more). |
 | `open` | `boolean` | Mirrors the `open` attribute. |
@@ -261,6 +270,7 @@ An accessible autocomplete with paged ("infinite") results. [Guide](../src/infin
 | Method | Description |
 |---|---|
 | `loadMore()` | Load the next page of results for the current query (what scrolling to the end of the list does). Resolves when it's appended. |
+| `item(index)` | The option at `index` in the list. |
 | `checkValidity()` |  |
 | `reportValidity()` |  |
 | `setCustomValidity(message)` |  |
@@ -279,7 +289,8 @@ An accessible autocomplete with paged ("infinite") results. [Guide](../src/infin
 
 | Property | Description |
 |---|---|
-| `--domkit-combo-accent` | Background of the active option (index.css). |
+| `--domkit-highlight` | Background of the active option (shared token; see theme.css). |
+| `--domkit-surface` | Background of the popup list (shared token). |
 
 ## `<polyfill-window>`
 
@@ -347,6 +358,7 @@ A fully stylable listbox that works like a native select. [Guide](../src/stylabl
 |---|---|---|
 | `options` (read-only) | `Element[]` | Every option, in document order (including those in groups). |
 | `selectedOptions` (read-only) | `Element[]` | The selected options. |
+| `selectedOption` (read-only) | `Element | null` | The first selected option, or null (like infinite-combo-box's). |
 | `selectedIndex` | `number` | Index of the first selected option, or -1. Setting it selects only that option. Script changes don't fire events. |
 | `value` | `string` | Value of the first selected option, or "". Setting it selects the first option with that value (or nothing, if none matches). |
 | `length` (read-only) | `number` | Number of options. |
@@ -383,7 +395,8 @@ A fully stylable listbox that works like a native select. [Guide](../src/stylabl
 | Property | Description |
 |---|---|
 | `--domkit-select-size` | Visible rows, from the `size` attribute. |
-| `--domkit-select-accent` | Background of selected options (index.css). |
+| `--domkit-highlight` | Background of selected options (shared token; see theme.css). |
+| `--domkit-focus-ring` | Focus outline (shared token). |
 
 ## `<tabbed-ui>`
 
@@ -395,11 +408,13 @@ Accessible tabs and panels from plain children. [Guide](../src/tabbed-ui/readme.
 |---|---|---|
 | `selected-index` | `number` | Index of the selected tab. Reflects the current selection. |
 | `manual` | `boolean` | Arrow keys move focus only; Enter/Space selects (manual activation). |
+| `disabled` | `boolean` | No tab can be selected by the user, and the tabs leave the tab order. Panels stay as they are. |
 
 **Properties**
 
 | Property | Type | Description |
 |---|---|---|
+| `disabled` | `boolean` | Mirrors the `disabled` attribute. |
 | `tabList` (read-only) | `Element | null` | The tab list: the child with role="tablist", else the first element child. |
 | `tabs` (read-only) | `Element[]` | The tabs, in order. |
 | `panels` (read-only) | `Element[]` | The panels, in order (every element child except the tab list). |
@@ -418,5 +433,6 @@ Accessible tabs and panels from plain children. [Guide](../src/tabbed-ui/readme.
 |---|---|
 | `--domkit-tab-gap` | Space between tabs (index.css). |
 | `--domkit-tab-padding` | Padding inside each tab (index.css). |
-| `--domkit-tab-accent` | Color of the selected-tab indicator and focus ring (index.css). |
-| `--domkit-tab-border` | Color of the line under the tab list (index.css). |
+| `--domkit-accent` | Selected-tab indicator (shared token; see theme.css). |
+| `--domkit-border` | Line under the tab list (shared token). |
+| `--domkit-focus-ring` | Focus outline of tabs and panels (shared token). |

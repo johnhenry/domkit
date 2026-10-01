@@ -5,6 +5,8 @@
  * pattern: roles, ids, roving tabindex, and keyboard support are wired
  * onto whatever markup you write. */
 export default class TabbedUI extends HTMLElement {
+  /** Mirrors the `disabled` attribute. */
+  disabled: boolean;
   /** The tab list: the child with role="tablist", else the first element child. */
   readonly tabList: Element | null;
   /** The tabs, in order. */

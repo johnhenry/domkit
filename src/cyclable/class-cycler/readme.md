@@ -45,6 +45,7 @@ with no script:
 | `classes` | `values` (read-only array) | Comma-separated values. An empty entry means "no class": `classes=",compact"` toggles one class |
 | `target` | `targets` (read-only) | Selector for the element(s) to set the class on. All matches. Default `html` |
 | `storage-key` | `storageKey` | `localStorage` key. Without it, the value isn't persisted |
+| `disabled` | `disabled` | Its buttons are disabled (and restored afterwards), and invoker commands are ignored |
 | `value` | `value` | The current value. Reflects. In markup, it's the initial value when nothing is stored |
 
 Only the cycle's own classes are added and removed, and other classes on

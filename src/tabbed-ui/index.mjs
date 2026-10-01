@@ -26,16 +26,18 @@ const nextId = (prefix) => `${prefix}-${++uid}`;
  *
  * @attr {number} selected-index - Index of the selected tab. Reflects the current selection.
  * @attr {boolean} manual - Arrow keys move focus only; Enter/Space selects (manual activation).
+ * @attr {boolean} disabled - No tab can be selected by the user, and the tabs leave the tab order. Panels stay as they are.
  *
  * @fires change - The user selected a different tab (click or keyboard). Not fired for script changes.
  *
  * @cssprop --domkit-tab-gap - Space between tabs (index.css).
  * @cssprop --domkit-tab-padding - Padding inside each tab (index.css).
- * @cssprop --domkit-tab-accent - Color of the selected-tab indicator and focus ring (index.css).
- * @cssprop --domkit-tab-border - Color of the line under the tab list (index.css).
+ * @cssprop --domkit-accent - Selected-tab indicator (shared token; see theme.css).
+ * @cssprop --domkit-border - Line under the tab list (shared token).
+ * @cssprop --domkit-focus-ring - Focus outline of tabs and panels (shared token).
  */
 export default class TabbedUI extends HTMLElement {
-  static observedAttributes = ["selected-index", "manual"];
+  static observedAttributes = ["selected-index", "manual", "disabled"];
 
   #observer = new MutationObserver(() => this.#sync());
   #index = -1;
@@ -62,7 +64,21 @@ export default class TabbedUI extends HTMLElement {
     if (name === "selected-index" && current !== previous && !this.#syncing) {
       this.#select(Number(current), { user: false });
     }
+    // (Before the first sync there's no selection to re-apply yet.)
+    if (name === "disabled" && this.#index >= 0) this.#select(this.#index, { user: false, force: true });
   }
+
+  /**
+   * Mirrors the `disabled` attribute.
+   * @type {boolean}
+   */
+  get disabled() {
+    return this.hasAttribute("disabled");
+  }
+  set disabled(value) {
+    this.toggleAttribute("disabled", Boolean(value));
+  }
+
 
   /**
    * The tab list: the child with role="tablist", else the first element child.
@@ -190,8 +206,11 @@ export default class TabbedUI extends HTMLElement {
     tabs.forEach((tab, i) => {
       const selected = i === index;
       tab.setAttribute("aria-selected", String(selected));
-      tab.tabIndex = selected ? 0 : -1;
+      tab.tabIndex = selected && !this.disabled ? 0 : -1; // disabled: out of the tab order
     });
+    const tabList = this.tabList;
+    if (this.disabled) tabList.setAttribute("aria-disabled", "true");
+    else if (tabList.getAttribute("aria-disabled") === "true") tabList.removeAttribute("aria-disabled");
     panels.forEach((panel, i) => {
       panel.hidden = i !== index;
     });
@@ -211,6 +230,7 @@ export default class TabbedUI extends HTMLElement {
   }
 
   #onClick(event) {
+    if (this.disabled) return;
     const tab = this.#tabFor(event.target);
     if (tab && !this.#isDisabled(tab)) {
       this.#select(this.tabs.indexOf(tab), { user: true });
@@ -218,6 +238,7 @@ export default class TabbedUI extends HTMLElement {
   }
 
   #onKeyDown(event) {
+    if (this.disabled) return;
     const tab = this.#tabFor(event.target);
     if (!tab || event.altKey || event.ctrlKey || event.metaKey) {
       return;
@@ -225,6 +246,7 @@ export default class TabbedUI extends HTMLElement {
     const tabs = this.tabs;
     const current = tabs.indexOf(tab);
     const vertical = this.tabList.getAttribute("aria-orientation") === "vertical";
+    const rtl = getComputedStyle(this.tabList).direction === "rtl";
     const step = (from, delta) => {
       for (let i = 1; i <= tabs.length; i++) {
         const next = (from + delta * i + tabs.length * i) % tabs.length;
@@ -236,10 +258,11 @@ export default class TabbedUI extends HTMLElement {
     const lastEnabled = () => step(tabs.length, -1);
     let target;
     switch (event.key) {
-      case vertical ? "ArrowDown" : "ArrowRight":
+      // In right-to-left text, the "next" tab is to the left.
+      case vertical ? "ArrowDown" : rtl ? "ArrowLeft" : "ArrowRight":
         target = step(current, 1);
         break;
-      case vertical ? "ArrowUp" : "ArrowLeft":
+      case vertical ? "ArrowUp" : rtl ? "ArrowRight" : "ArrowLeft":
         target = step(current, -1);
         break;
       case "Home":

@@ -7,6 +7,8 @@ export default class HotkeyDialog extends HTMLElement {
   /** The `<dialog>` this element controls: its first `<dialog>` descendant. */
   readonly dialog: HTMLDialogElement | null;
   hotkey: string;
+  /** Mirrors the `disabled` attribute. */
+  disabled: boolean;
   nonModal: boolean;
   /** Open the dialog (modally, unless `non-modal`). */
   show(): void;

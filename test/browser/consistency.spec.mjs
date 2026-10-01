@@ -124,3 +124,106 @@ test("form-associated elements behave alike in one form", async ({ page }) => {
   expect(result.matches).toEqual([true, true, true, true]);
   expect(result.elements).toEqual(expect.arrayContaining(["stylable-select", "infinite-combo-box"]));
 });
+
+test("disabled means the same thing everywhere: no interaction, out of the tab order, no events", async ({ page }) => {
+  await mount(
+    page,
+    `<button id="before">before</button>
+     <tabbed-ui id="t" disabled><div><button>A</button><button>B</button></div><p>a</p><p>b</p></tabbed-ui>
+     <drill-menu id="m" disabled><button data-key="x">X<template>x</template></button></drill-menu>
+     <class-cycler id="c" disabled classes="p,q"><button id="cb">cycle</button></class-cycler>
+     <hotkey-dialog id="h" disabled hotkey="ctrl+k"><dialog id="d">d</dialog></hotkey-dialog>
+     <stylable-select id="s" disabled><option>a</option><option>b</option></stylable-select>
+     <infinite-combo-box id="i" disabled><option>a</option></infinite-combo-box>
+     <input id="after" aria-label="after" />`,
+    MODULES,
+  );
+  // (#after is an input: WebKit, like Safari by default, leaves buttons out
+  // of the Tab order.)
+  const events = [];
+  await page.exposeFunction("record", (e) => events.push(e));
+  await page.evaluate(() => {
+    for (const type of ["change", "input", "push"]) document.addEventListener(type, (e) => window.record(`${type}:${e.target.id}`));
+  });
+  // Tab order: no disabled control is a stop. (The visible tab panel still
+  // is, so its content stays reachable and scrollable.)
+  await page.locator("#before").focus();
+  await page.keyboard.press("Tab");
+  await expect(page.locator("#t [role=tabpanel]:not([hidden])")).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.locator("#after")).toBeFocused();
+  // Clicks do nothing.
+  await page.getByRole("tab", { name: "B" }).click({ force: true });
+  await page.getByRole("button", { name: "X" }).click({ force: true });
+  await page.locator("#cb").click({ force: true });
+  await page.keyboard.press("Control+k");
+  expect(await page.evaluate(() => ({
+    tab: document.getElementById("t").selectedIndex,
+    screen: document.getElementById("m").screen,
+    cycler: document.getElementById("c").value,
+    dialog: document.getElementById("d").open,
+    tablistDisabled: document.querySelector("#t [role=tablist]").getAttribute("aria-disabled"),
+    itemDisabled: document.querySelector("#m button").getAttribute("aria-disabled"),
+  }))).toEqual({ tab: 0, screen: null, cycler: "p", dialog: false, tablistDisabled: "true", itemDisabled: "true" });
+  expect(events).toEqual([]);
+  // ...and re-enabling restores everything.
+  await page.evaluate(() => {
+    for (const id of ["t", "m", "c", "h"]) document.getElementById(id).disabled = false;
+  });
+  await page.getByRole("tab", { name: "B" }).click();
+  await page.locator("#cb").click();
+  await page.keyboard.press("Control+k");
+  expect(await page.evaluate(() => [document.getElementById("t").selectedIndex, document.getElementById("c").value, document.getElementById("d").open, document.querySelector("#m button").hasAttribute("aria-disabled")])).toEqual([1, "q", true, false]);
+});
+
+test("stylable-select and infinite-combo-box expose the same option API", async ({ page }) => {
+  await mount(
+    page,
+    `<stylable-select id="s"><option value="a">A</option><option value="b">B</option></stylable-select>
+     <infinite-combo-box id="i"><option value="a">A</option><option value="b">B</option></infinite-combo-box>`,
+    MODULES,
+  );
+  const result = await page.evaluate(async () => {
+    const s = document.getElementById("s");
+    const i = document.getElementById("i");
+    i.input.value = ""; // show every option
+    i.input.dispatchEvent(new Event("input"));
+    await new Promise((r) => setTimeout(r, 20));
+    const shape = (el) => {
+      el.selectedIndex = 1;
+      return {
+        value: el.value,
+        selectedIndex: el.selectedIndex,
+        selectedOption: el.selectedOption?.textContent,
+        selectedOptions: el.selectedOptions.map((o) => o.textContent),
+        length: el.length,
+        item0: el.item(0)?.textContent,
+        options: el.options.map((o) => o.textContent),
+      };
+    };
+    return [shape(s), shape(i)];
+  });
+  expect(result[1]).toEqual(result[0]);
+  expect(result[0]).toEqual({ value: "b", selectedIndex: 1, selectedOption: "B", selectedOptions: ["B"], length: 2, item0: "A", options: ["A", "B"] });
+});
+
+test("right-to-left: horizontal arrow keys follow the reading direction", async ({ page }) => {
+  await mount(
+    page,
+    `<div dir="rtl">
+       <tabbed-ui id="t"><div><button>א</button><button>ב</button><button>ג</button></div><p>1</p><p>2</p><p>3</p></tabbed-ui>
+       <drill-menu id="m"><button id="m1">אחד</button><button id="m2">שתיים</button></drill-menu>
+     </div>`,
+    MODULES,
+  );
+  await page.getByRole("tab", { name: "א" }).focus();
+  await page.keyboard.press("ArrowLeft"); // visually "forward" in RTL
+  expect(await page.evaluate(() => document.getElementById("t").selectedIndex)).toBe(1);
+  await page.keyboard.press("ArrowRight");
+  expect(await page.evaluate(() => document.getElementById("t").selectedIndex)).toBe(0);
+  await page.locator("#m1").focus();
+  await page.keyboard.press("ArrowLeft");
+  await expect(page.locator("#m2")).toBeFocused();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.locator("#m1")).toBeFocused();
+});

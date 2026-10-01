@@ -64,6 +64,7 @@ ordinary CSS styles it.
 | Attribute | Property | Description |
 |---|---|---|
 | `screen` | `screen` | Key of the open screen (absent = the list). Reflects. Set it to navigate, or write it in markup to start on a screen |
+| `disabled` | `disabled` | Items can't be activated and leave the tab order (marked `aria-disabled`). `push()`/`pop()` still work from script |
 | `sync-hash` | `syncHash` | Mirror the screen in `location.hash`: drilling in adds a history entry, the browser's Back button goes back, and links like `#profile` open screens. Use it on one menu per page |
 
 An item's **key** is its `data-key`, or else its position (`"0"`,
@@ -86,7 +87,7 @@ user input.
 ## Keyboard
 
 The list is a single tab stop. <kbd>↑</kbd>/<kbd>↓</kbd> (or
-<kbd>←</kbd>/<kbd>→</kbd>) and <kbd>Home</kbd>/<kbd>End</kbd> move
+<kbd>←</kbd>/<kbd>→</kbd>, swapped in right-to-left text) and <kbd>Home</kbd>/<kbd>End</kbd> move
 between items, and <kbd>Enter</kbd>/<kbd>Space</kbd> activate.
 <kbd>Esc</kbd> in a screen goes back.
 

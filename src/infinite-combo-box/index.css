@@ -1,8 +1,8 @@
-/* Optional defaults for <infinite-combo-box>. The list is positioned under the
-   input; the keyboard-active option has [data-active], the chosen one
-   [aria-selected="true"]. */
+/* Optional defaults for <infinite-combo-box>. The list is positioned under
+   the input; the keyboard-active option has [data-active], the chosen one
+   [aria-selected="true"]. Colors come from the shared tokens in
+   ../theme.css. */
 infinite-combo-box:not([hidden]) {
-  --domkit-combo-accent: color-mix(in srgb, currentColor 12%, transparent);
   position: relative;
   display: inline-block;
 }
@@ -10,6 +10,10 @@ infinite-combo-box > input {
   font: inherit;
   inline-size: 100%;
   box-sizing: border-box;
+}
+infinite-combo-box > input:focus-visible {
+  outline: var(--domkit-focus-ring, 2px solid currentColor);
+  outline-offset: 1px;
 }
 infinite-combo-box > [role="listbox"] {
   position: absolute;
@@ -20,10 +24,10 @@ infinite-combo-box > [role="listbox"] {
   overflow-y: auto;
   margin-block-start: 0.25em;
   padding: 0.25em;
-  background: Canvas;
-  color: CanvasText;
-  border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
-  border-radius: 0.375em;
+  background: var(--domkit-surface, Canvas);
+  color: var(--domkit-surface-text, CanvasText);
+  border: 1px solid var(--domkit-border, color-mix(in srgb, currentColor 25%, transparent));
+  border-radius: var(--domkit-radius, 0.375em);
   box-shadow: 0 0.5em 1.5em color-mix(in srgb, CanvasText 15%, transparent);
 }
 infinite-combo-box > [role="listbox"][aria-busy="true"] {
@@ -32,17 +36,18 @@ infinite-combo-box > [role="listbox"][aria-busy="true"] {
 infinite-combo-box :is(option, [role="option"]):not([hidden]) {
   display: block;
   padding: 0.375em 0.5em;
-  border-radius: 0.25em;
+  border-radius: var(--domkit-radius, 0.375em);
   cursor: pointer;
 }
 infinite-combo-box :is(option, [role="option"])[data-active] {
-  background: var(--domkit-combo-accent);
+  background: var(--domkit-highlight, color-mix(in srgb, currentColor 15%, transparent));
 }
 infinite-combo-box :is(option, [role="option"])[aria-selected="true"] {
   font-weight: 600;
 }
-infinite-combo-box :is(option, [role="option"])[aria-disabled="true"] {
-  opacity: 0.5;
+infinite-combo-box :is(option, [role="option"])[aria-disabled="true"],
+infinite-combo-box:is([disabled], :disabled) {
+  opacity: var(--domkit-disabled-opacity, 0.5);
   cursor: not-allowed;
 }
 infinite-combo-box [data-group-label] {
