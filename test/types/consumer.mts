@@ -68,3 +68,12 @@ import "@johnhenry/domkit/matchable/attribute-provider/global.mjs";
 const qc: HTMLElement | null = document.querySelector("query-container");
 const ap: HTMLElement | null = document.querySelector("attribute-provider");
 void qc, ap;
+
+// definable.
+import "@johnhenry/domkit/definable/define-component/global.mjs";
+import "@johnhenry/domkit/definable/polyfill-window/global.mjs";
+const definer = document.querySelector("define-component")!;
+const cls: CustomElementConstructor = await definer.ready;
+const polyfill = document.querySelector("polyfill-window")!;
+const loaded: unknown = await polyfill.ready;
+void cls, loaded;

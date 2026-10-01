@@ -28,9 +28,8 @@ globals, and hide content until everything is ready, without writing a
 ## Notes
 
 - `define-component` and `polyfill-window` resolve a relative `src`
-  against the **page's** URL (via the shared
-  [`resolve-relative-url.mjs`](./resolve-relative-url.mjs)), not against
-  their own module's location.
-- A tag name can only be registered once per page. `define-component`
-  skips a name that's already registered (and warns if you add `force`,
-  because the platform has no way to re-register).
+  against the document's base URL, and fire `load`/`error`, just like
+  `<script src>`. Their `ready` promise resolves when they're done.
+- A tag name can only be registered once per page. A second
+  `<define-component>` for the same name is a no-op that still reports
+  success.

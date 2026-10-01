@@ -1,21 +1,22 @@
-<style>
-  .until-window-load {
-    visibility: hidden;
-  }
-</style>
-<script type="module" src="../until-window-load/global.mjs"></script>
-<script
-  type="module"
-  src="../define-component/global.mjs"
-></script>
-<define-component
-  class="until-window-load"
-  name="polyfill-window"
-  src="./index.mjs"
-></define-component>
-<polyfill-window name="shout" src="./shout.mjs"></polyfill-window>
-<polyfill-window
-  name="BroadcastFhannel"
-  src="./broadcast-channel-polyfill.mjs"
-  no-import
-></polyfill-window>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; }</style>
+<script type="module" src="./global.mjs"></script>
+</head>
+<body>
+<p>Loads <code>./shout.mjs</code> and assigns its default export to <code>window.shout</code>:</p>
+<polyfill-window id="loader" name="shout" src="./shout.mjs"></polyfill-window>
+<p><button id="try" disabled>Call window.shout()</button> <output id="status">loading…</output></p>
+<script type="module">
+  const loader = document.getElementById("loader");
+  loader.addEventListener("load", () => {
+    document.getElementById("status").value = "loaded";
+    document.getElementById("try").disabled = false;
+  });
+  loader.addEventListener("error", (event) => (document.getElementById("status").value = event.message));
+  document.getElementById("try").onclick = () => window.shout("hello");
+</script>
+</body>
+</html>

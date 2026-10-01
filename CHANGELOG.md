@@ -144,6 +144,25 @@ rebuilt to meet it.
     `!important` is honored in `styles`.
   - New demos, with no import maps. Removed the empty `index.css` files.
 
+- **`definable` behaves like `<script src>`, and domkit has zero
+  dependencies**:
+  - `define-component` and `polyfill-window` resolve `src` against the
+    document's base URL (respecting `<base href>`), and fire `load` and
+    `error` (`ErrorEvent`) instead of failing with an unhandled rejection.
+    Both have a `ready` promise. A missing export or a non-class export
+    is reported. Removed: `force` (it could only warn), `no-import` (use
+    `<script type="module">`), and `resolve-relative-url.mjs`.
+  - `define-component-by-content` takes its markup from a `<template>`
+    child (the `content` attribute still works). `mode` now accepts
+    `open`, `closed`, or `none` (light DOM), replacing `use-dom`. It's
+    reimplemented without domable and fires `load`/`error`.
+  - Removed `shadow-dom` (a deprecated one-line alias for domable's
+    `shadowOpen`) and `event-consumer` (native `on…` attributes cover
+    standard events, and it was the last module that evaluated strings).
+  - **No runtime dependencies remain** (`@johnhenry/domable` and
+    `parsel-js` are gone), so no-build pages never need an import map,
+    and every module is CSP-safe.
+
 ## [0.0.9] - 2026-09-30
 
 A shape-and-documentation pass. The modules were reorganized only where the

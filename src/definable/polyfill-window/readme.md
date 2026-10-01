@@ -1,34 +1,34 @@
 # polyfill-window
 
-Load a module from HTML and assign its export to a global, e.g. a
-polyfill or a library that expects to live on `window`. It's the
-`globalThis` counterpart to [define-component](../define-component/readme.md),
-which registers a custom element instead. Part of [definable](../readme.md).
+Load a module from HTML and put its export on `window`, but only if that
+global doesn't already exist: the polyfill pattern. It's the `globalThis`
+counterpart to [define-component](../define-component/readme.md). Part of
+[definable](../readme.md).
+
+```html
+<script type="module" src="https://esm.sh/@johnhenry/domkit/definable/polyfill-window/global.mjs"></script>
+
+<!-- window.URLPattern = (await import(…)).URLPattern, unless the browser has it -->
+<polyfill-window name="URLPattern" src="https://esm.sh/urlpattern-polyfill" import="URLPattern"></polyfill-window>
+```
 
 ## Attributes
 
 | Attribute | Description |
 |---|---|
-| `name` | Global key to assign the import to (required) |
-| `src` | URL of the module to import (required). A relative URL resolves against the page's URL |
-| `import` | Named export to assign. Defaults to the module's default export |
-| `force` | If present, re-imports and re-assigns even if `globalThis[name]` is already set |
-| `no-import` | If present, the module is imported (for its side effects) but nothing is assigned to `globalThis` |
+| `name` | The global to assign (`window[name]`). If it already exists, nothing is imported |
+| `src` | URL of the module. A relative URL resolves against the document's base URL, like `<script src>` |
+| `import` | Name of the export to assign. Default: the module's default export |
 
-## Usage
+To load a module just for its side effects, use a plain
+`<script type="module" src="…">`.
 
-```html
-<script
-  type="module"
-  src="https://esm.sh/@johnhenry/domkit/definable/polyfill-window/global.mjs"
-></script>
+## Events and properties
 
-<!-- window.shout = (await import("./shout.mjs")).default -->
-<polyfill-window name="shout" src="./shout.mjs"></polyfill-window>
+| Event | When |
+|---|---|
+| `load` | The global is in place (assigned now, or already there) |
+| `error` | The module failed to load or has no such export. An `ErrorEvent` |
 
-<!-- import only for side effects; assign nothing -->
-<polyfill-window name="BroadcastChannel" src="./broadcast-channel-polyfill.mjs" no-import></polyfill-window>
-```
-
-Relative `src` URLs resolve against the page's URL. The import is
-asynchronous, so code that uses the global has to wait for it to appear.
+`ready` is a promise for the global's value. The import is asynchronous,
+so code that needs the global should wait for `load` or `await ready`.

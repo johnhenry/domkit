@@ -86,6 +86,78 @@
       ]
     },
     {
+      "name": "define-component-by-content",
+      "description": "Register a markup-only custom element from inline HTML.\n\nEvents: `load`, `error`",
+      "attributes": [
+        {
+          "name": "name",
+          "description": "The tag name to register."
+        },
+        {
+          "name": "content",
+          "description": "The markup, if there's no `<template>` child."
+        },
+        {
+          "name": "mode",
+          "description": "`open` (default) or `closed` shadow root, or `none` to append the markup as light DOM."
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/definable/define-component-by-content"
+        }
+      ]
+    },
+    {
+      "name": "define-component",
+      "description": "Register a custom element from a module URL, in HTML.\n\nEvents: `load`, `error`",
+      "attributes": [
+        {
+          "name": "name",
+          "description": "The tag name to register."
+        },
+        {
+          "name": "src",
+          "description": "URL of the module, resolved against the document's base URL."
+        },
+        {
+          "name": "import",
+          "description": "Name of the export to register. Default `default`."
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/definable/define-component"
+        }
+      ]
+    },
+    {
+      "name": "polyfill-window",
+      "description": "Load a module's export onto window, in HTML.\n\nEvents: `error`, `load`",
+      "attributes": [
+        {
+          "name": "name",
+          "description": "The global to assign (`window[name]`)."
+        },
+        {
+          "name": "src",
+          "description": "URL of the module, resolved against the document's base URL."
+        },
+        {
+          "name": "import",
+          "description": "Name of the export to assign. Default `default`."
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/definable/polyfill-window"
+        }
+      ]
+    },
+    {
       "name": "drill-menu",
       "description": "A list that drills into sub-screens and back.\n\nEvents: `push`, `pop`",
       "attributes": [

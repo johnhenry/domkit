@@ -1,37 +1,42 @@
 # define-component-by-content
 
-Defines a new custom element whose markup comes from an HTML string given
-directly as an attribute, rather than from a separate module file (compare
-[define-component](../define-component/readme.md),
-which loads markup/behavior from a URL instead).
+Register a custom element whose markup you write right there in the
+page, in a `<template>`. Every instance of the new tag renders that
+markup in a shadow root, so `<slot>`s and scoped `<style>`s work. It's
+for markup-only components (a styled callout, a card frame, a signature
+line) that don't deserve a JavaScript file. Part of
+[definable](../readme.md).
 
-Built on [`@johnhenry/domable`](https://github.com/johnhenry/domable)'s
-`simple-element` `constructSuperclass`. Part of [definable](../readme.md).
+```html
+<script type="module" src="https://esm.sh/@johnhenry/domkit/definable/define-component-by-content/global.mjs"></script>
 
-The new tag is registered once, when the `<define-component-by-content>`
-element connects. Every instance renders the same static `content` and
-has no behavior of its own, so this suits markup-only components (a
-styled callout, a branded heading).
+<define-component-by-content name="x-callout">
+  <template>
+    <style>
+      :host { display: block; border-inline-start: 4px solid teal; padding: 0 1em; }
+    </style>
+    <slot></slot>
+  </template>
+</define-component-by-content>
+
+<x-callout>Heads up!</x-callout>
+```
 
 ## Attributes
 
 | Attribute | Description |
 |---|---|
-| `name` | Tag name to register (required) |
-| `content` | HTML string to render |
-| `use-dom` | If present, `content` renders as light DOM (`append`ed directly); if absent (default), `content` renders inside an open shadow root |
-| `mode` | Shadow root mode when `use-dom` is absent. Defaults to `"open"` |
+| `name` | Tag name to register |
+| `mode` | `open` (default) or `closed` shadow root, or `none` to append the markup to each instance's light DOM (no slots, page styles apply) |
+| `content` | The markup as an HTML string, if there's no `<template>` child |
 
-## Usage
+The markup is captured once, when the element first connects. If `name`
+is already registered, nothing happens.
 
-```html
-<script
-  type="module"
-  src="https://esm.sh/@johnhenry/domkit/definable/define-component-by-content/global.mjs"
-></script>
-<define-component-by-content
-  name="my-greeting"
-  content="<p>Hello!</p>"
-></define-component-by-content>
-<my-greeting></my-greeting>
-```
+## Events
+
+`load` once the tag is registered (or already was), and `error` (an
+`ErrorEvent`) for an invalid `name` or `mode`.
+
+Compare [define-component](../define-component/readme.md), which
+registers a class from a module, for components with behavior.

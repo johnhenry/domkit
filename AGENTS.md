@@ -167,19 +167,20 @@ module and the principles disagree, the module is wrong.
   deciding whether `body`'s first/last child is reusable. In any
   normally indented page, the first child is a whitespace text node.
   Test against realistic markup (the test does).
-- **Bare specifiers in demos need import maps.** `@johnhenry/domable/*`
-  resolves under Node via `node_modules`, but not in a
-  browser loading raw source. Every demo that transitively imports them
-  carries a `<script type="importmap">` whose relative paths count from
-  *that file's* directory. Import maps are per document, so each demo
-  page and each gallery iframe needs its own. domable's exports are flat files, so map exact
-  subpaths (`src/simple-element.mjs`), not a prefix. Working examples:
-  `src/definable/define-component-by-content/demo.html`,
-  `demo/fragments/shadow-dom.html`.
+- **domkit has zero runtime dependencies. Keep it that way.** No-build
+  users load modules straight from a CDN or a copied `src/` directory, and
+  every bare import (`import x from "some-package"`) would force them to
+  write an import map. The last two (`parsel-js`, `@johnhenry/domable`)
+  were removed in favor of small in-repo code (`matchable/simple-selector.mjs`,
+  and a direct `<template>`-cloning implementation in
+  `define-component-by-content`). The browser fixture has no import map,
+  so any new bare import fails the browser tests.
 - **Things that are NOT in this package**: `simple-element`,
   `create-element`, `text-to-dom`/`dom-to-text`, `react-to-dom`/
-  `dom-to-react` live in `@johnhenry/domable` (removed from here in 0.0.1).
-  `brains` (0.0.7) and `graph-component` (0.0.9) were deleted, not moved.
+  `dom-to-react` live in `@johnhenry/domable` (removed from here in 0.0.1;
+  domkit no longer depends on it at all). `brains` (0.0.7),
+  `graph-component` (0.0.9), and `shadow-dom` and `event-consumer`
+  (Unreleased) were deleted, not moved.
 - **Coming from `johnhenry/lib`?** `lib`'s `js/<module>/0.0.0/index.mjs`
   is this repo's `src/<module>/index.mjs` (or
   `src/<family>/<module>/…`), and several modules were renamed since. See

@@ -23,7 +23,6 @@
     <a href="#declarative">Wiring from markup</a>
     <a href="#utilities">Utilities</a>
     <a href="#bootstrap">App bootstrap</a>
-    <a href="#deprecated">Deprecated</a>
     <a href="#experimental">Experimental</a>
     <a href="https://github.com/johnhenry/domkit">Source</a>
   </nav>
@@ -94,7 +93,7 @@
     </div>
   </div>
 
-  <h2 id="declarative">Wiring things up from markup <span class="count">src/definable/* · event-consumer</span></h2>
+  <h2 id="declarative">Wiring things up from markup <span class="count">src/definable/*</span></h2>
   <p class="group-note">
     <code>definetag</code> has no visible output of its own (it's the curried
     <code>customElements.define</code> primitive the others build on) — see
@@ -121,12 +120,7 @@
       <p>Removes a "hidden until loaded" class once <code>window</code> fires <code>load</code>.</p>
       <iframe src="../src/definable/until-window-load/demo.html"></iframe>
     </div>
-    <div class="card">
-      <h3>event-consumer</h3>
-      <p>Declaratively wire event listeners without JS setup code.</p>
-      <iframe src="fragments/event-consumer.html"></iframe>
     </div>
-  </div>
 
   <h2 id="utilities">Utilities <span class="count">timing · collections</span></h2>
   <p class="group-note">
@@ -164,21 +158,7 @@
       <p>A generic async hydration mixin, with an undo (<code>dehydrate()</code>).</p>
       <iframe src="../src/hydratable/demo.html"></iframe>
     </div>
-    <div class="card tall">
-      <h3>domable's domToReact / reactToDom</h3>
-      <p>Not part of domkit — these live in its dependency, <a href="https://github.com/johnhenry/domable">@johnhenry/domable</a>. Shown here because it's installed alongside.</p>
-      <iframe src="fragments/domable-interop.html"></iframe>
     </div>
-  </div>
-
-  <h2 id="deprecated">Deprecated</h2>
-  <div class="grid">
-    <div class="card">
-      <h3>shadow-dom</h3>
-      <p>Alias for domable's <code>simple-element</code> <code>shadowOpen`&lt;slot /&gt;`</code>. Use domable directly.</p>
-      <iframe src="fragments/shadow-dom.html"></iframe>
-    </div>
-  </div>
 
   <h2 id="experimental">Experimental <span class="count">src/experimental/*</span></h2>
   <p class="group-note">
