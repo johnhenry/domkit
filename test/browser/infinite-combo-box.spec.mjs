@@ -357,6 +357,7 @@ test.describe("paging", () => {
     await input(page).fill("item 1");
     await expect.poll(() => count(page), "a new query starts again at one page").toBe(25);
     expect(await page.evaluate(() => document.getElementById("c").options[0].getAttribute("aria-setsize"))).toBe("31");
+    expect(await page.evaluate(() => document.querySelector("#c [role=listbox]").scrollTop), "new results start at the top").toBe(0);
   });
 
   test("a failing later page reports an error and keeps what's loaded", async ({ page }) => {
