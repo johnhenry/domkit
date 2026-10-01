@@ -80,6 +80,10 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- **`infinite-combo-box` starts new results at the top.** It kept the
+  previous scroll position, which could leave "Load more" in view and
+  fetch a second page nobody asked for (seen in Firefox).
+
 - **`stylable-select` is labelled for every tool**: it mirrors its
   `<label>`s into `aria-labelledby`, as `infinite-combo-box` already did.
   Browsers followed `<label for>`, but some assistive technology and
