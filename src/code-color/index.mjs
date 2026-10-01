@@ -6,6 +6,7 @@
 // Where the API isn't supported, the code simply stays uncolored.
 import { languageOf, tokenize } from "./tokenize.mjs";
 
+/** @type {readonly string[]} The token types, each a highlight named `domkit-<type>`. */
 export const TOKEN_TYPES = ["comment", "keyword", "string", "number", "function", "property", "tag", "attribute"];
 const SUPPORTED = typeof CSS !== "undefined" && "highlights" in CSS && typeof Highlight === "function";
 

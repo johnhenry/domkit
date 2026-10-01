@@ -22,8 +22,8 @@
       #palette-dialog::backdrop { background: rgb(0 0 0 / 0.35); }
       #palette { display: block; }
       #palette > input { inline-size: 100%; font-size: 1.1rem; padding: 0.6em 0.8em; }
-      /* In a palette the list sits in the dialog, not floating over the page. */
-      #palette > [role="listbox"] { position: static; box-shadow: none; border: none; max-block-size: 50vh; }
+      /* `inline` puts the list in the dialog's flow instead of floating. */
+      #palette > [role="listbox"] { border: none; max-block-size: 50vh; }
       #log { min-block-size: 3em; }
     </style>
   </head>
@@ -41,7 +41,7 @@
 
     <hotkey-dialog hotkey="mod+k /">
       <dialog id="palette-dialog" closedby="any" aria-label="Command palette">
-        <infinite-combo-box id="palette" aria-label="Command">
+        <infinite-combo-box id="palette" aria-label="Command" inline>
           <input autofocus placeholder="Type a command…" />
           <optgroup label="Page">
             <option value="top">Scroll to top</option>

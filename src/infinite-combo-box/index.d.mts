@@ -1,6 +1,9 @@
 // Generated from custom-elements.json by scripts/manifest-outputs.mjs.
 // Do not edit: change the JSDoc in index.mjs and run `npm run manifest`.
 
+/** The English defaults for the `strings` property. */
+export declare const DEFAULT_STRINGS: Readonly<Record<string, string | Record<string, string>>>;
+
 /** A text input with a popup list of options: filtered from its own
  * `<option>` children, fetched from a URL, or produced by a function.
  * Form-associated, with the WAI-ARIA combobox keyboard pattern. */
@@ -56,6 +59,10 @@ export default class InfiniteComboBox extends HTMLElement {
   setCustomValidity(message: string): void;
   /** Focus the input. */
   focus(options?: FocusOptions): void;
+  /** The strings this element shows and announces (see DEFAULT_STRINGS).
+   * Setting it merges your values over the defaults, so you only pass the
+   * ones you change. */
+  strings: Record<string, string | Record<string, string>>;
 }
 
 declare global {

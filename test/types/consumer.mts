@@ -136,3 +136,9 @@ paged.searchFunction = async (query: string, { cursor }: { signal: AbortSignal; 
 const more: boolean = paged.hasMore;
 await paged.loadMore();
 void more;
+
+// infinite-combo-box strings.
+import { DEFAULT_STRINGS } from "@johnhenry/domkit/infinite-combo-box";
+const defaults: Readonly<Record<string, unknown>> = DEFAULT_STRINGS;
+paged.strings = { loadMore: "Mehr laden" };
+void defaults;

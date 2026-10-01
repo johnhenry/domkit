@@ -24,9 +24,10 @@
           "kind": "variable",
           "name": "TOKEN_TYPES",
           "type": {
-            "text": "array"
+            "text": "readonly string[]"
           },
-          "default": "[\"comment\", \"keyword\", \"string\", \"number\", \"function\", \"property\", \"tag\", \"attribute\"]"
+          "default": "[\"comment\", \"keyword\", \"string\", \"number\", \"function\", \"property\", \"tag\", \"attribute\"]",
+          "description": "The token types, each a highlight named `domkit-<type>`."
         },
         {
           "kind": "class",
@@ -1636,6 +1637,15 @@
       "path": "src/infinite-combo-box/index.mjs",
       "declarations": [
         {
+          "kind": "variable",
+          "name": "DEFAULT_STRINGS",
+          "type": {
+            "text": "Readonly<Record<string, string | Record<string, string>>>"
+          },
+          "default": "{ loadMore: \"Load more results\", loading: \"Loading…\", loadingMore: \"Loading more results…\", noResults: \"No results.\", available: { one: \"{count} result available.\", other: \"{count} results available.\" }, availableMore: { one: \"{count} result available, more can be loaded.\", other: \"{count} results available, more can be loaded.\", }, shownOfTotal: \"{shown} of {total} results shown.\", loadedMore: { one: \"{count} more result loaded.\", other: \"{count} more results loaded.\" }, loadedMoreOfTotal: { one: \"{count} more result loaded, {shown} of {total}.\", other: \"{count} more results loaded, {shown} of {total}.\" }, loadFailed: \"Couldn't load results.\", loadMoreFailed: \"Couldn't load more results.\", }",
+          "description": "The English defaults for the `strings` property."
+        },
+        {
           "kind": "class",
           "description": "A text input with a popup list of options: filtered from its own\n`<option>` children, fetched from a URL, or produced by a function.\nForm-associated, with the WAI-ARIA combobox keyboard pattern.",
           "name": "InfiniteComboBox",
@@ -1866,6 +1876,41 @@
                 "text": "array"
               },
               "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "#floating",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#reposition",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#canFloat",
+              "privacy": "private",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "#float",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "open"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#place",
+              "privacy": "private"
             },
             {
               "kind": "field",
@@ -2355,6 +2400,47 @@
               ]
             },
             {
+              "kind": "field",
+              "name": "#strings",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "strings",
+              "description": "The strings this element shows and announces (see DEFAULT_STRINGS).\nSetting it merges your values over the defaults, so you only pass the\nones you change.",
+              "type": {
+                "text": "Record<string, string | Record<string, string>>"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#authoredStrings",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#language",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#t",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "key"
+                },
+                {
+                  "name": "values",
+                  "default": "{}"
+                }
+              ]
+            },
+            {
               "kind": "method",
               "name": "#announce",
               "privacy": "private",
@@ -2486,6 +2572,13 @@
               "description": "URL template for remote options: `{query}` and `{cursor}` are replaced (missing ones are added as `?q=`/`?cursor=`). JSON (an array, or `{ options, next, total }`) or HTML (with an optional `data-next` element)."
             },
             {
+              "name": "inline",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Render the list in normal flow under the input, instead of as a floating popup in the top layer."
+            },
+            {
               "type": {
                 "text": "string"
               },
@@ -2530,6 +2623,14 @@
         }
       ],
       "exports": [
+        {
+          "kind": "js",
+          "name": "DEFAULT_STRINGS",
+          "declaration": {
+            "name": "DEFAULT_STRINGS",
+            "module": "src/infinite-combo-box/index.mjs"
+          }
+        },
         {
           "kind": "js",
           "name": "default",

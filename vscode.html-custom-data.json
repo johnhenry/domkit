@@ -227,6 +227,11 @@
           "description": "URL template for remote options: `{query}` and `{cursor}` are replaced (missing ones are added as `?q=`/`?cursor=`). JSON (an array, or `{ options, next, total }`) or HTML (with an optional `data-next` element)."
         },
         {
+          "name": "inline",
+          "description": "Render the list in normal flow under the input, instead of as a floating popup in the top layer.",
+          "valueSet": "v"
+        },
+        {
           "name": "name",
           "description": "Name submitted with the form."
         },

@@ -66,6 +66,15 @@ Any element that holds a value is **form-associated**
 - Keyboard handlers only claim the keys they use and only `preventDefault`
   what they handle. They never stop propagation of keys they don't handle.
 
+## 4½. Speaks the user's language
+
+- Text an element shows or announces is replaceable (a `strings`
+  property, or an inert `<script type="application/json" data-strings>`
+  child), with plural forms (`Intl.PluralRules`) and number formatting
+  (`Intl.NumberFormat`) for the element's `lang`.
+- Validation messages are the browser's own localized ones, borrowed from
+  native controls, never hard-coded.
+
 ## 5. Styled with ordinary CSS
 
 - Light DOM by default, so children are styled like any other HTML.

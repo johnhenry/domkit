@@ -233,6 +233,7 @@ An accessible autocomplete with paged ("infinite") results. [Guide](../src/infin
 | `open` | `open` | `boolean` | Whether the option list is showing. Reflects. |
 | `value` | `value` | `string` | Initial value (the value of an option, or text with `allow-custom`). |
 | `src` | `src` | `string` | URL template for remote options: `{query}` and `{cursor}` are replaced (missing ones are added as `?q=`/`?cursor=`). JSON (an array, or `{ options, next, total }`) or HTML (with an optional `data-next` element). |
+| `inline` |  | `boolean` | Render the list in normal flow under the input, instead of as a floating popup in the top layer. |
 | `name` | `name` | `string` | Name submitted with the form. |
 | `debounce` |  | `number` | Milliseconds to wait after typing before searching. Default 0 for local options, 200 for `src`/`searchFunction`. |
 | `page-size` |  | `number` | Show the element's own matching options this many at a time, loading more as the list scrolls. |
@@ -264,6 +265,7 @@ An accessible autocomplete with paged ("infinite") results. [Guide](../src/infin
 | `validity` (read-only) | `ValidityState` |  |
 | `validationMessage` (read-only) | `string` |  |
 | `willValidate` (read-only) | `boolean` |  |
+| `strings` | `Record<string, string \| Record<string, string>>` | The strings this element shows and announces (see DEFAULT_STRINGS). Setting it merges your values over the defaults, so you only pass the ones you change. |
 
 **Methods**
 

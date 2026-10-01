@@ -63,6 +63,21 @@ All notable changes to this project will be documented in this file.
   sections, API, Keyboard, Styling, Notes), enforced by the reference
   checker.
 
+- **Translatable strings in `infinite-combo-box`.** Every shown or
+  announced string can be replaced via a `strings` property or an inert
+  `<script type="application/json" data-strings>` child, with plural
+  maps (`Intl.PluralRules`) and locale number formatting for the
+  element's `lang`. `DEFAULT_STRINGS` is exported.
+- **Validation messages are the browser's own** in `infinite-combo-box`
+  and `stylable-select`, so they're localized like native controls,
+  instead of hard-coded English.
+- **`infinite-combo-box`'s list floats in the top layer** (a manual
+  popover): ancestors with `overflow: hidden`, `z-index`, or transforms
+  no longer clip or cover it. It's positioned under the input (flipping
+  above when needed, `[data-placement]`), matches the input's width,
+  follows scrolling, and needs no stylesheet. The new `inline` attribute
+  keeps the in-flow list (used by the command-palette recipe).
+
 ### Fixed
 
 - **`infinite-combo-box` starts new results at the top.** It kept the
