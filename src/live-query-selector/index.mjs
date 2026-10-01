@@ -1,5 +1,14 @@
 import createMutableNodeList from "../create-mutable-nodelist/index.mjs";
 
+/**
+ * `querySelectorAll` that stays current: the returned list is refreshed in
+ * place as elements are added to or removed from `root`. Call `stop()` on
+ * it when done.
+ * @param {string} selector
+ * @param {ParentNode} [element] the root to search and watch (default: document)
+ * @param {boolean} [useNodeList] return a MutableNodeList instead of an array
+ * @returns {Element[] & { stop(): void }}
+ */
 const liveQuerySelector = (
   selector,
   element = document.getRootNode(),

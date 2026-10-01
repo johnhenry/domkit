@@ -1,3 +1,16 @@
+/**
+ * @typedef {{ value: string, key: string, index: number, events: unknown[] }} CycleChange
+ *   What a change handler receives.
+ * @typedef {{ value: string, key: string, index: number, result: unknown }} CycleResult
+ *   What stepping returns (`result` is the handler's return value).
+ * @typedef {((...events: unknown[]) => CycleResult) & {
+ *   previous(...events: unknown[]): CycleResult,
+ *   peek(): { value: string, key: string, index: number },
+ *   set(value: string, ...events: unknown[]): CycleResult,
+ * }} Cycler
+ *   Call it to step forward; it also carries previous/peek/set.
+ */
+
 const createNext =
   (key, handler, ...values) =>
   (...events) => {
@@ -63,6 +76,13 @@ const createSet =
     };
   };
 
+/**
+ * Cycle a localStorage value through a fixed list. Pass an optional change
+ * handler before the values: `localStorageCycler(key, handler, "a", "b")`.
+ * @param {string} key
+ * @param {...(string | ((change: CycleChange) => unknown))} values
+ * @returns {Cycler}
+ */
 export default (key, ...values) => {
   if (!key) {
     throw new Error("key is required");

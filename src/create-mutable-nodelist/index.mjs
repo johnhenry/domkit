@@ -49,6 +49,11 @@ const MutableNodeList = class extends NodeList {
   }
 };
 
+/**
+ * Create a NodeList you can push to, pop from, shift, and unshift.
+ * @param {...Node} nodes initial contents
+ * @returns {InstanceType<typeof MutableNodeList>}
+ */
 const createMutableNodeList = (...nodes) => {
   const list = Reflect.construct(Array, [], MutableNodeList);
   list.push(...nodes);

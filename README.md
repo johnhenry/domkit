@@ -22,7 +22,7 @@ Every element is held to the same contract: it behaves like a native
 HTML element (attributes, properties, events, forms, `hidden`, keyboard,
 and accessibility all work the way they do for built-ins), and it's tested
 in Chromium, Firefox, and WebKit. See [`docs/principles.md`](docs/principles.md).
-Modules are being brought up to it one at a time. `tabbed-ui` is the first.
+Every stable element meets it.
 
 Full documentation: [opensource.johnhenry.me/domkit](https://opensource.johnhenry.me/domkit/)
 · Live gallery: [`demo/`](demo/) (see [Development](#development))
@@ -169,16 +169,19 @@ docs, add the generated data file to your settings:
 
 TypeScript users get declarations for each element class and its
 `HTMLElementTagNameMap` entry, so `document.querySelector("tabbed-ui")` is
-typed. The manifest, types, and editor data cover each element as it's
-brought up to [the principles](docs/principles.md), currently `tabbed-ui`.
+typed, and the plain-function modules have declarations too.
+
+The generated [element reference](docs/reference.md) lists every
+attribute, property, method, event, and CSS custom property.
 
 ## Stability
 
-Everything outside `experimental/` is meant to be relied on: documented,
-covered by the test suite, and changed only with a `CHANGELOG.md` entry.
-The package is still pre-1.0, so a minor-looking version bump can contain
-breaking changes (renames have happened). Read the changelog when
-upgrading.
+Everything outside `experimental/` is stable: documented, held to
+[the principles](docs/principles.md), tested in Chromium, Firefox, and
+WebKit, and versioned with semver. While the version is `0.x`, a breaking
+change can only land in a minor release (`0.1` → `0.2`), never a patch,
+and it's always listed in [`CHANGELOG.md`](CHANGELOG.md) under
+**Changed (breaking)**.
 
 ## Development
 
@@ -206,7 +209,7 @@ The live gallery runs most modules at once, each in its own iframe:
 npm run serve
 ```
 
-then open `http://localhost:4173/demo/`. Module imports don't resolve over
+then open `http://localhost:4719/demo/`. Module imports don't resolve over
 `file://`. Each module directory also has its own `demo.html`/`demo.htm`.
 See [`AGENTS.md`](AGENTS.md) for the full verification loop and the
 repo's known gotchas.

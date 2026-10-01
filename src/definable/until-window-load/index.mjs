@@ -1,3 +1,9 @@
+/**
+ * Remove these classes from every element that has them once the window
+ * has loaded (immediately, if it already has).
+ * @param {...string} classNames
+ * @returns {void}
+ */
 export default (...classNames) => {
   const run = () => {
     for (const className of classNames) {

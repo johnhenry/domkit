@@ -1,6 +1,6 @@
 // Minimal static file server for the repo root -- used by the browser tests
 // (playwright.config.mjs) and handy for the gallery: `node scripts/serve.mjs`
-// then open http://localhost:4173/demo/. No caching, correct module MIME
+// then open http://localhost:4719/demo/. No caching, correct module MIME
 // types, directory URLs serve index.html. No dependencies on purpose.
 import { createServer } from "node:http";
 import { readFile, stat } from "node:fs/promises";
@@ -8,7 +8,7 @@ import { extname, join, normalize, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
-const PORT = Number(process.env.PORT) || 4173;
+const PORT = Number(process.env.PORT) || 4719;
 const TYPES = {
   ".html": "text/html; charset=utf-8",
   ".htm": "text/html; charset=utf-8",

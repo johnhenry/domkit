@@ -5,7 +5,8 @@ import { skipInsignificant } from "./skip-insignificant.mjs";
 /** Re-resolves body's first suitable child on every call, unlike the
  * default export below (a one-shot snapshot from import time). Use this
  * when you need a fresh read rather than the value from whenever this
- * module first loaded. */
+ * module first loaded.
+ * @returns {Element} */
 export function resolveFirst() {
   let target = skipInsignificant(window.document.body.firstChild, "nextSibling");
   if (
@@ -22,4 +23,5 @@ export function resolveFirst() {
 
 // Eager snapshot, resolved once at import time -- see AGENTS.md for why
 // this is intentional, and resolveFirst() above for a lazy alternative.
+/** Body's first meaningful child element (created if needed), resolved at import time. @type {Element} */
 export default resolveFirst();

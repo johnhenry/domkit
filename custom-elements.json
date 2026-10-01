@@ -858,9 +858,19 @@
           "name": "createMutableNodeList",
           "parameters": [
             {
-              "name": "nodes"
+              "name": "nodes",
+              "description": "initial contents",
+              "type": {
+                "text": "...Node"
+              }
             }
-          ]
+          ],
+          "description": "Create a NodeList you can push to, pop from, shift, and unshift.",
+          "return": {
+            "type": {
+              "text": "InstanceType<typeof MutableNodeList>"
+            }
+          }
         }
       ],
       "exports": [
@@ -2201,7 +2211,12 @@
                 "text": "string"
               }
             }
-          ]
+          ],
+          "return": {
+            "type": {
+              "text": "Record<string, () => Promise<object>>"
+            }
+          }
         }
       ],
       "exports": [
@@ -2240,17 +2255,36 @@
           "name": "liveQuerySelector",
           "parameters": [
             {
-              "name": "selector"
+              "name": "selector",
+              "type": {
+                "text": "string"
+              }
             },
             {
               "name": "element",
-              "default": "document.getRootNode()"
+              "default": "document.getRootNode()",
+              "description": "the root to search and watch (default: document)",
+              "optional": true,
+              "type": {
+                "text": "ParentNode"
+              }
             },
             {
               "name": "useNodeList",
-              "default": "false"
+              "default": "false",
+              "description": "return a MutableNodeList instead of an array",
+              "optional": true,
+              "type": {
+                "text": "boolean"
+              }
             }
-          ]
+          ],
+          "description": "`querySelectorAll` that stays current: the returned list is refreshed in\nplace as elements are added to or removed from `root`. Call `stop()` on\nit when done.",
+          "return": {
+            "type": {
+              "text": "Element[] & { stop(): void }"
+            }
+          }
         }
       ],
       "exports": [

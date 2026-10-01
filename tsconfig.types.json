@@ -1,0 +1,35 @@
+{
+  // Emits .d.mts declarations from JSDoc for the plain-function modules
+  // (elements get theirs from custom-elements.json; see
+  // scripts/manifest-outputs.mjs). Run via `npm run manifest`.
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "rootDir": ".",
+    "declarationDir": ".",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "es2022",
+    "lib": ["es2022", "dom", "dom.iterable"],
+    "skipLibCheck": true
+  },
+  "files": [
+    "src/clamp/index.mjs",
+    "src/delay/index.mjs",
+    "src/frame-delay/index.mjs",
+    "src/live-query-selector/index.mjs",
+    "src/create-mutable-nodelist/index.mjs",
+    "src/cyclable/localstorage-cycler/index.mjs",
+    "src/cyclable/localstorage-class-cycler/index.mjs",
+    "src/definable/definetag/index.mjs",
+    "src/definable/until-window-load/index.mjs",
+    "src/hydratable/index.mjs",
+    "src/hydratable/mounts/body.mjs",
+    "src/hydratable/mounts/first.mjs",
+    "src/hydratable/mounts/last.mjs",
+    "src/hydratable/mounts/unmount.mjs",
+    "src/code-color/tokenize.mjs"
+  ]
+}
