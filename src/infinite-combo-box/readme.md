@@ -92,6 +92,33 @@ the live region announces "20 more results loaded, 40 of 95". Options get
 `aria-setsize`/`aria-posinset` (setsize `-1` when the total is unknown).
 `hasMore` and `loadMore()` expose the same thing to scripts.
 
+## Strings and languages
+
+Everything the element shows or announces ("Load more results", "No
+results.", "20 of 95 results shown.", …) can be replaced, for
+translation or tone. In HTML, add an inert JSON child (it's never
+executed, so it's fine under any Content-Security-Policy):
+
+```html
+<infinite-combo-box lang="es" src="/buscar?q={query}&cursor={cursor}">
+  <script type="application/json" data-strings>
+    {
+      "loadMore": "Cargar más resultados",
+      "noResults": "Sin resultados.",
+      "available": { "one": "{count} resultado.", "other": "{count} resultados." }
+    }
+  </script>
+</infinite-combo-box>
+```
+
+or set the `strings` property, which merges over the defaults. A value
+can be a plural map (`one`, `few`, `many`, `other`, …), chosen with
+`Intl.PluralRules` for the element's language (the nearest `lang`), and
+`{count}`, `{shown}`, and `{total}` are formatted with
+`Intl.NumberFormat`. The keys and English defaults are exported as
+`DEFAULT_STRINGS`. Validation messages ("Please fill out this field.")
+are the browser's own, so they're already in the user's language.
+
 ## API
 
 <!-- api:start (generated from custom-elements.json by `npm run manifest`; edit the JSDoc instead) -->
@@ -106,6 +133,7 @@ the live region announces "20 more results loaded, 40 of 95". Options get
 | `open` | `open` | `boolean` | Whether the option list is showing. Reflects. |
 | `value` | `value` | `string` | Initial value (the value of an option, or text with `allow-custom`). |
 | `src` | `src` | `string` | URL template for remote options: `{query}` and `{cursor}` are replaced (missing ones are added as `?q=`/`?cursor=`). JSON (an array, or `{ options, next, total }`) or HTML (with an optional `data-next` element). |
+| `inline` |  | `boolean` | Render the list in normal flow under the input, instead of as a floating popup in the top layer. |
 | `name` | `name` | `string` | Name submitted with the form. |
 | `debounce` |  | `number` | Milliseconds to wait after typing before searching. Default 0 for local options, 200 for `src`/`searchFunction`. |
 | `page-size` |  | `number` | Show the element's own matching options this many at a time, loading more as the list scrolls. |
@@ -137,6 +165,7 @@ the live region announces "20 more results loaded, 40 of 95". Options get
 | `validity` (read-only) | `ValidityState` |  |
 | `validationMessage` (read-only) | `string` |  |
 | `willValidate` (read-only) | `boolean` |  |
+| `strings` | `Record<string, string \| Record<string, string>>` | The strings this element shows and announces (see DEFAULT_STRINGS). Setting it merges your values over the defaults, so you only pass the ones you change. |
 
 ### Methods
 
@@ -191,6 +220,13 @@ available.") through a polite live region.
   `role="option"` elements, value from `value`/`data-value`/text, and
   `disabled`. Local `<optgroup>`s become group headings
   (`[data-group-label]`).
+- **The list floats.** When open, it's a popover in the top layer, so
+  containers with `overflow: hidden`, `z-index`, or transforms can't clip
+  or cover it. The element positions it under the input (above, when
+  there's no room below; `[data-placement]` says which), matches the
+  input's width, and keeps it in place while the page scrolls. This works
+  without `index.css`. Add `inline` to keep the list in the normal flow
+  instead, for example inside a palette dialog.
 - Hooks: `[data-load-more]` (the "Load more results" option),
   `[role="listbox"]` (the list, `hidden` when closed,
   `aria-busy="true"` while loading, plus `infinite-combo-box:state(loading)`),

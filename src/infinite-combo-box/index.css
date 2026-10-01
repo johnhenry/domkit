@@ -30,6 +30,11 @@ infinite-combo-box > [role="listbox"] {
   border-radius: var(--domkit-radius, 0.375em);
   box-shadow: 0 0.5em 1.5em color-mix(in srgb, CanvasText 15%, transparent);
 }
+/* With `inline`, the list is part of the layout (e.g. inside a palette). */
+infinite-combo-box[inline] > [role="listbox"] {
+  position: static;
+  box-shadow: none;
+}
 infinite-combo-box > [role="listbox"][aria-busy="true"] {
   opacity: 0.6;
 }

@@ -381,3 +381,147 @@ test.describe("paging", () => {
     await expect(page.locator("[data-load-more]"), "can retry").toHaveCount(1);
   });
 });
+
+test.describe("floating list", () => {
+  const OPTIONS = Array.from({ length: 30 }, (_, i) => `<option>Item ${i}</option>`).join("");
+  const geometry = (page) =>
+    page.evaluate(() => {
+      const c = document.getElementById("c");
+      const list = c.querySelector("[role=listbox]");
+      const input = c.input.getBoundingClientRect();
+      const box = list.getBoundingClientRect();
+      const first = c.options[0].getBoundingClientRect();
+      const hit = document.elementFromPoint(first.left + 5, first.top + first.height / 2);
+      return {
+        popover: list.matches(":popover-open"),
+        placement: list.dataset.placement,
+        alignedLeft: Math.abs(box.left - input.left) < 1,
+        sameWidth: Math.abs(box.width - input.width) < 1,
+        gapBelow: Math.round(box.top - input.bottom),
+        gapAbove: Math.round(input.top - box.bottom),
+        firstOptionReachable: hit === c.options[0] || c.options[0].contains(hit),
+        fitsViewport: box.top >= 0 && box.bottom <= document.documentElement.clientHeight + 1,
+      };
+    });
+
+  test("escapes a clipping container, with no stylesheet at all", async ({ page }) => {
+    await mount(
+      page,
+      `<div style="overflow: hidden; height: 3em; border: 1px solid">
+         <infinite-combo-box id="c">${OPTIONS}</infinite-combo-box>
+       </div>`,
+      MODULES,
+    );
+    await input(page).fill("item");
+    expect(await geometry(page)).toMatchObject({
+      popover: true,
+      placement: "below",
+      alignedLeft: true,
+      sameWidth: true,
+      gapBelow: 4,
+      firstOptionReachable: true,
+      fitsViewport: true,
+    });
+  });
+
+  test("flips above the input when there's no room below", async ({ page }) => {
+    await page.setViewportSize({ width: 800, height: 500 });
+    await mount(page, `<div style="height: 420px"></div><infinite-combo-box id="c">${OPTIONS}</infinite-combo-box>`, MODULES);
+    await input(page).fill("item");
+    expect(await geometry(page)).toMatchObject({ placement: "above", gapAbove: 4, fitsViewport: true, firstOptionReachable: true });
+  });
+
+  test("follows the input when an ancestor scrolls", async ({ page }) => {
+    await mount(
+      page,
+      `<div id="scroller" style="height: 200px; overflow: auto"><div style="height: 60px"></div>
+         <infinite-combo-box id="c">${OPTIONS}</infinite-combo-box><div style="height: 600px"></div></div>`,
+      MODULES,
+    );
+    await input(page).fill("item");
+    const before = (await geometry(page)).gapBelow;
+    await page.evaluate(() => (document.getElementById("scroller").scrollTop = 40));
+    await expect.poll(async () => (await geometry(page)).gapBelow).toBe(before);
+  });
+
+  test("inline keeps the list in the normal flow", async ({ page }) => {
+    await mount(page, `<infinite-combo-box id="c" inline>${OPTIONS}</infinite-combo-box>`, MODULES);
+    await input(page).fill("item");
+    const result = await page.evaluate(() => {
+      const list = document.querySelector("#c [role=listbox]");
+      return { popover: list.hasAttribute("popover"), visible: list.checkVisibility() };
+    });
+    expect(result).toEqual({ popover: false, visible: true });
+  });
+
+  test("closing hides the popover and stops tracking", async ({ page }) => {
+    await mount(page, `<infinite-combo-box id="c">${OPTIONS}</infinite-combo-box>`, MODULES);
+    await input(page).fill("item");
+    await page.keyboard.press("Escape");
+    expect(await page.evaluate(() => document.querySelector("#c [role=listbox]").matches(":popover-open"))).toBe(false);
+    await expect(page.getByRole("listbox")).toBeHidden();
+  });
+});
+
+test.describe("strings", () => {
+  test("a data-strings JSON child translates the element (with plurals)", async ({ page }) => {
+    await mount(
+      page,
+      `<div lang="es"><infinite-combo-box id="c" page-size="2">
+         <script type="application/json" data-strings>
+           { "noResults": "Sin resultados.", "loadMore": "Cargar más",
+             "loadedMoreOfTotal": { "one": "{count} resultado más, {shown} de {total}", "other": "{count} resultados más, {shown} de {total}" } }
+         </script>
+         <option>uno</option><option>dos</option><option>ocho</option>
+       </infinite-combo-box></div>`,
+      MODULES,
+    );
+    await input(page).fill("o");
+    // The 2-item first page leaves "Load more" in view, so page 2 loads at once.
+    await expect(page.getByRole("status")).toHaveText("1 resultado más, 3 de 3");
+    expect(await page.evaluate(() => document.getElementById("c").strings.loadMore)).toBe("Cargar más");
+    await input(page).fill("zzz");
+    await expect(page.getByRole("status")).toHaveText("Sin resultados.");
+  });
+
+  test("plural categories and number formats follow the element's language", async ({ page }) => {
+    await page.route("**/many?**", (route) => route.fulfill({ json: { options: ["a", "b", "c"], next: "x", total: 12345 } }));
+    await mount(
+      page,
+      `<div lang="pl"><infinite-combo-box id="c" src="/many?q={query}" debounce="0"></infinite-combo-box></div>`,
+      MODULES,
+    );
+    await page.evaluate(() => {
+      document.getElementById("c").strings = {
+        // Polish: one / few / many
+        available: { one: "{count} wynik", few: "{count} wyniki", many: "{count} wyników", other: "{count} wyniku" },
+        shownOfTotal: "{shown} z {total}",
+      };
+    });
+    await input(page).fill("x");
+    await expect(page.getByRole("status")).toHaveText(/^3 z 12\s345$/); // pl groups thousands with a (narrow) space
+    // Polish "few" plural: 3 results, with no total reported.
+    await page.unroute("**/many?**");
+    await page.route("**/many?**", (route) => route.fulfill({ json: { options: ["a", "b", "c"], next: null } }));
+    await input(page).fill("y");
+    await expect(page.getByRole("status")).toHaveText("3 wyniki");
+  });
+
+  test("validation messages are the browser's own, like native controls", async ({ page }) => {
+    await mount(
+      page,
+      `<form><infinite-combo-box id="c" required><option>a</option></infinite-combo-box>
+         <stylable-select id="s" required><option>a</option></stylable-select>
+         <input id="native" required /><select id="nativeSelect" required multiple><option>a</option></select></form>`,
+      [...MODULES, "src/stylable-select/global.mjs"],
+    );
+    const messages = await page.evaluate(() => ({
+      combo: document.getElementById("c").validationMessage,
+      input: document.getElementById("native").validationMessage,
+      select: document.getElementById("s").validationMessage,
+      nativeSelect: document.getElementById("nativeSelect").validationMessage,
+    }));
+    expect(messages.combo).toBe(messages.input);
+    expect(messages.select).toBe(messages.nativeSelect);
+  });
+});

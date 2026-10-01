@@ -81,9 +81,18 @@ for (const { path, declaration: d } of elements) {
       return `${doc(m.description, "  ")}  ${m.readonly ? "readonly " : ""}${m.name}: ${tsType(m.type?.text)};`;
     })
     .join("\n");
+  // Named exports of constants (TOKEN_TYPES, DEFAULT_STRINGS, …).
+  const mod = manifest.modules.find((m) => m.path === path);
+  const constants = (mod.exports ?? [])
+    .filter((e) => e.kind === "js" && e.name !== "default" && e.declaration?.module === path)
+    .map((e) => mod.declarations.find((v) => v.kind === "variable" && v.name === e.declaration.name))
+    .filter(Boolean)
+    .map((v) => `${doc(v.description)}export declare const ${v.name}: ${tsType(v.type?.text)};\n`)
+    .join("");
   const dts =
     GENERATED +
     "\n" +
+    (constants ? constants + "\n" : "") +
     doc(d.description ?? d.summary) +
     `export default class ${className} extends HTMLElement {\n${body}\n}\n\n` +
     `declare global {\n  interface HTMLElementTagNameMap {\n    "${d.tagName}": ${className};\n  }\n}\n`;

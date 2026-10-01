@@ -1,6 +1,9 @@
 // Generated from custom-elements.json by scripts/manifest-outputs.mjs.
 // Do not edit: change the JSDoc in index.mjs and run `npm run manifest`.
 
+/** The token types, each a highlight named `domkit-<type>`. */
+export declare const TOKEN_TYPES: readonly string[];
+
 /** Highlights the code inside it (JavaScript, CSS, or HTML) with the CSS
  * Custom Highlight API, without changing the DOM. Re-highlights as the
  * text changes. */

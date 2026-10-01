@@ -10,7 +10,32 @@
 // Nodes, or a Node/DocumentFragment. No attribute is ever evaluated as
 // code. See readme.md for the full contract.
 
+import { valueMissingText } from "../native-validation.mjs";
+
 let uid = 0;
+
+// Every string the element shows or announces. Override any of them with
+// the `strings` property or a <script type="application/json" data-strings>
+// child. A value can be a plural map ({ one, other, … }, chosen with
+// Intl.PluralRules for the element's language); {count}, {shown}, and
+// {total} are replaced with numbers formatted for that language.
+/** @type {Readonly<Record<string, string | Record<string, string>>>} The English defaults for the `strings` property. */
+export const DEFAULT_STRINGS = {
+  loadMore: "Load more results",
+  loading: "Loading…",
+  loadingMore: "Loading more results…",
+  noResults: "No results.",
+  available: { one: "{count} result available.", other: "{count} results available." },
+  availableMore: {
+    one: "{count} result available, more can be loaded.",
+    other: "{count} results available, more can be loaded.",
+  },
+  shownOfTotal: "{shown} of {total} results shown.",
+  loadedMore: { one: "{count} more result loaded.", other: "{count} more results loaded." },
+  loadedMoreOfTotal: { one: "{count} more result loaded, {shown} of {total}.", other: "{count} more results loaded, {shown} of {total}." },
+  loadFailed: "Couldn't load results.",
+  loadMoreFailed: "Couldn't load more results.",
+};
 const setAttr = (element, name, value) => {
   if (element.getAttribute(name) !== value) element.setAttribute(name, value);
 };
@@ -33,6 +58,7 @@ const VISUALLY_HIDDEN =
  * @attr {number} debounce - Milliseconds to wait after typing before searching. Default 0 for local options, 200 for `src`/`searchFunction`.
  * @attr {number} page-size - Show the element's own matching options this many at a time, loading more as the list scrolls.
  * @attr {number} min-length - Characters needed before searching. Default 0.
+ * @attr {boolean} inline - Render the list in normal flow under the input, instead of as a floating popup in the top layer.
  * @attr {boolean} allow-custom - Typed text is a valid value even if it matches no option.
  * @attr {boolean} open - Whether the option list is showing. Reflects.
  * @attr {boolean} disabled - Blocks interaction and form submission. Also inherited from a disabled fieldset.
@@ -47,7 +73,7 @@ const VISUALLY_HIDDEN =
  */
 export default class InfiniteComboBox extends HTMLElement {
   static formAssociated = true;
-  static observedAttributes = ["placeholder", "disabled", "required", "open", "value", "src"];
+  static observedAttributes = ["placeholder", "disabled", "required", "open", "value", "src", "inline"];
 
   #internals = this.attachInternals();
   #input = null;
@@ -91,7 +117,71 @@ export default class InfiniteComboBox extends HTMLElement {
     this.#refresh();
   }
 
+  // --- floating list ---------------------------------------------------------
+  // Unless `inline`, the open list is a manual popover in the top layer, so
+  // no ancestor's overflow, z-index, or transform can clip or cover it. It's
+  // positioned here (not by index.css) so it works with no stylesheet: under
+  // the input, matching its width, flipped above when there isn't room
+  // below, and kept in place while the page scrolls or resizes.
+  #floating = false;
+  #reposition = () => this.#place();
+
+  get #canFloat() {
+    return !this.hasAttribute("inline") && typeof this.#list?.showPopover === "function";
+  }
+
+  #float(open) {
+    const list = this.#list;
+    if (open && this.#canFloat) {
+      if (!list.hasAttribute("popover")) list.setAttribute("popover", "manual");
+      if (!list.matches(":popover-open")) list.showPopover();
+      if (!this.#floating) {
+        this.#floating = true;
+        window.addEventListener("scroll", this.#reposition, { capture: true, passive: true });
+        window.addEventListener("resize", this.#reposition, { passive: true });
+      }
+      this.#place();
+      return;
+    }
+    if (list.matches?.(":popover-open")) list.hidePopover();
+    if (!this.#canFloat && list.hasAttribute("popover")) {
+      list.removeAttribute("popover");
+      for (const property of ["position", "inset", "top", "left", "width", "max-height", "margin", "box-sizing"]) list.style.removeProperty(property);
+    }
+    if (this.#floating) {
+      this.#floating = false;
+      window.removeEventListener("scroll", this.#reposition, { capture: true });
+      window.removeEventListener("resize", this.#reposition);
+    }
+  }
+
+  #place() {
+    const list = this.#list;
+    if (!list.matches(":popover-open")) return;
+    const box = this.#input.getBoundingClientRect();
+    const gap = 4;
+    const viewport = document.documentElement.clientHeight;
+    const below = viewport - box.bottom - gap;
+    const above = box.top - gap;
+    list.style.setProperty("position", "fixed");
+    list.style.setProperty("inset", "auto");
+    list.style.setProperty("margin", "0");
+    list.style.setProperty("box-sizing", "border-box");
+    list.style.setProperty("left", `${box.left}px`);
+    list.style.setProperty("width", `${box.width}px`);
+    list.style.removeProperty("max-height");
+    // Prefer below; flip above only if it fits better there.
+    const natural = list.getBoundingClientRect().height;
+    const flip = natural > below && above > below;
+    const room = Math.max(flip ? above : below, 80);
+    if (natural > room) list.style.setProperty("max-height", `${room}px`);
+    const height = list.getBoundingClientRect().height; // after max-height
+    list.style.setProperty("top", `${flip ? box.top - gap - height : box.bottom + gap}px`);
+    list.dataset.placement = flip ? "above" : "below";
+  }
+
   disconnectedCallback() {
+    this.#float(false);
     clearTimeout(this.#timer);
     this.#abort?.abort();
     for (const label of this.#observedLabels) label.removeEventListener("click", this.#labelClick);
@@ -478,7 +568,7 @@ export default class InfiniteComboBox extends HTMLElement {
     if (this.#customError) {
       this.#internals.setValidity({ customError: true }, this.#customError, this.#input);
     } else if (this.required && !this.#value) {
-      this.#internals.setValidity({ valueMissing: true }, "Please fill out this field.", this.#input);
+      this.#internals.setValidity({ valueMissing: true }, valueMissingText(), this.#input);
     } else {
       this.#internals.setValidity({});
     }
@@ -616,6 +706,7 @@ export default class InfiniteComboBox extends HTMLElement {
     });
     if (this.#next !== null) this.#list.append(this.#moreOption());
     if (!append) this.#setActive(null);
+    if (this.#floating) this.#place(); // the list's height changed
   }
 
   // The last item while more pages exist: an option (so keyboard and
@@ -628,7 +719,7 @@ export default class InfiniteComboBox extends HTMLElement {
       this.#more.id = `infinite-combo-box-more-${++uid}`;
       this.#more.dataset.loadMore = "";
       this.#more.setAttribute("aria-selected", "false");
-      this.#more.textContent = "Load more results";
+      this.#more.textContent = this.#t("loadMore");
       this.#moreObserver = new IntersectionObserver(
         (entries) => {
           if (entries.some((entry) => entry.isIntersecting) && !this.#list.hidden) this.#loadMore();
@@ -647,7 +738,7 @@ export default class InfiniteComboBox extends HTMLElement {
     if (!signal || signal.aborted) return;
     this.#loadingMore = true;
     this.#setBusy(true, { announce: false });
-    this.#announce("Loading more results…");
+    this.#announce(this.#t("loadingMore"));
     let page;
     try {
       page = this.#localMatches ? this.#localPage(this.#next) : await this.#remotePage(this.#query, this.#next, signal);
@@ -655,7 +746,7 @@ export default class InfiniteComboBox extends HTMLElement {
       this.#loadingMore = false;
       if (signal.aborted) return;
       this.#setBusy(false);
-      this.#announce("Couldn't load more results.");
+      this.#announce(this.#t("loadMoreFailed"));
       this.dispatchEvent(new ErrorEvent("error", { error, message: String(error?.message ?? error) }));
       return;
     }
@@ -670,8 +761,9 @@ export default class InfiniteComboBox extends HTMLElement {
     else if (wasOnMore) this.#setActive(this.options.at(-1) ?? null);
     const count = page.options.length;
     this.#announce(
-      `${count} more result${count === 1 ? "" : "s"} loaded` +
-        (this.#total !== null ? `, ${this.options.length} of ${this.#total}.` : "."),
+      this.#total !== null
+        ? this.#t("loadedMoreOfTotal", { count, shown: this.options.length, total: this.#total })
+        : this.#t("loadedMore", { count }),
     );
   }
 
@@ -753,7 +845,7 @@ export default class InfiniteComboBox extends HTMLElement {
         } catch (error) {
           if (signal.aborted) return;
           this.#setBusy(false);
-          this.#announce("Couldn't load results.");
+          this.#announce(this.#t("loadFailed"));
           this.dispatchEvent(new ErrorEvent("error", { error, message: String(error?.message ?? error) }));
           return;
         }
@@ -774,10 +866,10 @@ export default class InfiniteComboBox extends HTMLElement {
     const shown = page.options.length;
     this.#announce(
       !shown
-        ? "No results."
+        ? this.#t("noResults")
         : this.#total !== null
-          ? `${shown} of ${this.#total} results shown.`
-          : `${shown} result${shown === 1 ? "" : "s"} available${this.#next !== null ? ", more can be loaded" : ""}.`,
+          ? this.#t("shownOfTotal", { shown, total: this.#total })
+          : this.#t(this.#next !== null ? "availableMore" : "available", { count: shown }),
     );
     this.#setOpen(shown > 0 || Boolean(query));
   }
@@ -804,7 +896,64 @@ export default class InfiniteComboBox extends HTMLElement {
     } catch {
       // CustomStateSet unsupported: aria-busy is still set.
     }
-    if (busy && announce) this.#announce("Loading…");
+    if (busy && announce) this.#announce(this.#t("loading"));
+  }
+
+  // --- strings ---------------------------------------------------------------
+  #strings = null;
+
+  /**
+   * The strings this element shows and announces (see DEFAULT_STRINGS).
+   * Setting it merges your values over the defaults, so you only pass the
+   * ones you change.
+   * @type {Record<string, string | Record<string, string>>}
+   */
+  get strings() {
+    return { ...DEFAULT_STRINGS, ...this.#authoredStrings(), ...this.#strings };
+  }
+  set strings(value) {
+    this.#strings = { ...value };
+    if (this.#more) this.#more.textContent = this.#t("loadMore");
+  }
+
+  // A <script type="application/json" data-strings> child: inert, so it
+  // works under any Content-Security-Policy.
+  #authoredStrings() {
+    const script = this.querySelector(':scope > script[type="application/json"][data-strings]');
+    if (!script) return {};
+    try {
+      return JSON.parse(script.textContent);
+    } catch {
+      return {};
+    }
+  }
+
+  #language() {
+    return this.closest("[lang]")?.lang || navigator.language || "en";
+  }
+
+  #t(key, values = {}) {
+    let template = this.strings[key] ?? DEFAULT_STRINGS[key] ?? key;
+    const language = this.#language();
+    if (template && typeof template === "object") {
+      let category = "other";
+      try {
+        category = new Intl.PluralRules(language).select(values.count ?? 0);
+      } catch {
+        // unknown language tag: use "other"
+      }
+      template = template[category] ?? template.other ?? Object.values(template)[0] ?? "";
+    }
+    let format = (n) => String(n);
+    try {
+      const numbers = new Intl.NumberFormat(language);
+      format = (n) => numbers.format(n);
+    } catch {
+      // keep plain numbers
+    }
+    return String(template).replace(/\{(\w+)\}/g, (match, name) =>
+      name in values ? (typeof values[name] === "number" ? format(values[name]) : String(values[name])) : match,
+    );
   }
 
   #announce(message) {
@@ -851,6 +1000,7 @@ export default class InfiniteComboBox extends HTMLElement {
     if (!this.#list) return;
     const wasOpen = !this.#list.hidden;
     this.#list.hidden = !open;
+    this.#float(open);
     this.#input.setAttribute("aria-expanded", String(open));
     if (open !== this.hasAttribute("open")) this.toggleAttribute("open", open);
     if (!open) this.#setActive(null);

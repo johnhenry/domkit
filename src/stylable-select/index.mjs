@@ -7,6 +7,8 @@
 // `option:checked` and `option:disabled` work in CSS) or any element with
 // role="option". See readme.md for the full contract.
 
+import { valueMissingSelect } from "../native-validation.mjs";
+
 let uid = 0;
 const setAttr = (element, name, value) => {
   if (element.getAttribute(name) !== value) element.setAttribute(name, value);
@@ -419,7 +421,7 @@ export default class StylableSelect extends HTMLElement {
     if (this.#customError) {
       this.#internals.setValidity({ customError: true }, this.#customError);
     } else if (this.required && !this.selectedOptions.length) {
-      this.#internals.setValidity({ valueMissing: true }, "Please select an item in the list.");
+      this.#internals.setValidity({ valueMissing: true }, valueMissingSelect());
     } else {
       this.#internals.setValidity({});
     }
