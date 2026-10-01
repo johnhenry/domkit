@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+The start of the library-wide upgrade: a written contract for what every
+element must do, the tooling to enforce it, and the first element
+rebuilt to meet it.
+
+### Added
+
+- **`docs/principles.md`**: the contract for every stable element. It
+  covers native-element behavior (attribute ↔ property mirroring,
+  reflection, `hidden`, native event names and semantics, form
+  participation), WAI-ARIA patterns, light-DOM styling with custom
+  properties, cross-module contracts, lifecycle robustness, and
+  verification in every engine.
+- **Browser tests** (`npm run test:browser`): Playwright in Chromium,
+  Firefox, and WebKit, against the real modules served by the new
+  dependency-free `scripts/serve.mjs` (`npm run serve`). CI installs the
+  browsers and runs them.
+- **`custom-elements.json`** (`npm run manifest`), published and declared
+  in `package.json`'s `customElements` field, plus files generated from
+  it: `vscode.html-custom-data.json` (VS Code HTML autocomplete and hover
+  docs) and per-element TypeScript declarations (`index.d.mts`,
+  `global.d.mts`, and `HTMLElementTagNameMap` entries). CI fails if any
+  of them is stale. `tsc -p test/types` checks the declarations through
+  the package's own export paths.
+
+### Changed (breaking)
+
+- **`tabbed-ui`, rebuilt** to the principles:
+  - Implements the WAI-ARIA tabs pattern: `tablist`/`tab`/`tabpanel`
+    roles, generated ids with `aria-controls`/`aria-labelledby`,
+    `aria-selected`, and roving `tabindex`.
+  - Keyboard: arrows (or up/down with `aria-orientation="vertical"`),
+    `Home`/`End`, disabled tabs skipped, and a `manual` activation mode.
+  - Panels are hidden with the `hidden` attribute instead of inline
+    `display`.
+  - New `selected-index` attribute and `selectedIndex` property, which
+    reflect the selection. A `change` event fires on user selection only.
+  - Tabs and panels added later are wired up, and the element is safe to
+    move.
+  - New optional `index.css`, themed with custom properties.
+  - Removed: `slot="tab-bar"` (the tab list is the `role="tablist"` child,
+    else the first child), `data-default-index` (use `selected-index`),
+    `data-display` (panels use `hidden`), the `selected` attribute on
+    tabs and panels (use `aria-selected`), and
+    `create-tabbed-ui.mjs`/`createTabbedUI()`.
+
 ## [0.0.9] - 2026-09-30
 
 A shape-and-documentation pass. The modules were reorganized only where the

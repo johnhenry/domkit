@@ -18,7 +18,7 @@ export default [
     rules: { "no-undef": "error" },
   },
   {
-    files: ["scripts/**/*.mjs", "test/**/*.mjs", "eslint.config.mjs"],
+    files: ["scripts/**/*.mjs", "test/**/*.mjs", "*.config.mjs"],
     languageOptions: { globals: { ...globals.node } },
   },
 ];

@@ -5,17 +5,25 @@
   "type": "module",
   "exports": {
     "./package.json": "./package.json",
+    "./custom-elements.json": "./custom-elements.json",
+    "./vscode.html-custom-data.json": "./vscode.html-custom-data.json",
     "./*.mjs": "./src/*.mjs",
     "./*.css": "./src/*.css",
     "./*": "./src/*/index.mjs"
   },
   "files": [
-    "src/"
+    "src/",
+    "custom-elements.json",
+    "vscode.html-custom-data.json"
   ],
+  "customElements": "custom-elements.json",
   "scripts": {
     "test": "npm run check && npm run test:dom",
-    "check": "node scripts/check-syntax.mjs && node scripts/check-links.mjs && eslint .",
-    "test:dom": "node --test \"test/*.test.mjs\""
+    "check": "node scripts/check-syntax.mjs && node scripts/check-links.mjs && eslint . && tsc -p test/types",
+    "test:dom": "node --test \"test/*.test.mjs\"",
+    "test:browser": "playwright test",
+    "manifest": "cem analyze && node scripts/manifest-outputs.mjs",
+    "serve": "node scripts/serve.mjs"
   },
   "keywords": [
     "html",
@@ -39,9 +47,12 @@
     "parsel-js": "^1.2.3"
   },
   "devDependencies": {
+    "@custom-elements-manifest/analyzer": "^0.11.0",
     "@happy-dom/global-registrator": "^20.14.5",
+    "@playwright/test": "^1.63.0",
     "eslint": "^10.11.0",
     "globals": "^17.12.0",
-    "happy-dom": "^20.14.5"
+    "happy-dom": "^20.14.5",
+    "typescript": "^7.0.2"
   }
 }

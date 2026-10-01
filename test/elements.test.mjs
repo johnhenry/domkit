@@ -86,20 +86,21 @@ test("infinite-combo replaces options with onsearch's HTML, via a loading placeh
   assert.equal(list.options[0].value, "i", "empty input restores the initial options");
 });
 
-test("tabbed-ui shows the clicked tab's panel and hides the rest", () => {
-  render(`<tabbed-ui data-default-index="1">
-    <div slot="tab-bar"><button>1</button><button>2</button></div>
+test("tabbed-ui shows the clicked tab's panel (full contract: test/browser/tabbed-ui.spec.mjs)", () => {
+  render(`<tabbed-ui selected-index="1">
+    <div><button>1</button><button>2</button></div>
     <div id="p1"></div><div id="p2"></div>
   </tabbed-ui>`);
   const [b1] = document.querySelectorAll("button");
   const p1 = document.getElementById("p1");
   const p2 = document.getElementById("p2");
-  assert.equal(p1.style.display, "none");
-  assert.ok(p2.hasAttribute("selected"));
+  assert.equal(p1.hidden, true);
+  assert.equal(p2.hidden, false);
   b1.click();
-  assert.equal(p1.style.display, "block");
-  assert.equal(p2.style.display, "none");
-  assert.ok(b1.hasAttribute("selected"));
+  assert.equal(p1.hidden, false);
+  assert.equal(p2.hidden, true);
+  assert.equal(b1.getAttribute("aria-selected"), "true");
+  assert.equal(document.querySelector("tabbed-ui").getAttribute("selected-index"), "0");
 });
 
 test("event-consumer runs onevent and stops propagation unless `bubbles`", () => {

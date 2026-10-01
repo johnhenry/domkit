@@ -1,0 +1,2002 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "src/clamp/index.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "module": "src/clamp/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/code-color/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#observer",
+              "privacy": "private",
+              "default": "new MutationObserver(this.observe.bind(this))"
+            },
+            {
+              "kind": "method",
+              "name": "observe"
+            },
+            {
+              "kind": "method",
+              "name": "ready"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "",
+            "module": "src/code-color/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/create-mutable-nodelist/index.mjs",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "MutableNodeList",
+          "default": "class extends NodeList { item(i = 0) { return this[i]; } push(...nodes) { assertNodes(nodes); return Array.prototype.push.apply(this, nodes); } pop() { return Array.prototype.pop.call(this); } shift() { return Array.prototype.shift.call(this); } unshift(...nodes) { assertNodes(nodes); return Array.prototype.unshift.apply(this, nodes); } // Browsers' NodeList.prototype iteration methods *are* Array.prototype's // (per WebIDL), so they already work here; DOM implementations like // happy-dom read internal state instead. Pin the spec behavior. [Symbol.iterator]() { return Array.prototype.values.call(this); } values() { return Array.prototype.values.call(this); } keys() { return Array.prototype.keys.call(this); } entries() { return Array.prototype.entries.call(this); } forEach(callback, thisArg) { return Array.prototype.forEach.call(this, callback, thisArg); } }"
+        },
+        {
+          "kind": "function",
+          "name": "createMutableNodeList",
+          "parameters": [
+            {
+              "name": "nodes"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "MutableNodeList",
+          "declaration": {
+            "name": "MutableNodeList",
+            "module": "src/create-mutable-nodelist/index.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "createMutableNodeList",
+            "module": "src/create-mutable-nodelist/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/cyclable/class-cycler-button/index.mjs",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "",
+          "members": [
+            {
+              "kind": "field",
+              "name": "updateBound",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "method",
+              "name": "update"
+            },
+            {
+              "kind": "method",
+              "name": "init"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "select"
+            },
+            {
+              "name": "storage-key"
+            },
+            {
+              "name": "select-all"
+            },
+            {
+              "name": "classes"
+            }
+          ],
+          "superclass": {
+            "module": "src/cyclable/class-cycler-button/index.mjs"
+          }
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "",
+            "module": "src/cyclable/class-cycler-button/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/cyclable/class-cycler/index.mjs",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "",
+          "members": [
+            {
+              "kind": "method",
+              "name": "reset"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "global"
+            },
+            {
+              "name": "selector"
+            },
+            {
+              "name": "storage-key"
+            },
+            {
+              "name": "classes"
+            }
+          ],
+          "superclass": {
+            "module": "src/cyclable/class-cycler/index.mjs"
+          }
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "",
+            "module": "src/cyclable/class-cycler/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/cyclable/localstorage-class-cycler/index.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "module": "src/cyclable/localstorage-class-cycler/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/cyclable/localstorage-cycler/index.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "module": "src/cyclable/localstorage-cycler/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/definable/define-component-by-content/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "",
+          "superclass": {
+            "module": "src/definable/define-component-by-content/index.mjs"
+          }
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "variable",
+          "name": "name"
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "anonymous_0",
+          "mixins": [
+            {
+              "name": "constructSuperclass",
+              "package": "@johnhenry/domable/simple-element"
+            }
+          ],
+          "superclass": {
+            "module": "src/definable/define-component-by-content/index.mjs"
+          },
+          "tagName": "name",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "",
+            "module": "src/definable/define-component-by-content/index.mjs"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "name",
+          "declaration": {
+            "name": "anonymous_0",
+            "module": "src/definable/define-component-by-content/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/definable/define-component/index.mjs",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "variable",
+          "name": "ElementClass",
+          "default": "module[imp ?? \"default\"]"
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#name",
+              "privacy": "private",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\""
+            },
+            {
+              "kind": "field",
+              "name": "#src",
+              "privacy": "private",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\""
+            },
+            {
+              "kind": "field",
+              "name": "#import",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#force",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            }
+          ],
+          "superclass": {
+            "module": "src/definable/define-component/index.mjs"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "name",
+          "declaration": {
+            "name": "ElementClass",
+            "module": "src/definable/define-component/index.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "",
+            "module": "src/definable/define-component/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/definable/definetag/index.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "module": "src/definable/definetag/index.mjs"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "name",
+          "declaration": {
+            "name": "elementClass",
+            "module": "src/definable/definetag/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/definable/polyfill-window/index.mjs",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#name",
+              "privacy": "private",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\""
+            },
+            {
+              "kind": "field",
+              "name": "#src",
+              "privacy": "private",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\""
+            },
+            {
+              "kind": "field",
+              "name": "#import",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#force",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#noImport",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            }
+          ],
+          "superclass": {
+            "module": "src/definable/polyfill-window/index.mjs"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "",
+            "module": "src/definable/polyfill-window/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/definable/until-window-load/index.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "module": "src/definable/until-window-load/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/delay/index.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "module": "src/delay/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/event-consumer/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "",
+          "members": [
+            {
+              "kind": "field",
+              "name": "events",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "callback"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "events"
+            },
+            {
+              "name": "onevent"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "",
+            "module": "src/event-consumer/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/frame-delay/index.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "module": "src/frame-delay/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/hotkey-modal-dialog/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#keydownBound",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#clickBound",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#cancelBound",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#hotkey",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#modifiers",
+              "privacy": "private",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]"
+            },
+            {
+              "kind": "method",
+              "name": "init"
+            },
+            {
+              "kind": "method",
+              "name": "cancel",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "keydown",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "click",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            }
+          ],
+          "attributes": [
+            {
+              "name": "hotkey"
+            },
+            {
+              "name": "click-to-close"
+            }
+          ],
+          "superclass": {
+            "module": "src/hotkey-modal-dialog/index.mjs"
+          }
+        },
+        {
+          "kind": "function",
+          "name": ""
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "",
+            "module": "src/hotkey-modal-dialog/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/hydratable/index.mjs",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "HYDRATED"
+        },
+        {
+          "kind": "variable",
+          "name": "TEARDOWN"
+        },
+        {
+          "kind": "function",
+          "name": "Hydratable",
+          "parameters": [
+            {
+              "name": "hydrate",
+              "type": {
+                "text": "(this: object, opts: { finalizer: (fn: Function) => void, dehydrator: (fn: Function) => void }) => Promise<void>"
+              }
+            },
+            {
+              "name": "name",
+              "default": "\"hydrate\"",
+              "description": "Method name for the hydrate operation.",
+              "optional": true,
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "name": "dehydrateName",
+              "default": "`de${name}`",
+              "description": "Method name for its counterpart. Defaults to `de${name}`.",
+              "optional": true,
+              "type": {
+                "text": "string"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "Hydratable",
+            "module": "src/hydratable/index.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "HYDRATED",
+          "declaration": {
+            "name": "HYDRATED",
+            "module": "src/hydratable/index.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "TEARDOWN",
+          "declaration": {
+            "name": "TEARDOWN",
+            "module": "src/hydratable/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/infinite-combo/index.mjs",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#input",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#select",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#initial",
+              "privacy": "private",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "#initialString",
+              "privacy": "private",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\""
+            },
+            {
+              "kind": "field",
+              "name": "#keydownBound",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#inputInputBound",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#inputKeydownBound",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#selectKeydownBound",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#selectMouseoverBound",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#selectClickBound",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#selectChangeBound",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "value"
+            },
+            {
+              "kind": "field",
+              "name": "selected",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "index",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "initialClear"
+            },
+            {
+              "kind": "method",
+              "name": "applySelect",
+              "parameters": [
+                {
+                  "name": "kids"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "removeSelect"
+            },
+            {
+              "kind": "method",
+              "name": "inputKeydown",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "keydown",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "selectChange",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "selectClick",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "selectMouseover",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "selectKeydown",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "setSearchFunction",
+              "parameters": [
+                {
+                  "name": "onsearchFunctionString"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "setSelectFunction",
+              "parameters": [
+                {
+                  "name": "onselectFunctionString"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "setLoadingFunction",
+              "parameters": [
+                {
+                  "name": "loadingFunctionString"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "setSize",
+              "parameters": [
+                {
+                  "name": "current"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "search"
+            },
+            {
+              "kind": "method",
+              "name": "inputInput"
+            }
+          ],
+          "events": [
+            {
+              "name": "change",
+              "type": {
+                "text": "Event"
+              }
+            },
+            {
+              "name": "select",
+              "type": {
+                "text": "Event"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "size"
+            },
+            {
+              "name": "onsearch"
+            },
+            {
+              "name": "onselect"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "",
+            "module": "src/infinite-combo/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/internal-timer/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "",
+          "members": [
+            {
+              "kind": "method",
+              "name": "slotChange"
+            },
+            {
+              "kind": "method",
+              "name": "reset"
+            },
+            {
+              "kind": "method",
+              "name": "handleEvent",
+              "parameters": [
+                {
+                  "name": "{ type, detail }"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "run",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            }
+          ],
+          "events": [
+            {
+              "name": "paused",
+              "type": {
+                "text": "Event"
+              }
+            },
+            {
+              "name": "tick",
+              "type": {
+                "text": "Event"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": ""
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "",
+            "module": "src/internal-timer/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/live-query-selector/index.mjs",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "liveQuerySelector",
+          "parameters": [
+            {
+              "name": "selector"
+            },
+            {
+              "name": "element",
+              "default": "document.getRootNode()"
+            },
+            {
+              "name": "useNodeList",
+              "default": "false"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "liveQuerySelector",
+            "module": "src/live-query-selector/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/matchable/attribute-provider/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#classes",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#styles",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#attributes",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#observer",
+              "privacy": "private",
+              "default": "new globalThis.MutationObserver(this.setAll.bind(this))"
+            },
+            {
+              "kind": "field",
+              "name": "#mediaMatches",
+              "privacy": "private",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}"
+            },
+            {
+              "kind": "field",
+              "name": "#handlers",
+              "privacy": "private",
+              "type": {
+                "text": "object"
+              },
+              "default": "{ classes: () => this.triggerClass(), styles: () => this.triggerStyle(), attributes: () => this.triggerAttribute(), }"
+            },
+            {
+              "kind": "method",
+              "name": "#release",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "key"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "setClasses"
+            },
+            {
+              "kind": "method",
+              "name": "setStyles"
+            },
+            {
+              "kind": "method",
+              "name": "setAttributes"
+            },
+            {
+              "kind": "method",
+              "name": "triggerClass"
+            },
+            {
+              "kind": "method",
+              "name": "triggerStyle"
+            },
+            {
+              "kind": "method",
+              "name": "triggerAttribute"
+            },
+            {
+              "kind": "method",
+              "name": "setAll"
+            },
+            {
+              "kind": "field",
+              "name": "kids",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "getByKey",
+              "parameters": [
+                {
+                  "name": "key"
+                }
+              ]
+            }
+          ],
+          "attributes": [
+            {
+              "name": "classes"
+            },
+            {
+              "name": "styles"
+            },
+            {
+              "name": "attributes"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "",
+            "module": "src/matchable/attribute-provider/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/matchable/query-container/index.mjs",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#content",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#queries",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#default",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#observer",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#onQuery",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "setInitial",
+              "parameters": [
+                {
+                  "name": "selector"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "setQueries",
+              "parameters": [
+                {
+                  "name": "queries"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "triggerQuery"
+            },
+            {
+              "kind": "method",
+              "name": "update"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "default"
+            },
+            {
+              "name": "query"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "",
+            "module": "src/matchable/query-container/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/menu-component/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "",
+          "members": [
+            {
+              "kind": "method",
+              "name": "onFocus"
+            },
+            {
+              "kind": "method",
+              "name": "onKeyDown",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "#adopting",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "method",
+              "name": "slotChange",
+              "parameters": [
+                {
+                  "name": "{ target }"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "pop",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "push",
+              "parameters": [
+                {
+                  "name": "id",
+                  "default": "0"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "reset"
+            },
+            {
+              "kind": "field",
+              "name": "pushed"
+            },
+            {
+              "kind": "field",
+              "name": "kids",
+              "default": "new Set()"
+            },
+            {
+              "kind": "field",
+              "name": "kidsByKey",
+              "default": "new Map()"
+            }
+          ],
+          "events": [
+            {
+              "name": "popped",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "pushed",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "type": {
+                "text": "Event"
+              }
+            },
+            {
+              "name": "reset",
+              "type": {
+                "text": "Event"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "pushed"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "",
+            "module": "src/menu-component/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/shadow-dom/index.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "module": "src/shadow-dom/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/stylable-select/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#value",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#selectedIndex",
+              "privacy": "private",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\""
+            },
+            {
+              "kind": "field",
+              "name": "#onClickBound",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#onKeyDownBound",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#observer",
+              "privacy": "private",
+              "default": "new MutationObserver(this.observe.bind(this))"
+            },
+            {
+              "kind": "method",
+              "name": "observe",
+              "parameters": [
+                {
+                  "name": "mutationList"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "selectedIndex"
+            },
+            {
+              "kind": "field",
+              "name": "options",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "onClick",
+              "parameters": [
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "onKeyDown",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            }
+          ],
+          "attributes": [
+            {
+              "name": "size"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        },
+        {
+          "kind": "function",
+          "name": ""
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "",
+            "module": "src/stylable-select/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/tabbed-ui/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Tabs and panels from plain children, following the WAI-ARIA tabs\npattern: roles, ids, roving tabindex, and keyboard support are wired\nonto whatever markup you write.",
+          "name": "TabbedUI",
+          "cssProperties": [
+            {
+              "description": "Space between tabs (index.css).",
+              "name": "--domkit-tab-gap"
+            },
+            {
+              "description": "Padding inside each tab (index.css).",
+              "name": "--domkit-tab-padding"
+            },
+            {
+              "description": "Color of the selected-tab indicator and focus ring (index.css).",
+              "name": "--domkit-tab-accent"
+            },
+            {
+              "description": "Color of the line under the tab list (index.css).",
+              "name": "--domkit-tab-border"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "#observer",
+              "privacy": "private",
+              "default": "new MutationObserver(() => this.#sync())"
+            },
+            {
+              "kind": "field",
+              "name": "#index",
+              "privacy": "private",
+              "type": {
+                "text": "number"
+              },
+              "default": "-1"
+            },
+            {
+              "kind": "field",
+              "name": "#syncing",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "tabList",
+              "description": "The tab list: the child with role=\"tablist\", else the first element child.",
+              "type": {
+                "text": "Element | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "tabs",
+              "description": "The tabs, in order.",
+              "type": {
+                "text": "Element[]"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "panels",
+              "description": "The panels, in order (every element child except the tab list).",
+              "type": {
+                "text": "Element[]"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "selectedIndex",
+              "description": "Index of the selected tab. Setting it does not fire `change`.",
+              "type": {
+                "text": "number"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "manual",
+              "description": "With `manual`, arrow keys move focus and Enter/Space selects.",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#observe",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#sync",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#isDisabled",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "tab"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#select",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "index"
+                },
+                {
+                  "name": "{ user, focus = false, force = false }"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#tabFor",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "target"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#onClick",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#onKeyDown",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "change",
+              "type": {
+                "text": "Event"
+              },
+              "description": "The user selected a different tab (click or keyboard). Not fired for script changes."
+            }
+          ],
+          "attributes": [
+            {
+              "name": "selected-index",
+              "type": {
+                "text": "number"
+              },
+              "description": "Index of the selected tab. Reflects the current selection."
+            },
+            {
+              "name": "manual",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Arrow keys move focus only; Enter/Space selects (manual activation)."
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "tabbed-ui",
+          "customElement": true,
+          "summary": "Accessible tabs and panels from plain children."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "TabbedUI",
+            "module": "src/tabbed-ui/index.mjs"
+          }
+        }
+      ]
+    }
+  ]
+}

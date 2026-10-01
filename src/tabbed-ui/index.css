@@ -1,0 +1,43 @@
+/* Optional defaults for <tabbed-ui>. Everything is overridable with plain
+   CSS; the custom properties are the quick knobs. */
+tabbed-ui {
+  --domkit-tab-gap: 0.25rem;
+  --domkit-tab-padding: 0.5em 1em;
+  --domkit-tab-accent: currentColor;
+  --domkit-tab-border: color-mix(in srgb, currentColor 25%, transparent);
+  display: block;
+}
+tabbed-ui > [role="tablist"] {
+  display: flex;
+  gap: var(--domkit-tab-gap);
+  border-bottom: 1px solid var(--domkit-tab-border);
+}
+tabbed-ui > [role="tablist"][aria-orientation="vertical"] {
+  flex-direction: column;
+  border-bottom: none;
+}
+tabbed-ui [role="tab"] {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: var(--domkit-tab-padding);
+  cursor: pointer;
+}
+tabbed-ui [role="tab"][aria-selected="true"] {
+  border-bottom-color: var(--domkit-tab-accent);
+  font-weight: 600;
+}
+tabbed-ui [role="tab"]:is([disabled], [aria-disabled="true"]) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+tabbed-ui [role="tab"]:focus-visible,
+tabbed-ui [role="tabpanel"]:focus-visible {
+  outline: 2px solid var(--domkit-tab-accent);
+  outline-offset: 2px;
+}
+tabbed-ui > [role="tabpanel"] {
+  padding-block: 0.75em;
+}
