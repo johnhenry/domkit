@@ -486,7 +486,8 @@ test.describe("strings", () => {
   });
 
   test("plural categories and number formats follow the element's language", async ({ page }) => {
-    await page.route("**/many?**", (route) => route.fulfill({ json: { options: ["a", "b", "c"], next: "x", total: 12345 } }));
+    await page.route("**/many?**", (route) => route.fulfill({ json: { options: ["a", "b", "c"], next: null, total: 12345 } }));
+    // (next: null, so no second page auto-loads and replaces the announcement)
     await mount(
       page,
       `<div lang="pl"><infinite-combo-box id="c" src="/many?q={query}" debounce="0"></infinite-combo-box></div>`,
