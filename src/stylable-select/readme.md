@@ -101,5 +101,6 @@ Ordinary CSS on ordinary elements:
 
 - Options added or removed later are picked up, and a removed selection
   is dropped from the value.
-- [infinite-combo](../infinite-combo/readme.md) can use it as its option
-  list.
+- Its sibling [combo-box](../combo-box/readme.md) uses the same option
+  markup, value rules, styling hooks, and events, for when the list should
+  be searchable.

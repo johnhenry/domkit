@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>combo-box</title>
+    <link rel="stylesheet" href="./index.css" />
+    <script type="module" src="./global.mjs"></script>
+    <style>
+      body { font: 15px/1.5 system-ui, sans-serif; margin: 16px; max-inline-size: 36rem; }
+      label { display: block; font-weight: 600; margin-block: 1rem 0.25rem; }
+      combo-box { inline-size: 100%; }
+      output { font-family: ui-monospace, monospace; }
+    </style>
+  </head>
+  <body>
+    <form id="form">
+      <label for="city">City (local options, filtered as you type)</label>
+      <combo-box id="city" name="city" placeholder="Start typing…" required>
+        <optgroup label="West">
+          <option value="sf">San Francisco</option>
+          <option value="sea">Seattle</option>
+          <option value="la">Los Angeles</option>
+        </optgroup>
+        <optgroup label="East">
+          <option value="nyc">New York</option>
+          <option value="bos">Boston</option>
+          <option value="mia" disabled>Miami (unavailable)</option>
+        </optgroup>
+      </combo-box>
+
+      <label for="color">Color (free text allowed)</label>
+      <combo-box id="color" name="color" allow-custom>
+        <option>red</option>
+        <option>green</option>
+        <option>blue</option>
+      </combo-box>
+
+      <label for="word">Word (an async function, debounced)</label>
+      <combo-box id="word" name="word" min-length="1" placeholder="Try “ca”"></combo-box>
+
+      <p><button>Submit</button> <button type="reset">Reset</button></p>
+      <p>FormData: <output id="out">(submit to see)</output></p>
+    </form>
+    <script type="module">
+      const WORDS = ["cat", "car", "cart", "carbon", "cabin", "cable", "canal", "candle", "canopy", "capital"];
+      document.getElementById("word").searchFunction = async (query, { signal }) => {
+        await new Promise((resolve) => setTimeout(resolve, 250)); // pretend it's a server
+        if (signal.aborted) return [];
+        return WORDS.filter((word) => word.startsWith(query.toLowerCase()));
+      };
+      document.getElementById("form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        document.getElementById("out").textContent = JSON.stringify([...new FormData(event.target)]);
+      });
+    </script>
+  </body>
+</html>

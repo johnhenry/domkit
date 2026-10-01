@@ -68,6 +68,26 @@ rebuilt to meet it.
     `aria-selected`), the `change` event's `detail` (read `.value`), the
     reset-to-first-option on child changes, and clamping of out-of-range
     `selectedIndex` (now `-1`, like native).
+- **`infinite-combo` is now `combo-box`**, rebuilt as an accessible,
+  form-associated autocomplete (the WAI-ARIA combobox pattern, with list
+  autocomplete):
+  - Options come from three sources: its own `<option>`s (filtered as you
+    type, with `<optgroup>` headings), a `src` URL template (JSON or HTML
+    responses, no JavaScript needed), or a `searchFunction` property.
+    Searches are debounced (`debounce`, `min-length`), and stale searches
+    are aborted, so an old response can't replace a newer one.
+  - Behaves like a form control: `name`, `value` (the attribute is the
+    default, restored by `form.reset()`), `required`, `disabled`,
+    `<fieldset disabled>`, `<label>`, and the validity API.
+  - `allow-custom` makes it a free-text input. Without it, it's
+    select-only.
+  - `input`/`change` follow native timing, and the inner input's own
+    events don't leak. `open` reflects, and a `toggle` `ToggleEvent`
+    fires. Failures fire `error`. Result counts and loading are announced
+    through a live region.
+  - Removed: the `onsearch`/`onselect`/`loading` string-evaluated
+    attributes (it's now CSP-safe), `select-tag`, and the dependency on
+    domable.
 
 ## [0.0.9] - 2026-09-30
 

@@ -28,3 +28,15 @@ const ok: boolean = select.checkValidity();
 const owner: HTMLFormElement | null = select.form;
 select.setCustomValidity("");
 void chosen, many, ok, owner;
+
+// combo-box: value contract + a typed search function.
+import "@johnhenry/domkit/combo-box/global.mjs";
+const combo = document.querySelector("combo-box")!;
+combo.searchFunction = async (query: string, { signal }: { signal: AbortSignal }) => {
+  void signal;
+  return [query];
+};
+const comboValue: string = combo.value;
+const chosenOption: Element | null = combo.selectedOption;
+combo.open = true;
+void comboValue, chosenOption;

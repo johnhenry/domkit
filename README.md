@@ -50,7 +50,7 @@ Or skip installing: every path above also works as
 |---|---|---|
 | [tabbed-ui](src/tabbed-ui/readme.md) | Tabs and panels from plain children, matched by position | `<tabbed-ui>` |
 | [stylable-select](src/stylable-select/readme.md) | A listbox whose options you can fully style | `<stylable-select>` |
-| [infinite-combo](src/infinite-combo/readme.md) | Search-as-you-type combo box, with options from your async function | `<infinite-combo>` |
+| [combo-box](src/combo-box/readme.md) | Autocomplete input: filters its own options, or searches a URL or function as you type | `<combo-box>` |
 | [hotkey-modal-dialog](src/hotkey-modal-dialog/readme.md) | A `<dialog>` toggled by a keyboard shortcut ¹ | `<dialog is="hotkey-modal">` |
 | [menu-component](src/menu-component/readme.md) | Keyboard-navigable menu that drills into sub-screens, optionally synced to `location.hash` | `<menu-component>` |
 | [code-color](src/code-color/readme.md) | Syntax highlighting for HTML, CSS, or JS | `<code-color>` |
@@ -141,19 +141,19 @@ but **not Safari**, unless you add a polyfill such as
 
 ### Using the raw source without a CDN or bundler
 
-Three modules import packages by bare name: `infinite-combo`,
-`shadow-dom`, and `definable/define-component-by-content` import
+Three modules import packages by bare name: `shadow-dom` and
+`definable/define-component-by-content` import
 [`@johnhenry/domable`](https://github.com/johnhenry/domable), and
 `matchable/query-container` imports `parsel-js`. esm.sh and bundlers
 resolve those for you. To serve `src/` directly to a browser, add an
 [import map](https://developer.mozilla.org/docs/Web/HTML/Element/script/type/importmap)
-like the one in [`src/infinite-combo/demo.htm`](src/infinite-combo/demo.htm).
+like the one in [`src/matchable/query-container/demo.htm`](src/matchable/query-container/demo.htm).
 
 ### Content-Security-Policy
 
-`event-consumer` and `infinite-combo` compile their inline-code attributes
-with `new Function`, so they need `unsafe-eval` under a strict CSP. No
-other stable module evaluates strings.
+`event-consumer` compiles its `onevent` attribute with `new Function`, so
+it needs `unsafe-eval` under a strict CSP. No other stable module
+evaluates strings.
 
 ### Editor support
 
