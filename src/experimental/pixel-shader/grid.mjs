@@ -9,8 +9,8 @@ const addBorder = (array, width, boxwidth, boxheight = boxwidth) => {
       !((x + 1) % boxwidth) ||
       !((x - 1) % boxwidth) ||
       !(y % boxheight) ||
-      !(y + (1 % boxheight)) ||
-      !(y - (1 % boxheight))
+      !((y + 1) % boxheight) ||
+      !((y - 1) % boxheight)
     ) {
       continue;
     } else {

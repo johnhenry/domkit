@@ -60,8 +60,11 @@ export default class extends HTMLElement {
     const nodes = [];
     let node;
     while ((node = walker.nextNode())) {
+      // A plain <option> counts too, not just an explicit role="option" --
+      // the readme always documented <option> children, but they were
+      // silently ignored (an <option> has no role *attribute*).
       const roles = (node.getAttribute("role") || "").toLowerCase().split(" ");
-      if (roles.includes("option")) {
+      if (node.tagName === "OPTION" || roles.includes("option")) {
         nodes.push(node);
       }
     }

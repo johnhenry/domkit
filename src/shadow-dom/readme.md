@@ -1,14 +1,28 @@
-# Shadow Dom Component
+# shadow-dom
 
-> **Deprecated alias.** This is a strict subset of
+> **Deprecated.** This is exactly
 > [`@johnhenry/domable`](https://github.com/johnhenry/domable)'s
-> `simple-element` `shadowOpen`. Kept for backward compatibility; prefer
-> `shadowOpen` directly in new code.
+> `` shadowOpen`<slot />` ``, kept so existing imports don't break. Use
+> domable directly in new code.
 
-Wraps its content in an open shadow root containing a single `<slot>`.
+An element class with an open shadow root containing a single `<slot>`,
+so its children render exactly as they would without it. It's a
+minimal shadow host, handy for `::slotted()` experiments or as a starting
+point. (A `<style>` written among its children stays in the light DOM
+and still styles the whole page.)
+
+```js
+// before
+import ShadowDom from "@johnhenry/domkit/shadow-dom";
+customElements.define("shadow-dom", ShadowDom);
+
+// after
+import { shadowOpen } from "@johnhenry/domable/simple-element";
+customElements.define("shadow-dom", shadowOpen`<slot />`);
+```
 
 ```html
 <shadow-dom>
-  <style></style>
+  <p>Slotted content</p>
 </shadow-dom>
 ```

@@ -110,21 +110,35 @@ export default class extends HTMLElement {
         });
     }
   }
+  #adopting = false;
   slotChange({ target }) {
+    // Moving the children out of the light DOM changes the slot's
+    // assignment, which fires slotchange again. Browsers queue that event
+    // (it arrives later, with nothing assigned, and returns below); some DOM
+    // implementations (happy-dom) fire it synchronously, mid-loop -- so
+    // ignore re-entrant calls rather than depend on the timing.
+    if (this.#adopting) {
+      return;
+    }
     const children = target.assignedElements();
     if (!children.length) {
       return;
     }
-    this.kids.clear();
-    this.kidsByKey.clear();
-    for (const child of children) {
-      this.kids.add(child);
-      if (child.dataset.key) {
-        this.kidsByKey.set(child.dataset.key, child);
+    this.#adopting = true;
+    try {
+      this.kids.clear();
+      this.kidsByKey.clear();
+      for (const child of children) {
+        this.kids.add(child);
+        if (child.dataset.key) {
+          this.kidsByKey.set(child.dataset.key, child);
+        }
+        this.removeChild(child);
       }
-      this.removeChild(child); // Is this necessary?
+      this.reset();
+    } finally {
+      this.#adopting = false;
     }
-    this.reset();
   }
   pop(event) {
     if (event) {

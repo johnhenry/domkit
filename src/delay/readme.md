@@ -1,14 +1,13 @@
-# Delay
+# delay
 
-An async delay -- resolves after a given number of milliseconds, or on the
-next microtask if none is given. (Renamed from `pause`, which read like it
-suspended something already running; this is a standalone sleep
-primitive.)
+`await delay(ms, value)` resolves with `value` after `ms` milliseconds,
+or on the next microtask if `ms` is omitted. A promise-based `setTimeout`.
+(Called `pause` before 0.0.7.)
 
 ## Usage
 
 ```javascript
-import delay from "./index.mjs";
+import delay from "@johnhenry/domkit/delay";
 
 await delay(1000, "done"); // resolves with "done" after ~1000ms
 await delay(); // resolves on the next microtask

@@ -283,7 +283,8 @@ const w3CodeColor = (elmnt, mode) => {
   function cssPropertyValueMode(txt) {
     var rest = txt,
       done = "",
-      s;
+      s,
+      result;
     rest =
       "<span style=color:" +
       cssdelimitercolor +
@@ -353,7 +354,7 @@ const w3CodeColor = (elmnt, mode) => {
       sfnuttpos = getPos(rest, "'", "'", jsStringMode);
       dfnuttpos = getPos(rest, '"', '"', jsStringMode);
       compos = getPos(rest, /\/\*/, "*/", commentMode);
-      comlinepos = getPos(rest, /\/\//, "<br>", commentMode);
+      comlinepos = getPos(rest, /\/\//, lineCommentEnd(rest), commentMode);
       numpos = getNumPos(rest, jsNumberMode);
       keywordpos = getKeywordPos("js", rest, jsKeywordMode);
       dotpos = getDotPos(rest, jsPropertyMode);
@@ -408,6 +409,7 @@ const w3CodeColor = (elmnt, mode) => {
   }
   function getDotPos(txt, func) {
     var x,
+      cc,
       i,
       j,
       s,
@@ -554,6 +556,15 @@ const w3CodeColor = (elmnt, mode) => {
       }
     }
     return [rpos, rpos2, func];
+  }
+  // W3Schools' original only ends a // comment at "<br>" (it targets
+  // HTML-rendered code); inside a <pre>, lines end in "\n" -- use whichever
+  // comes first, or the comment swallows everything after it.
+  function lineCommentEnd(txt) {
+    var s = txt.search(/\/\//),
+      n = txt.indexOf("\n", s),
+      b = txt.indexOf("<br>", s);
+    return n > -1 && (b == -1 || n < b) ? "\n" : "<br>";
   }
   function getPos(txt, start, end, func) {
     var s, e;

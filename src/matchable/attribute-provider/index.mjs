@@ -15,20 +15,38 @@ export default class extends HTMLElement {
   #attributes;
   #observer;
   #mediaMatches;
+  #handlers;
   constructor() {
     super();
     this.#observer = new globalThis.MutationObserver(this.setAll.bind(this));
-    this.#observer.observe(this, { childList: true });
     this.#mediaMatches = {};
+    this.#handlers = {
+      classes: () => this.triggerClass(),
+      styles: () => this.triggerStyle(),
+      attributes: () => this.triggerAttribute(),
+    };
   }
-  connectedCallback() {}
+  connectedCallback() {
+    // (Re)start here, not in the constructor: disconnectedCallback stops
+    // both the observer and every media-query listener, and nothing used
+    // to restart them -- a moved element silently stopped responding.
+    this.#observer.observe(this, { childList: true });
+    this.setAll();
+  }
   disconnectedCallback() {
     this.#observer.disconnect();
-    for (const mediaMatches of Object.values(this.#mediaMatches)) {
-      for (const m of mediaMatches) {
-        m.onchange = null;
-      }
+    for (const key of Object.keys(this.#mediaMatches)) {
+      this.#release(key);
     }
+  }
+  // Detach the media-query listeners from a previous parse of `key` before
+  // replacing them, so re-parsing (on reconnect or attribute change) never
+  // leaves stale handlers attached.
+  #release(key) {
+    for (const m of this.#mediaMatches[key] ?? []) {
+      m.removeEventListener("change", this.#handlers[key]);
+    }
+    this.#mediaMatches[key] = new Set();
   }
   static get observedAttributes() {
     return ["classes", "styles", "attributes"];
@@ -36,12 +54,11 @@ export default class extends HTMLElement {
   setClasses() {
     const queries = this.getAttribute("classes") || "";
     this.#classes = new Map();
+    this.#release("classes");
     const mediaMatches = (this.#mediaMatches["classes"] = new Set());
     for (const { mql, value } of parseQuerySections(queries)) {
       this.#classes.set(mql, value.split(" ").filter(Boolean));
-      mql.onchange = (e) => {
-        this.triggerClass(e);
-      };
+      mql.addEventListener("change", this.#handlers.classes);
       mediaMatches.add(mql);
     }
     this.triggerClass();
@@ -49,6 +66,7 @@ export default class extends HTMLElement {
   setStyles() {
     const queries = this.getAttribute("styles") || "";
     this.#styles = new Map();
+    this.#release("styles");
     const mediaMatches = (this.#mediaMatches["styles"] = new Set());
     for (const { mql, value } of parseQuerySections(queries)) {
       this.#styles.set(
@@ -58,9 +76,7 @@ export default class extends HTMLElement {
           .map((x) => x.trim())
           .filter(Boolean)
       );
-      mql.onchange = (e) => {
-        this.triggerStyle(e);
-      };
+      mql.addEventListener("change", this.#handlers.styles);
       mediaMatches.add(mql);
     }
     this.triggerStyle();
@@ -68,6 +84,7 @@ export default class extends HTMLElement {
   setAttributes() {
     const queries = this.getAttribute("attributes") || "";
     this.#attributes = new Map();
+    this.#release("attributes");
     const mediaMatches = (this.#mediaMatches["attributes"] = new Set());
     for (const { mql, value } of parseQuerySections(queries)) {
       this.#attributes.set(
@@ -100,9 +117,7 @@ export default class extends HTMLElement {
             return acc;
           }, [])
       );
-      mql.onchange = (e) => {
-        this.triggerAttribute(e);
-      };
+      mql.addEventListener("change", this.#handlers.attributes);
       mediaMatches.add(mql);
     }
     this.triggerAttribute();

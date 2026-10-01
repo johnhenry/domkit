@@ -109,6 +109,12 @@ export default class extends HTMLElement {
     return removed;
   }
   applySelect(kids) {
+    // domable's textToDom returns a DocumentFragment (not iterable), while
+    // the initial children are an array -- spreading a fragment threw on
+    // every search from 0.0.1 (the switch to domable) until 0.0.9.
+    if (kids instanceof globalThis.Node) {
+      return this.#select.append(kids);
+    }
     return this.#select.append(...kids);
   }
   removeSelect() {
@@ -298,7 +304,7 @@ export default class extends HTMLElement {
         initialString: this.#initialString,
       });
       // throw error if not a string
-      if (typeof loadStr !== "string") {
+      if (typeof str !== "string") {
         throw new Error(
           "loading function must return a string (synchronously)"
         );
@@ -308,12 +314,13 @@ export default class extends HTMLElement {
     this.setAttribute("loading", "");
 
     if (this.onsearchFunction) {
-      // Show loaded HTML
+      // Show loaded HTML, replacing the loading placeholder (if any)
       const str = await this.onsearchFunction({
         data: data,
         initial: this.#initial,
         initialString: this.#initialString,
       });
+      this.removeSelect();
       this.applySelect(textToDOMNodes(str));
     }
     this.removeAttribute("loading");

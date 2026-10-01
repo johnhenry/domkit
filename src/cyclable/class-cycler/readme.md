@@ -1,10 +1,11 @@
-# Class Cycler
+# class-cycler
 
 Exposes a [localstorage-class-cycler](../localstorage-class-cycler/readme.md)
 instance as a named global function, so it can be called from anywhere
 (e.g. a plain `<button onclick="...">`). Container/global variant — see
 [class-cycler-button](../class-cycler-button/readme.md)
-for a self-contained `<button>` element that cycles its own classes.
+for a self-contained `<button>` that does the same on click. Part of
+[cyclable](../readme.md).
 
 ## Attributes
 
@@ -12,7 +13,7 @@ for a self-contained `<button>` element that cycles its own classes.
 |---|---|
 | `global` | Name to assign the cycler function to on `globalThis` (required — removing this attribute, or disconnecting the element, unassigns it) |
 | `selector` | Selector for the element whose classes get cycled. Defaults to `body` |
-| `storage-key` | localStorage key the current class value persists under |
+| `storage-key` | localStorage key the current class value persists under (required. Nothing happens until both `global` and `storage-key` are set) |
 | `classes` | Comma-delimited list of classes to cycle through |
 
 ## Usage
@@ -20,7 +21,7 @@ for a self-contained `<button>` element that cycles its own classes.
 ```html
 <script
   type="module"
-  src="https://esm.sh/@johnhenry/domkit/class-cycler/global.mjs"
+  src="https://esm.sh/@johnhenry/domkit/cyclable/class-cycler/global.mjs"
 ></script>
 <class-cycler
   global="cycleTheme"

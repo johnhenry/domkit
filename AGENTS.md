@@ -1,192 +1,155 @@
 # Agent playbook
 
-`@johnhenry/domkit` — a toolkit of ~40 independent DOM/HTML-component
-modules (custom elements, shadow-DOM primitives, DOM⇄React interop). One
-npm package, one subpath export per module (`"./*": "./src/*"`) — there is
-no shared barrel or build step; every module's `src/<module>/index.mjs`
-(and sibling files: `global.mjs` for auto-registering scripts, `demo.html`/
-`demo.htm`) ships as source, unbundled.
+`@johnhenry/domkit` is a set of small, independent custom elements and DOM
+utilities, published as one npm package with no build step. Source under
+`src/` *is* what ships. `CLAUDE.md` in this directory is a symlink to this
+file.
 
-`CLAUDE.md` in this directory is a symlink to this file.
+## Layout
+
+- `src/<module>/`: one directory per module. `index.mjs` is the module's
+  default entry (an element class, unregistered, or a function).
+  `global.mjs`, where present, registers the element under its documented
+  tag. `readme.md` documents it, and `demo.html`/`demo.htm` exercises it.
+- `src/<family>/<module>/`: the grouped families `definable/`,
+  `matchable/`, `cyclable/`, `hydratable/` (hydratable is both a family and
+  a module: `src/hydratable/index.mjs` is the mixin, `mounts/` its sibling),
+  and `experimental/`. Each family directory has its own `readme.md`.
+- `package.json` `exports`: `@johnhenry/domkit/<path>` maps to
+  `src/<path>/index.mjs`, and any `.mjs`/`.css` file is reachable by its
+  full path. Adding a module needs no `package.json` change.
+- `demo/`: a live gallery (repo-only, not published) running most modules
+  at once, each in its own iframe.
+- `test/`: behavioral tests (`node:test` + happy-dom). `scripts/`: the
+  syntax and reference checkers.
 
 ## The verification loop (before every push)
 
-1. `node --check` every `.mjs`/`.js` file you touched — there's no bundler
-   to catch a syntax error for you.
-2. This package has no DOM test environment configured yet (no jsdom/
-   happy-dom) — verify a DOM-touching change against its module's own
-   `demo.html`/`demo.htm` in a real browser (`npx http-server .` from the
-   repo root, then open `src/<module>/demo.html`), or with a minimal
-   `globalThis.HTMLElement`/`document`/`customElements` shim under plain
-   Node for import-resolution-level checks only (see how this package's
-   own extraction was verified, in the PR that created it).
-3. `npm pack --dry-run` — confirm the file list still includes every
-   module's real files (nothing accidentally excluded via `.npmignore`/
-   `files`).
-4. A genuinely fresh clone: `git clone . /tmp/domkit-verifyN && cd $_ && npm ci`.
-
-## Repo-specific gotchas
-
-- **Every module is its own directory under `src/` — no shared version
-  subdirectory (`0.0.0/`, `latest/`) the way `johnhenry/lib` (this
-  package's origin) uses.** If you're porting something from `lib` or
-  comparing against it, remember one directory level was collapsed during
-  extraction: `lib`'s `js/<module>/0.0.0/index.mjs` is this package's
-  `src/<module>/index.mjs`, and cross-module imports are `../<module>/...`
-  here, not `../../​<module>/0.0.0/...`.
-- **A minimal fake-`HTMLElement` shim is enough to *import* every module
-  in this package under plain Node, but not enough to fully *exercise*
-  code that runs at module-evaluation time or that reaches real browser
-  module resolution** — this gap has caught two real, previously
-  undetected bugs so far. This is why `mounts/last.mjs`'s real
-  `unsuitable.contains is not a function` bug (fixed in 0.0.2 — `Array`
-  has `.includes()`, not `.contains()`) went undetected: the
-  import-resolution smoke test only imports modules, it doesn't run their
-  top-level DOM-reading code against a body that actually has element
-  children. It's also why three demo files' bare-specifier imports (see
-  the import-map gotcha below) weren't caught until a static resolution
-  check went looking specifically — Node resolves bare specifiers via
-  `node_modules`, masking the exact failure a real browser hits.
-- **Several modules have known, documented, *not-yet-fixed* pre-existing
-  quirks carried over from `lib`** — check each module's own `readme.md`
-  before assuming a given behavior is a bug versus already-known. One
-  confirmed example: `xy-grapher/component.mjs` calls a
-  `genSVG()` function that's never defined or imported anywhere, so
-  `render()` throws — inherited from `lib`, not introduced here. Its
-  `demo.html` used to mask this by accidentally registering
-  `chernoff-face`'s component under the `xy-grapher` tag (a
-  copy-paste bug); fixed to register the real, still-broken component
-  instead of hiding it.
-- **`internal-timer` never ticks unless it has real light-DOM
-  content** — its tick loop only ever starts from a `slotchange` event on
-  its internal (hidden) `<slot>`, and an empty `<internal-timer></internal-timer>`
-  never fires one. This isn't documented anywhere in the component's own
-  code or (until 0.0.7) its demo — `demo/fragments/internal-timer.html`
-  had genuinely never ticked, with no error thrown, since this package's
-  original extraction. If you add another demo/consumer of this element,
-  give it *some* child content (text is enough) or it will silently do
-  nothing.
-- **`simple-element`/`create-element`/`text-to-DOM-nodes`/
-  `DOM-nodes-to-text`/`react-to-dom`/`dom-to-React` are NOT in this
-  package** (removed in 0.0.1) — they duplicated
-  [`@johnhenry/domable`](https://github.com/johnhenry/domable), a separate,
-  more polished package (real TS types, jsdom tests) published two days
-  before this package's own extraction from `lib`. domkit depends on it
-  directly; import `@johnhenry/domable/<name>`, not a local path, for any
-  of those six.
-- **`src/definable/`, `src/matchable/`, `src/cyclable/`, `src/hydratable/`
-  are namespaced clusters, not flat modules** — each briefly existed as
-  its own standalone npm package (`0.0.3`), then got folded back in
-  (`0.0.4`) as a subdirectory containing its member modules, one nesting
-  level deeper than everything else under `src/`. If you're porting
-  something from one of the old standalone repos, or comparing against
-  their git history, remember that extra level:
-  `<old-repo>/src/<module>/...` is now
-  `src/<cluster>/<module>/...` here. `matchable` was `respondable` when it
-  was its own package — renamed on the way back in (see README's
-  Provenance note for why).
-  - `chernoff-face`, `xy-grapher`, and
-    `animate-paths` (still flat under `src/`) import from
-    `src/definable/` via relative paths
-    (e.g. `../definable/definetag/index.mjs`) — not a package dependency.
-    Only `@johnhenry/domable` is a real `package.json` dependency now;
-    definable/matchable/cyclable/hydratable are internal.
-- **A bare specifier like `@johnhenry/domable/simple-element` resolves
-  fine under Node (via `node_modules`) but NOT in a real browser with no
-  bundler** — browsers can't resolve bare module specifiers without a
-  `<script type="importmap">`. Every demo `.html`/`.htm` file that
-  transitively imports `@johnhenry/domable/...` needs one, and the
-  relative path inside it must count directory levels from *that file's*
-  location — `src/definable/<module>/demo.html` needs one more `../` than
-  a flat `src/<module>/demo.html` would, and `matchable`'s two demo files
-  need their *own* copy of the entry even though they only reach
-  `@johnhenry/domable` indirectly through a `definable` module they load,
-  because **import maps are per-document and don't inherit across a
-  loaded module boundary**, even same-origin. Getting either of these
-  wrong is exactly how two real bugs shipped and got caught during the
-  `0.0.4` merge — see `demo/fragments/shadow-dom.html`,
-  `src/infinite-combo/demo.htm`,
-  `src/definable/define-component-by-content/demo.html`,
-  `src/matchable/query-container/demo.htm`,
-  `src/matchable/attribute-provider/demo.htm` for the current,
-  correct pattern. domable's package is flat (one `.mjs` file per subpath,
-  e.g. `src/simple-element.mjs`) so its import-map entries must be exact
-  subpath matches, not a trailing-slash prefix.
-- **`matchable/query-sections.mjs` is the one place the `[query] value`
-  pipe-delimited grammar is parsed — `query-container` and
-  `attribute-provider` both use it, on purpose.** They used to
-  each hand-roll their own copy, which is exactly how they silently
-  diverged (0.0.5: `query-container` had no fallback for a
-  bracket-less section and threw). If you touch this grammar, touch the
-  shared parser, not either component's own code — and reuse the `mql` it
-  hands back for both state and `.onchange` rather than calling
-  `matchMedia()` again; that was the other 0.0.5 lifecycle-cleanup bug.
-- **`hydratable`'s `HYDRATED` symbol is `configurable: true` as of
-  0.0.5** (it was `false` before, permanently — the whole point of adding
-  `dehydrate()` was making it undoable). If you're diffing against an
-  older copy of this module elsewhere, don't "fix" this back.
-- **`mounts/first.mjs`/`last.mjs` skip whitespace-only text nodes and
-  comments before checking `nodeType`/`unsuitable`, via
-  `mounts/skip-insignificant.mjs` (0.0.5).** Without this, `firstChild`/
-  `lastChild` almost never actually land on a real element in a normally
-  formatted HTML document — the newline + indentation right after `<body>`
-  (or right before `</body>`) is a real text-node child, and is virtually
-  universal. Before this fix, "reuse an existing suitable element" was
-  effectively dead code in practice: any ordinarily-formatted page would
-  hit the whitespace text node first, fail the `nodeType` check, and
-  create a new div every time — found while building this module's own
-  demo, not by inspection; the bug was invisible reading the code alone
-  because it only manifests against a real DOM with realistic whitespace,
-  which `node --check` and a plain import-resolution smoke test both miss
-  entirely. If you touch this resolution logic again, test it against an
-  actual browser DOM for a normally-indented page, not a hand-built one
-  with no whitespace to trip over.
-- **`demo/` is a repo-root sibling of `src/`, not published to npm**
-  (`files` is still just `["src/"]`). It's a live gallery
-  (`demo/index.html`) running most modules simultaneously, each isolated
-  in its own iframe — either an existing `src/<cluster>/<module>/demo.html`/
-  `demo.htm`, or a small fragment under `demo/fragments/` for modules that
-  had none. Requires a static server (`npx http-server .` from the repo
-  root, then visit `/demo/`) — module imports don't resolve over
-  `file://`. `npx serve .` also works but needs `serve.json`'s
-  `cleanUrls: false` (already present) — its default URL rewriting
-  otherwise breaks relative module imports on any bare directory URL.
-  Add a new module's live example here too, not just its own
-  `demo.html`/`demo.htm`, when it's substantial enough to warrant one.
-  If a cluster of modules is ever split out into its own package again
-  (or merged back in, as happened in `0.0.4`), update its cards/fragments
-  here in the same change — don't leave dangling iframe references.
+1. `npm test`. It runs, in order:
+   - `scripts/check-syntax.mjs`: every `.mjs` under `src/` parses.
+   - `scripts/check-links.mjs`: every relative import/`src`/`href` in
+     `src/` and `demo/`, every relative Markdown link, and every
+     `@johnhenry/domkit/<path>` mentioned in docs or code resolves to a
+     real file through the actual `exports` map. **Any rename, move, or
+     deletion that leaves a stale reference fails here.**
+   - `eslint .`: one rule, `no-undef` (see the gotcha below).
+   - `node --test "test/*.test.mjs"`: the DOM tests.
+2. For DOM-touching changes, also check the module's own demo **in a real
+   browser**: `npx http-server . -c-1` from the repo root, then
+   `/src/<path>/demo.html` and the gallery at `/demo/`. happy-dom isn't a
+   browser (see its gotchas below), and several bugs here were only ever
+   visible in one.
+3. `npm pack --dry-run`: the file list still includes every module's files.
+4. A genuinely fresh clone: `git clone . /tmp/domkit-verifyN && cd $_ && npm ci && npm test`.
 
 ## Definition of done (adding or changing a module)
 
-- `node --check` passes.
-- The module's own `readme.md` is accurate (name, description, real
-  attributes/API, a working usage example) — this package inherited
-  several modules from `lib` whose READMEs didn't match their actual code
-  at all; don't reintroduce that here.
-- If the module starts any kind of subscription in `connectedCallback`/at
-  construction (`MutationObserver`, `addEventListener` on `document`/
-  `window`/a shared object, `matchMedia().onchange`), it has a matching
-  `disconnectedCallback` that actually stops it — this exact class of bug
-  (a "start" with no "stop") was the majority of what the completeness
-  audit that shaped this package's initial release found.
+- `npm test` passes, and the change has a test in `test/` unless it's
+  under `experimental/` or happy-dom can't express it (then say so in the
+  test file, as `more-elements.test.mjs` does for customized built-ins).
+- The module's `readme.md` is accurate: name, what it's for, real
+  attributes/API/events, a working example using the package path
+  (`@johnhenry/domkit/...` or the esm.sh URL, never `./index.mjs`).
+  Inaccurate READMEs inherited from `lib` were this package's most common
+  defect. Re-read the code when writing one, and check every claim.
+- Anything started in `connectedCallback` or a constructor
+  (`MutationObserver`, a listener on `document`/`window`, a `matchMedia`
+  listener, a loop) is stopped in `disconnectedCallback` **and restarted
+  on reconnect**. Moving an element (`parent.append(el)`) disconnects
+  and reconnects it in one task. Both halves of this have shipped broken
+  here: no stop (0.0.0), then no restart (fixed 0.0.9 in `matchable` and
+  `internal-timer`).
+- New element modules get a `global.mjs` registering the module's own name
+  as the tag. The two customized built-ins are the exception (see below).
+- The root `README.md` table, the family `readme.md` (if any), the gallery
+  (`demo/index.html`), and `CHANGELOG.md` are updated in the same change.
+
+## Repo-specific gotchas
+
+- **`no-undef` is the lint rule because undeclared variables are this
+  codebase's most-shipped bug.** Under module strict mode they only throw
+  when that exact line runs, so they survive `node --check` and casual
+  testing: `react` (react-to-dom), `children` (dom-to-React), `cc` and
+  `result` (code-color's vendored highlighter, broken since extraction),
+  `loadStr` (infinite-combo), `genSVG` (xy-grapher).
+- **`@johnhenry/domable`'s `textToDom` returns a `DocumentFragment`, not a
+  `NodeList`.** `lib`'s original `text-to-DOM-nodes` returned an iterable
+  `NodeList`. When 0.0.1 switched `infinite-combo` to domable's version,
+  its `append(...nodes)` started throwing on every search, and nobody
+  noticed until 0.0.9. Check return shapes when swapping a dependency.
+- **`Event.path` is gone** (Chrome removed it in v109). Use
+  `event.composedPath()`. `menu-component/hash.mjs` used `.path` and threw
+  on every push/pop until 0.0.9.
+- **Customized built-ins don't work in Safari.** `hotkey-modal-dialog`
+  (`<dialog is="hotkey-modal">`) and `cyclable/class-cycler-button`
+  (`<button is=…>`) are customized built-ins. Their READMEs say so, and
+  the root README footnotes them. `hotkey-modal-dialog`'s `global.mjs`
+  registers **`hotkey-modal`**, not the module name.
+- **happy-dom differs from browsers in ways that matter here** (all
+  checked against Chromium during 0.0.9):
+  - Its `innerHTML` setter inserts node by node, so custom elements
+    connect before their children and later attributes exist. Use
+    `render()` from `test/dom.mjs` (template + append, like a browser).
+  - It fires `slotchange` synchronously (browsers queue it).
+    `menu-component` guards against the resulting re-entrancy.
+  - `MediaQueryList`: `onchange` is ignored (use `addEventListener`), and
+    `change` only fires when a query *starts* matching. Write viewport
+    tests in that direction (see `families.test.mjs`).
+  - Customized built-ins never get lifecycle callbacks, so those tests
+    are skipped with a reason.
+  - `requestAnimationFrame` runs as fast as the CPU allows. Drive frames
+    by hand for anything rate-based (see the `internal-timer` test).
+- **A hidden browser tab doesn't deliver `requestAnimationFrame` or
+  `matchMedia` change events.** When verifying `internal-timer`,
+  `frame-delay`, or `matchable` in a real browser, the tab must be visible.
+- **`internal-timer` never ticks without light-DOM content.** Its loop
+  starts from a `slotchange` on its internal `<slot>`, and an empty element
+  never fires one, with no error. Give every consumer some child text.
+- **`matchable/query-sections.mjs` is the one place the
+  `[query] value | …` grammar is parsed.** `query-container` and
+  `attribute-provider` both use it. They once had separate copies that
+  silently diverged (0.0.5). Its bracket match is non-greedy on purpose:
+  a media query never contains `]`, but a selector value can
+  (`ol[data-x=1].wide`).
+- **`attribute-provider` replaces children's whole `class` and `style`
+  attributes** on every update. That's documented, not a bug. Don't
+  "fix" it into a merge without also changing the README and tests.
+- **`hydratable`'s `HYDRATED` symbol is `configurable: true`** (0.0.5), so
+  that `dehydrate()` can delete it. Don't "fix" it back.
+- **`mounts/first.mjs`/`last.mjs` run at import time and skip
+  whitespace/comment nodes** (via `skip-insignificant.mjs`) before
+  deciding whether `body`'s first/last child is reusable. In any
+  normally indented page, the first child is a whitespace text node.
+  Test against realistic markup (the test does).
+- **Bare specifiers in demos need import maps.** `@johnhenry/domable/*`
+  and `parsel-js` resolve under Node via `node_modules`, but not in a
+  browser loading raw source. Every demo that transitively imports them
+  carries a `<script type="importmap">` whose relative paths count from
+  *that file's* directory. Import maps are per document, so each demo
+  page and each gallery iframe needs its own. domable's exports are flat files, so map exact
+  subpaths (`src/simple-element.mjs`), not a prefix. Working examples:
+  `src/infinite-combo/demo.htm`, `src/matchable/*/demo.htm`,
+  `src/definable/define-component-by-content/demo.html`,
+  `demo/fragments/shadow-dom.html`.
+- **Things that are NOT in this package**: `simple-element`,
+  `create-element`, `text-to-dom`/`dom-to-text`, `react-to-dom`/
+  `dom-to-react` live in `@johnhenry/domable` (removed from here in 0.0.1).
+  `brains` (0.0.7) and `graph-component` (0.0.9) were deleted, not moved.
+- **Coming from `johnhenry/lib`?** `lib`'s `js/<module>/0.0.0/index.mjs`
+  is this repo's `src/<module>/index.mjs` (or
+  `src/<family>/<module>/…`), and several modules were renamed since. See
+  `CHANGELOG.md`.
+- **`npx serve .` breaks relative imports on bare directory URLs** unless
+  `cleanUrls` is off. `serve.json` already does that, but
+  `npx http-server . -c-1` avoids the issue (and caching) entirely.
 
 ## Non-goals
 
-- No bundling/build step is planned — modules ship as source, matching
-  how they were always consumed (`lib`'s own raw-URL-import convention,
-  now also `npm install` + subpath import).
-- A real DOM test environment (jsdom/happy-dom + a test runner) doesn't
-  exist yet. Given how many real bugs turned up in code that had never
-  been exercised by a test, this is a natural, real follow-up — just not
-  part of the initial extraction.
-- The visual/canvas experiment modules (`canvas-renderer`,
-  `animate-paths`, `pixel-shader`,
-  `imagedata-emitter`, `xy-grapher`,
-  `chernoff-face`) are demo-grade, not hardened library code —
-  treat them as examples, not
-  a stable API, unless/until someone gives them the same documentation
-  and correctness pass the rest of this package got.
+- No bundling or build step. Modules ship as source.
+- `experimental/` modules are not held to the definition of done above.
+  Graduating one out of `experimental/` means meeting it.
+- No TypeScript sources. Type declarations (`.d.ts` next to the `.mjs`)
+  would be welcome for the JS-API modules, but none exist yet.
 
 ## Releases
 

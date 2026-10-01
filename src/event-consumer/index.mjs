@@ -41,10 +41,11 @@ export default class extends HTMLElement {
       } catch {
         func = ($) => $;
       }
-      this.bubbles = this.getAttribute("bubbles") !== null;
+      // `bubbles` is checked per event (not captured once here), so it
+      // works whatever order the attributes were set in.
       this.callback = function (event) {
         func.call(this, event);
-        if (!this.bubbles) {
+        if (this.getAttribute("bubbles") === null) {
           event.stopPropagation();
         }
       };

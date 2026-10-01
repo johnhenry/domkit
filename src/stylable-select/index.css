@@ -9,10 +9,10 @@ stylable-select {
 stylable-select * {
   outline: inherit;
 }
-stylable-select [role="option"] {
+stylable-select :is(option, [role="option"]) {
   cursor: pointer;
 }
-stylable-select [role="option"][data-checked] {
+stylable-select :is(option, [role="option"])[data-checked] {
   background-color: #0ff0ff;
   color: black;
 }
