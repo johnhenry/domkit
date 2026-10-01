@@ -6,7 +6,6 @@ import assert from "node:assert/strict";
 import { render, tick } from "./dom.mjs";
 
 const GLOBALS = {
-  "code-color": "code-color",
   "frame-timer": "frame-timer",
   "drill-menu": "drill-menu",
   "tabbed-ui": "tabbed-ui",
@@ -26,22 +25,6 @@ test("every stable element's global.mjs registers its documented tag", () => {
     assert.ok(customElements.get(tag), `${path}/global.mjs should define <${tag}>`);
   }
 });
-
-test("code-color highlights its initial content (not only later changes)", async () => {
-  render(`<code-color mode="js"><pre>const x = 1; // one
-let y = obj.prop;</pre></code-color>`);
-  await tick();
-  const html = document.querySelector("code-color").innerHTML;
-  assert.match(html, /<span style="color:\s*mediumblue;?">const<\/span>/);
-  assert.match(
-    html,
-    /<span style="color:\s*green;?">\/\/ one\n<\/span><span style="color:\s*mediumblue;?">let<\/span>/,
-    "a // comment ends at the newline",
-  );
-});
-
-// stylable-select, combo-box (every form-associated element) are tested only in
-// test/browser/: happy-dom has no ElementInternals / attachInternals.
 
 test("tabbed-ui shows the clicked tab's panel (full contract: test/browser/tabbed-ui.spec.mjs)", () => {
   render(`<tabbed-ui selected-index="1">

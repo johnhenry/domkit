@@ -21,37 +21,130 @@
       "path": "src/code-color/index.mjs",
       "declarations": [
         {
+          "kind": "variable",
+          "name": "TOKEN_TYPES",
+          "type": {
+            "text": "array"
+          },
+          "default": "[\"comment\", \"keyword\", \"string\", \"number\", \"function\", \"property\", \"tag\", \"attribute\"]"
+        },
+        {
           "kind": "class",
-          "description": "",
-          "name": "",
+          "description": "Highlights the code inside it (JavaScript, CSS, or HTML) with the CSS\nCustom Highlight API, without changing the DOM. Re-highlights as the\ntext changes.",
+          "name": "CodeColor",
           "members": [
+            {
+              "kind": "field",
+              "name": "#ranges",
+              "privacy": "private",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]"
+            },
             {
               "kind": "field",
               "name": "#observer",
               "privacy": "private",
-              "default": "new MutationObserver(this.observe.bind(this))"
+              "default": "new MutationObserver(() => this.#schedule())"
+            },
+            {
+              "kind": "field",
+              "name": "#pending",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#internals",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "resolvedLanguage",
+              "description": "The language in effect: `js`, `css`, `html`, or null if unrecognized.",
+              "type": {
+                "text": "string | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "language",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "supported",
+              "static": true,
+              "description": "Whether this browser supports the CSS Custom Highlight API (without it,\ncode is shown uncolored).",
+              "type": {
+                "text": "boolean"
+              },
+              "readonly": true
             },
             {
               "kind": "method",
-              "name": "observe"
+              "name": "tokens",
+              "description": "The current token ranges, by type (for tests and tooling).",
+              "return": {
+                "type": {
+                  "text": "{ type: string, text: string }[]"
+                }
+              }
             },
             {
               "kind": "method",
-              "name": "ready"
+              "name": "#schedule",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#clear",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#highlight",
+              "privacy": "private"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "language",
+              "type": {
+                "text": "string"
+              },
+              "description": "`js`, `css`, or `html` (plus aliases like `javascript`, `ts`, `json`, `xml`). Default: a `language-*` class on a `<code>` inside, else `html`."
             }
           ],
           "superclass": {
             "name": "HTMLElement"
           },
-          "customElement": true
+          "tagName": "code-color",
+          "customElement": true,
+          "summary": "Syntax highlighting that never touches your markup."
         }
       ],
       "exports": [
         {
           "kind": "js",
+          "name": "TOKEN_TYPES",
+          "declaration": {
+            "name": "TOKEN_TYPES",
+            "module": "src/code-color/index.mjs"
+          }
+        },
+        {
+          "kind": "js",
           "name": "default",
           "declaration": {
-            "name": "",
+            "name": "CodeColor",
             "module": "src/code-color/index.mjs"
           }
         }
