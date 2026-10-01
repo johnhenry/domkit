@@ -51,7 +51,7 @@ Or skip installing: every path above also works as
 | [tabbed-ui](src/tabbed-ui/readme.md) | Tabs and panels from plain children, matched by position | `<tabbed-ui>` |
 | [stylable-select](src/stylable-select/readme.md) | A listbox whose options you can fully style | `<stylable-select>` |
 | [combo-box](src/combo-box/readme.md) | Autocomplete input: filters its own options, or searches a URL or function as you type | `<combo-box>` |
-| [hotkey-modal-dialog](src/hotkey-modal-dialog/readme.md) | A `<dialog>` toggled by a keyboard shortcut ¹ | `<dialog is="hotkey-modal">` |
+| [hotkey-dialog](src/hotkey-dialog/readme.md) | Toggle a native `<dialog>` with a keyboard shortcut (`mod+k`, `/`) | `<hotkey-dialog>` |
 | [menu-component](src/menu-component/readme.md) | Keyboard-navigable menu that drills into sub-screens, optionally synced to `location.hash` | `<menu-component>` |
 | [code-color](src/code-color/readme.md) | Syntax highlighting for HTML, CSS, or JS | `<code-color>` |
 
@@ -66,8 +66,7 @@ Or skip installing: every path above also works as
 
 | Module | What it's for | `global.mjs` registers |
 |---|---|---|
-| [class-cycler](src/cyclable/class-cycler/readme.md) | A global function that cycles a persisted class | `<class-cycler>` |
-| [class-cycler-button](src/cyclable/class-cycler-button/readme.md) | A button that does the same on click ¹ | `<button is="class-cycler-button">` |
+| [class-cycler](src/cyclable/class-cycler/readme.md) | Buttons that cycle a persisted class (theme, density), synced across tabs | `<class-cycler>` |
 | [localstorage-class-cycler](src/cyclable/localstorage-class-cycler/readme.md) | The same, as a JS function | |
 | [localstorage-cycler](src/cyclable/localstorage-cycler/readme.md) | The engine: a persisted value with `next`/`previous`/`peek`/`set` | |
 
@@ -116,10 +115,6 @@ plots), and [chernoff-face](src/experimental/chernoff-face/readme.md).
 [shadow-dom](src/shadow-dom/readme.md) is an alias for
 [`@johnhenry/domable`](https://github.com/johnhenry/domable)'s
 `` shadowOpen`<slot />` ``. Use domable directly.
-
-¹ A *customized built-in* (`is="…"`). These work in Chromium and Firefox
-but **not Safari**, unless you add a polyfill such as
-[`@ungap/custom-elements`](https://github.com/ungap/custom-elements).
 
 ## How the package is laid out
 

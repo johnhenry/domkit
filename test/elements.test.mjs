@@ -143,12 +143,12 @@ test("define-component-by-content defines a tag from an attribute", async () => 
   assert.equal(document.querySelector("x-hello").shadowRoot.innerHTML, "<b>hi</b>");
 });
 
-test("class-cycler exposes a global cycler and removes it on disconnect", () => {
+test("class-cycler applies its first value and cycles on a button click (full contract: test/browser)", () => {
   localStorage.clear();
-  render(`<class-cycler global="cycleTheme" storage-key="t" classes="light,dark"></class-cycler>`);
-  assert.ok(document.body.classList.contains("light"));
-  globalThis.cycleTheme();
-  assert.ok(document.body.classList.contains("dark"));
-  document.querySelector("class-cycler").remove();
-  assert.equal(globalThis.cycleTheme, undefined);
+  render(`<class-cycler storage-key="t" classes="light,dark"><button>next</button></class-cycler>`);
+  assert.ok(document.documentElement.classList.contains("light"));
+  document.querySelector("button").click();
+  assert.ok(document.documentElement.classList.contains("dark"));
+  assert.equal(localStorage.getItem("t"), "dark");
+  assert.equal(document.querySelector("class-cycler").getAttribute("value"), "dark");
 });

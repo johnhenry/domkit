@@ -89,6 +89,32 @@ rebuilt to meet it.
     attributes (it's now CSP-safe), `select-tag`, and the dependency on
     domable.
 
+- **No more customized built-ins** (`is="…"`), which Safari doesn't
+  support:
+  - **`hotkey-modal-dialog` is now `<hotkey-dialog>`**, a wrapper around a
+    real `<dialog>`.
+    - Shortcuts: several at once (`hotkey="mod+k /"`), `mod` for
+      ⌘ on Apple platforms and Ctrl elsewhere, exact modifier matching
+      (`ctrl+k` no longer fires on Ctrl+Alt+K), case-insensitive letters,
+      and bare-key shortcuts that ignore typing in fields.
+    - Light dismiss and Esc blocking use the native `closedby` attribute,
+      polyfilled where unsupported, replacing `click-to-close` and
+      `no-esc-close`. Light dismiss now checks the dialog's box, so a
+      click on its padding no longer closes it.
+    - New `show()`, `close()`, `toggle()`, and `non-modal`.
+  - **`class-cycler-button` is removed, and `class-cycler` is rebuilt**
+    around buttons:
+    - Inside it, `<button>` cycles to the next value,
+      `data-cycle="previous"` goes back, and `<button value>` sets a value
+      (with `aria-pressed`). An `<output>` shows the value.
+    - Invoker commands (`--next`, `--previous`, `--set`) work from
+      anywhere.
+    - `value` reflects, `target` selects every match (default `html`),
+      `storage-key` is optional, and tabs stay in sync through `storage`
+      events. `change` fires on user changes only.
+    - Removed: the `global` attribute and its window function, and the
+      `selector` attribute (use `target`).
+
 ## [0.0.9] - 2026-09-30
 
 A shape-and-documentation pass. The modules were reorganized only where the

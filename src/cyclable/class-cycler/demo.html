@@ -3,33 +3,26 @@
 <head>
 <meta charset="utf-8" />
 <style>
-  body.light { background: #fdfdfd; color: #111; font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
-  body.dark { background: #16181d; color: #eee; font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
-  body.system { background: #eef; color: #113; font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
-  button { font: inherit; padding: 6px 12px; margin-right: 6px; }
-  #status { margin-top: 10px; font-family: ui-monospace, monospace; font-size: 12px; }
+  html { font: 14px/1.5 system-ui, sans-serif; color-scheme: light; }
+  html.dark { color-scheme: dark; }
+  html.sepia { background: #f4ecd8; color: #5b4636; }
+  body { margin: 12px; }
+  button { font: inherit; padding: 6px 12px; margin: 0 6px 6px 0; }
+  button[aria-pressed="true"] { font-weight: 700; }
 </style>
-<script
-  type="module"
-  src="./global.mjs"
-></script>
+<script type="module" src="./global.mjs"></script>
 </head>
-<body class="light">
-<p>A global function (assigned via <code>global="cycleTheme"</code>) cycles
-<code>body</code>'s class through <code>light</code> / <code>dark</code> /
-<code>system</code>, persisted to <code>localStorage</code>. The returned
-function also carries <code>.previous()</code>, <code>.peek()</code>, and
-<code>.set()</code> -- try them below.</p>
-<class-cycler
-  global="cycleTheme"
-  selector="body"
-  storage-key="cyclable-demo-theme"
-  classes="light,dark,system"
-></class-cycler>
-<button onclick="cycleTheme()">Next →</button>
-<button onclick="cycleTheme.previous()">← Previous</button>
-<button onclick="document.getElementById('status').textContent = 'peek(): ' + JSON.stringify(cycleTheme.peek())">Peek (no change)</button>
-<button onclick="cycleTheme.set('dark')">Jump to "dark"</button>
-<div id="status"></div>
+<body>
+<class-cycler id="theme" target="html" classes="light,dark,sepia" storage-key="cyclable-demo-theme">
+  <button>Next theme</button>
+  <button data-cycle="previous">Previous</button>
+  <br />
+  <button value="light">Light</button>
+  <button value="dark">Dark</button>
+  <button value="sepia">Sepia</button>
+  <p>Current: <output></output>. It's saved to localStorage, so reload the page, or open it in a second tab and watch them stay in sync.</p>
+</class-cycler>
+<p>A button outside the element, using an invoker command:
+  <button commandfor="theme" command="--next">Next (commandfor)</button></p>
 </body>
 </html>
