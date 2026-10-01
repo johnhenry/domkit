@@ -8,6 +8,8 @@ export default class StylableSelect extends HTMLElement {
   readonly options: Element[];
   /** The selected options. */
   readonly selectedOptions: Element[];
+  /** The first selected option, or null (like infinite-combo-box's). */
+  readonly selectedOption: Element | null;
   /** Index of the first selected option, or -1. Setting it selects only that
    * option. Script changes don't fire events. */
   selectedIndex: number;

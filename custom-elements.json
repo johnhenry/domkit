@@ -209,6 +209,12 @@
           "members": [
             {
               "kind": "field",
+              "name": "#disabledButtons",
+              "privacy": "private",
+              "default": "new Set()"
+            },
+            {
+              "kind": "field",
               "name": "#value",
               "privacy": "private",
               "type": {
@@ -255,6 +261,14 @@
                 "text": "Element[]"
               },
               "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "disabled",
+              "description": "Mirrors the `disabled` attribute.",
+              "type": {
+                "text": "boolean"
+              }
             },
             {
               "kind": "field",
@@ -329,6 +343,11 @@
             },
             {
               "kind": "method",
+              "name": "#applyDisabled",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
               "name": "#onClick",
               "privacy": "private",
               "parameters": [
@@ -375,6 +394,13 @@
                 "text": "string"
               },
               "description": "The current value. Reflects; set it to choose the initial value when nothing is stored."
+            },
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Its buttons are disabled, and invoker commands are ignored."
             }
           ],
           "superclass": {
@@ -800,6 +826,12 @@
             },
             {
               "kind": "field",
+              "name": "#disabledItems",
+              "privacy": "private",
+              "default": "new WeakSet()"
+            },
+            {
+              "kind": "field",
               "name": "#shown",
               "privacy": "private",
               "type": {
@@ -869,6 +901,14 @@
               "description": "Key of the open screen, or null. Setting it navigates.",
               "type": {
                 "text": "string | null"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "disabled",
+              "description": "Mirrors the `disabled` attribute.",
+              "type": {
+                "text": "boolean"
               }
             },
             {
@@ -1083,6 +1123,13 @@
                 "text": "string"
               },
               "description": "Key of the screen currently shown (absent = the list). Reflects; set it to navigate."
+            },
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Items can't be activated, leave the tab order, and are marked aria-disabled. `push()`/`pop()` still work from script."
             },
             {
               "type": {
@@ -1371,6 +1418,14 @@
             },
             {
               "kind": "field",
+              "name": "disabled",
+              "description": "Mirrors the `disabled` attribute.",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "field",
               "name": "nonModal",
               "type": {
                 "text": "boolean"
@@ -1456,6 +1511,13 @@
               },
               "description": "Open with `show()` instead of `showModal()`.",
               "name": "non-modal"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "The shortcut does nothing. The dialog itself is unaffected.",
+              "name": "disabled"
             }
           ],
           "superclass": {
@@ -1562,8 +1624,12 @@
           "name": "InfiniteComboBox",
           "cssProperties": [
             {
-              "description": "Background of the active option (index.css).",
-              "name": "--domkit-combo-accent"
+              "description": "Background of the active option (shared token; see theme.css).",
+              "name": "--domkit-highlight"
+            },
+            {
+              "description": "Background of the popup list (shared token).",
+              "name": "--domkit-surface"
             }
           ],
           "members": [
@@ -1836,6 +1902,50 @@
                 "text": "Element | null"
               },
               "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "selectedOptions",
+              "description": "The chosen option as a list (0 or 1 items), like a select's.",
+              "type": {
+                "text": "Element[]"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "selectedIndex",
+              "description": "Index of the chosen option among the options now in the list, or -1.\nSetting it chooses that option (-1 clears the value). Script changes\ndon't fire events.",
+              "type": {
+                "text": "number"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "length",
+              "description": "Number of options now in the list.",
+              "type": {
+                "text": "number"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "item",
+              "parameters": [
+                {
+                  "name": "index",
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ],
+              "description": "The option at `index` in the list.",
+              "return": {
+                "type": {
+                  "text": "Element | null"
+                }
+              }
             },
             {
               "kind": "field",
@@ -2764,8 +2874,12 @@
               "name": "--domkit-select-size"
             },
             {
-              "description": "Background of selected options (index.css).",
-              "name": "--domkit-select-accent"
+              "description": "Background of selected options (shared token; see theme.css).",
+              "name": "--domkit-highlight"
+            },
+            {
+              "description": "Focus outline (shared token).",
+              "name": "--domkit-focus-ring"
             }
           ],
           "members": [
@@ -2840,6 +2954,15 @@
               "description": "The selected options.",
               "type": {
                 "text": "Element[]"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "selectedOption",
+              "description": "The first selected option, or null (like infinite-combo-box's).",
+              "type": {
+                "text": "Element | null"
               },
               "readonly": true
             },
@@ -3286,12 +3409,16 @@
               "name": "--domkit-tab-padding"
             },
             {
-              "description": "Color of the selected-tab indicator and focus ring (index.css).",
-              "name": "--domkit-tab-accent"
+              "description": "Selected-tab indicator (shared token; see theme.css).",
+              "name": "--domkit-accent"
             },
             {
-              "description": "Color of the line under the tab list (index.css).",
-              "name": "--domkit-tab-border"
+              "description": "Line under the tab list (shared token).",
+              "name": "--domkit-border"
+            },
+            {
+              "description": "Focus outline of tabs and panels (shared token).",
+              "name": "--domkit-focus-ring"
             }
           ],
           "members": [
@@ -3318,6 +3445,14 @@
                 "text": "boolean"
               },
               "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "disabled",
+              "description": "Mirrors the `disabled` attribute.",
+              "type": {
+                "text": "boolean"
+              }
             },
             {
               "kind": "field",
@@ -3449,6 +3584,13 @@
                 "text": "boolean"
               },
               "description": "Arrow keys move focus only; Enter/Space selects (manual activation)."
+            },
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "No tab can be selected by the user, and the tabs leave the tab order. Panels stay as they are."
             }
           ],
           "superclass": {

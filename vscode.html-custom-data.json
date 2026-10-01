@@ -36,6 +36,11 @@
         {
           "name": "value",
           "description": "The current value. Reflects; set it to choose the initial value when nothing is stored."
+        },
+        {
+          "name": "disabled",
+          "description": "Its buttons are disabled, and invoker commands are ignored.",
+          "valueSet": "v"
         }
       ],
       "references": [
@@ -126,6 +131,11 @@
           "description": "Key of the screen currently shown (absent = the list). Reflects; set it to navigate."
         },
         {
+          "name": "disabled",
+          "description": "Items can't be activated, leave the tab order, and are marked aria-disabled. `push()`/`pop()` still work from script.",
+          "valueSet": "v"
+        },
+        {
           "name": "sync-hash",
           "description": "Mirror the current screen in `location.hash`, so links and the browser's Back button work.",
           "valueSet": "v"
@@ -170,6 +180,11 @@
         {
           "name": "non-modal",
           "description": "Open with `show()` instead of `showModal()`.",
+          "valueSet": "v"
+        },
+        {
+          "name": "disabled",
+          "description": "The shortcut does nothing. The dialog itself is unaffected.",
           "valueSet": "v"
         }
       ],
@@ -338,6 +353,11 @@
         {
           "name": "manual",
           "description": "Arrow keys move focus only; Enter/Space selects (manual activation).",
+          "valueSet": "v"
+        },
+        {
+          "name": "disabled",
+          "description": "No tab can be selected by the user, and the tabs leave the tab order. Panels stay as they are.",
           "valueSet": "v"
         }
       ],

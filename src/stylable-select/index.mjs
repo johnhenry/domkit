@@ -30,7 +30,8 @@ const TYPEAHEAD_MS = 500;
  * @fires change - The user changed the selection (fired right after `input`, like a native select).
  *
  * @cssprop --domkit-select-size - Visible rows, from the `size` attribute.
- * @cssprop --domkit-select-accent - Background of selected options (index.css).
+ * @cssprop --domkit-highlight - Background of selected options (shared token; see theme.css).
+ * @cssprop --domkit-focus-ring - Focus outline (shared token).
  */
 export default class StylableSelect extends HTMLElement {
   static formAssociated = true;
@@ -107,6 +108,15 @@ export default class StylableSelect extends HTMLElement {
    */
   get selectedOptions() {
     return this.options.filter((option) => this.#isSelected(option));
+  }
+
+  /**
+   * The first selected option, or null (like infinite-combo-box's).
+   * @type {Element | null}
+   * @readonly
+   */
+  get selectedOption() {
+    return this.selectedOptions[0] ?? null;
   }
 
   /**

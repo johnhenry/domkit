@@ -109,7 +109,9 @@ the live region announces "20 more results loaded, 40 of 95". Options get
 | `required` | `required` | The form is invalid until there's a value |
 
 Other properties: `text` (the input's text), `options` (the options now
-in the list, not counting "Load more results"), `hasMore`, `loadMore()`, `selectedOption`, `input` (the inner `<input>`),
+in the list, not counting "Load more results"), and the same option API as
+`stylable-select`: `selectedOption`, `selectedOptions`, `selectedIndex`
+(get/set), `length`, and `item(i)`. Also `hasMore`, `loadMore()`, `selectedOption`, `input` (the inner `<input>`),
 `searchFunction`, `form`, `labels`, `validity`, `validationMessage`,
 `willValidate`, `checkValidity()`, `reportValidity()`,
 `setCustomValidity()`, and `focus()`.
@@ -157,4 +159,5 @@ available.") through a polite live region.
   `[data-active]` (the keyboard-active option), and
   `[aria-selected="true"]` (the chosen option). `index.css` positions the
   list under the input, using `Canvas`/`CanvasText` colors and
-  `--domkit-combo-accent`.
+  domkit's shared tokens (`--domkit-highlight`, `--domkit-surface`, …;
+  see [`theme.css`](../theme.css)).

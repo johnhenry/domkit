@@ -1,0 +1,25 @@
+/* domkit's shared design tokens. Optional: every element stylesheet
+   (`<module>/index.css`) works without this file, falling back to
+   currentColor-based defaults. Load it, or set these properties yourself,
+   to theme every domkit element at once:
+
+     <link rel="stylesheet" href="https://esm.sh/@johnhenry/domkit/theme.css" />
+
+   All colors follow the page's color-scheme via light-dark(). */
+:root {
+  /* Selection, focus, and emphasis. */
+  --domkit-accent: light-dark(#0b6bcb, #6cb6ff);
+  /* Background for selected/active items (options, menu items). */
+  --domkit-highlight: color-mix(in srgb, var(--domkit-accent) 15%, transparent);
+  /* Hairlines: list borders, tab underlines. */
+  --domkit-border: color-mix(in srgb, currentColor 25%, transparent);
+  /* Corner radius for lists, popups, and items. */
+  --domkit-radius: 0.375em;
+  /* Keyboard focus indicator, used as an `outline` value. */
+  --domkit-focus-ring: 2px solid var(--domkit-accent);
+  /* Background and text of popups (e.g. infinite-combo-box's list). */
+  --domkit-surface: Canvas;
+  --domkit-surface-text: CanvasText;
+  /* Opacity of disabled things. */
+  --domkit-disabled-opacity: 0.5;
+}

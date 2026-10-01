@@ -27,6 +27,7 @@ events all work as usual.
 |---|---|---|
 | `hotkey` | `hotkey` | One or more shortcuts, separated by spaces: `mod+k`, `ctrl+shift+p`, `?`, `mod+k /` |
 | `non-modal` | `nonModal` | Open with `show()` instead of `showModal()` |
+| `disabled` | `disabled` | The shortcut does nothing (the dialog is unaffected) |
 
 **Shortcut syntax:** modifiers joined by `+`, then a key (the
 [`KeyboardEvent.key`](https://developer.mozilla.org/docs/Web/API/KeyboardEvent/key)

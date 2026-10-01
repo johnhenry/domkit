@@ -20,6 +20,16 @@ export default class InfiniteComboBox extends HTMLElement {
   loadMore(): Promise<void>;
   /** The chosen option element, if it's in the list. */
   readonly selectedOption: Element | null;
+  /** The chosen option as a list (0 or 1 items), like a select's. */
+  readonly selectedOptions: Element[];
+  /** Index of the chosen option among the options now in the list, or -1.
+   * Setting it chooses that option (-1 clears the value). Script changes
+   * don't fire events. */
+  selectedIndex: number;
+  /** Number of options now in the list. */
+  readonly length: number;
+  /** The option at `index` in the list. */
+  item(index: number): Element | null;
   /** The inner `<input>` (generated, or the one you wrote as a child). */
   readonly input: HTMLInputElement | null;
   /** A function that produces options for a query, instead of filtering the

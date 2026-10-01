@@ -23,15 +23,17 @@ const FOCUSABLE =
  * @summary A list that drills into sub-screens and back.
  *
  * @attr {string} screen - Key of the screen currently shown (absent = the list). Reflects; set it to navigate.
+ * @attr {boolean} disabled - Items can't be activated, leave the tab order, and are marked aria-disabled. `push()`/`pop()` still work from script.
  * @attr {boolean} sync-hash - Mirror the current screen in `location.hash`, so links and the browser's Back button work.
  *
  * @fires push - A screen was shown. `event.detail` is `{ key, item }`.
  * @fires pop - The menu returned to the list. `event.detail` is `{ key, item }` for the screen that closed.
  */
 export default class DrillMenu extends HTMLElement {
-  static observedAttributes = ["screen"];
+  static observedAttributes = ["screen", "disabled"];
 
   #screenElement = null;
+  #disabledItems = new WeakSet(); // items this element marked aria-disabled
   #shown = null; // the screen element currently showing
   #invalidHandled = false;
   #hid = new Set();
@@ -62,6 +64,7 @@ export default class DrillMenu extends HTMLElement {
       true,
     );
     this.addEventListener("command", (event) => {
+      if (this.disabled) return;
       if (event.command === "--back") this.pop();
       else if (event.command === "--push") this.push(event.source?.value ?? "");
     });
@@ -94,6 +97,10 @@ export default class DrillMenu extends HTMLElement {
   }
 
   attributeChangedCallback(name, previous, current) {
+    if (name === "disabled") {
+      if (this.#screenElement) this.#rove(this.items.find((item) => item.tabIndex === 0) ?? this.items[0]);
+      return;
+    }
     if (this.#reflecting || !this.#screenElement) return;
     if (current === null) this.pop({ focus: false });
     else if (current !== previous) this.push(current, { focus: false });
@@ -121,6 +128,17 @@ export default class DrillMenu extends HTMLElement {
   set screen(key) {
     if (key === null || key === undefined || key === "") this.removeAttribute("screen");
     else this.setAttribute("screen", String(key));
+  }
+
+  /**
+   * Mirrors the `disabled` attribute.
+   * @type {boolean}
+   */
+  get disabled() {
+    return this.hasAttribute("disabled");
+  }
+  set disabled(value) {
+    this.toggleAttribute("disabled", Boolean(value));
   }
 
   /** @type {boolean} */
@@ -278,7 +296,16 @@ export default class DrillMenu extends HTMLElement {
   // Roving tabindex: one tab stop for the whole list.
   #rove(active) {
     for (const item of this.items) {
-      item.tabIndex = item === active ? 0 : -1;
+      item.tabIndex = item === active && !this.disabled ? 0 : -1; // disabled: out of the tab order
+      if (this.disabled) {
+        if (item.getAttribute("aria-disabled") !== "true") {
+          item.setAttribute("aria-disabled", "true");
+          this.#disabledItems.add(item);
+        }
+      } else if (this.#disabledItems.has(item)) {
+        item.removeAttribute("aria-disabled");
+        this.#disabledItems.delete(item);
+      }
       if (this.#hasScreen(item)) {
         const live = this.#liveScreenOf(item);
         if (live) {
@@ -296,6 +323,10 @@ export default class DrillMenu extends HTMLElement {
   }
 
   #onClick(event) {
+    if (this.disabled) {
+      if (this.#ownItem(event.target) || this.#shown?.contains(event.target)) event.preventDefault();
+      return;
+    }
     const target = event.target instanceof Element ? event.target : null;
     if (!target || target.closest("drill-menu") !== this) return;
     if (this.#shown?.contains(target) && target.closest("[data-back]")) {
@@ -312,6 +343,7 @@ export default class DrillMenu extends HTMLElement {
   }
 
   #onKeyDown(event) {
+    if (this.disabled) return;
     const target = event.target instanceof Element ? event.target : null;
     if (!target || target.closest("drill-menu") !== this || event.altKey || event.ctrlKey || event.metaKey) return;
     if (this.#shown?.contains(target)) {
@@ -325,14 +357,15 @@ export default class DrillMenu extends HTMLElement {
     if (!item || item !== target) return;
     const items = this.items.filter((candidate) => !candidate.hidden && !candidate.hasAttribute("disabled"));
     const index = items.indexOf(item);
+    const rtl = getComputedStyle(this).direction === "rtl";
     let next;
     switch (event.key) {
       case "ArrowDown":
-      case "ArrowRight":
+      case rtl ? "ArrowLeft" : "ArrowRight": // the "next" side flips in right-to-left text
         next = items[(index + 1) % items.length];
         break;
       case "ArrowUp":
-      case "ArrowLeft":
+      case rtl ? "ArrowRight" : "ArrowLeft":
         next = items[(index - 1 + items.length) % items.length];
         break;
       case "Home":

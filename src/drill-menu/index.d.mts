@@ -9,6 +9,8 @@ export default class DrillMenu extends HTMLElement {
   readonly items: Element[];
   /** Key of the open screen, or null. Setting it navigates. */
   screen: string | null;
+  /** Mirrors the `disabled` attribute. */
+  disabled: boolean;
   syncHash: boolean;
   /** Show the screen of the item with this key (its `data-key`, or its
    * position). Items without a template are leaves and can't be pushed. */

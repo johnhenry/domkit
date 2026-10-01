@@ -10,6 +10,8 @@ export default class ClassCycler extends HTMLElement {
   value: string;
   /** The elements whose class is set. */
   readonly targets: Element[];
+  /** Mirrors the `disabled` attribute. */
+  disabled: boolean;
   storageKey: string;
   /** Move to the next value (wrapping), without an event. */
   next(): void;
