@@ -1309,6 +1309,299 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/drill-menu/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A menu whose items drill into screens (each item's `<template>`), with\nroving keyboard focus, Back via Esc/`data-back`/commands, focus\nrestoration, and optional `location.hash` sync.",
+          "name": "DrillMenu",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#screenElement",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#hid",
+              "privacy": "private",
+              "default": "new Set()"
+            },
+            {
+              "kind": "field",
+              "name": "#current",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#reflecting",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#fromHashHistory",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#onHashChange",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "items",
+              "description": "The items: element children other than templates and the screen.",
+              "type": {
+                "text": "Element[]"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "screen",
+              "description": "Key of the open screen, or null. Setting it navigates.",
+              "type": {
+                "text": "string | null"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "syncHash",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "push",
+              "parameters": [
+                {
+                  "name": "key",
+                  "type": {
+                    "text": "string | number"
+                  }
+                },
+                {
+                  "name": "{ focus = true }",
+                  "default": "{}"
+                },
+                {
+                  "name": "options",
+                  "optional": true,
+                  "type": {
+                    "text": "{ focus?: boolean }"
+                  }
+                }
+              ],
+              "description": "Show the screen of the item with this key (its `data-key`, or its\nposition). Items without a template are leaves and can't be pushed.",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "pop",
+              "parameters": [
+                {
+                  "name": "{ focus = true }",
+                  "default": "{}"
+                },
+                {
+                  "name": "options",
+                  "optional": true,
+                  "type": {
+                    "text": "{ focus?: boolean }"
+                  }
+                }
+              ],
+              "description": "Return to the list, restoring focus to the item that opened the screen."
+            },
+            {
+              "kind": "field",
+              "name": "#focusAfterHashPop",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "method",
+              "name": "#close",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "{ focus, switching = false }"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#syncFromHash",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#reflect",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "key"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#templateOf",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "item"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#keyOf",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "item"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#labelOf",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "item"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#itemFor",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "key"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#ownItem",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "target"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#rove",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "active"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#onClick",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#onKeyDown",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "push",
+              "type": {
+                "text": "CustomEvent"
+              },
+              "description": "A screen was shown. `event.detail` is `{ key, item }`."
+            },
+            {
+              "name": "pop",
+              "type": {
+                "text": "CustomEvent"
+              },
+              "description": "The menu returned to the list. `event.detail` is `{ key, item }` for the screen that closed."
+            }
+          ],
+          "attributes": [
+            {
+              "name": "screen",
+              "type": {
+                "text": "string"
+              },
+              "description": "Key of the screen currently shown (absent = the list). Reflects; set it to navigate."
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Mirror the current screen in `location.hash`, so links and the browser's Back button work.",
+              "name": "sync-hash"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "drill-menu",
+          "customElement": true,
+          "summary": "A list that drills into sub-screens and back."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "DrillMenu",
+            "module": "src/drill-menu/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/event-consumer/index.mjs",
       "declarations": [
         {
@@ -2016,163 +2309,6 @@
           "declaration": {
             "name": "",
             "module": "src/matchable/query-container/index.mjs"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/menu-component/index.mjs",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "",
-          "name": "",
-          "members": [
-            {
-              "kind": "method",
-              "name": "onFocus"
-            },
-            {
-              "kind": "method",
-              "name": "onKeyDown",
-              "parameters": [
-                {
-                  "name": "event"
-                }
-              ]
-            },
-            {
-              "kind": "field",
-              "name": "#adopting",
-              "privacy": "private",
-              "type": {
-                "text": "boolean"
-              },
-              "default": "false"
-            },
-            {
-              "kind": "method",
-              "name": "slotChange",
-              "parameters": [
-                {
-                  "name": "{ target }"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "pop",
-              "parameters": [
-                {
-                  "name": "event"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "push",
-              "parameters": [
-                {
-                  "name": "id",
-                  "default": "0"
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "reset"
-            },
-            {
-              "kind": "field",
-              "name": "pushed"
-            },
-            {
-              "kind": "field",
-              "name": "kids",
-              "default": "new Set()"
-            },
-            {
-              "kind": "field",
-              "name": "kidsByKey",
-              "default": "new Map()"
-            }
-          ],
-          "events": [
-            {
-              "name": "popped",
-              "type": {
-                "text": "CustomEvent"
-              }
-            },
-            {
-              "name": "pushed",
-              "type": {
-                "text": "CustomEvent"
-              }
-            },
-            {
-              "type": {
-                "text": "Event"
-              }
-            },
-            {
-              "name": "reset",
-              "type": {
-                "text": "Event"
-              }
-            }
-          ],
-          "attributes": [
-            {
-              "name": "pushed"
-            }
-          ],
-          "superclass": {
-            "name": "HTMLElement"
-          },
-          "customElement": true
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        },
-        {
-          "kind": "function",
-          "name": ""
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "default",
-          "declaration": {
-            "name": "",
-            "module": "src/menu-component/index.mjs"
           }
         }
       ]

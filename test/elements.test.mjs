@@ -9,7 +9,7 @@ const GLOBALS = {
   "code-color": "code-color",
   "event-consumer": "event-consumer",
   "internal-timer": "internal-timer",
-  "menu-component": "menu-component",
+  "drill-menu": "drill-menu",
   "tabbed-ui": "tabbed-ui",
   "matchable/query-container": "query-container",
   "matchable/attribute-provider": "attribute-provider",

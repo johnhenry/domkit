@@ -64,8 +64,17 @@ for (const { path, declaration: d } of elements) {
   const body = members
     .map((m) => {
       if (m.kind === "method") {
+        const ident = (name) => /^[A-Za-z_$][\w$]*$/.test(name);
+        // The analyzer lists a destructured parameter twice: as written in
+        // code ("{ focus = true }") and as its JSDoc @param. Keep the JSDoc one.
         const params = (m.parameters ?? [])
-          .map((p) => `${p.name}${p.optional || p.default !== undefined ? "?" : ""}: ${tsType(p.type?.text)}`)
+          .filter((p, i, all) => ident(p.name) || !(all[i + 1] && ident(all[i + 1].name) && all[i + 1].type))
+          .map((p, i) => {
+            // Destructured parameters ("{ focus = true }") need a plain name.
+            const name = /^[A-Za-z_$][\w$]*$/.test(p.name) ? p.name : i ? `options${i}` : "options";
+            const optional = p.optional || p.default !== undefined || /=/.test(p.name);
+            return `${name}${optional ? "?" : ""}: ${tsType(p.type?.text)}`;
+          })
           .join(", ");
         return `${doc(m.description, "  ")}  ${m.name}(${params}): ${tsType(m.return?.type?.text ?? "void")};`;
       }

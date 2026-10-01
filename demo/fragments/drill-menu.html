@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
+  drill-menu { border: 1px solid #ccc; border-radius: 8px; padding: 6px; max-width: 320px; }
+  h2 { font-size: 1.1em; margin: 0 0 6px; }
+</style>
+<link rel="stylesheet" href="../../src/drill-menu/index.css" />
+<script type="module" src="../../src/drill-menu/global.mjs"></script>
+</head>
+<body>
+<p>Use the arrow keys or click. Esc or Back returns, and the URL hash follows along.</p>
+<drill-menu sync-hash>
+  <button data-key="profile">Profile
+    <template>
+      <h2>Profile</h2>
+      <label>Name <input value="Ada" /></label>
+      <p><button data-back>‹ Back</button></p>
+    </template>
+  </button>
+  <button data-key="notifications">Notifications
+    <template>
+      <h2>Notifications</h2>
+      <label><input type="checkbox" checked /> Email me</label>
+      <p><button data-back>‹ Back</button></p>
+    </template>
+  </button>
+  <a href="#help">Help (a leaf link)</a>
+</drill-menu>
+</body>
+</html>

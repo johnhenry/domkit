@@ -53,3 +53,11 @@ cycler.next();
 const theme: string = cycler.value;
 const values: string[] = cycler.values;
 void dlg, theme, values;
+
+// drill-menu.
+import "@johnhenry/domkit/drill-menu/global.mjs";
+const drill = document.querySelector("drill-menu")!;
+const opened: boolean = drill.push("profile");
+drill.pop();
+drill.screen = null;
+void opened;

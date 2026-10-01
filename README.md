@@ -52,7 +52,7 @@ Or skip installing: every path above also works as
 | [stylable-select](src/stylable-select/readme.md) | A listbox whose options you can fully style | `<stylable-select>` |
 | [combo-box](src/combo-box/readme.md) | Autocomplete input: filters its own options, or searches a URL or function as you type | `<combo-box>` |
 | [hotkey-dialog](src/hotkey-dialog/readme.md) | Toggle a native `<dialog>` with a keyboard shortcut (`mod+k`, `/`) | `<hotkey-dialog>` |
-| [menu-component](src/menu-component/readme.md) | Keyboard-navigable menu that drills into sub-screens, optionally synced to `location.hash` | `<menu-component>` |
+| [drill-menu](src/drill-menu/readme.md) | A list that drills into sub-screens and back (settings menus, mobile nav), optionally synced to the URL hash | `<drill-menu>` |
 | [code-color](src/code-color/readme.md) | Syntax highlighting for HTML, CSS, or JS | `<code-color>` |
 
 ### Responding to screen size: [`matchable/`](src/matchable/readme.md)
