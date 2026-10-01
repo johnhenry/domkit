@@ -11,8 +11,6 @@ export default class extends HTMLElement {
       this.removeChild(this.canvas);
       delete this.canvas;
     }
-
-    console.log("disconnected");
   }
   connectedCallback() {
     this.setAttribute("style", "display:contents");
@@ -37,6 +35,5 @@ export default class extends HTMLElement {
       draw(detail);
     };
     this.addEventListener("render", this.draw);
-    console.log("connected");
   }
 }

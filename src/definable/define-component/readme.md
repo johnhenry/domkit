@@ -1,22 +1,20 @@
-# Define Component
+# define-component
 
-Dynamically loads a module by URL and registers its export as a custom
-element — the generic "define a component from a URL" pattern referenced
-by [polyfill-window](../polyfill-window/readme.md)'s
-own demo, and by [`matchable`](../../matchable/query-container/readme.md)'s
-`query-container` and `animate-paths`, both of which
-bootstrap via this exact pattern.
+Register a custom element from HTML: name a tag and a module URL, and
+`<define-component>` imports the module and calls
+`customElements.define()` with its export. It's useful for registering
+components without writing a script, or for deferring a component's code
+until the page uses it. Part of [definable](../readme.md).
 
 Compare [define-component-by-content](../define-component-by-content/readme.md),
-which defines a component from an inline HTML string instead of a separate
-module file.
+which builds the element from an inline HTML string instead of a module.
 
 ## Attributes
 
 | Attribute | Description |
 |---|---|
 | `name` | Tag name to register (required) |
-| `src` | URL of the module to import, resolved relative to the current document (required) |
+| `src` | URL of the module to import (required). A relative URL resolves against the **page's** URL, not against this module's |
 | `import` | Named export to use as the element class. Defaults to the module's default export |
 | `force` | If present and `name` is already registered, logs a `console.warn` explaining why instead of silently doing nothing. **Cannot actually re-register the tag** — `customElements.define()` has no browser API to redefine an already-registered name, so the existing registration is always left unchanged either way; `force` only changes whether that's silent or warned about. |
 

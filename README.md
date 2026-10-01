@@ -4,71 +4,22 @@
 [![CI](https://github.com/johnhenry/domkit/actions/workflows/ci.yml/badge.svg)](https://github.com/johnhenry/domkit/actions/workflows/ci.yml)
 [![license](https://img.shields.io/npm/l/%40johnhenry%2Fdomkit.svg)](LICENSE)
 
-Full documentation: [opensource.johnhenry.me/domkit](https://opensource.johnhenry.me/domkit/)
-
-> **Provenance:** extracted from [`johnhenry/lib`](https://github.com/johnhenry/lib)'s
-> `js/` directory, where these modules lived as individually-versioned,
-> hot-linked source files (`js/<module>/0.0.0/...`). Consolidated into one
-> real npm package after an audit found real duplication, drift, and
-> lifecycle bugs across the cluster — see `CHANGELOG.md` for the full
-> history. `lib` itself is unaffected: its own copies of these modules keep
-> existing at their original published URLs per its own no-deletion policy.
-> Six foundation modules that overlapped with the already-published
-> [`@johnhenry/domable`](https://github.com/johnhenry/domable) (`simple-element`,
-> `create-element`, `text-to-DOM-nodes`, `DOM-nodes-to-text`, `react-to-dom`,
-> `dom-to-React`) were dropped from this package in `0.0.1` in favor of
-> depending on domable directly — domable is genuinely independent (real TS
-> types, jsdom tests, published before this cluster existed) and stays its
-> own package. In `0.0.3`, four more *coherent clusters* were split out
-> into their own standalone packages the same way: `definable`,
-> `respondable` (renamed `matchable` on the way back in), `cyclable`, and
-> `hydratable`. In `0.0.4`, those four came back — not as separate npm
-> packages, but as namespaced subpaths under this one package
-> (`src/definable/`, `src/matchable/`, `src/cyclable/`, `src/hydratable/`),
-> after living as standalone repos/packages made the operational cost
-> (four repos, four CI/publish setups, four sets of secrets, four release
-> cadences to coordinate) outweigh the benefit for clusters this small. The
-> *grouping itself* — recognizing these as real families instead of an
-> undifferentiated pile — was still worth doing; it just didn't need to be
-> four separate npm identities. The four old repos are archived, and the
-> four old npm packages are deprecated, both pointing back here — see
-> `## Family` below for the full account. A naming pass (`0.0.7`) then made
-> the `.component` suffix convention consistent everywhere; a follow-up
-> pass (`0.0.8`) reversed course and dropped the `.component`/`.element`
-> suffix from every module directory entirely (registered custom-element
-> tag names were never dotted and are unaffected either way), keeping a
-> hyphen in every resulting name — `canvasrenderer` → `canvas-renderer`,
-> `pixelshader` → `pixel-shader`, and `graph`/`menu` (no natural word
-> break to hyphenate) kept `-component` as a literal suffix word instead
-> of a dot, landing `menu.component` back on `menu-component` — this time
-> to match its own tag name, not to fix a stutter.
-
-A toolkit of small, independent DOM/HTML-component modules — custom
-elements, shadow-DOM/component-authoring primitives, and DOM⇄React
-interop helpers. Each module is its own directory under `src/`, importable
-individually:
-
-```js
-import { shadowOpen } from "@johnhenry/domable/simple-element";
-```
-
-or, in a browser with no build step, via a CDN:
+Small custom elements and DOM utilities that work straight from a CDN,
+with no build step and no framework. Every module is independent, so you
+load only what you use.
 
 ```html
-<script
-  type="module"
-  src="https://esm.sh/@johnhenry/domkit/tabbed-ui/global.mjs"
-></script>
+<script type="module" src="https://esm.sh/@johnhenry/domkit/tabbed-ui/global.mjs"></script>
+
+<tabbed-ui>
+  <div slot="tab-bar"><button>One</button><button>Two</button></div>
+  <div>First panel</div>
+  <div>Second panel</div>
+</tabbed-ui>
 ```
 
-There is no single root import — this is a toolkit of ~40 independent
-things, not one coherent API. Every module's own `readme.md` (linked
-below) documents its real usage.
-
-See [`demo/`](demo/) for a live gallery running most of these modules at
-once (`npx http-server .` from the repo root, then visit `/demo/` — module
-imports don't resolve over `file://`; `npx serve .` also works but needs
-`cleanUrls: false` in `serve.json`, see AGENTS.md).
+Full documentation: [opensource.johnhenry.me/domkit](https://opensource.johnhenry.me/domkit/)
+· Live gallery: [`demo/`](demo/) (see [Development](#development))
 
 ## Install
 
@@ -76,121 +27,174 @@ imports don't resolve over `file://`; `npx serve .` also works but needs
 npm install @johnhenry/domkit
 ```
 
-## Modules
+```js
+import "@johnhenry/domkit/tabbed-ui/global.mjs"; // registers <tabbed-ui>
+import TabbedUI from "@johnhenry/domkit/tabbed-ui"; // or just the class
+import liveQuerySelector from "@johnhenry/domkit/live-query-selector";
+```
 
-### Foundation — component-authoring primitives
+Or skip installing: every path above also works as
+`https://esm.sh/@johnhenry/domkit/<path>`.
 
-`simple-element` (build custom-element classes from HTML template strings),
-`create-element` (JSX-less `createElement` + per-tag shorthands),
-`text-to-DOM-nodes`/`DOM-nodes-to-text` (HTML string ⇄ real DOM nodes) all
-now live in [`@johnhenry/domable`](https://github.com/johnhenry/domable) — a
-real dependency of this package — rather than as domkit modules. See
-`## Family` below.
+## Find what you need
 
-| Module | Description |
+### Interface pieces
+
+| Module | What it's for | `global.mjs` registers |
+|---|---|---|
+| [tabbed-ui](src/tabbed-ui/readme.md) | Tabs and panels from plain children, matched by position | `<tabbed-ui>` |
+| [stylable-select](src/stylable-select/readme.md) | A listbox whose options you can fully style | `<stylable-select>` |
+| [infinite-combo](src/infinite-combo/readme.md) | Search-as-you-type combo box, with options from your async function | `<infinite-combo>` |
+| [hotkey-modal-dialog](src/hotkey-modal-dialog/readme.md) | A `<dialog>` toggled by a keyboard shortcut ¹ | `<dialog is="hotkey-modal">` |
+| [menu-component](src/menu-component/readme.md) | Keyboard-navigable menu that drills into sub-screens, optionally synced to `location.hash` | `<menu-component>` |
+| [code-color](src/code-color/readme.md) | Syntax highlighting for HTML, CSS, or JS | `<code-color>` |
+
+### Responding to screen size: [`matchable/`](src/matchable/readme.md)
+
+| Module | What it's for | `global.mjs` registers |
+|---|---|---|
+| [query-container](src/matchable/query-container/readme.md) | Change the element that wraps content (`ul` → `ol`, …) by media query | `<query-container>` |
+| [attribute-provider](src/matchable/attribute-provider/readme.md) | Change children's classes, styles, and attributes by media query | `<attribute-provider>` |
+
+### Remembering a user's choice (e.g. a theme toggle): [`cyclable/`](src/cyclable/readme.md)
+
+| Module | What it's for | `global.mjs` registers |
+|---|---|---|
+| [class-cycler](src/cyclable/class-cycler/readme.md) | A global function that cycles a persisted class | `<class-cycler>` |
+| [class-cycler-button](src/cyclable/class-cycler-button/readme.md) | A button that does the same on click ¹ | `<button is="class-cycler-button">` |
+| [localstorage-class-cycler](src/cyclable/localstorage-class-cycler/readme.md) | The same, as a JS function | |
+| [localstorage-cycler](src/cyclable/localstorage-cycler/readme.md) | The engine: a persisted value with `next`/`previous`/`peek`/`set` | |
+
+### Wiring things up from markup instead of scripts: [`definable/`](src/definable/readme.md)
+
+| Module | What it's for | `global.mjs` registers |
+|---|---|---|
+| [define-component](src/definable/define-component/readme.md) | Register a custom element from a module URL | `<define-component>` |
+| [define-component-by-content](src/definable/define-component-by-content/readme.md) | Register a markup-only custom element from an HTML string | `<define-component-by-content>` |
+| [polyfill-window](src/definable/polyfill-window/readme.md) | Load a module onto `window` | `<polyfill-window>` |
+| [until-window-load](src/definable/until-window-load/readme.md) | Hide content until the page has loaded | (strips the `until-window-load` class) |
+| [definetag](src/definable/definetag/readme.md) | Curried `customElements.define` | |
+| [event-consumer](src/event-consumer/readme.md) | Handle (and by default stop) events with inline code | `<event-consumer>` |
+
+### Timing, collections, and small helpers
+
+| Module | What it's for | `global.mjs` registers |
+|---|---|---|
+| [delay](src/delay/readme.md) | `await delay(ms)` | |
+| [frame-delay](src/frame-delay/readme.md) | `await frameDelay(fps)`: an animation-frame-paced wait | |
+| [internal-timer](src/internal-timer/readme.md) | An element that emits `tick` events at a fixed rate, with pause/resume | `<internal-timer>` |
+| [live-query-selector](src/live-query-selector/readme.md) | `querySelectorAll` that stays current | |
+| [create-mutable-nodelist](src/create-mutable-nodelist/readme.md) | A real `NodeList` you can push to and pop from | |
+| [clamp](src/clamp/readme.md) | `clamp(min, max)(value)` | |
+
+### Bootstrapping an app: [`hydratable/`](src/hydratable/readme.md)
+
+| Module | What it's for |
 |---|---|
-| [create-mutable-nodelist](src/create-mutable-nodelist/readme.md) | A push/pop/shift/unshift-able `NodeList`-like collection |
-| [live-query-selector](src/live-query-selector/readme.md) | An auto-updating live collection matching a selector |
+| [hydratable](src/hydratable/readme.md) | A run-once async `hydrate()` (with `dehydrate()` to undo it) for any object |
+| [hydratable/mounts](src/hydratable/mounts/readme.md) | Find or create the element at the start/end of `<body>` to render an app into |
 
-### Defining custom elements — `src/definable/`
+### Experimental: [`experimental/`](src/experimental/readme.md)
 
-Four related ways to get behavior onto a page declaratively, from four
-different kinds of source, plus the primitive they're built on.
-`chernoff-face`, `xy-grapher`, and `animate-paths` (below) use
-`definetag`/`define-component` to register themselves.
+Sketches without the stable modules' guarantees. Their APIs can change in
+any release. A composable canvas pixel pipeline
+([imagedata-emitter](src/experimental/imagedata-emitter/readme.md) →
+[pixel-shader](src/experimental/pixel-shader/readme.md) →
+[canvas-renderer](src/experimental/canvas-renderer/readme.md)),
+[animate-paths](src/experimental/animate-paths/readme.md) (self-drawing
+SVG), [xy-grapher](src/experimental/xy-grapher/readme.md) (CSS scatter
+plots), and [chernoff-face](src/experimental/chernoff-face/readme.md).
 
-| Module | Description |
-|---|---|
-| [definetag](src/definable/definetag/readme.md) | Curried `customElements.define` wrapper |
-| [define-component](src/definable/define-component/readme.md) | Load a module by URL, register its export as a custom element |
-| [define-component-by-content](src/definable/define-component-by-content/readme.md) | Define a custom element from an inline HTML string attribute |
-| [polyfill-window](src/definable/polyfill-window/readme.md) | Load a module by URL, assign its export to a global (not a custom-element registrar) |
-| [until-window-load](src/definable/until-window-load/readme.md) | Remove a "hidden until loaded" class once `window` fires `load` |
+### Deprecated
 
-### Responsive containers — `src/matchable/`
+[shadow-dom](src/shadow-dom/readme.md) is an alias for
+[`@johnhenry/domable`](https://github.com/johnhenry/domable)'s
+`` shadowOpen`<slot />` ``. Use domable directly.
 
-Two duals of the same idea — respond to a media query by swapping vs. by
-styling — sharing a pipe-delimited query grammar and a real `parsel-js`
-dependency.
+¹ A *customized built-in* (`is="…"`). These work in Chromium and Firefox
+but **not Safari**, unless you add a polyfill such as
+[`@ungap/custom-elements`](https://github.com/ungap/custom-elements).
 
-| Module | Description |
-|---|---|
-| [query-container](src/matchable/query-container/readme.md) | Swap the rendered child element by media query |
-| [attribute-provider](src/matchable/attribute-provider/readme.md) | Apply classes/styles/attributes to children by media query |
+## How the package is laid out
 
-### Shadow DOM / slots
+- **One directory per module**, under `src/`. Related modules are grouped
+  one level deeper (`matchable/`, `cyclable/`, `definable/`,
+  `hydratable/`, `experimental/`), and the group is part of the import
+  path.
+- **`@johnhenry/domkit/<module>`** imports the module's `index.mjs`: an
+  element class (unregistered) or a function. Any file inside can be
+  imported by its full path, e.g. `@johnhenry/domkit/tabbed-ui/global.mjs`.
+- **`global.mjs`** registers the element under the tag in the tables
+  above. Import the class instead if you want a different tag name.
+- **No root import.** `import "@johnhenry/domkit"` doesn't exist, on
+  purpose. These modules share no state or API, and a barrel would make
+  every page download all of them, especially from a CDN where nothing
+  tree-shakes.
+- **Source is what ships.** There's no build step: modern JS, ES modules
+  only.
 
-| Module | Description |
-|---|---|
-| [shadow-dom](src/shadow-dom/readme.md) | Deprecated alias for domable's `simple-element` `shadowOpen` |
-| [internal-timer](src/internal-timer/readme.md) | A pause/frame-timer element (shadow-DOM+slot plumbing) |
+### Using the raw source without a CDN or bundler
 
-### Widgets
+Three modules import packages by bare name: `infinite-combo`,
+`shadow-dom`, and `definable/define-component-by-content` import
+[`@johnhenry/domable`](https://github.com/johnhenry/domable), and
+`matchable/query-container` imports `parsel-js`. esm.sh and bundlers
+resolve those for you. To serve `src/` directly to a browser, add an
+[import map](https://developer.mozilla.org/docs/Web/HTML/Element/script/type/importmap)
+like the one in [`src/infinite-combo/demo.htm`](src/infinite-combo/demo.htm).
 
-The localStorage-backed class-cycler family lives under `src/cyclable/` —
-one engine (`localstorage-cycler`), a class-applying wrapper
-(`localstorage-class-cycler`), and two ready-made custom elements built on
-it.
+### Content-Security-Policy
 
-| Module | Description |
-|---|---|
-| [cyclable/class-cycler](src/cyclable/class-cycler/readme.md) | Global-function class cycler |
-| [cyclable/class-cycler-button](src/cyclable/class-cycler-button/readme.md) | Self-contained button variant |
-| [cyclable/localstorage-class-cycler](src/cyclable/localstorage-class-cycler/readme.md) | Applies a cycled value as a class on a given element |
-| [cyclable/localstorage-cycler](src/cyclable/localstorage-cycler/readme.md) | The base engine: cycle a localStorage value through a fixed list |
-| [hotkey-modal-dialog](src/hotkey-modal-dialog/readme.md) | A `<dialog>` opened/closed by a keyboard shortcut |
-| [menu-component](src/menu-component/readme.md) | Keyboard-navigable stateful menu/wizard, with a `hash.mjs` location-hash companion (registers the `menu-component` tag) |
-| [stylable-select](src/stylable-select/readme.md) | A `<select>`-like element whose options can actually be styled |
-| [tabbed-ui](src/tabbed-ui/readme.md) | Tabs/panels element |
-| [infinite-combo](src/infinite-combo/readme.md) | A combo-box that loads more options on demand |
-| [event-consumer](src/event-consumer/readme.md) | Declaratively wire event listeners without JavaScript setup |
-| [code-color](src/code-color/readme.md) | Syntax-highlight contents, re-highlighting on change |
-| [graph-component](src/graph-component/readme.md) | Unimplemented placeholder |
+`event-consumer` and `infinite-combo` compile their inline-code attributes
+with `new Function`, so they need `unsafe-eval` under a strict CSP. No
+other stable module evaluates strings.
 
-### Visual/canvas experiments
+## Stability
 
-`canvas-renderer`, `animate-paths`, `pixel-shader`,
-`imagedata-emitter`, `xy-grapher`, `chernoff-face` —
-demo/experiment-grade custom elements (canvas rendering, SVG path
-animation, pixel shaders, generative graphics). No individual READMEs yet;
-see each module's own `demo.html`/`demo.htm`.
+Everything outside `experimental/` is meant to be relied on: documented,
+covered by the test suite, and changed only with a `CHANGELOG.md` entry.
+The package is still pre-1.0, so a minor-looking version bump can contain
+breaking changes (renames have happened). Read the changelog when
+upgrading.
 
-### DOM ⇄ React interop — `src/hydratable/`
+## Development
 
-`domToReact`/`reactToDom` (real DOM ⇄ React-element-shaped plain objects)
-live in [`@johnhenry/domable`](https://github.com/johnhenry/domable), not
-here — see `## Family` below.
+```bash
+npm test
+```
 
-| Module | Description |
-|---|---|
-| [hydratable/mounts](src/hydratable/mounts/readme.md) | Framework-agnostic DOM mount-point helpers (Solid/Vue/React) |
-| [hydratable](src/hydratable/readme.md) | A generic async hydration mixin |
+This runs, in order: a parse check of every module
+(`scripts/check-syntax.mjs`), a reference check that every relative
+import, Markdown link, and documented `@johnhenry/domkit/…` path resolves
+(`scripts/check-links.mjs`), ESLint's `no-undef` rule (the one rule
+configured, see `eslint.config.mjs`), and the behavioral tests in `test/`
+under [happy-dom](https://github.com/capricorn86/happy-dom).
 
-### Support utilities
+The live gallery runs most modules at once, each in its own iframe:
 
-[`clamp`](src/clamp/readme.md), [`delay`](src/delay/readme.md),
-[`frame-delay`](src/frame-delay/readme.md) — small helpers a handful of
-the modules above depend on.
+```bash
+npx http-server . -c-1
+```
 
-## Family
+then open `http://localhost:8080/demo/`. Module imports don't resolve over
+`file://`. Each module directory also has its own `demo.html`/`demo.htm`.
+See [`AGENTS.md`](AGENTS.md) for the full verification loop and the
+repo's known gotchas.
 
-- [`@johnhenry/domable`](https://github.com/johnhenry/domable) — the DOM
-  ⇄ text ⇄ React conversion primitives (`simple-element`, `create-element`,
-  `text-to-dom`/`dom-to-text`, `react-to-dom`/`dom-to-react`) that this
-  package builds custom elements and interop helpers on top of. domkit
-  depends on domable, not the other way around — domable is genuinely
-  independent (real TS types, jsdom tests, its own consumers outside this
-  cluster) and stays its own package.
-- **`definable`, `matchable`, `cyclable`, `hydratable`** — briefly existed
-  as four separate npm packages (`@johnhenry/definable`,
-  `@johnhenry/respondable`, `@johnhenry/cyclable`, `@johnhenry/hydratable`;
-  `respondable` renamed `matchable` on the way back in — a better fit than
-  the earlier "responsive-design"-adjacent name). As of `0.0.4` they're
-  namespaced subpaths of this package instead (`src/definable/`,
-  `src/matchable/`, `src/cyclable/`, `src/hydratable/`) — the four old
-  GitHub repos are archived and the four old npm packages are `npm
-  deprecate`d, both pointing back here. Import as
-  `@johnhenry/domkit/definable/<module>/...`, etc.
+## Related
+
+- [`@johnhenry/domable`](https://github.com/johnhenry/domable) converts
+  between HTML text, DOM nodes, and React-element-shaped objects, and
+  builds custom-element classes from HTML strings. domkit depends on it.
+
+## History
+
+domkit was extracted from [`johnhenry/lib`](https://github.com/johnhenry/lib),
+a personal collection of hot-linked modules, in September 2026, and
+consolidated along the way: duplicates of domable were dropped, related
+modules were grouped into families, and a series of bugs were fixed (most
+of them found by actually running the modules). [`CHANGELOG.md`](CHANGELOG.md)
+has the whole story.
 
 ## License
 

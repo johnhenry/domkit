@@ -1,10 +1,9 @@
-# Until Window Load
+# until-window-load
 
-Declarative import to remove loading classes once the window has loaded.
-
-Useful to avoid content flash for custom components that arrange content
-after loading. Used by [polyfill-window](../polyfill-window/readme.md)'s
-own demo.
+Hide content until the page has fully loaded, to avoid a flash of
+unarranged content while custom elements upgrade: it removes a class from
+every element that has it once `window` fires `load`, or immediately if
+that has already happened. Part of [definable](../readme.md).
 
 ## Usage
 

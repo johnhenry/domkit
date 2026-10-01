@@ -9,9 +9,12 @@ export default class extends globalThis.HTMLElement {
   }
   reset() {
     const global = this.getAttribute("global");
-    if (global) {
+    const storageKey = this.getAttribute("storage-key");
+    // Wait until connected and fully configured: attributes set one at a
+    // time (createElement + setAttribute) used to throw "key is required"
+    // from the cycler the moment `global` was set before `storage-key`.
+    if (global && storageKey && this.isConnected) {
       const selector = this.getAttribute("selector") || DEFAULT_SELECTOR;
-      const storageKey = this.getAttribute("storage-key");
       const classes = (this.getAttribute("classes") || "").split(",");
       globalThis[global] = classCycler(
         document.querySelector(selector),

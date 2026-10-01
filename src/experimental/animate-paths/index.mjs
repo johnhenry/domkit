@@ -29,16 +29,10 @@ export default class extends HTMLElement {
     this.slotted.addEventListener("slotchange", this.slotChange);
   }
   static get observedAttributes() {
-    onclick = "";
-    return [
-      "path-onclick",
-      "frac",
-      "stops",
-      "intervals",
-      "animate",
-      "path-onclick",
-      "child-class",
-    ];
+    // (This getter used to also run a stray `onclick = "";` -- a bare
+    // assignment to window.onclick, clobbering any page-level click
+    // handler the moment the element was defined.)
+    return ["path-onclick", "frac", "stops", "intervals", "animate", "child-class"];
   }
   attributeChangedCallback(name, old, current) {
     switch (name) {

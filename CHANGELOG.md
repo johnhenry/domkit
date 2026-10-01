@@ -2,6 +2,146 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.9] - 2026-09-30
+
+A shape-and-documentation pass. The modules were reorganized only where the
+directory structure itself was misleading. Every README was rewritten
+against the code it documents, and a real test suite was added. Writing
+accurate docs meant actually running each module, and that turned up more
+bugs than any previous pass, most of them in modules the old docs
+described as working.
+
+### Breaking
+
+- **The six demo-grade modules moved to `src/experimental/`**:
+  `animate-paths`, `canvas-renderer`, `chernoff-face`, `imagedata-emitter`,
+  `pixel-shader`, `xy-grapher`. Import them as
+  `@johnhenry/domkit/experimental/<module>/…`. A README heading was the
+  only signal before. Now the import path itself says "no stability
+  promise", and `src/experimental/readme.md` spells out what that means.
+- **Removed `graph-component`**: an empty `HTMLElement` subclass whose
+  `demo.mjs` couldn't run (an infinite loop and nonexistent DOM APIs).
+- **Removed `animate-paths/old.mjs`**: an earlier single-path variant,
+  referenced only by a demo line that never actually used it.
+- Behavior changes, all fixing documented-but-broken behavior:
+  `stylable-select` now treats plain `<option>` children as options
+  (always documented, previously ignored). `code-color` highlights its
+  initial content (previously only later changes). `event-consumer` reads
+  `bubbles` per event (previously only when `onevent` was set).
+  `class-cycler` waits until both `global` and `storage-key` are set and
+  it's connected (previously it threw "key is required" if `global` came
+  first).
+
+### Added
+
+- **Bare module imports**: `@johnhenry/domkit/<module>` now resolves to
+  that module's `index.mjs` (`exports` gained `"./*": "./src/*/index.mjs"`,
+  with `./*.mjs` and `./*.css` keeping full-path imports working).
+  `index.mjs` added to `experimental/chernoff-face` and
+  `experimental/xy-grapher` so every module has one, except
+  `hydratable/mounts`, whose files act at import time.
+- **`global.mjs` for every stable element**: `query-container`,
+  `attribute-provider`, `internal-timer`, `event-consumer`, and
+  `menu-component` previously made you register them yourself.
+- **`code-color`'s `mode` attribute** (`html`/`css`/`js`), passing through
+  to the highlighter's existing modes.
+- **A test suite**: `node:test` + happy-dom, 32 tests in `test/` covering
+  every stable module, including a regression test for each bug below
+  that happy-dom can express. (The two customized built-ins can't run
+  under happy-dom; those tests are kept but skipped with the reason, and
+  were verified in Chromium.)
+- **`scripts/check-links.mjs`**: fails if any relative import, Markdown
+  link, or documented `@johnhenry/domkit/…` path doesn't resolve through
+  the real `exports` map. It immediately found stale references in five
+  READMEs.
+- **ESLint, one rule (`no-undef`)**: undeclared variables have shipped in
+  this code more than any other bug (see `AGENTS.md`).
+- `npm test` now runs all of the above. CI already runs `npm test`.
+- READMEs for the four families (`definable/`, `matchable/`, `cyclable/`,
+  `hydratable/`), for `experimental/`, and for all six experimental
+  modules. Every module now has one.
+- A working demo for the `imagedata-emitter → pixel-shader →
+  canvas-renderer` pipeline, which never had one.
+
+### Fixed
+
+Found by running every module in a real browser while documenting it,
+then pinned with tests:
+
+- `infinite-combo`: **every search threw** (`Spread syntax requires
+  ...iterable`). domable's `textToDom` returns a `DocumentFragment`, not
+  the iterable `NodeList` that `lib`'s original returned. Broken since
+  0.0.1. The `loading` attribute also threw a `ReferenceError`
+  (`loadStr`), and its placeholder was never replaced by the results.
+- `code-color`: never highlighted static content, and the vendored W3Schools
+  highlighter threw `ReferenceError`s (`cc`, `result`: undeclared
+  variables that only worked in the sloppy-mode original) on any JS
+  containing `.`, or any CSS. `//` comments ran to the end of the block
+  inside `<pre>` (they only ended at `<br>`).
+- `menu-component/hash.mjs`: **threw on every push and pop**. It used
+  `event.path`, which Chrome removed in v109. Now uses `composedPath()`.
+  Separately, calling `attach()` after the menu had rendered made the
+  first pop re-push the screen being closed.
+- `create-mutable-nodelist`: `unshift()` on a non-empty list never
+  returned. It copied forward through a real `Array`, growing `length`
+  with every write, until `RangeError: Invalid array length`. The
+  mutators now delegate to `Array.prototype`.
+- `query-container`: when the default wrapper applied from the start, the
+  children stayed *outside* it (visible in its own demo: `li li li ul()`).
+  Selector values containing `]` (`ol[data-x=1].wide`) were split at the
+  wrong bracket. The grammar's match is now non-greedy.
+- `query-container` and `attribute-provider`: stopped responding to the
+  viewport after being moved (disconnect cleared their media-query
+  listeners, and reconnect never restored them). Both now use
+  `addEventListener`, re-attach on connect, and release old listeners
+  before re-parsing.
+- `internal-timer`: reconnecting appended another `<slot>` and another
+  `pause` listener, and moving it ran two tick loops at once. Each loop now
+  retires when a newer one starts.
+- `stylable-select`: plain `<option>` children were ignored, so the
+  README's own example selected nothing. Its `demo.htm` never used
+  `stylable-select` at all: it used an unregistered `<select-panel>`.
+  Replaced with a real demo.
+- `experimental/xy-grapher`: rendered nothing, ever. Its output sat behind
+  a shadow root holding only a hidden `<slot>`, and its own container was
+  then picked up as the point template. The previously documented cause
+  (an undefined `genSVG()` that "throws") was wrong: that was dead code,
+  never called, and has been removed. Now plots `[x, y]` pairs and
+  `{ x, y, …attrs }` objects.
+- `experimental/animate-paths`: its demo never registered
+  `<animate-paths>`, so the gallery showed a static SVG. Its
+  `observedAttributes` getter also assigned `window.onclick = ""`,
+  clobbering any page-level click handler.
+- `experimental/pixel-shader`'s `grid`: an operator-precedence slip
+  (`y + (1 % h)` for `(y + 1) % h`) meant it drew only vertical lines.
+- `experimental/chernoff-face`: an unused `clamp` import and a line of
+  stray JS text inside the generated SVG.
+- `experimental/canvas-renderer`: removed leftover `console.log`s.
+
+### Documentation
+
+- Root `README.md` reorganized around what a reader is trying to do
+  ("Interface pieces", "Responding to screen size", "Remembering a user's
+  choice", …) instead of extraction history. Each module now shows the
+  tag its `global.mjs` registers, and the README gains sections on
+  package layout, why there's no root import, using raw source with
+  import maps, CSP, Safari and customized built-ins, stability, and
+  development. The long provenance note became a short "History"
+  paragraph pointing here.
+- Every module README rewritten or corrected against its code. Among the
+  fixes: wrong grammar in `query-container`'s example (`;` for `|`), stale
+  CDN paths in both `class-cycler` READMEs, `infinite-combo` describing
+  scroll-to-load-more (it doesn't) and function bodies (they're
+  expressions), placeholder import paths (`"."`, `"?"`, `"mounts/…"`), a
+  React example importing `createRoot` from `react`, and undocumented
+  attributes, events, and parts across the widgets.
+- `demo/index.html` regrouped to match the README, the
+  `graph-component` card removed, and the three-module pixel pipeline
+  added. All 26 frames load with every element defined.
+- `AGENTS.md` rewritten for the new layout and loop, with new gotchas
+  (domable's return shape, `Event.path`, Safari and customized built-ins,
+  where happy-dom and hidden tabs differ from a visible browser).
+
 ## [0.0.8] - 2026-09-30
 
 A second naming pass, reversing the direction of `0.0.7`: dropped the

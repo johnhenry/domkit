@@ -1,18 +1,16 @@
-# Polyfill Window
+# polyfill-window
 
-Dynamically imports a module and assigns its export to a key on
-`globalThis` -- for loading a global polyfill declaratively from HTML,
-rather than registering a custom element (compare
-[define-component](../define-component/readme.md),
-which this module's own `demo.html` uses to bootstrap itself and which
-solves the related "register a custom element from a URL" problem).
+Load a module from HTML and assign its export to a global, e.g. a
+polyfill or a library that expects to live on `window`. It's the
+`globalThis` counterpart to [define-component](../define-component/readme.md),
+which registers a custom element instead. Part of [definable](../readme.md).
 
 ## Attributes
 
 | Attribute | Description |
 |---|---|
 | `name` | Global key to assign the import to (required) |
-| `src` | URL of the module to import, resolved relative to the current document (required) |
+| `src` | URL of the module to import (required). A relative URL resolves against the page's URL |
 | `import` | Named export to assign. Defaults to the module's default export |
 | `force` | If present, re-imports and re-assigns even if `globalThis[name]` is already set |
 | `no-import` | If present, the module is imported (for its side effects) but nothing is assigned to `globalThis` |
@@ -22,9 +20,15 @@ solves the related "register a custom element from a URL" problem).
 ```html
 <script
   type="module"
-  src="https://esm.sh/@johnhenry/domkit/definable/define-component/global.mjs"
+  src="https://esm.sh/@johnhenry/domkit/definable/polyfill-window/global.mjs"
 ></script>
-<define-component name="polyfill-window" src="./index.mjs"></define-component>
 
-<polyfill-window name="shout" src="./shout-polyfill.mjs"></polyfill-window>
+<!-- window.shout = (await import("./shout.mjs")).default -->
+<polyfill-window name="shout" src="./shout.mjs"></polyfill-window>
+
+<!-- import only for side effects; assign nothing -->
+<polyfill-window name="BroadcastChannel" src="./broadcast-channel-polyfill.mjs" no-import></polyfill-window>
 ```
+
+Relative `src` URLs resolve against the page's URL. The import is
+asynchronous, so code that uses the global has to wait for it to appear.

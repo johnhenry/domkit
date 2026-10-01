@@ -12,10 +12,8 @@
   small { color: #666; }
 </style>
 <script type="module">
-  import MenuComponent from "../../src/menu-component/index.mjs";
+  import "../../src/menu-component/global.mjs";
   import { attach } from "../../src/menu-component/hash.mjs";
-
-  customElements.define("menu-component", MenuComponent);
 
   window.addEventListener("DOMContentLoaded", () => {
     attach(document.getElementById("menu"));

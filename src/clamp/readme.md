@@ -1,11 +1,11 @@
-# Clamp
+# clamp
 
 A curried numeric clamp: restricts a value to the `[min, max]` range.
 
 ## Usage
 
 ```javascript
-import clamp from "./index.mjs";
+import clamp from "@johnhenry/domkit/clamp";
 
 const clampToPercent = clamp(0, 100);
 clampToPercent(150); // 100

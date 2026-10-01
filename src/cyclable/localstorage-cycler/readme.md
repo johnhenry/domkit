@@ -1,12 +1,16 @@
-# LocalStorage Cycler
+# localstorage-cycler
 
-Cycle local storage values through a given list of strings
+The engine under [cyclable](../readme.md): a value that steps through a
+fixed list and persists in `localStorage`, with an optional change
+handler. It has no DOM dependency beyond `localStorage`.
 
 ## Usage
 
-```javascript
-import localStorageCycler from "?";
+```js
+import localStorageCycler from "@johnhenry/domkit/cyclable/localstorage-cycler";
+
 const updateLocalStorage = localStorageCycler("my-key", "a", "b", "c");
+updateLocalStorage(); // → { value: "b", key: "my-key", index: 1, result: undefined }
 ```
 
 The call to "localStorageCycler"
@@ -22,8 +26,8 @@ The "updateLocalStorage" returns an object with the following keys:
 
 - key - the associated local storage key
 - value - the current value of the local storage item
-- index - the current index of the local storage item
-- result - the reuslt of an handler, if passed (see below)
+- index - the current index of the local storage item. (Known quirk, kept for compatibility: on a wrap-around, this is the out-of-range position, `values.length` going forward or `-1` going back, not the index of the value actually stored.)
+- result - the result of the handler, if passed (see below)
 
 ## Change Handler
 
@@ -43,7 +47,7 @@ const updateLocalStorage = localStorageCycler(
 );
 ```
 
-The handler takes four parametes:
+The handler receives one object with four properties:
 
 - the same, "key", "value", and "index" parameters
   returned from calling "updateLocalStorage"

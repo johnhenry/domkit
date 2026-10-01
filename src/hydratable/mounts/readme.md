@@ -1,10 +1,16 @@
-# Mounts
+# mounts
 
-Using the body or its direct decendents
-as mount points is a common pattern
-in modern javascript applications ([Solid](https://www.solidjs.com/), [Vue](https://vuejs.org/), [React](https://reactjs.org/), etc.).
+Using `<body>` or one of its direct children as the element an app
+renders into is the usual pattern in [Solid](https://www.solidjs.com/),
+[Vue](https://vuejs.org/), [React](https://react.dev/), and others.
+`mounts` turns "find or create that element" into an import. Part of
+[hydratable](../readme.md).
 
-We can declaratively abstract this away as imports.
+> **These modules do their work at import time.** `first.mjs` and
+> `last.mjs` read (and may modify) `document.body` as soon as they're
+> imported, so import them only after `<body>` exists: from a module
+> script, or a script at the end of `<body>`. That's also why `mounts`
+> has no `index.mjs` that bundles them.
 
 ## Usage
 
@@ -17,8 +23,8 @@ Use 'first' or 'last' instead.
 
 ```javascript
 import { render } from "solid-js/web";
-import Application from "./Soild-Application";
-import body from "mounts/body.mjs";
+import Application from "./Solid-Application";
+import body from "@johnhenry/domkit/hydratable/mounts/body.mjs";
 render(() => <Application />, body);
 ```
 
@@ -31,7 +37,7 @@ if child is "unsuitable" or non-existent.
 
 ```javascript
 import Application from "./Vue-Application";
-import first from "mounts/first.mjs";
+import first from "@johnhenry/domkit/hydratable/mounts/first.mjs";
 Application.mount(first);
 ```
 
@@ -43,11 +49,10 @@ Creates and appends a new 'div' element
 if child is "unsuitable" or non-existent.
 
 ```javascript
-import { createRoot } from "react";
+import { createRoot } from "react-dom/client";
 import Application from "./React-Application";
-import last from "mounts/last.mjs";
-const root = createRoot(last);
-root.render(Application);
+import last from "@johnhenry/domkit/hydratable/mounts/last.mjs";
+createRoot(last).render(<Application />);
 ```
 
 ### Unsuitable elements
@@ -64,9 +69,7 @@ for body's first/last *meaningful* child -- without this, `first`/`last`
 would almost never actually reuse anything in a normally-formatted HTML
 document (the newline + indentation right after `<body>`, or right before
 `</body>`, is a real text-node child, and is virtually universal), and
-would silently create a new div every time instead. Found while building
-this module's demo and verified against a real browser's DOM for an
-ordinary, normally-indented page.
+would silently create a new div every time instead. 
 
 ### Unmounting
 
@@ -78,8 +81,8 @@ does that -- but only for elements it actually created; an existing element
 that was found and reused is left alone, since mounts doesn't own it:
 
 ```javascript
-import first from "mounts/first.mjs";
-import unmount from "mounts/unmount.mjs";
+import first from "@johnhenry/domkit/hydratable/mounts/first.mjs";
+import unmount from "@johnhenry/domkit/hydratable/mounts/unmount.mjs";
 
 // ...later, tearing the app down:
 unmount(first); // true if it was a mounts-created div and got removed
@@ -92,11 +95,11 @@ functions that re-run the same find-or-create logic on demand, instead of
 only ever returning the value from whenever the module first loaded:
 
 ```javascript
-import { resolveFirst } from "mounts/first.mjs";
+import { resolveFirst } from "@johnhenry/domkit/hydratable/mounts/first.mjs";
 const target = resolveFirst(); // a fresh read of body's current first child
 ```
 
 ## See also
 
 - [`@johnhenry/domable`](https://github.com/johnhenry/domable)'s `domToReact`/`reactToDom` — converting between real DOM and React-element-shaped objects (domkit doesn't vendor its own copy of these; domable's is the maintained one)
-- [hydratable](../hydratable/readme.md) — a generic hydration mixin
+- [hydratable](../readme.md) — a generic hydration mixin

@@ -1,129 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="stylesheet" href="https://johnhenry.github.io/lib/css/blank-slate/0.0.0/index.css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>stylable-select</title>
     <link rel="stylesheet" href="./index.css" />
-
     <script type="module" src="./global.mjs"></script>
     <style>
-      /* option {
-          display: flex;
-        }
-        option::before {
-          content: "O";
-        }
-        option::after {
-          content: "X";
-          margin-left: auto;
-        } */
-      select-panel {
-        display: flex;
-        flex-direction: column;
+      body {
+        font: 14px/1.5 system-ui, sans-serif;
+        margin: 12px;
       }
-      #application {
-        font-size: 15rem;
-        font-family: Arial, Helvetica, sans-serif;
-        background-color: indianred;
-        width: 100%;
-        height: 100%;
-      }
-      #application::backdrop {
-        background-color: #f0f0f0;
-      }
-      .github-panel {
-        width: 50%;
-        margin: auto;
-        background-color: #0e1117;
-        /* border: 1px solid antiquewhite; */
-        color: antiquewhite;
+      stylable-select {
+        height: 180px;
+        width: 260px;
+        border: 1px solid #ccc;
         border-radius: 8px;
-        position: relative;
-        overflow: hidden;
+        grid-auto-rows: auto;
       }
-      .github-panel > * {
-        background-color: inherit;
-        color: inherit;
-        border: none;
+      stylable-select:focus-within,
+      stylable-select:focus {
+        outline: 2px solid #4a8;
       }
-      .github-panel > input {
-        /* border-bottom: 1px solid white; */
-        padding: 8px 32px;
-        outline: none;
+      optgroup {
+        display: block;
+        font-size: 12px;
+        color: #888;
+        padding: 6px 8px 2px;
+        overflow: visible;
       }
-      .github-panel::before {
-        position: absolute;
-        content: "🔍";
-        left: 8px;
-        top: 8px;
-      }
-      .github-panel > select {
-        outline: none;
-      }
-      .github-panel > select option:checked {
-        background: red;
-      }
-      .github-panel > select option::before {
-        content: "😄";
-      }
-      .github-panel > select option {
-        padding: 10px 8px;
-        margin: 0 8px;
-        gap: 4px;
+      stylable-select :is(option, [role="option"]) {
         display: flex;
-        align-items: center;
-        cursor: pointer;
+        gap: 6px;
+        padding: 4px 8px;
+        font-size: 14px;
+        color: #222;
       }
-      .github-panel > select optgroup {
-        padding: 16px 16px;
+      stylable-select :is(option, [role="option"])::before {
+        content: "○";
       }
-      .github-panel > select option:hover::after {
-        content: "click";
-        margin-left: auto;
+      stylable-select :is(option, [role="option"])[data-checked] {
+        background: #2a6;
+        color: white;
+        border-radius: 4px;
       }
-      .github-panel > select > optgroup {
-        line-height: 2rem;
+      stylable-select :is(option, [role="option"])[data-checked]::before {
+        content: "●";
       }
     </style>
-    <script type="module">
-      window.search = async (event) => {
-        return `<option>${event.data}</option>${event.initialString}`;
-      };
-      window.select = (event) => {
-        console.log(event.target);
-      };
-      document
-        .querySelector(".github-panel")
-        .addEventListener("select", (x) => console.log(x.target.value, x));
-    </script>
   </head>
   <body>
-    <div id="application">
-      <select-panel
-        class="github-panel"
-        onsearch="window.search(event)"
-        onselect="window.select(event)"
-        size="8"
-      >
-        <optgroup label="Pages">
-          <option value="pages-dashboard">Dashboard</option>
-          <option value="pages-notifications">Notifications</option>
-          <option value="pages-issues">Issues</option>
-          <option value="pages-pullrequests">Pull Requests</option>
-          <option value="pages-discussions">Discussions</option>
-        </optgroup>
-
-        <optgroup label="Repositories">
-          <option value="repositories-johnhenry/lib">johnhenry/lib</option>
-        </optgroup>
-        <optgroup label="Organizations">
-          <option value="organizations-fornsakengine">Forsnakengine</option>
-          <option value="organizations-iamjohnenry">iamjohnhenry</option>
-          <option value="organizations-epicgames">epicgames</option>
-        </optgroup>
-        <optgroup label="Users">
-          <option value="users-johnhenry">@johnhenry -- john</option>
-        </optgroup>
-      </select-panel>
-    </div>
+    <p>
+      Click an option, or focus the list and use the arrow keys. Plain
+      <code>&lt;option&gt;</code> children (or any element with
+      <code>role="option"</code>) are selectable, and every one of them can be
+      styled, including <code>::before</code> content.
+    </p>
+    <stylable-select id="select" tabindex="0">
+      <optgroup label="Fruit">
+        <option value="apple">Apple</option>
+        <option value="banana">Banana</option>
+        <option value="cherry">Cherry</option>
+      </optgroup>
+      <optgroup label="Vegetables">
+        <option value="carrot">Carrot</option>
+        <option value="leek">Leek</option>
+        <div role="option" data-value="okra">Okra (a div with role="option")</div>
+      </optgroup>
+    </stylable-select>
+    <p>value: <output id="value">(none)</output></p>
+    <script type="module">
+      const select = document.getElementById("select");
+      select.addEventListener("change", ({ detail }) => {
+        document.getElementById("value").textContent = detail;
+      });
+    </script>
   </body>
 </html>

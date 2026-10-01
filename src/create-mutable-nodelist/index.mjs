@@ -1,48 +1,51 @@
 // Inspiration https://stackoverflow.com/a/30581545/1290781
+// Instances are real Arrays (see createMutableNodeList below) whose
+// prototype chain runs through NodeList.prototype -- so the mutators can
+// delegate to Array.prototype's, which already keep `length` right. The
+// previous hand-rolled versions didn't: unshift() copied elements forward
+// on an exotic Array, growing `length` on every write, and never finished.
+const assertNodes = (nodes) => {
+  for (const node of nodes) {
+    if (!(node instanceof Node)) {
+      throw new TypeError(`Expected a Node, got ${node}`);
+    }
+  }
+};
 const MutableNodeList = class extends NodeList {
   item(i = 0) {
     return this[i];
   }
   push(...nodes) {
-    for (const node of nodes) {
-      if (!(node instanceof Node)) {
-        throw new Error();
-      }
-      this[this.length++] = node;
-    }
-    return this.length;
+    assertNodes(nodes);
+    return Array.prototype.push.apply(this, nodes);
   }
   pop() {
-    const popped = this[this.length - 1];
-    delete this[this.length - 1];
-    this.length--;
-    return popped;
+    return Array.prototype.pop.call(this);
   }
   shift() {
-    const shifted = this[0];
-    delete this[0];
-    for (let i = 0; i < this.length; i++) {
-      this[i] = this[i + 1];
-    }
-    delete this[this.length - 1];
-    this.length--;
-    return shifted;
+    return Array.prototype.shift.call(this);
   }
   unshift(...nodes) {
-    for (const node of nodes) {
-      if (!(node instanceof Node)) {
-        throw new Error();
-      }
-    }
-    const size = nodes.length;
-    for (let i = 0; i < this.length; i++) {
-      this[i + size] = this[i];
-    }
-    for (let i = 0; i < size; i++) {
-      this[i] = nodes[i];
-    }
-    this.length += size;
-    return this.length;
+    assertNodes(nodes);
+    return Array.prototype.unshift.apply(this, nodes);
+  }
+  // Browsers' NodeList.prototype iteration methods *are* Array.prototype's
+  // (per WebIDL), so they already work here; DOM implementations like
+  // happy-dom read internal state instead. Pin the spec behavior.
+  [Symbol.iterator]() {
+    return Array.prototype.values.call(this);
+  }
+  values() {
+    return Array.prototype.values.call(this);
+  }
+  keys() {
+    return Array.prototype.keys.call(this);
+  }
+  entries() {
+    return Array.prototype.entries.call(this);
+  }
+  forEach(callback, thisArg) {
+    return Array.prototype.forEach.call(this, callback, thisArg);
   }
 };
 

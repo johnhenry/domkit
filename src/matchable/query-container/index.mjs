@@ -47,18 +47,27 @@ export default class extends HTMLElement {
   #queries;
   #default;
   #observer;
+  #onQuery = () => this.triggerQuery();
   constructor() {
     super();
   }
   connectedCallback() {
     this.#observer = new globalThis.MutationObserver(this.update.bind(this));
     this.#observer.observe(this, { childList: true });
+    // disconnectedCallback clears every media-query listener; restore them
+    // on reconnect, or a moved element stops responding to the viewport.
+    if (this.#queries) {
+      for (const mql of this.#queries.keys()) {
+        mql.addEventListener("change", this.#onQuery);
+      }
+      this.triggerQuery();
+    }
   }
   disconnectedCallback() {
     this.#observer.disconnect();
     if (this.#queries) {
       for (const query of this.#queries.keys()) {
-        query.onchange = null;
+        query.removeEventListener("change", this.#onQuery);
       }
     }
   }
@@ -66,20 +75,31 @@ export default class extends HTMLElement {
     return ["default", "query"];
   }
   setInitial(selector) {
+    const previous = this.#content;
     this.#default = elementFromSelector(selector);
     this.#content = this.#default;
+    // Carry content over if `default` changes after the first render.
+    if (previous && previous.parentNode === this) {
+      this.#content.append(...previous.childNodes);
+      previous.remove();
+    }
     this.appendChild(this.#content);
+    // Wrap the children that were already there -- previously they were
+    // only moved in on a later swap or mutation, so when the default
+    // wrapper applied from the start, it sat empty after its children.
+    this.update();
     this.triggerQuery();
   }
   setQueries(queries) {
+    for (const mql of this.#queries?.keys() ?? []) {
+      mql.removeEventListener("change", this.#onQuery);
+    }
     this.#queries = new Map();
     let firstSelector = "";
     for (const { mql, value: selector } of parseQuerySections(queries)) {
       firstSelector = firstSelector || selector;
       this.#queries.set(mql, elementFromSelector(selector));
-      mql.onchange = (e) => {
-        this.triggerQuery(e);
-      };
+      mql.addEventListener("change", this.#onQuery);
     }
     if (this.#default) {
       this.triggerQuery();

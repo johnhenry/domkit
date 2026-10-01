@@ -1,16 +1,21 @@
 {
   "name": "@johnhenry/domkit",
-  "version": "0.0.8",
-  "description": "A toolkit of small, independent DOM/HTML-component modules -- custom elements, shadow-DOM/component-authoring primitives, and DOM<->React interop helpers.",
+  "version": "0.0.9",
+  "description": "Small, independent custom elements and DOM utilities -- drop-in UI widgets, media-query-driven containers, persisted UI state, declarative loaders -- shipped as source, no build step.",
   "type": "module",
   "exports": {
-    "./*": "./src/*"
+    "./package.json": "./package.json",
+    "./*.mjs": "./src/*.mjs",
+    "./*.css": "./src/*.css",
+    "./*": "./src/*/index.mjs"
   },
   "files": [
     "src/"
   ],
   "scripts": {
-    "test": "node scripts/check-syntax.mjs"
+    "test": "npm run check && npm run test:dom",
+    "check": "node scripts/check-syntax.mjs && node scripts/check-links.mjs && eslint .",
+    "test:dom": "node --test \"test/*.test.mjs\""
   },
   "keywords": [
     "html",
@@ -32,5 +37,11 @@
   "dependencies": {
     "@johnhenry/domable": "^0.0.1",
     "parsel-js": "^1.2.3"
+  },
+  "devDependencies": {
+    "@happy-dom/global-registrator": "^20.14.5",
+    "eslint": "^10.11.0",
+    "globals": "^17.12.0",
+    "happy-dom": "^20.14.5"
   }
 }

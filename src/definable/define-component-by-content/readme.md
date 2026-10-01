@@ -1,4 +1,4 @@
-# Define Component By Content
+# define-component-by-content
 
 Defines a new custom element whose markup comes from an HTML string given
 directly as an attribute, rather than from a separate module file (compare
@@ -6,7 +6,12 @@ directly as an attribute, rather than from a separate module file (compare
 which loads markup/behavior from a URL instead).
 
 Built on [`@johnhenry/domable`](https://github.com/johnhenry/domable)'s
-`simple-element` `constructSuperclass`.
+`simple-element` `constructSuperclass`. Part of [definable](../readme.md).
+
+The new tag is registered once, when the `<define-component-by-content>`
+element connects. Every instance renders the same static `content` and
+has no behavior of its own, so this suits markup-only components (a
+styled callout, a branded heading).
 
 ## Attributes
 

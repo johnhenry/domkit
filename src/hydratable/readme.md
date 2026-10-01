@@ -1,9 +1,18 @@
-# Hydratable
+# hydratable
 
-Hydratable adds hydration functionality to objects in your prototype chain.
+App-bootstrap helpers, in two parts:
+
+- **`hydratable`** (this module): a mixin that gives an object a guarded,
+  async `hydrate()`, which runs once even if it's called many times, and a
+  matching `dehydrate()` to undo it. Use it for lazy initialization:
+  fetching data, attaching listeners, upgrading server-rendered markup.
+- **[mounts](./mounts/readme.md)**: "where do I render my app?" as an
+  import. It finds or creates the element at the start or end of `<body>`.
+
+## The mixin
 
 ```javascript
-import Hydratable from ".";
+import Hydratable from "@johnhenry/domkit/hydratable";
 
 class Widget {}
 Object.assign(
@@ -27,6 +36,5 @@ await widget.hydrate(); // hydrates again from scratch
 by default). Both methods throw if called directly on the returned
 prototype object rather than through an instance.
 
-## See also
-
-- [mounts](../mounts/readme.md) — framework-agnostic DOM mount-point helpers
+`HYDRATED` and `TEARDOWN` (the symbols holding that state) are also
+exported, for code that needs to check `widget[HYDRATED]` directly.

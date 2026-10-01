@@ -8,13 +8,20 @@ export default class extends HTMLElement {
   observe() {
     this.#observer.disconnect();
     try {
-      w3CodeColor(this);
+      // mode: "html" (default), "css", or "js" -- w3-code-color's three modes
+      w3CodeColor(this, this.getAttribute("mode") || undefined);
     } finally {
       this.ready();
     }
   }
   connectedCallback() {
-    this.ready();
+    // Highlight the initial content too -- previously only a later
+    // childList mutation ever triggered highlighting, so static content
+    // was never colored at all.
+    this.observe();
+  }
+  disconnectedCallback() {
+    this.#observer.disconnect();
   }
   ready() {
     this.#observer.observe(this, { childList: true });

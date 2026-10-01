@@ -1,4 +1,3 @@
-import clamp from "../clamp/index.mjs";
 const observedattributes = [
   "eyeoffset",
   "lowerlip",
@@ -30,7 +29,6 @@ const genSVG = ({
       <!-- head -->
       <circle cx="50%" cy="50%" r="48%" />
       <!-- nose -->
-  const noseoffset = 128;
       <path d="m 0 0 l -8 48 h 16 z" transform="translate(128, ${noseoffset}) scale(${nosescale})" />
       <!-- mouth -->
       <path d="m 0 0

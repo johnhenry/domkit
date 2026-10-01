@@ -1,12 +1,19 @@
-# Attribute Provider
+# attribute-provider
 
-Applies classes, inline styles, and/or attributes to an element's
-immediate children based on media queries (screen width, orientation,
-etc.) — re-evaluated on every matching query change.
+Applies classes, inline styles, and attributes to its **direct children**
+according to media queries (width, orientation, `prefers-color-scheme`,
+anything `matchMedia` accepts), and re-applies them live as the queries
+change.
 
-Compare [query-container](../query-container/readme.md),
-which swaps its rendered child element entirely by media query instead of
-styling the existing one.
+Part of [matchable](../readme.md), which describes the shared query
+grammar. Compare [query-container](../query-container/readme.md), which
+swaps the wrapping element instead of styling the children.
+
+> **`classes` and `styles` replace, they don't merge.** On every update,
+> each child's entire `class` list is replaced by the matching sections'
+> classes, and its entire `style` attribute by the matching declarations.
+> Classes or inline styles written on the children in markup are lost.
+> Put anything permanent in a bracket-less section, which always applies.
 
 ## Attributes
 
@@ -71,9 +78,9 @@ with each attribute.
 ```html
 <script
   type="module"
-  src="https://esm.sh/@johnhenry/domkit/definable/define-component/global.mjs"
+  src="https://esm.sh/@johnhenry/domkit/matchable/attribute-provider/global.mjs"
 ></script>
-<define-component name="attribute-provider" src="./index.mjs"></define-component>
 ```
 
-See `demo.htm` for a full working example of all three attributes.
+When several sections match, all of them apply, in order. See `demo.htm`
+for a working example of all three attributes.

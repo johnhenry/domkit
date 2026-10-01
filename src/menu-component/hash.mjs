@@ -2,13 +2,17 @@
 const registry = new WeakMap();
 
 const attach = (menu = globalThis.document.getElementById("menu")) => {
-  const onPushed = ({ detail: { pushed }, path: [initiator] }) => {
-    if (menu === initiator) {
-      globalThis.location.hash = pushed;
+  // composedPath()[0] is the element that dispatched the event -- only
+  // react to this menu's own pushes/pops, not ones bubbling up from a
+  // nested menu. (This used Chrome's non-standard `event.path`, which
+  // Chrome removed in v109, so every push/pop threw instead.)
+  const onPushed = (event) => {
+    if (menu === event.composedPath()[0]) {
+      globalThis.location.hash = event.detail.pushed;
     }
   };
-  const onPopped = ({ path: [initiator] }) => {
-    if (menu === initiator) {
+  const onPopped = (event) => {
+    if (menu === event.composedPath()[0]) {
       globalThis.location.hash = "";
     }
   };
@@ -25,7 +29,14 @@ const attach = (menu = globalThis.document.getElementById("menu")) => {
   menu.addEventListener("pushed", onPushed);
   menu.addEventListener("popped", onPopped);
   globalThis.onhashchange = setHash;
-  menu.addEventListener("reset", onReset, { once: true });
+  if (menu.kids?.size) {
+    // Already rendered: sync from the current hash now. Waiting for the
+    // first "reset" here meant that reset was the one fired by the first
+    // *pop* -- which then re-pushed the very screen being closed.
+    setHash({ newURL: globalThis.location.hash });
+  } else {
+    menu.addEventListener("reset", onReset, { once: true });
+  }
 
   registry.set(menu, { onPushed, onPopped, onReset, setHash });
 };

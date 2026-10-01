@@ -19,13 +19,12 @@
 </style>
 <script
   type="module"
-  src="../definable/until-window-load/global.mjs"
+  src="../../definable/until-window-load/global.mjs"
 ></script>
-<script
-  type="module"
-  src="../definable/define-component/global.mjs"
-></script>
-<define-component name="svg-path-animator" src="./old.mjs"></define-component>
+<script type="module">
+  import AnimatePaths from "./index.mjs";
+  customElements.define("animate-paths", AnimatePaths);
+</script>
 
 <h1>SVG Path Animator</h1>
 <animate-paths
