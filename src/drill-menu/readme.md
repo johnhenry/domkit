@@ -59,30 +59,42 @@ ordinary CSS styles it.
 - Before the element upgrades, the items are visible and the templates
   are inert, so the menu reads as a plain list.
 
-## Attributes
+## API
 
-| Attribute | Property | Description |
+<!-- api:start (generated from custom-elements.json by `npm run manifest`; edit the JSDoc instead) -->
+
+### Attributes
+
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `screen` | `screen` | `string` | Key of the screen currently shown (absent = the list). Reflects; set it to navigate. |
+| `disabled` | `disabled` | `boolean` | Items can't be activated, leave the tab order, and are marked aria-disabled. `push()`/`pop()` still work from script. |
+| `sync-hash` | `syncHash` | `boolean` | Mirror the current screen in `location.hash`, so links and the browser's Back button work. |
+
+### Properties
+
+| Property | Type | Description |
 |---|---|---|
-| `screen` | `screen` | Key of the open screen (absent = the list). Reflects. Set it to navigate, or write it in markup to start on a screen |
-| `disabled` | `disabled` | Items can't be activated and leave the tab order (marked `aria-disabled`). `push()`/`pop()` still work from script |
-| `sync-hash` | `syncHash` | Mirror the screen in `location.hash`: drilling in adds a history entry, the browser's Back button goes back, and links like `#profile` open screens. Use it on one menu per page |
+| `items` (read-only) | `Element[]` | The items: element children other than templates and the screen. |
+| `screen` | `string \| null` | Key of the open screen, or null. Setting it navigates. |
+| `disabled` | `boolean` | Mirrors the `disabled` attribute. |
+| `syncHash` | `boolean` | Mirrors the `sync-hash` attribute. |
 
-An item's **key** is its `data-key`, or else its position (`"0"`,
-`"1"`, …).
+### Methods
 
-## Methods and events
-
-| | |
+| Method | Description |
 |---|---|
-| `push(key)` | Open that item's screen. Returns `false` if it has none |
-| `pop()` | Back to the list |
-| `items` | The items (read-only) |
-| `push` event | A screen opened. `detail: { key, item }` |
-| `pop` event | A screen closed, including when switching directly to another screen. `detail: { key, item }` |
+| `push(key, options)` | Show the screen of the item with this key (its `data-key`, or its position). Items without a template are leaves and can't be pushed. |
+| `pop(options)` | Return to the list, restoring focus to the item that opened the screen. |
 
-Like a `<details>` element's `toggle`, these fire however the change
-happened (click, key, attribute, hash), since they report state, not
-user input.
+### Events
+
+| Event | Description |
+|---|---|
+| `push` | A screen was shown. `event.detail` is `{ key, item }`. |
+| `pop` | The menu returned to the list. `event.detail` is `{ key, item }` for the screen that closed. |
+
+<!-- api:end -->
 
 ## Keyboard
 
@@ -107,3 +119,5 @@ between items, and <kbd>Enter</kbd>/<kbd>Space</kbd> activate.
   field in a hidden live screen is invalid, that screen opens, so the
   browser can focus the field and show its message.
 - Menus nest: a screen can contain another `<drill-menu>`.
+- An item's **key** is its `data-key`, or else its position (`"0"`, `"1"`, …).
+- Like a `<details>` element's `toggle`, `push` and `pop` fire however the change happened (click, key, attribute, hash), since they report state, not user input.

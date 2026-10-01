@@ -40,14 +40,20 @@ export default class CodeColor extends HTMLElement {
   #ranges = [];
   #observer = new MutationObserver(() => this.#schedule());
   #pending = false;
+  // Horizontally scrolling code blocks must be reachable by keyboard
+  // (WCAG 2.1.1): an overflowing <pre> gets tabindex="0" while it overflows.
+  #resize = new ResizeObserver(() => this.#updateScrollable());
+  #focusable = new WeakSet();
   #internals = this.attachInternals?.();
 
   connectedCallback() {
+    this.#resize.observe(this);
     this.#observer.observe(this, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ["class"] });
     this.#highlight();
   }
 
   disconnectedCallback() {
+    this.#resize.disconnect();
     this.#observer.disconnect();
     this.#clear();
   }
@@ -115,7 +121,21 @@ export default class CodeColor extends HTMLElement {
     }
   }
 
+  #updateScrollable() {
+    for (const pre of this.querySelectorAll("pre")) {
+      const overflows = pre.scrollWidth > pre.clientWidth || pre.scrollHeight > pre.clientHeight;
+      if (overflows && !pre.hasAttribute("tabindex")) {
+        pre.tabIndex = 0;
+        this.#focusable.add(pre);
+      } else if (!overflows && this.#focusable.has(pre)) {
+        pre.removeAttribute("tabindex");
+        this.#focusable.delete(pre);
+      }
+    }
+  }
+
   #highlight() {
+    this.#updateScrollable();
     this.#clear();
     const language = this.resolvedLanguage;
     // Map character offsets of the full text onto its text nodes.

@@ -27,17 +27,30 @@ It works with whatever markup you already have, including the
 `<pre><code class="language-…">` that Markdown renderers produce. Wrap it
 in `<code-color>`, and that's all.
 
-## Attributes
+## API
 
-| Attribute | Property | Description |
+<!-- api:start (generated from custom-elements.json by `npm run manifest`; edit the JSDoc instead) -->
+
+### Attributes
+
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `language` | `language` | `string` | `js`, `css`, or `html` (plus aliases like `javascript`, `ts`, `json`, `xml`). Default: a `language-*` class on a `<code>` inside, else `html`. |
+
+### Properties
+
+| Property | Type | Description |
 |---|---|---|
-| `language` | `language` | `js`, `css`, or `html`. Aliases work: `javascript`, `ts`, `json`, `xml`, `svg`, `scss`, … Default: the `language-*` (or `lang-*`) class of a `<code>` inside, else `html` |
+| `resolvedLanguage` (read-only) | `string \| null` | The language in effect: `js`, `css`, `html`, or null if unrecognized. |
+| `language` | `string` | Mirrors the `language` attribute. |
 
-Read-only: `resolvedLanguage` (the language in effect, or `null` for an
-unknown one) and `CodeColor.supported` (whether the browser has the
-Highlight API). `tokens()` returns the current `{ type, text }` list.
+### Methods
 
-HTML mode colors `<style>` and `<script>` contents as CSS and JS.
+| Method | Description |
+|---|---|
+| `tokens()` | The current token ranges, by type (for tests and tooling). |
+
+<!-- api:end -->
 
 ## Theming
 
@@ -73,3 +86,4 @@ page-wide, so one theme applies to every `<code-color>`.
   and never throws, but it isn't a parser. TypeScript and JSON are
   colored as JavaScript.
 - `code-color:state(highlighted)` matches once highlighting is applied.
+- HTML mode colors `<style>` and `<script>` contents as CSS and JS.

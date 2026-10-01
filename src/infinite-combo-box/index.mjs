@@ -615,7 +615,12 @@ export default class InfiniteComboBox extends HTMLElement {
       }
     });
     if (this.#next !== null) this.#list.append(this.#moreOption());
-    if (!append) this.#setActive(null);
+    if (!append) {
+      this.#setActive(null);
+      // New results start at the top. Keeping the old scroll position would
+      // leave "Load more" in view and fetch a page nobody scrolled to.
+      this.#list.scrollTop = 0;
+    }
   }
 
   // The last item while more pages exist: an option (so keyboard and

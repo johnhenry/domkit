@@ -54,8 +54,27 @@ All notable changes to this project will be documented in this file.
   `matchable/container-query.mjs` exports the evaluator (`compileQuery`)
   and the `MediaQueryList`-shaped `ContainerQueryList`.
 
+- **Accessibility audits** (axe-core) in the browser suite: every element at
+  rest, open/active, and disabled, plus every recipe page.
+- **Generated API sections in every element README.** Attribute (with
+  matching property), property, method, event, and CSS-custom-property
+  tables now come from the JSDoc, like `docs/reference.md`, so they can't
+  drift. Every element README follows one structure (Usage, guide
+  sections, API, Keyboard, Styling, Notes), enforced by the reference
+  checker.
+
 ### Fixed
 
+- **`infinite-combo-box` starts new results at the top.** It kept the
+  previous scroll position, which could leave "Load more" in view and
+  fetch a second page nobody asked for (seen in Firefox).
+
+- **`stylable-select` is labelled for every tool**: it mirrors its
+  `<label>`s into `aria-labelledby`, as `infinite-combo-box` already did.
+  Browsers followed `<label for>`, but some assistive technology and
+  auditing tools don't.
+- **Scrollable code blocks are keyboard-reachable**: `code-color` makes a
+  `<pre>` focusable while it overflows (WCAG 2.1.1).
 - **Right-to-left:** ←/→ now follow the reading direction in `tabbed-ui`
   and `drill-menu`, and `drill-menu`'s chevron mirrors.
 

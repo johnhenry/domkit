@@ -94,44 +94,92 @@ for (const { path, declaration: d } of elements) {
   );
 }
 
-// --- docs/reference.md ------------------------------------------------------
+// --- API tables: docs/reference.md and each element README ------------------
 const cell = (text) => (text ?? "").replace(/\|/g, "\\|").replace(/\n+/g, " ").trim();
-const code = (text) => (text ? `\`${text}\`` : "");
+const code = (text) => (text ? `\`${text.replace(/\|/g, "\\|")}\`` : "");
+const table = (head, rows) =>
+  rows.length ? `| ${head.join(" | ")} |\n|${head.map(() => "---").join("|")}|\n${rows.map((r) => `| ${r.join(" | ")} |`).join("\n")}` : "";
+const ident = (name) => /^[A-Za-z_$][\w$]*$/.test(name);
+const kebab = (name) => name.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`);
+
+// The tables for one element, each under `heading(title)`.
+function apiTables(d, heading) {
+  const members = (d.members ?? []).filter(
+    (m) => (m.privacy ?? "public") === "public" && !m.static && !/Callback$/.test(m.name),
+  );
+  const properties = members.filter((m) => m.kind === "field");
+  const methods = members.filter((m) => m.kind === "method");
+  const mirrored = new Set(properties.map((m) => kebab(m.name)));
+  // A property with no description of its own that mirrors an attribute.
+  const describe = (m) =>
+    cell(m.description) ||
+    (d.attributes?.some((a) => a.name === kebab(m.name)) ? `Mirrors the \`${kebab(m.name)}\` attribute.` : "");
+  return [
+    d.attributes?.length
+      ? heading("Attributes") +
+        table(
+          ["Attribute", "Property", "Type", "Description"],
+          d.attributes.map((a) => [
+            code(a.name),
+            mirrored.has(a.name) ? code(a.name.replace(/-([a-z])/g, (_, c) => c.toUpperCase())) : "",
+            code(a.type?.text),
+            cell(a.description),
+          ]),
+        )
+      : "",
+    properties.length
+      ? heading("Properties") +
+        table(["Property", "Type", "Description"], properties.map((m) => [code(m.name) + (m.readonly ? " (read-only)" : ""), code(m.type?.text), describe(m)]))
+      : "",
+    methods.length
+      ? heading("Methods") +
+        table(["Method", "Description"], methods.map((m) => {
+          const params = (m.parameters ?? [])
+            .filter((p, i, all) => ident(p.name) || !(all[i + 1] && ident(all[i + 1].name) && all[i + 1].type))
+            .map((p, i) => (ident(p.name) ? p.name : i ? `options${i}` : "options"));
+          return [code(`${m.name}(${params.join(", ")})`), cell(m.description)];
+        }))
+      : "",
+    d.events?.length ? heading("Events") + table(["Event", "Description"], d.events.map((e) => [code(e.name), cell(e.description)])) : "",
+    d.cssProperties?.length
+      ? heading("CSS custom properties") + table(["Property", "Description"], d.cssProperties.map((c) => [code(c.name), cell(c.description)]))
+      : "",
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+}
+
+// Each element README carries a generated API section between these
+// markers; the hand-written prose around it stays the author's.
+const START = "<!-- api:start (generated from custom-elements.json by `npm run manifest`; edit the JSDoc instead) -->";
+const END = "<!-- api:end -->";
+const missingMarkers = [];
+for (const { path, declaration: d } of elements) {
+  const readme = join(ROOT, dirname(path), "readme.md");
+  const text = await readFile(readme, "utf8");
+  const a = text.indexOf("<!-- api:start");
+  const b = text.indexOf(END);
+  if (a < 0 || b < a) {
+    missingMarkers.push(relative(ROOT, readme));
+    continue;
+  }
+  const body = apiTables(d, (title) => `### ${title}\n\n`);
+  await writeFile(readme, `${text.slice(0, a)}${START}\n\n${body}\n\n${text.slice(b)}`);
+}
+if (missingMarkers.length) {
+  console.error(`✖ element README(s) without an <!-- api:start --> … ${END} block: ${missingMarkers.join(", ")}`);
+  process.exitCode = 1;
+}
+
 const sections = [...elements]
   .sort((a, b) => a.declaration.tagName.localeCompare(b.declaration.tagName))
   .map(({ path, declaration: d }) => {
     const dir = dirname(path);
-    const members = (d.members ?? []).filter(
-      (m) => (m.privacy ?? "public") === "public" && !m.static && !/Callback$/.test(m.name),
-    );
-    const properties = members.filter((m) => m.kind === "field");
-    const methods = members.filter((m) => m.kind === "method");
-    const table = (head, rows) =>
-      rows.length ? `| ${head.join(" | ")} |\n|${head.map(() => "---").join("|")}|\n${rows.map((r) => `| ${r.join(" | ")} |`).join("\n")}\n` : "";
-    const ident = (name) => /^[A-Za-z_$][\w$]*$/.test(name);
-    // A property with no description of its own that mirrors an attribute.
-    const kebab = (name) => name.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`);
-    const describe = (m) =>
-      cell(m.description) ||
-      (d.attributes?.some((a) => a.name === kebab(m.name)) ? `Mirrors the \`${kebab(m.name)}\` attribute.` : "");
     return [
       `## \`<${d.tagName}>\``,
       `${cell(d.summary ?? d.description)} [Guide](../${dir}/readme.md) · module \`@johnhenry/domkit/${dir.replace(/^src\//, "")}\``,
-      "",
-      d.attributes?.length ? "**Attributes**\n\n" + table(["Attribute", "Type", "Description"], d.attributes.map((a) => [code(a.name), code(a.type?.text), cell(a.description)])) : "",
-      properties.length ? "**Properties**\n\n" + table(["Property", "Type", "Description"], properties.map((m) => [code(m.name) + (m.readonly ? " (read-only)" : ""), code(m.type?.text), describe(m)])) : "",
-      methods.length ? "**Methods**\n\n" + table(["Method", "Description"], methods.map((m) => {
-        const params = (m.parameters ?? [])
-          .filter((p, i, all) => ident(p.name) || !(all[i + 1] && ident(all[i + 1].name) && all[i + 1].type))
-          .map((p, i) => (ident(p.name) ? p.name : i ? `options${i}` : "options"));
-        return [code(`${m.name}(${params.join(", ")})`), cell(m.description)];
-      })) : "",
-      d.events?.length ? "**Events**\n\n" + table(["Event", "Description"], d.events.map((e) => [code(e.name), cell(e.description)])) : "",
-      d.cssProperties?.length ? "**CSS custom properties**\n\n" + table(["Property", "Description"], d.cssProperties.map((c) => [code(c.name), cell(c.description)])) : "",
-    ]
-      .filter(Boolean)
-      .map((part) => part.trimEnd())
-      .join("\n\n");
+      apiTables(d, (title) => `**${title}**\n\n`),
+    ].join("\n\n");
   });
 await writeFile(
   join(ROOT, "docs/reference.md"),

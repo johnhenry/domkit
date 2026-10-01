@@ -38,31 +38,49 @@ with no script:
 <button commandfor="theme" command="--set" value="dark">Dark</button>
 ```
 
-## Attributes
+## API
 
-| Attribute | Property | Description |
+<!-- api:start (generated from custom-elements.json by `npm run manifest`; edit the JSDoc instead) -->
+
+### Attributes
+
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `classes` |  | `string` | Comma-separated values to cycle through. An empty entry means "no class". |
+| `target` |  | `string` | Selector for the element(s) whose class is set. Default `html`. |
+| `storage-key` | `storageKey` | `string` | localStorage key to persist under. Without it, the value isn't persisted. |
+| `value` | `value` | `string` | The current value. Reflects; set it to choose the initial value when nothing is stored. |
+| `disabled` | `disabled` | `boolean` | Its buttons are disabled, and invoker commands are ignored. |
+
+### Properties
+
+| Property | Type | Description |
 |---|---|---|
-| `classes` | `values` (read-only array) | Comma-separated values. An empty entry means "no class": `classes=",compact"` toggles one class |
-| `target` | `targets` (read-only) | Selector for the element(s) to set the class on. All matches. Default `html` |
-| `storage-key` | `storageKey` | `localStorage` key. Without it, the value isn't persisted |
-| `disabled` | `disabled` | Its buttons are disabled (and restored afterwards), and invoker commands are ignored |
-| `value` | `value` | The current value. Reflects. In markup, it's the initial value when nothing is stored |
+| `values` (read-only) | `string[]` | The values to cycle through, in order. |
+| `value` | `string` | The current value. Setting it applies and persists it, without an event. |
+| `targets` (read-only) | `Element[]` | The elements whose class is set. |
+| `disabled` | `boolean` | Mirrors the `disabled` attribute. |
+| `storageKey` | `string` | Mirrors the `storage-key` attribute. |
 
-Only the cycle's own classes are added and removed, and other classes on
-the targets are untouched.
+### Methods
 
-## Methods and events
-
-| | |
+| Method | Description |
 |---|---|
-| `next()`, `previous()`, `value = …` | Change the value from script. Like setting a native control's value, these fire no event |
-| `change` event | The user changed the value with a button or command |
+| `next()` | Move to the next value (wrapping), without an event. |
+| `previous()` | Move to the previous value (wrapping), without an event. |
 
-When another tab changes the stored value, this page follows it (no
-event, since this page's user didn't act).
+### Events
+
+| Event | Description |
+|---|---|
+| `change` | The user changed the value with a button or command. |
+
+<!-- api:end -->
 
 ## Notes
 
 - Inside a `<form>`, give the buttons `type="button"` so they don't submit.
 - For a JS-only version without an element, see
   [localstorage-class-cycler](../localstorage-class-cycler/readme.md).
+- Only the cycle's own classes are added and removed. Other classes on the targets are untouched.
+- When another tab changes the stored value, this page follows it. No event fires, since this page's user didn't act.

@@ -19,7 +19,19 @@ children's own classes, styles, and attributes are never lost.
 > change isn't a style: utility classes from a CSS framework, or
 > attributes like `hidden`, `disabled`, `placeholder`, or `aria-*`.
 
-## Attributes
+## Usage
+
+```html
+<script
+  type="module"
+  src="https://esm.sh/@johnhenry/domkit/matchable/attribute-provider/global.mjs"
+></script>
+```
+
+When several sections match, all of them apply, in order. See `demo.htm`
+for a working example of all three attributes.
+
+## Query attributes
 
 Each of `classes`/`styles`/`attributes` accepts one or more
 `[media query] value` sections, pipe (`|`)-delimited. A section with no
@@ -108,14 +120,17 @@ size instead of the viewport, like CSS container queries:
 - After the element moves, the container is looked up again. If no
   container is found, only bracket-less sections apply.
 
-## Usage
+## API
 
-```html
-<script
-  type="module"
-  src="https://esm.sh/@johnhenry/domkit/matchable/attribute-provider/global.mjs"
-></script>
-```
+<!-- api:start (generated from custom-elements.json by `npm run manifest`; edit the JSDoc instead) -->
 
-When several sections match, all of them apply, in order. See `demo.htm`
-for a working example of all three attributes.
+### Attributes
+
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `classes` |  | `string` | `[media query] class class \| …` sections. Bracket-less sections always apply. |
+| `styles` |  | `string` | `[media query] property: value; … \| …` sections. |
+| `attributes` |  | `string` | `[media query] name=value; name; name=null \| …` sections. `null` removes the attribute while the query matches. |
+| `container` |  | `string` | Container mode: evaluate the queries against an element's size instead of the viewport. Empty = the parent element; otherwise a selector for the closest matching ancestor. |
+
+<!-- api:end -->

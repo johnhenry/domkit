@@ -59,6 +59,18 @@
             },
             {
               "kind": "field",
+              "name": "#resize",
+              "privacy": "private",
+              "default": "new ResizeObserver(() => this.#updateScrollable())"
+            },
+            {
+              "kind": "field",
+              "name": "#focusable",
+              "privacy": "private",
+              "default": "new WeakSet()"
+            },
+            {
+              "kind": "field",
               "name": "#internals",
               "privacy": "private"
             },
@@ -106,6 +118,11 @@
             {
               "kind": "method",
               "name": "#clear",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#updateScrollable",
               "privacy": "private"
             },
             {
@@ -3222,6 +3239,15 @@
                 "text": "null"
               },
               "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#ownLabelledby",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
             },
             {
               "kind": "field",

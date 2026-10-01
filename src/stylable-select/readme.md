@@ -42,33 +42,67 @@ depth, typically in `<optgroup>`s. An option's value is its `value`
 `role="option"` element. Mark default selections with `selected` on an
 `<option>`, or `aria-selected="true"` on a `role="option"` element.
 
-## Attributes
+## API
 
-| Attribute | Property | Description |
+<!-- api:start (generated from custom-elements.json by `npm run manifest`; edit the JSDoc instead) -->
+
+### Attributes
+
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `disabled` | `disabled` | `boolean` | Blocks interaction and form submission. Also inherited from a disabled fieldset. |
+| `required` | `required` | `boolean` | The form is invalid until an option is selected. |
+| `multiple` | `multiple` | `boolean` | Allow selecting more than one option. |
+| `size` | `size` | `number` | Number of visible rows (sets `--domkit-select-size`, used by index.css). |
+| `name` | `name` | `string` | Name submitted with the form. |
+
+### Properties
+
+| Property | Type | Description |
 |---|---|---|
-| `name` | `name` | Name submitted with the form |
-| `multiple` | `multiple` | Allow more than one selected option. Each is submitted as its own entry |
-| `disabled` | `disabled` | No interaction, not focusable, not submitted. Also inherited from a disabled `<fieldset>` |
-| `required` | `required` | The form is invalid until something is selected |
-| `size` | `size` | Visible rows (used by `index.css` via `--domkit-select-size`) |
+| `options` (read-only) | `Element[]` | Every option, in document order (including those in groups). |
+| `selectedOptions` (read-only) | `Element[]` | The selected options. |
+| `selectedOption` (read-only) | `Element \| null` | The first selected option, or null (like infinite-combo-box's). |
+| `selectedIndex` | `number` | Index of the first selected option, or -1. Setting it selects only that option. Script changes don't fire events. |
+| `value` | `string` | Value of the first selected option, or "". Setting it selects the first option with that value (or nothing, if none matches). |
+| `length` (read-only) | `number` | Number of options. |
+| `type` (read-only) | `string` | "select-one" or "select-multiple", like a native select. |
+| `name` | `string` | Mirrors the `name` attribute. |
+| `multiple` | `boolean` | Mirrors the `multiple` attribute. |
+| `disabled` | `boolean` | Mirrors the `disabled` attribute. |
+| `required` | `boolean` | Mirrors the `required` attribute. |
+| `size` | `number` | Mirrors the `size` attribute. |
+| `form` (read-only) | `HTMLFormElement \| null` | The form this element belongs to. |
+| `labels` (read-only) | `NodeList` | Labels associated with this element. |
+| `validity` (read-only) | `ValidityState` |  |
+| `validationMessage` (read-only) | `string` |  |
+| `willValidate` (read-only) | `boolean` |  |
 
-## Properties and methods
+### Methods
 
-The same as `HTMLSelectElement`: `value` (get/set), `selectedIndex`
-(get/set; `-1` = nothing), `options`, `selectedOptions`, `selectedOption`
-(the first selected option, as on `infinite-combo-box`), `length`,
-`item(i)`, `type` (`"select-one"`/`"select-multiple"`), `form`, `labels`,
-`validity`, `validationMessage`, `willValidate`, `checkValidity()`,
-`reportValidity()`, `setCustomValidity()`.
-
-As with a native select, setting `value` to a value no option has
-selects nothing, and script changes never fire events.
-
-## Events
-
-| Event | When |
+| Method | Description |
 |---|---|
-| `input`, then `change` | The user changed the selection by click or keyboard. Both bubble, like a native select's |
+| `item(index)` | The option at `index`. |
+| `checkValidity()` |  |
+| `reportValidity()` |  |
+| `setCustomValidity(message)` |  |
+
+### Events
+
+| Event | Description |
+|---|---|
+| `input` | The user changed the selection. |
+| `change` | The user changed the selection (fired right after `input`, like a native select). |
+
+### CSS custom properties
+
+| Property | Description |
+|---|---|
+| `--domkit-select-size` | Visible rows, from the `size` attribute. |
+| `--domkit-highlight` | Background of selected options (shared token; see theme.css). |
+| `--domkit-focus-ring` | Focus outline (shared token). |
+
+<!-- api:end -->
 
 ## Keyboard
 
@@ -107,3 +141,4 @@ domkit's shared tokens (`--domkit-highlight` for the selected background,
 - Its sibling [infinite-combo-box](../infinite-combo-box/readme.md) uses the same option
   markup, value rules, styling hooks, and events, for when the list should
   be searchable.
+- As with a native select, setting `value` to a value no option has selects nothing, and script changes never fire events.
