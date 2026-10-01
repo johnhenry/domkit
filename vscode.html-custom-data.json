@@ -2,6 +2,41 @@
   "version": 1.1,
   "tags": [
     {
+      "name": "stylable-select",
+      "description": "A fully stylable listbox that works like a native select.\n\nEvents: `input`, `change`",
+      "attributes": [
+        {
+          "name": "disabled",
+          "description": "Blocks interaction and form submission. Also inherited from a disabled fieldset.",
+          "valueSet": "v"
+        },
+        {
+          "name": "required",
+          "description": "The form is invalid until an option is selected.",
+          "valueSet": "v"
+        },
+        {
+          "name": "multiple",
+          "description": "Allow selecting more than one option.",
+          "valueSet": "v"
+        },
+        {
+          "name": "size",
+          "description": "Number of visible rows (sets `--domkit-select-size`, used by index.css)."
+        },
+        {
+          "name": "name",
+          "description": "Name submitted with the form."
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/stylable-select"
+        }
+      ]
+    },
+    {
       "name": "tabbed-ui",
       "description": "Accessible tabs and panels from plain children.\n\nEvents: `change`",
       "attributes": [

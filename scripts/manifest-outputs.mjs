@@ -56,7 +56,11 @@ const tsType = (text) => (text ? text.replace(/\bobject\b/g, "Record<string, unk
 
 for (const { path, declaration: d } of elements) {
   const className = d.name && d.name !== "default" ? d.name : "Element";
-  const members = (d.members ?? []).filter((m) => (m.privacy ?? "public") === "public" && !m.static);
+  // Lifecycle callbacks (connectedCallback, formResetCallback, …) are called
+  // by the browser, not users, so they're left out like in lib.dom.d.ts.
+  const members = (d.members ?? []).filter(
+    (m) => (m.privacy ?? "public") === "public" && !m.static && !/Callback$/.test(m.name),
+  );
   const body = members
     .map((m) => {
       if (m.kind === "method") {

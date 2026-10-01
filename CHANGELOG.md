@@ -48,6 +48,26 @@ rebuilt to meet it.
     `data-display` (panels use `hidden`), the `selected` attribute on
     tabs and panels (use `aria-selected`), and
     `create-tabbed-ui.mjs`/`createTabbedUI()`.
+- **`stylable-select`, rebuilt** as a drop-in for a native listbox
+  `<select>`:
+  - The `HTMLSelectElement` contract: `value`/`selectedIndex` setters
+    with native semantics (no match → nothing selected), `options`,
+    `selectedOptions`, `length`, `item()`, `type`, and `multiple`.
+  - Form-associated: submits `name`/value(s), works with `<label for>`,
+    `form.reset()`, `required` (`:invalid`, `validity`,
+    `setCustomValidity`), `disabled`, and `<fieldset disabled>`, and
+    restores state.
+  - The WAI-ARIA listbox pattern: `aria-activedescendant`,
+    `aria-selected`, groups, arrows, `Home`/`End`, native-style
+    typeahead, and Space to toggle in `multiple` mode.
+  - `<option>` state is native, so `option:checked` and `option:disabled`
+    work in CSS.
+  - `input` + `change` fire on user changes only.
+  - Fixed clicks in a scrolled list landing on the wrong option.
+  - Removed: the `data-checked` attribute (use `option:checked` or
+    `aria-selected`), the `change` event's `detail` (read `.value`), the
+    reset-to-first-option on child changes, and clamping of out-of-range
+    `selectedIndex` (now `-1`, like native).
 
 ## [0.0.9] - 2026-09-30
 

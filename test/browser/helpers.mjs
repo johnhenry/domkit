@@ -29,3 +29,16 @@ export async function recordEvents(page, types) {
     take: () => page.evaluate(() => window.__events.splice(0)),
   };
 }
+
+/**
+ * Accessible names of every node with `role` in the browser's *real*
+ * accessibility tree (Chromium only, via CDP). Playwright's own role/name
+ * computation doesn't follow <label for> to form-associated custom
+ * elements, so name checks for those use this; returns null elsewhere.
+ */
+export async function axNames(page, browserName, role) {
+  if (browserName !== "chromium") return null;
+  const cdp = await page.context().newCDPSession(page);
+  const { nodes } = await cdp.send("Accessibility.getFullAXTree");
+  return nodes.filter((n) => n.role?.value === role).map((n) => n.name?.value ?? "");
+}

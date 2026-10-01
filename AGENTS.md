@@ -94,6 +94,10 @@ module and the principles disagree, the module is wrong.
   `playwright install --force firefox`). Run
   `npx playwright test --project chromium --project webkit` locally and
   let CI (Ubuntu) cover Firefox.
+- **Playwright's `getByRole(…, { name })` doesn't follow `<label for>` to
+  form-associated custom elements**, though browsers do. Check accessible
+  names of those with `axNames()` from `test/browser/helpers.mjs`, which
+  reads Chromium's real accessibility tree.
 - **`cem analyze` can't link a class to the tag `global.mjs` registers**
   (the class is an anonymous default export defined in another file), so
   the `@tag` JSDoc is what puts an element in the manifest. It also
@@ -133,6 +137,9 @@ module and the principles disagree, the module is wrong.
     tests in that direction (see `families.test.mjs`).
   - Customized built-ins never get lifecycle callbacks, so those tests
     are skipped with a reason.
+  - No `ElementInternals` (`attachInternals` is undefined), so
+    form-associated elements can't even be constructed there. They're
+    tested only in `test/browser/`.
   - `requestAnimationFrame` runs as fast as the CPU allows. Drive frames
     by hand for anything rate-based (see the `internal-timer` test).
 - **A hidden browser tab doesn't deliver `requestAnimationFrame` or

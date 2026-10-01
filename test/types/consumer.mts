@@ -17,3 +17,14 @@ if (tabs) {
 customElements.define("my-tabs", TabbedUI);
 const fresh: TabbedUI = new TabbedUI();
 void fresh;
+
+// stylable-select: the HTMLSelectElement-like contract.
+import "@johnhenry/domkit/stylable-select/global.mjs";
+const select = document.querySelector("stylable-select")!;
+const chosen: string = select.value;
+select.selectedIndex = -1;
+const many: Element[] = select.selectedOptions;
+const ok: boolean = select.checkValidity();
+const owner: HTMLFormElement | null = select.form;
+select.setCustomValidity("");
+void chosen, many, ok, owner;

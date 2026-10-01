@@ -57,8 +57,10 @@ Any element that holds a value is **form-associated**
   pattern](https://www.w3.org/WAI/ARIA/apg/patterns/): roles, states, and
   the full keyboard interaction, including roving `tabindex`,
   `Home`/`End`, and focus that is always visible.
-- Roles and states the element owns are set through `ElementInternals` or
-  on the parts it generates. Author-written ARIA is never overwritten.
+- Roles and states are written as ARIA attributes (on the element and on
+  the parts it manages), not only through `ElementInternals`, so every
+  assistive technology, auditing tool, and test runner sees them. A role
+  the author wrote is never overwritten.
 - Keyboard handlers only claim the keys they use and only `preventDefault`
   what they handle. They never stop propagation of keys they don't handle.
 
