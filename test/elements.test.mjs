@@ -13,7 +13,6 @@ const GLOBALS = {
   "matchable/attribute-provider": "attribute-provider",
   "cyclable/class-cycler": "class-cycler",
   "definable/define-component": "define-component",
-  "definable/define-component-by-content": "define-component-by-content",
   "definable/polyfill-window": "polyfill-window",
 };
 for (const path of Object.keys(GLOBALS)) {
@@ -113,8 +112,8 @@ test("query-container swaps its wrapper element by media query, even after a mov
   await tick();
 });
 
-test("define-component-by-content defines a tag from an attribute", async () => {
-  render(`<define-component-by-content name="x-hello" content="<b>hi</b>"></define-component-by-content><x-hello></x-hello>`);
+test("define-component defines a markup-only tag from an attribute", async () => {
+  render(`<define-component name="x-hello" content="<b>hi</b>"></define-component><x-hello></x-hello>`);
   await tick();
   assert.equal(document.querySelector("x-hello").shadowRoot.innerHTML, "<b>hi</b>");
 });

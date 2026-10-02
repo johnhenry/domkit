@@ -79,15 +79,17 @@ Syntax highlighting that never touches your markup. [Guide](../src/code-color/re
 
 ## `<define-component>`
 
-Register a custom element from a module URL, in HTML. [Guide](../src/definable/define-component/readme.md) · module `@johnhenry/domkit/definable/define-component`
+Register a custom element in HTML, from a module or from inline markup. [Guide](../src/definable/define-component/readme.md) · module `@johnhenry/domkit/definable/define-component`
 
 **Attributes**
 
 | Attribute | Property | Type | Description |
 |---|---|---|---|
 | `name` |  | `string` | The tag name to register. |
-| `src` |  | `string` | URL of the module, resolved against the document's base URL. |
-| `import` |  | `string` | Name of the export to register. Default `default`. |
+| `src` |  | `string` | URL of a module exporting the element class, resolved against the document's base URL. Not allowed with inline markup. |
+| `import` |  | `string` | With `src`: the name of the export to register. Default `default`. |
+| `content` |  | `string` | Inline markup, if there's no `<template>` child. Not allowed with `src`. |
+| `mode` |  | `string` | With inline markup: `open` (default) or `closed` shadow root, or `none` to append the markup as light DOM. |
 
 **Properties**
 
@@ -100,26 +102,7 @@ Register a custom element from a module URL, in HTML. [Guide](../src/definable/d
 | Event | Description |
 |---|---|
 | `load` | The element is registered (or the name already was). |
-| `error` | The module failed to load, lacked the export, or the export isn't a class. An `ErrorEvent`. |
-
-## `<define-component-by-content>`
-
-Register a markup-only custom element from inline HTML. [Guide](../src/definable/define-component-by-content/readme.md) · module `@johnhenry/domkit/definable/define-component-by-content`
-
-**Attributes**
-
-| Attribute | Property | Type | Description |
-|---|---|---|---|
-| `name` |  | `string` | The tag name to register. |
-| `content` |  | `string` | The markup, if there's no `<template>` child. |
-| `mode` |  | `string` | `open` (default) or `closed` shadow root, or `none` to append the markup as light DOM. |
-
-**Events**
-
-| Event | Description |
-|---|---|
-| `load` | The element is registered (or the name already was). |
-| `error` | Missing/invalid name or mode. An `ErrorEvent`. |
+| `error` | No source or two sources, an invalid name or mode, or (with `src`) the module failed to load, lacked the export, or the export isn't a class. An `ErrorEvent`. |
 
 ## `<drill-menu>`
 

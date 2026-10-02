@@ -6,8 +6,7 @@ globals, and hide content until everything is ready, without writing a
 
 | Module | You have… | It does |
 |---|---|---|
-| [define-component](./define-component/readme.md) | a module that exports an element class | `<define-component name="my-widget" src="./my-widget.mjs">` imports it and registers `<my-widget>` |
-| [define-component-by-content](./define-component-by-content/readme.md) | a snippet of markup | `<define-component-by-content name="my-callout" content="…">` registers a tag that renders it |
+| [define-component](./define-component/readme.md) | a module that exports an element class, or a snippet of markup | `<define-component name="my-widget" src="./my-widget.mjs">` imports it and registers `<my-widget>`; `<define-component name="my-callout"><template>…</template></define-component>` registers a tag that renders the markup |
 | [polyfill-window](./polyfill-window/readme.md) | a module that should live on `window` | `<polyfill-window name="shout" src="./shout.mjs">` imports it and assigns `window.shout` |
 | [until-window-load](./until-window-load/readme.md) | content that flashes before it's ready | removes a "hidden until loaded" class once `window` fires `load` |
 | [definetag](./definetag/readme.md) | an element class, in JS | `definetag(Class)("tag-name")`, a curried `customElements.define` |

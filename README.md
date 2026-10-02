@@ -77,8 +77,7 @@ queries, evaluated against an element's size instead of the viewport.
 
 | Module | What it's for | `global.mjs` registers |
 |---|---|---|
-| [define-component](src/definable/define-component/readme.md) | Register a custom element from a module URL | `<define-component>` |
-| [define-component-by-content](src/definable/define-component-by-content/readme.md) | Register a markup-only custom element from an HTML string | `<define-component-by-content>` |
+| [define-component](src/definable/define-component/readme.md) | Register a custom element from a module URL or from inline markup | `<define-component>` |
 | [polyfill-window](src/definable/polyfill-window/readme.md) | Load a module onto `window` | `<polyfill-window>` |
 | [until-window-load](src/definable/until-window-load/readme.md) | Hide content until the page has loaded | (strips the `until-window-load` class) |
 | [definetag](src/definable/definetag/readme.md) | Curried `customElements.define` | |
