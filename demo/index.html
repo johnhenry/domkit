@@ -120,9 +120,10 @@
 
   <h2 id="utilities">Utilities <span class="count">timing · collections</span></h2>
   <p class="group-note">
-    <code>delay</code>, <code>frame-delay</code>, and <code>clamp</code> are
-    plain functions with nothing to show — <code>frame-timer</code> below
-    is built on the first two.
+    <code>delay</code> (milliseconds, or one frame at a given
+    <code>fps</code>) and <code>clamp</code> are plain functions with
+    nothing to show; <code>frame-timer</code> below is the clock-shaped
+    version of <code>delay({ fps })</code>.
   </p>
   <div class="grid">
     <div class="card">
@@ -132,13 +133,8 @@
     </div>
     <div class="card">
       <h3>live-query-selector</h3>
-      <p>An auto-updating live collection matching a selector, with a <code>.stop()</code> to disconnect it.</p>
+      <p>An auto-updating array of the elements matching a selector, with a <code>change</code> event and a <code>.stop()</code> to disconnect it.</p>
       <iframe src="fragments/live-query-selector.html"></iframe>
-    </div>
-    <div class="card">
-      <h3>create-mutable-nodelist</h3>
-      <p>A push/pop/shift/unshift-able NodeList-like collection.</p>
-      <iframe src="fragments/create-mutable-nodelist.html"></iframe>
     </div>
   </div>
 

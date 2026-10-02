@@ -170,54 +170,6 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/create-mutable-nodelist/index.mjs",
-      "declarations": [
-        {
-          "kind": "variable",
-          "name": "MutableNodeList",
-          "default": "class extends NodeList { item(i = 0) { return this[i]; } push(...nodes) { assertNodes(nodes); return Array.prototype.push.apply(this, nodes); } pop() { return Array.prototype.pop.call(this); } shift() { return Array.prototype.shift.call(this); } unshift(...nodes) { assertNodes(nodes); return Array.prototype.unshift.apply(this, nodes); } // Browsers' NodeList.prototype iteration methods *are* Array.prototype's // (per WebIDL), so they already work here; DOM implementations like // happy-dom read internal state instead. Pin the spec behavior. [Symbol.iterator]() { return Array.prototype.values.call(this); } values() { return Array.prototype.values.call(this); } keys() { return Array.prototype.keys.call(this); } entries() { return Array.prototype.entries.call(this); } forEach(callback, thisArg) { return Array.prototype.forEach.call(this, callback, thisArg); } }"
-        },
-        {
-          "kind": "function",
-          "name": "createMutableNodeList",
-          "parameters": [
-            {
-              "name": "nodes",
-              "description": "initial contents",
-              "type": {
-                "text": "...Node"
-              }
-            }
-          ],
-          "description": "Create a NodeList you can push to, pop from, shift, and unshift.",
-          "return": {
-            "type": {
-              "text": "InstanceType<typeof MutableNodeList>"
-            }
-          }
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "MutableNodeList",
-          "declaration": {
-            "name": "MutableNodeList",
-            "module": "src/create-mutable-nodelist/index.mjs"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "default",
-          "declaration": {
-            "name": "createMutableNodeList",
-            "module": "src/create-mutable-nodelist/index.mjs"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
       "path": "src/cyclable/class-cycler/index.mjs",
       "declarations": [
         {
@@ -1079,20 +1031,6 @@
           "declaration": {
             "name": "DrillMenu",
             "module": "src/drill-menu/index.mjs"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/frame-delay/index.mjs",
-      "declarations": [],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "default",
-          "declaration": {
-            "module": "src/frame-delay/index.mjs"
           }
         }
       ]
@@ -2563,28 +2501,19 @@
               }
             },
             {
-              "name": "element",
-              "default": "document.getRootNode()",
+              "name": "root",
+              "default": "document",
               "description": "the root to search and watch (default: document)",
               "optional": true,
               "type": {
                 "text": "ParentNode"
               }
-            },
-            {
-              "name": "useNodeList",
-              "default": "false",
-              "description": "return a MutableNodeList instead of an array",
-              "optional": true,
-              "type": {
-                "text": "boolean"
-              }
             }
           ],
-          "description": "`querySelectorAll` that stays current: the returned list is refreshed in\nplace as elements are added to or removed from `root`. Call `stop()` on\nit when done.",
+          "description": "`querySelectorAll` that stays current: the returned array is refreshed in\nplace as elements are added to or removed from `root`, and fires `change`\nwhen its contents change. Call `stop()` on it when done.",
           "return": {
             "type": {
-              "text": "Element[] & { stop(): void }"
+              "text": "LiveElementList"
             }
           }
         }

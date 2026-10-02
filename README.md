@@ -86,11 +86,9 @@ queries, evaluated against an element's size instead of the viewport.
 
 | Module | What it's for | `global.mjs` registers |
 |---|---|---|
-| [delay](src/delay/readme.md) | `await delay(ms)` | |
-| [frame-delay](src/frame-delay/readme.md) | `await frameDelay(fps)`: wait one frame period, on an animation frame | |
+| [delay](src/delay/readme.md) | `await delay(ms)`, or `await delay({ fps })` to wait one frame period on an animation frame | |
 | [frame-timer](src/frame-timer/readme.md) | A clock element: steady `tick` events with `play()`/`pause()`, like a media element | `<frame-timer>` |
-| [live-query-selector](src/live-query-selector/readme.md) | `querySelectorAll` that stays current | |
-| [create-mutable-nodelist](src/create-mutable-nodelist/readme.md) | A real `NodeList` you can push to and pop from | |
+| [live-query-selector](src/live-query-selector/readme.md) | `querySelectorAll` that stays current, with a `change` event | |
 | [clamp](src/clamp/readme.md) | `clamp(min, max)(value)` | |
 
 ### Bootstrapping an app: [`hydratable/`](src/hydratable/readme.md)

@@ -1,41 +1,36 @@
-import createMutableNodeList from "../create-mutable-nodelist/index.mjs";
+/**
+ * @typedef {Element[] & {
+ *   stop(): void,
+ *   addEventListener(type: "change", listener: (event: Event) => void, options?: boolean | AddEventListenerOptions): void,
+ *   removeEventListener(type: "change", listener: (event: Event) => void, options?: boolean | EventListenerOptions): void,
+ * }} LiveElementList
+ */
 
 /**
- * `querySelectorAll` that stays current: the returned list is refreshed in
- * place as elements are added to or removed from `root`. Call `stop()` on
- * it when done.
+ * `querySelectorAll` that stays current: the returned array is refreshed in
+ * place as elements are added to or removed from `root`, and fires `change`
+ * when its contents change. Call `stop()` on it when done.
  * @param {string} selector
- * @param {ParentNode} [element] the root to search and watch (default: document)
- * @param {boolean} [useNodeList] return a MutableNodeList instead of an array
- * @returns {Element[] & { stop(): void }}
+ * @param {ParentNode} [root] the root to search and watch (default: document)
+ * @returns {LiveElementList}
  */
-const liveQuerySelector = (
-  selector,
-  element = document.getRootNode(),
-  useNodeList = false
-) => {
-  // Initialize results with current nodes.
-  const init = element.querySelectorAll(selector);
-  const result = useNodeList ? createMutableNodeList(...init) : [...init];
-  // Create observer instance.
-  const observer = new globalThis.MutationObserver(() => {
-    while (result.length) {
-      result.pop();
-    }
-    for (const node of element.querySelectorAll(selector)) {
-      result.push(node);
-    }
+const liveQuerySelector = (selector, root = document) => {
+  const result = [...root.querySelectorAll(selector)];
+  const events = new EventTarget();
+  const observer = new MutationObserver(() => {
+    const now = [...root.querySelectorAll(selector)];
+    if (now.length === result.length && now.every((element, i) => element === result[i])) return;
+    result.splice(0, result.length, ...now);
+    events.dispatchEvent(new Event("change"));
   });
-  // Set up observer.
-  observer.observe(element, { childList: true, subtree: true });
-  // Non-enumerable so it doesn't show up in for...of/spread/JSON over the
-  // returned array/MutableNodeList -- there was previously no way at all
-  // to stop the observer short of the whole document being torn down.
-  Object.defineProperty(result, "stop", {
-    value: () => observer.disconnect(),
-    enumerable: false,
+  observer.observe(root, { childList: true, subtree: true });
+  // Non-enumerable, so the array still spreads, logs, and compares like one.
+  Object.defineProperties(result, {
+    stop: { value: () => observer.disconnect() },
+    addEventListener: { value: events.addEventListener.bind(events) },
+    removeEventListener: { value: events.removeEventListener.bind(events) },
   });
-  return result;
+  return /** @type {LiveElementList} */ (result);
 };
 
 export default liveQuerySelector;

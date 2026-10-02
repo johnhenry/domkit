@@ -6,6 +6,15 @@ All notable changes to this project will be documented in this file.
 
 ### Changed (breaking)
 
+- **`frame-delay` is merged into `delay`.** `await delay({ fps: 30 })`
+  waits one frame period on an animation frame, as `frameDelay(30)` did;
+  `delay()` and `delay(ms)` are unchanged. An invalid `fps` now rejects
+  instead of throwing.
+- **`create-mutable-nodelist` is removed, and `live-query-selector`
+  returns a plain array that fires `change`.** The `useNodeList` argument
+  is gone. Listen with `list.addEventListener("change", …)` instead of
+  re-reading after a microtask.
+
 - **`define-component-by-content` is merged into `<define-component>`.**
   One element now registers a tag either from a module (`src`, with
   `import` naming the export, default `default`) or from markup in the
