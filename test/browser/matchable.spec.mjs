@@ -207,3 +207,64 @@ test.describe("container mode", () => {
     await expect.poll(tag).toBe("ol");
   });
 });
+
+test.describe("activeQueries and change", () => {
+  const record = (page, id) =>
+    page.evaluate((id) => {
+      window.changes = [];
+      document.getElementById(id).addEventListener("change", (e) => window.changes.push(e.target.activeQueries.join(" ; ")));
+    }, id);
+
+  test("query-container reports matching queries and fires change when they flip", async ({ page }) => {
+    await page.setViewportSize(WIDE);
+    await mount(page, `<query-container id="q" default="ul" query="[(min-width: 600px)] ol"><li>a</li></query-container>`, MODULES);
+    const read = () =>
+      page.evaluate(() => {
+        const q = document.getElementById("q");
+        return { matches: q.activeQueries, wrapper: q.wrapper.localName, default: q.default, query: q.query };
+      });
+    expect(await read()).toEqual({ matches: ["(min-width: 600px)"], wrapper: "ol", default: "ul", query: "[(min-width: 600px)] ol" });
+    await record(page, "q");
+    await page.setViewportSize(NARROW);
+    await expect.poll(() => page.evaluate(() => window.changes)).toEqual([""]);
+    expect(await read()).toMatchObject({ matches: [], wrapper: "ul" });
+    expect(await page.evaluate(() => typeof document.getElementById("q").triggerQuery), "internals aren't public").toBe("undefined");
+  });
+
+  test("setting query or default by property reflects and re-renders, without an event", async ({ page }) => {
+    await page.setViewportSize(WIDE);
+    await mount(page, `<query-container id="q" default="ul" query="[(min-width: 600px)] ol"><li>a</li></query-container>`, MODULES);
+    await record(page, "q");
+    const tag = await page.evaluate(() => {
+      const q = document.getElementById("q");
+      q.query = "[(min-width: 600px)] menu";
+      return [q.getAttribute("query"), q.wrapper.localName];
+    });
+    expect(tag).toEqual(["[(min-width: 600px)] menu", "menu"]);
+    expect(await page.evaluate(() => window.changes)).toEqual([]);
+  });
+
+  test("attribute-provider reports matching queries across its attributes, once each", async ({ page }) => {
+    await page.setViewportSize(WIDE);
+    await mount(
+      page,
+      `<attribute-provider id="ap" classes="base | [(min-width: 600px)] wide" styles="[(min-width: 600px)] color: red" attributes="[(max-width: 599px)] title=narrow"><p></p></attribute-provider>`,
+      MODULES,
+    );
+    expect(await page.evaluate(() => document.getElementById("ap").activeQueries)).toEqual(["(min-width: 600px)"]);
+    await record(page, "ap");
+    await page.setViewportSize(NARROW);
+    await expect.poll(() => page.evaluate(() => window.changes)).toEqual(["(max-width: 599px)"]);
+  });
+
+  test("container mode fires change too", async ({ page }) => {
+    await mount(
+      page,
+      `<div id="box" style="width: 300px"><query-container id="q" container default="ul" query="[(min-width: 400px)] ol"><li>a</li></query-container></div>`,
+      MODULES,
+    );
+    await record(page, "q");
+    await page.evaluate(() => (document.getElementById("box").style.width = "500px"));
+    await expect.poll(() => page.evaluate(() => window.changes)).toEqual(["(min-width: 400px)"]);
+  });
+});

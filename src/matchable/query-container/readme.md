@@ -79,6 +79,21 @@ element to create:
 Use `template` as a wrapper to make the children inert (not rendered) for
 some breakpoints.
 
+## Reacting to changes
+
+`activeQueries` lists the queries that currently match, and `wrapper` is the
+element now wrapping the children. When the viewport (or container)
+changes so that a query starts or stops matching, a `change` event
+fires, like a `MediaQueryList`'s:
+
+```js
+const steps = document.querySelector("query-container");
+steps.addEventListener("change", () => console.log(steps.activeQueries, steps.wrapper.localName));
+```
+
+Changing `query` or `default` (as attributes or properties) re-renders
+without an event.
+
 ## API
 
 <!-- api:start (generated from custom-elements.json by `npm run manifest`; edit the JSDoc instead) -->
@@ -87,18 +102,24 @@ some breakpoints.
 
 | Attribute | Property | Type | Description |
 |---|---|---|---|
-| `default` |  | `string` | Wrapper when no query matches, as a simple selector (`ul`, `ol.steps`, `div#x[data-y=z]`). Defaults to the first section's. |
-| `query` |  | `string` | `[media query] selector` sections separated by `\|`. The last matching section wins. |
+| `default` | `default` | `string` | Wrapper when no query matches, as a simple selector (`ul`, `ol.steps`, `div#x[data-y=z]`). Defaults to the first section's. |
+| `query` | `query` | `string` | `[media query] selector` sections separated by `\|`. The last matching section wins. |
 | `container` |  | `string` | Container mode: evaluate the queries against an element's size instead of the viewport. Empty = the parent element; otherwise a selector for the closest matching ancestor. |
 
-### Methods
+### Properties
 
-| Method | Description |
+| Property | Type | Description |
+|---|---|---|
+| `default` | `string` | Mirrors the `default` attribute. |
+| `query` | `string` | Mirrors the `query` attribute. |
+| `activeQueries` (read-only) | `string[]` | The media (or container) queries that currently match, in the order they're written. |
+| `wrapper` (read-only) | `Element \| null` | The element currently wrapping the children. |
+
+### Events
+
+| Event | Description |
 |---|---|
-| `setInitial(selector)` |  |
-| `setQueries(queries)` |  |
-| `triggerQuery()` |  |
-| `update()` |  |
+| `change` | A query started or stopped matching (the viewport or container changed), so `activeQueries` changed. The wrapper may have been swapped. |
 
 <!-- api:end -->
 

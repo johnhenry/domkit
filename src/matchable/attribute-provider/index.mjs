@@ -51,12 +51,18 @@ const parsers = {
  * @attr {string} styles - `[media query] property: value; … | …` sections.
  * @attr {string} attributes - `[media query] name=value; name; name=null | …` sections. `null` removes the attribute while the query matches.
  * @attr {string} container - Container mode: evaluate the queries against an element's size instead of the viewport. Empty = the parent element; otherwise a selector for the closest matching ancestor.
+ *
+ * @fires change - A query started or stopped matching (the viewport or container changed), so `activeQueries` changed and the children were updated.
  */
 export default class AttributeProvider extends HTMLElement {
   static observedAttributes = ["classes", "styles", "attributes", "container"];
 
   #sections = { classes: [], styles: [], attributes: [] };
-  #onChange = () => this.#apply();
+  #matches = [];
+  #onChange = () => {
+    this.#apply();
+    if (this.#updateMatches()) this.dispatchEvent(new Event("change", { bubbles: true }));
+  };
   #observer = new MutationObserver(() => this.#apply());
   // What this element changed on each child, so it can be undone exactly.
   #addedClasses = new WeakMap(); // child -> Set(class)
@@ -68,6 +74,7 @@ export default class AttributeProvider extends HTMLElement {
     for (const kind of Object.keys(parsers)) this.#parse(kind);
     this.#observer.observe(this, { childList: true });
     this.#apply();
+    this.#updateMatches();
   }
 
   disconnectedCallback() {
@@ -80,6 +87,32 @@ export default class AttributeProvider extends HTMLElement {
     if (name === "container") for (const kind of Object.keys(parsers)) this.#parse(kind);
     else this.#parse(name);
     this.#apply();
+    this.#updateMatches();
+  }
+
+  /**
+   * The media (or container) queries that currently match, across
+   * `classes`, `styles`, and `attributes`, without duplicates.
+   * @type {string[]}
+   * @readonly
+   */
+  get activeQueries() {
+    return [...this.#matches];
+  }
+
+  // Returns whether the list of matching queries changed.
+  #updateMatches() {
+    const now = [
+      ...new Set(
+        Object.values(this.#sections)
+          .flat()
+          .filter(({ mql }) => mql.media && mql.matches)
+          .map(({ mql }) => mql.media),
+      ),
+    ];
+    const changed = now.length !== this.#matches.length || now.some((media, i) => media !== this.#matches[i]);
+    this.#matches = now;
+    return changed;
   }
 
   #parse(kind) {

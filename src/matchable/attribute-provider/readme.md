@@ -120,6 +120,19 @@ size instead of the viewport, like CSS container queries:
 - After the element moves, the container is looked up again. If no
   container is found, only bracket-less sections apply.
 
+## Reacting to changes
+
+`activeQueries` lists the queries that currently match, across `classes`,
+`styles`, and `attributes` (each query once). When the viewport (or
+container) changes so that one starts or stops matching, the children
+are updated and a `change` event fires:
+
+```js
+provider.addEventListener("change", () => console.log(provider.activeQueries));
+```
+
+Editing the attributes re-applies without an event.
+
 ## API
 
 <!-- api:start (generated from custom-elements.json by `npm run manifest`; edit the JSDoc instead) -->
@@ -132,5 +145,17 @@ size instead of the viewport, like CSS container queries:
 | `styles` |  | `string` | `[media query] property: value; … \| …` sections. |
 | `attributes` |  | `string` | `[media query] name=value; name; name=null \| …` sections. `null` removes the attribute while the query matches. |
 | `container` |  | `string` | Container mode: evaluate the queries against an element's size instead of the viewport. Empty = the parent element; otherwise a selector for the closest matching ancestor. |
+
+### Properties
+
+| Property | Type | Description |
+|---|---|---|
+| `activeQueries` (read-only) | `string[]` | The media (or container) queries that currently match, across `classes`, `styles`, and `attributes`, without duplicates. |
+
+### Events
+
+| Event | Description |
+|---|---|
+| `change` | A query started or stopped matching (the viewport or container changed), so `activeQueries` changed and the children were updated. |
 
 <!-- api:end -->

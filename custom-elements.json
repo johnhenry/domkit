@@ -2622,6 +2622,15 @@
             },
             {
               "kind": "field",
+              "name": "#matches",
+              "privacy": "private",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
               "name": "#onChange",
               "privacy": "private"
             },
@@ -2654,6 +2663,20 @@
               "name": "#touched",
               "privacy": "private",
               "default": "new Set()"
+            },
+            {
+              "kind": "field",
+              "name": "activeQueries",
+              "description": "The media (or container) queries that currently match, across\n`classes`, `styles`, and `attributes`, without duplicates.",
+              "type": {
+                "text": "string[]"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "#updateMatches",
+              "privacy": "private"
             },
             {
               "kind": "method",
@@ -2735,6 +2758,12 @@
               ]
             }
           ],
+          "events": [
+            {
+              "description": "A query started or stopped matching (the viewport or container changed), so `activeQueries` changed and the children were updated.",
+              "name": "change"
+            }
+          ],
           "attributes": [
             {
               "name": "classes",
@@ -2810,8 +2839,18 @@
             },
             {
               "kind": "field",
+              "name": "#matches",
+              "privacy": "private",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
               "name": "#observer",
-              "privacy": "private"
+              "privacy": "private",
+              "default": "new MutationObserver(() => this.#wrapChildren())"
             },
             {
               "kind": "field",
@@ -2819,8 +2858,43 @@
               "privacy": "private"
             },
             {
+              "kind": "field",
+              "name": "default",
+              "description": "Mirrors the `default` attribute.",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "query",
+              "description": "Mirrors the `query` attribute.",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "activeQueries",
+              "description": "The media (or container) queries that currently match, in the order\nthey're written.",
+              "type": {
+                "text": "string[]"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "wrapper",
+              "description": "The element currently wrapping the children.",
+              "type": {
+                "text": "Element | null"
+              },
+              "readonly": true
+            },
+            {
               "kind": "method",
-              "name": "setInitial",
+              "name": "#setDefault",
+              "privacy": "private",
               "parameters": [
                 {
                   "name": "selector"
@@ -2829,7 +2903,8 @@
             },
             {
               "kind": "method",
-              "name": "setQueries",
+              "name": "#setQueries",
+              "privacy": "private",
               "parameters": [
                 {
                   "name": "queries"
@@ -2838,11 +2913,24 @@
             },
             {
               "kind": "method",
-              "name": "triggerQuery"
+              "name": "#evaluate",
+              "privacy": "private"
             },
             {
               "kind": "method",
-              "name": "update"
+              "name": "#updateMatches",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#wrapChildren",
+              "privacy": "private"
+            }
+          ],
+          "events": [
+            {
+              "description": "A query started or stopped matching (the viewport or container changed), so `activeQueries` changed. The wrapper may have been swapped.",
+              "name": "change"
             }
           ],
           "attributes": [
