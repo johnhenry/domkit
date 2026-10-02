@@ -27,6 +27,15 @@ export default class StylableSelect extends HTMLElement {
   size: number;
   /** The option at `index`. */
   item(index: number): Element | null;
+  /** The first option whose `id` or `name` is `name`, like a select's. */
+  namedItem(name: string): Element | null;
+  /** Add an option or optgroup, like a select's `add()`: before `before`
+   * (an option element or an index), or at the end. Throws a
+   * `NotFoundError` if `before` is an element that isn't in this list. */
+  add(element: Element, before?: Element | number | null): void;
+  /** With an index, remove that option, like a select's `remove(index)`.
+   * With no argument, remove this element itself, as on any element. */
+  remove(index?: number): void;
   /** The form this element belongs to. */
   readonly form: HTMLFormElement | null;
   /** Labels associated with this element. */

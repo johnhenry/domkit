@@ -52,7 +52,8 @@ depth, typically in `<optgroup>`s. An option's value is its `value`
 `stylable-select` and a native listbox `<select>` (with
 `appearance: base-select`) and checks they agree on `value`,
 `selectedIndex`, `selectedOptions`, `option.selected`, `:checked`, form
-data, reset, `required`, and single-select keyboard selection. To switch:
+data, reset, `required`, `add()`/`remove()`/`namedItem()`, and
+single-select keyboard selection. To switch:
 
 1. Rename `<stylable-select>` to `<select>`, keeping its attributes
    (`multiple`, `size`, `name`, `required`, `disabled`) and its
@@ -116,6 +117,9 @@ focus without selecting, where a classic listbox and WebKit's select).
 | Method | Description |
 |---|---|
 | `item(index)` | The option at `index`. |
+| `namedItem(name)` | The first option whose `id` or `name` is `name`, like a select's. |
+| `add(element, before)` | Add an option or optgroup, like a select's `add()`: before `before` (an option element or an index), or at the end. Throws a `NotFoundError` if `before` is an element that isn't in this list. |
+| `remove(index)` | With an index, remove that option, like a select's `remove(index)`. With no argument, remove this element itself, as on any element. |
 | `checkValidity()` |  |
 | `reportValidity()` |  |
 | `setCustomValidity(message)` |  |

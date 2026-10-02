@@ -392,6 +392,9 @@ A fully stylable listbox that works like a native select. [Guide](../src/stylabl
 | Method | Description |
 |---|---|
 | `item(index)` | The option at `index`. |
+| `namedItem(name)` | The first option whose `id` or `name` is `name`, like a select's. |
+| `add(element, before)` | Add an option or optgroup, like a select's `add()`: before `before` (an option element or an index), or at the end. Throws a `NotFoundError` if `before` is an element that isn't in this list. |
+| `remove(index)` | With an index, remove that option, like a select's `remove(index)`. With no argument, remove this element itself, as on any element. |
 | `checkValidity()` |  |
 | `reportValidity()` |  |
 | `setCustomValidity(message)` |  |

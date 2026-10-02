@@ -58,6 +58,11 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **`stylable-select` gains `add()`, `remove(index)`, and `namedItem()`**,
+  matching `HTMLSelectElement` (`remove()` with no argument still removes
+  the element). Like a native single select, a newly inserted selected
+  option now becomes the selection.
+
 - **`delay` can be cancelled**: pass `{ signal }` (or `{ fps, signal }`)
   and aborting clears the timer or animation frame and rejects with
   `signal.reason`. **`live-query-selector` can watch attributes**:
