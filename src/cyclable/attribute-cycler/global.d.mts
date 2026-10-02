@@ -1,5 +1,5 @@
 // Generated from custom-elements.json by scripts/manifest-outputs.mjs.
 // Do not edit: change the JSDoc in index.mjs and run `npm run manifest`.
-// Registers <class-cycler>; see ./index.d.mts for its type.
+// Registers <attribute-cycler>; see ./index.d.mts for its type.
 import "./index.mjs";
 export {};

@@ -6,8 +6,8 @@ import { render, tick } from "./dom.mjs";
 const localStorageCycler = (
   await import("../src/cyclable/localstorage-cycler/index.mjs")
 ).default;
-const localStorageClassCycler = (
-  await import("../src/cyclable/localstorage-class-cycler/index.mjs")
+const localStorageAttributeCycler = (
+  await import("../src/cyclable/localstorage-attribute-cycler/index.mjs")
 ).default;
 const Hydratable = (await import("../src/hydratable/index.mjs")).default;
 const { parseQuerySections } = await import(
@@ -36,13 +36,24 @@ test("localstorage-cycler resumes from a persisted value", () => {
   assert.equal(cycle().value, "c");
 });
 
-test("localstorage-class-cycler swaps exactly one of its classes", () => {
+test("localstorage-attribute-cycler swaps exactly one of its classes", () => {
   localStorage.clear();
   const el = render(`<div class="keep"></div>`).firstElementChild;
-  const cycle = localStorageClassCycler(el, "theme", "light", "dark");
+  const cycle = localStorageAttributeCycler(el, "theme", ["light", "dark"]);
   assert.deepEqual([...el.classList], ["keep", "light"]);
   cycle();
   assert.deepEqual([...el.classList], ["keep", "dark"]);
+});
+
+test("localstorage-attribute-cycler can set another attribute; empty removes it", () => {
+  localStorage.clear();
+  const el = render(`<div></div>`).firstElementChild;
+  const cycle = localStorageAttributeCycler(el, "mode", ["", "dark"], { attribute: "data-theme" });
+  assert.equal(el.hasAttribute("data-theme"), false);
+  cycle();
+  assert.equal(el.getAttribute("data-theme"), "dark");
+  cycle();
+  assert.equal(el.hasAttribute("data-theme"), false);
 });
 
 test("hydratable hydrates once, dehydrates, and can hydrate again", async () => {

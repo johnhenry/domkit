@@ -41,17 +41,18 @@ const chosenOption: Element | null = combo.selectedOption;
 combo.open = true;
 void comboValue, chosenOption;
 
-// hotkey-dialog and class-cycler.
+// hotkey-dialog and attribute-cycler.
 import "@johnhenry/domkit/hotkey-dialog/global.mjs";
-import "@johnhenry/domkit/cyclable/class-cycler/global.mjs";
+import "@johnhenry/domkit/cyclable/attribute-cycler/global.mjs";
 const hk = document.querySelector("hotkey-dialog")!;
 const dlg: HTMLDialogElement | null = hk.dialog;
 hk.toggle();
 hk.close("done");
-const cycler = document.querySelector("class-cycler")!;
+const cycler = document.querySelector("attribute-cycler")!;
 cycler.next();
 const theme: string = cycler.value;
 const values: string[] = cycler.values;
+cycler.attribute = "data-theme";
 void dlg, theme, values;
 
 // drill-menu.
@@ -99,6 +100,7 @@ import clamp from "@johnhenry/domkit/clamp";
 import delay from "@johnhenry/domkit/delay";
 import liveQuerySelector from "@johnhenry/domkit/live-query-selector";
 import localStorageCycler from "@johnhenry/domkit/cyclable/localstorage-cycler";
+import localStorageAttributeCycler from "@johnhenry/domkit/cyclable/localstorage-attribute-cycler";
 import Hydratable from "@johnhenry/domkit/hydratable";
 import { tokenize } from "@johnhenry/domkit/code-color/tokenize.mjs";
 
@@ -111,6 +113,7 @@ const first: Element | undefined = live[0];
 live.stop();
 const cycle = localStorageCycler("k", ({ value }) => value.toUpperCase(), "a", "b");
 const stepped: string = cycle().value;
+localStorageAttributeCycler(document.body, "theme", ["light", "dark"], { attribute: "data-theme" });
 const peeked: number = cycle.peek().index;
 const mixin = Hydratable(async function () {});
 const spans: [string, number, number][] = tokenize("let x", "js");

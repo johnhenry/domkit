@@ -12,7 +12,7 @@
     <script type="module" src="../src/drill-menu/global.mjs"></script>
     <script type="module" src="../src/stylable-select/global.mjs"></script>
     <script type="module" src="../src/infinite-combo-box/global.mjs"></script>
-    <script type="module" src="../src/cyclable/class-cycler/global.mjs"></script>
+    <script type="module" src="../src/cyclable/attribute-cycler/global.mjs"></script>
     <style>
       form { display: grid; gap: 1rem; }
       drill-menu { border: 1px solid var(--border); border-radius: 0.6em; padding: 0.5rem; }
@@ -71,10 +71,10 @@
         <section data-screen="display">
           <h2>Display</h2>
           <p>Density (applies immediately, remembered on this device):</p>
-          <class-cycler target="html" classes=",compact" storage-key="recipe-density">
+          <attribute-cycler target="html" values=",compact" storage-key="recipe-density">
             <button type="button" value="">Comfortable</button>
             <button type="button" value="compact">Compact</button>
-          </class-cycler>
+          </attribute-cycler>
           <p><button type="button" data-back>‹ Back</button></p>
         </section>
       </drill-menu>

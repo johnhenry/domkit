@@ -4,29 +4,17 @@
 
 Every stable element's attributes, properties, methods, events, and CSS custom properties, generated from the code. Each element's guide (linked) explains how to use it.
 
-## `<attribute-provider>`
+## `<attribute-cycler>`
 
-Add classes, styles, and attributes to children by media query. [Guide](../src/matchable/attribute-provider/readme.md) · module `@johnhenry/domkit/matchable/attribute-provider`
-
-**Attributes**
-
-| Attribute | Property | Type | Description |
-|---|---|---|---|
-| `classes` |  | `string` | `[media query] class class \| …` sections. Bracket-less sections always apply. |
-| `styles` |  | `string` | `[media query] property: value; … \| …` sections. |
-| `attributes` |  | `string` | `[media query] name=value; name; name=null \| …` sections. `null` removes the attribute while the query matches. |
-| `container` |  | `string` | Container mode: evaluate the queries against an element's size instead of the viewport. Empty = the parent element; otherwise a selector for the closest matching ancestor. |
-
-## `<class-cycler>`
-
-A persisted class switch (e.g. a theme toggle) driven by buttons. [Guide](../src/cyclable/class-cycler/readme.md) · module `@johnhenry/domkit/cyclable/class-cycler`
+A persisted attribute or class switch (e.g. a theme toggle) driven by buttons. [Guide](../src/cyclable/attribute-cycler/readme.md) · module `@johnhenry/domkit/cyclable/attribute-cycler`
 
 **Attributes**
 
 | Attribute | Property | Type | Description |
 |---|---|---|---|
-| `classes` |  | `string` | Comma-separated values to cycle through. An empty entry means "no class". |
-| `target` |  | `string` | Selector for the element(s) whose class is set. Default `html`. |
+| `values` | `values` | `string` | Comma-separated values to cycle through. An empty entry means "none": no class, or no attribute. |
+| `attribute` | `attribute` | `string` | The attribute to set on the targets. Default `class`, where the value is one class among the target's others; any other attribute gets the value as its whole value. |
+| `target` |  | `string` | Selector for the element(s) whose attribute is set. Default `html`. |
 | `storage-key` | `storageKey` | `string` | localStorage key to persist under. Without it, the value isn't persisted. |
 | `value` | `value` | `string` | The current value. Reflects; set it to choose the initial value when nothing is stored. |
 | `disabled` | `disabled` | `boolean` | Its buttons are disabled, and invoker commands are ignored. |
@@ -36,8 +24,9 @@ A persisted class switch (e.g. a theme toggle) driven by buttons. [Guide](../src
 | Property | Type | Description |
 |---|---|---|
 | `values` (read-only) | `string[]` | The values to cycle through, in order. |
+| `attribute` | `string` | The attribute set on the targets. Mirrors the `attribute` attribute. |
 | `value` | `string` | The current value. Setting it applies and persists it, without an event. |
-| `targets` (read-only) | `Element[]` | The elements whose class is set. |
+| `targets` (read-only) | `Element[]` | The elements whose attribute is set. |
 | `disabled` | `boolean` | Mirrors the `disabled` attribute. |
 | `storageKey` | `string` | Mirrors the `storage-key` attribute. |
 
@@ -53,6 +42,19 @@ A persisted class switch (e.g. a theme toggle) driven by buttons. [Guide](../src
 | Event | Description |
 |---|---|
 | `change` | The user changed the value with a button or command. |
+
+## `<attribute-provider>`
+
+Add classes, styles, and attributes to children by media query. [Guide](../src/matchable/attribute-provider/readme.md) · module `@johnhenry/domkit/matchable/attribute-provider`
+
+**Attributes**
+
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `classes` |  | `string` | `[media query] class class \| …` sections. Bracket-less sections always apply. |
+| `styles` |  | `string` | `[media query] property: value; … \| …` sections. |
+| `attributes` |  | `string` | `[media query] name=value; name; name=null \| …` sections. `null` removes the attribute while the query matches. |
+| `container` |  | `string` | Container mode: evaluate the queries against an element's size instead of the viewport. Empty = the parent element; otherwise a selector for the closest matching ancestor. |
 
 ## `<code-color>`
 

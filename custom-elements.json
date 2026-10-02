@@ -170,12 +170,12 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/cyclable/class-cycler/index.mjs",
+      "path": "src/cyclable/attribute-cycler/index.mjs",
       "declarations": [
         {
           "kind": "class",
-          "description": "Cycles a class through a fixed list on target elements, persisted to\nlocalStorage, driven by buttons inside it or invoker commands.",
-          "name": "ClassCycler",
+          "description": "Cycles an attribute (a class, by default) through a fixed list of values\non target elements, persisted to localStorage, driven by buttons inside\nit or invoker commands.",
+          "name": "AttributeCycler",
           "members": [
             {
               "kind": "field",
@@ -217,6 +217,14 @@
             },
             {
               "kind": "field",
+              "name": "attribute",
+              "description": "The attribute set on the targets. Mirrors the `attribute` attribute.",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "kind": "field",
               "name": "value",
               "description": "The current value. Setting it applies and persists it, without an event.",
               "type": {
@@ -226,7 +234,7 @@
             {
               "kind": "field",
               "name": "targets",
-              "description": "The elements whose class is set.",
+              "description": "The elements whose attribute is set.",
               "type": {
                 "text": "Element[]"
               },
@@ -338,18 +346,25 @@
           ],
           "attributes": [
             {
-              "name": "classes",
+              "name": "values",
               "type": {
                 "text": "string"
               },
-              "description": "Comma-separated values to cycle through. An empty entry means \"no class\"."
+              "description": "Comma-separated values to cycle through. An empty entry means \"none\": no class, or no attribute."
+            },
+            {
+              "name": "attribute",
+              "type": {
+                "text": "string"
+              },
+              "description": "The attribute to set on the targets. Default `class`, where the value is one class among the target's others; any other attribute gets the value as its whole value."
             },
             {
               "name": "target",
               "type": {
                 "text": "string"
               },
-              "description": "Selector for the element(s) whose class is set. Default `html`."
+              "description": "Selector for the element(s) whose attribute is set. Default `html`."
             },
             {
               "name": "storage-key",
@@ -376,9 +391,9 @@
           "superclass": {
             "name": "HTMLElement"
           },
-          "tagName": "class-cycler",
+          "tagName": "attribute-cycler",
           "customElement": true,
-          "summary": "A persisted class switch (e.g. a theme toggle) driven by buttons."
+          "summary": "A persisted attribute or class switch (e.g. a theme toggle) driven by buttons."
         }
       ],
       "exports": [
@@ -386,22 +401,22 @@
           "kind": "js",
           "name": "default",
           "declaration": {
-            "name": "ClassCycler",
-            "module": "src/cyclable/class-cycler/index.mjs"
+            "name": "AttributeCycler",
+            "module": "src/cyclable/attribute-cycler/index.mjs"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "src/cyclable/localstorage-class-cycler/index.mjs",
+      "path": "src/cyclable/localstorage-attribute-cycler/index.mjs",
       "declarations": [],
       "exports": [
         {
           "kind": "js",
           "name": "default",
           "declaration": {
-            "module": "src/cyclable/localstorage-class-cycler/index.mjs"
+            "module": "src/cyclable/localstorage-attribute-cycler/index.mjs"
           }
         }
       ]

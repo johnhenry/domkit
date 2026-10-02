@@ -47,7 +47,7 @@ respond to it:
 <dialog id="help">…</dialog>
 <hotkey-dialog hotkey="?" commandfor="help" command="show-modal"></hotkey-dialog>
 
-<class-cycler id="theme" classes="light,dark">…</class-cycler>
+<attribute-cycler id="theme" values="light,dark">…</attribute-cycler>
 <hotkey-dialog hotkey="mod+j" commandfor="theme" command="--next"></hotkey-dialog>
 ```
 

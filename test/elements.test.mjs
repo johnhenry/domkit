@@ -11,7 +11,7 @@ const GLOBALS = {
   "tabbed-ui": "tabbed-ui",
   "matchable/query-container": "query-container",
   "matchable/attribute-provider": "attribute-provider",
-  "cyclable/class-cycler": "class-cycler",
+  "cyclable/attribute-cycler": "attribute-cycler",
   "definable/define-component": "define-component",
   "definable/polyfill-window": "polyfill-window",
 };
@@ -118,12 +118,12 @@ test("define-component defines a markup-only tag from an attribute", async () =>
   assert.equal(document.querySelector("x-hello").shadowRoot.innerHTML, "<b>hi</b>");
 });
 
-test("class-cycler applies its first value and cycles on a button click (full contract: test/browser)", () => {
+test("attribute-cycler applies its first value and cycles on a button click (full contract: test/browser)", () => {
   localStorage.clear();
-  render(`<class-cycler storage-key="t" classes="light,dark"><button>next</button></class-cycler>`);
+  render(`<attribute-cycler storage-key="t" values="light,dark"><button>next</button></attribute-cycler>`);
   assert.ok(document.documentElement.classList.contains("light"));
   document.querySelector("button").click();
   assert.ok(document.documentElement.classList.contains("dark"));
   assert.equal(localStorage.getItem("t"), "dark");
-  assert.equal(document.querySelector("class-cycler").getAttribute("value"), "dark");
+  assert.equal(document.querySelector("attribute-cycler").getAttribute("value"), "dark");
 });
