@@ -110,6 +110,7 @@ queries, evaluated against an element's size instead of the viewport.
 
 | Module | What it's for | `global.mjs` registers |
 |---|---|---|
+| [pixel-sprite](src/pixelable/pixel-sprite/readme.md) | Pixel art written as text, with animation frames; a source for `<pixel-canvas>` | `<pixel-sprite>` |
 | [pixel-canvas](src/pixelable/pixel-canvas/readme.md) | Draws an image, video, or canvas through effects, listed like CSS `filter` (`effects="mosaic(4) palette(gameboy)"`) or wrapped around it as elements | `<pixel-canvas>` |
 | [pixel-mosaic](src/pixelable/pixel-mosaic/readme.md) | Pixelate into blocks | `<pixel-mosaic>` |
 | [pixel-palette](src/pixelable/pixel-palette/readme.md) | Limit to a palette (Game Boy, PICO-8, 1-bit, any colors), with dithering | `<pixel-palette>` |

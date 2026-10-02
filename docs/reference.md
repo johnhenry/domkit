@@ -389,7 +389,7 @@ A pixel effect: brightness, contrast, saturation, and hue. [Guide](../src/pixela
 
 ## `<pixel-canvas>`
 
-Pixel effects on any image, video, or canvas, by wrapping it in effect elements. [Guide](../src/pixelable/pixel-canvas/readme.md) · module `@johnhenry/domkit/pixelable/pixel-canvas`
+Pixel effects on any image, video, canvas, or pixel sprite. [Guide](../src/pixelable/pixel-canvas/readme.md) · module `@johnhenry/domkit/pixelable/pixel-canvas`
 
 **Attributes**
 
@@ -405,7 +405,7 @@ Pixel effects on any image, video, or canvas, by wrapping it in effect elements.
 
 | Property | Type | Description |
 |---|---|---|
-| `source` (read-only) | `HTMLImageElement \| HTMLVideoElement \| HTMLCanvasElement \| null` | The image, video, or canvas being drawn: the first one inside. |
+| `source` (read-only) | `Element \| null` | The image, video, canvas, or `<pixel-sprite>` being drawn: the first one inside. |
 | `effectElements` (read-only) | `Element[]` | The effect elements wrapped around the source, in the order they run (innermost first). Disabled ones are included. |
 | `effects` | `string` | Mirrors the `effects` attribute. |
 | `swatches` | `number` | How many swatches to publish. Mirrors the `swatches` attribute. |
@@ -526,6 +526,51 @@ A pixel effect: limit colors to a palette, with dithering. [Guide](../src/pixela
 | Property | Type | Description |
 |---|---|---|
 | `palette` (read-only) | `number[][]` | The resolved palette, as `[r, g, b]` triples. Empty for `auto`, which depends on the image (see `<pixel-canvas>`'s `palette`). |
+
+## `<pixel-sprite>`
+
+Pixel art written as text, with animation frames. [Guide](../src/pixelable/pixel-sprite/readme.md) · module `@johnhenry/domkit/pixelable/pixel-sprite`
+
+**Attributes**
+
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `colors` |  | `string` | What each character means: `char color` pairs separated by `;` (`. transparent; # black; o gold`), or a named palette whose colors are numbered `0`–`9` then `a`–`z` (`pico-8`, the default; `gameboy`; `1bit`; …). `.` is transparent unless you say otherwise. |
+| `fps` |  | `number` | Play the frames at this rate. Without it (or with one frame), it's still. |
+| `paused` | `paused` | `boolean` | Whether the animation is paused. Reflects; write it in markup to start paused. |
+| `alt` |  | `string` | A text alternative, as on `<img>`. An empty `alt` marks it decorative. |
+
+**Properties**
+
+| Property | Type | Description |
+|---|---|---|
+| `canvas` (read-only) | `HTMLCanvasElement` | The canvas it's drawn on (in the shadow root), at one pixel per character. |
+| `frames` (read-only) | `number` | How many frames there are. |
+| `frame` | `number` | The frame showing, from 0. Setting it shows that frame (wrapping). |
+| `paused` (read-only) | `boolean` | Whether the animation is paused. |
+| `width` | `number` |  |
+| `height` | `number` |  |
+
+**Methods**
+
+| Method | Description |
+|---|---|
+| `play()` | Play the frames (at `fps`). |
+| `pause()` | Pause on the current frame. |
+
+**Events**
+
+| Event | Description |
+|---|---|
+| `play` | The animation started or resumed. |
+| `pause` | The animation paused. |
+| `framechange` | It was redrawn: the frame advanced, or its pixels or colors changed. |
+
+**CSS custom properties**
+
+| Property | Description |
+|---|---|
+| `--domkit-sprite-scale` | How many screen pixels each sprite pixel takes. Default 8. |
 
 ## `<polyfill-window>`
 
