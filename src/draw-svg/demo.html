@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>draw-svg</title>
+<script type="module" src="./global.mjs"></script>
+<style>
+  body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
+  .row { display: flex; gap: 24px; flex-wrap: wrap; align-items: start; }
+  figure { margin: 0; }
+  svg { inline-size: 120px; block-size: 120px; }
+  svg * { stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+  button { font: inherit; }
+</style>
+</head>
+<body>
+<div class="row">
+  <figure>
+    <draw-svg id="logo" duration="3s" iterations="infinite" erase easing="linear">
+      <svg viewBox="0 0 67.733 67.733" role="img" aria-label="JH">
+        <path d="m27.252 12.435v23.019a6.6146 6.6146 0 0 1-6.6146 6.6146 6.6146 6.6146 0 0 1-6.6146-6.6146h-13.229a19.844 19.844 0 0 0 19.844 19.844 19.844 19.844 0 0 0 19.192-14.817h13.881v14.817h13.229v-42.862h-13.229v14.817h-13.229v-14.817z" />
+      </svg>
+    </draw-svg>
+    <figcaption>
+      <code>erase</code>, looping
+      <button commandfor="logo" command="--toggle">Play/pause</button>
+    </figcaption>
+  </figure>
+  <figure>
+    <draw-svg id="house" duration="600ms" stagger="400ms">
+      <svg viewBox="0 0 100 100" role="img" aria-label="A house">
+        <rect x="20" y="45" width="60" height="45" />
+        <polyline points="12,50 50,15 88,50" />
+        <rect x="42" y="65" width="16" height="25" />
+        <circle cx="68" cy="58" r="6" />
+      </svg>
+    </draw-svg>
+    <figcaption>
+      Shapes one after another (<code>stagger</code>)
+      <button id="again">Again</button>
+    </figcaption>
+  </figure>
+</div>
+<script type="module">
+  document.getElementById("again").onclick = () => document.getElementById("house").restart();
+</script>
+</body>
+</html>

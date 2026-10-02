@@ -163,6 +163,60 @@
       ]
     },
     {
+      "name": "draw-svg",
+      "description": "Self-drawing SVG strokes, CSP-safe and reduced-motion aware.\n\nEvents: `play`, `pause`, `ended`",
+      "attributes": [
+        {
+          "name": "duration",
+          "description": "How long each shape takes to draw: `2s`, `400ms`, or milliseconds. Default `2s`."
+        },
+        {
+          "name": "delay",
+          "description": "Wait before the first shape starts. Default `0`."
+        },
+        {
+          "name": "stagger",
+          "description": "Extra delay for each next shape, so they draw one after another. Default `0` (together)."
+        },
+        {
+          "name": "easing",
+          "description": "A CSS easing function. Default `ease-in-out`."
+        },
+        {
+          "name": "iterations",
+          "description": "How many times to draw: a number or `infinite`. Default `1`."
+        },
+        {
+          "name": "direction",
+          "description": "`normal`, `reverse`, `alternate`, or `alternate-reverse`, as in CSS animations."
+        },
+        {
+          "name": "erase",
+          "description": "After drawing in, keep going until the stroke has wiped itself out from its start.",
+          "valueSet": "v"
+        },
+        {
+          "name": "select",
+          "description": "Which shapes to animate, as a selector. Default: every path, line, polyline, polygon, circle, ellipse, and rect."
+        },
+        {
+          "name": "paused",
+          "description": "Whether it's paused. Reflects; write it in markup to start paused (strokes hidden).",
+          "valueSet": "v"
+        },
+        {
+          "name": "start",
+          "description": "`visible`: wait to play until the drawing scrolls into view. Default: play on connect."
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/draw-svg"
+        }
+      ]
+    },
+    {
       "name": "drill-menu",
       "description": "A list that drills into sub-screens and back.\n\nEvents: `push`, `pop`",
       "attributes": [

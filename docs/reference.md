@@ -151,6 +151,48 @@ Register a custom element in HTML, from a module or from inline markup. [Guide](
 | `load` | The element is registered (or the name already was). |
 | `error` | No source or two sources, an invalid name or mode, or (with `src`) the module failed to load, lacked the export, or the export isn't a class. An `ErrorEvent`. |
 
+## `<draw-svg>`
+
+Self-drawing SVG strokes, CSP-safe and reduced-motion aware. [Guide](../src/draw-svg/readme.md) · module `@johnhenry/domkit/draw-svg`
+
+**Attributes**
+
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `duration` |  | `string` | How long each shape takes to draw: `2s`, `400ms`, or milliseconds. Default `2s`. |
+| `delay` |  | `string` | Wait before the first shape starts. Default `0`. |
+| `stagger` |  | `string` | Extra delay for each next shape, so they draw one after another. Default `0` (together). |
+| `easing` |  | `string` | A CSS easing function. Default `ease-in-out`. |
+| `iterations` |  | `string` | How many times to draw: a number or `infinite`. Default `1`. |
+| `direction` |  | `string` | `normal`, `reverse`, `alternate`, or `alternate-reverse`, as in CSS animations. |
+| `erase` |  | `boolean` | After drawing in, keep going until the stroke has wiped itself out from its start. |
+| `select` |  | `string` | Which shapes to animate, as a selector. Default: every path, line, polyline, polygon, circle, ellipse, and rect. |
+| `paused` | `paused` | `boolean` | Whether it's paused. Reflects; write it in markup to start paused (strokes hidden). |
+| `start` |  | `string` | `visible`: wait to play until the drawing scrolls into view. Default: play on connect. |
+
+**Properties**
+
+| Property | Type | Description |
+|---|---|---|
+| `paused` (read-only) | `boolean` | Whether it's paused. |
+| `shapes` (read-only) | `SVGGeometryElement[]` | The shapes being animated. |
+
+**Methods**
+
+| Method | Description |
+|---|---|
+| `play()` | Start or resume drawing. |
+| `pause()` | Pause where it is. |
+| `restart()` | Draw again from the start (and play, unless paused). |
+
+**Events**
+
+| Event | Description |
+|---|---|
+| `play` | It started or resumed. |
+| `pause` | It paused. |
+| `ended` | Every shape finished drawing (not for `iterations="infinite"`). Invoker commands: `--play`, `--pause`, `--toggle`, and `--restart` (`<button commandfor="logo" command="--restart">`). |
+
 ## `<drill-menu>`
 
 A list that drills into sub-screens and back. [Guide](../src/drill-menu/readme.md) · module `@johnhenry/domkit/drill-menu`

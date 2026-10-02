@@ -104,6 +104,7 @@ queries, evaluated against an element's size instead of the viewport.
 |---|---|---|
 | [scatter-plot](src/scatter-plot/readme.md) | A scatter plot of a point you design, styled with ordinary CSS | `<scatter-plot>` |
 | [chernoff-face](src/chernoff-face/readme.md) | A face whose features show data, each a number from 0 to 1 | `<chernoff-face>` |
+| [draw-svg](src/draw-svg/readme.md) | SVG strokes that draw themselves in, CSP-safe and reduced-motion aware | `<draw-svg>` |
 
 ### Experimental: [`experimental/`](src/experimental/readme.md)
 
@@ -111,9 +112,7 @@ Sketches without the stable modules' guarantees. Their APIs can change in
 any release. A composable canvas pixel pipeline
 ([imagedata-emitter](src/experimental/imagedata-emitter/readme.md) →
 [pixel-shader](src/experimental/pixel-shader/readme.md) →
-[canvas-renderer](src/experimental/canvas-renderer/readme.md)),
-[animate-paths](src/experimental/animate-paths/readme.md) (self-drawing
-SVG).
+[canvas-renderer](src/experimental/canvas-renderer/readme.md)).
 
 ## Recipes
 
