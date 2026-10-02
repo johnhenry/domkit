@@ -36,6 +36,7 @@ A persisted attribute or class switch (e.g. a theme toggle) driven by buttons. [
 |---|---|
 | `next()` | Move to the next value (wrapping), without an event. |
 | `previous()` | Move to the previous value (wrapping), without an event. |
+| `reset()` | Forget the stored value and go back to the default (the `value` attribute as first written, or the first value), without an event. |
 
 **Events**
 

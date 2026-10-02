@@ -7,6 +7,8 @@
  *   previous(...events: unknown[]): CycleResult,
  *   peek(): { value: string, key: string, index: number },
  *   set(value: string, ...events: unknown[]): CycleResult,
+ *   reset(...events: unknown[]): CycleResult,
+ *   stop(): void,
  * }} Cycler
  *   Call it to step forward; it also carries previous/peek/set.
  */
@@ -14,7 +16,7 @@
 const createNext =
   (key, handler, ...values) =>
   (...events) => {
-    const stored = globalThis.localStorage.getItem(key);
+    const stored = globalThis.localStorage.getItem(key) ?? values[0];
     const index = values.indexOf(stored) + 1;
     const value = values[index] ?? values[0];
     globalThis.localStorage.setItem(key, value);
@@ -35,7 +37,7 @@ const createNext =
 const createPrevious =
   (key, handler, ...values) =>
   (...events) => {
-    const stored = globalThis.localStorage.getItem(key);
+    const stored = globalThis.localStorage.getItem(key) ?? values[0];
     const index = values.indexOf(stored) - 1;
     const value = values[index] ?? values[values.length - 1];
     globalThis.localStorage.setItem(key, value);
@@ -76,9 +78,22 @@ const createSet =
     };
   };
 
+// Forgets the stored value, going back to the default (the first value),
+// as if nothing had ever been chosen.
+const createReset =
+  (key, handler, ...values) =>
+  (...events) => {
+    globalThis.localStorage.removeItem(key);
+    const value = values[0];
+    return { value, key, index: 0, result: handler({ value, key, index: 0, events }) };
+  };
+
 /**
  * Cycle a localStorage value through a fixed list. Pass an optional change
  * handler before the values: `localStorageCycler(key, handler, "a", "b")`.
+ * Nothing is stored until a value is chosen. Changes made in other tabs
+ * call the handler too (with the `storage` event as `events[0]`), until
+ * `stop()` is called.
  * @param {string} key
  * @param {...(string | ((change: CycleChange) => unknown))} values
  * @returns {Cycler}
@@ -91,7 +106,6 @@ export default (key, ...values) => {
   const stored = globalThis.localStorage.getItem(key) ?? values[0];
   const index = values.indexOf(stored);
   const value = values[index] ?? values[0];
-  globalThis.localStorage.setItem(key, value);
   handler({
     value,
     key,
@@ -105,5 +119,17 @@ export default (key, ...values) => {
   next.previous = createPrevious(key, handler, ...values);
   next.peek = createPeek(key, ...values);
   next.set = createSet(key, handler, ...values);
+  next.reset = createReset(key, handler, ...values);
+  // Follow other tabs: another tab's choice (or reset, or clear()) is
+  // applied here too.
+  const onStorage = (event) => {
+    if (event.storageArea !== globalThis.localStorage || (event.key !== key && event.key !== null)) return;
+    const stored = event.key === null ? null : event.newValue;
+    const value = values.includes(stored) ? stored : values[0];
+    const index = values.indexOf(value);
+    handler({ value, key, index, events: [event] });
+  };
+  globalThis.addEventListener?.("storage", onStorage);
+  next.stop = () => globalThis.removeEventListener?.("storage", onStorage);
   return next;
 };

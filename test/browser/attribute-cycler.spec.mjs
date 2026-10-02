@@ -139,6 +139,47 @@ test.describe("attribute", () => {
   });
 });
 
+test.describe("reset", () => {
+  test("reset() forgets the stored value and returns to the authored default, silently", async ({ page }) => {
+    await mount(
+      page,
+      `<attribute-cycler id="theme" target="html" values="light,dark,system" value="system" storage-key="test-theme"><button id="next">n</button></attribute-cycler>`,
+      MODULES,
+    );
+    const events = await recordEvents(page, ["change"]);
+    await page.locator("#next").click();
+    expect(await page.evaluate(() => [document.getElementById("theme").value, localStorage.getItem("test-theme")])).toEqual(["light", "light"]);
+    await events.take();
+    await page.evaluate(() => document.getElementById("theme").reset());
+    expect(await page.evaluate(() => [document.getElementById("theme").value, localStorage.getItem("test-theme")])).toEqual(["system", null]);
+    expect(await events.take(), "script changes are silent").toEqual([]);
+  });
+
+  test('a data-cycle="reset" button resets and fires change', async ({ page }) => {
+    await mount(
+      page,
+      `<attribute-cycler id="theme" target="html" values="light,dark" storage-key="test-theme"><button id="dark" value="dark">d</button><button id="reset" data-cycle="reset">r</button></attribute-cycler>`,
+      MODULES,
+    );
+    await page.locator("#dark").click();
+    const events = await recordEvents(page, ["change"]);
+    await page.locator("#reset").click();
+    expect(await events.take()).toEqual([["change", "theme"]]);
+    expect(await page.evaluate(() => [document.getElementById("theme").value, localStorage.getItem("test-theme")])).toEqual(["light", null]);
+    await page.locator("#reset").click();
+    expect(await events.take(), "already at the default: no change").toEqual([]);
+  });
+
+  test("another tab's reset is followed", async ({ page, context }) => {
+    await mount(page, THEME, MODULES);
+    await page.locator("#dark").click();
+    const other = await context.newPage();
+    await other.goto("/test/browser/fixture.html");
+    await other.evaluate(() => localStorage.removeItem("test-theme"));
+    await expect.poll(() => state(page).then((s) => s.value)).toBe("light");
+  });
+});
+
 test("invoker commands from buttons anywhere drive it, where supported", async ({ page }) => {
   await mount(
     page,

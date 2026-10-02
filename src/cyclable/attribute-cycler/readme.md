@@ -37,6 +37,7 @@ Inside the element:
 |---|---|
 | `<button>` | Click: go to the next value (wrapping) |
 | `<button data-cycle="previous">` | Click: go to the previous value |
+| `<button data-cycle="reset">` | Click: forget the stored choice and go back to the default (the `value` attribute as written, or the first value) |
 | `<button value="dark">` | Click: set that value. Gets `aria-pressed="true"` while it's current, so a set of these is an accessible toggle group |
 | `<output>` | Shows the current value |
 
@@ -48,6 +49,7 @@ with no script:
 <button commandfor="theme" command="--next">Next theme</button>
 <button commandfor="theme" command="--previous">Previous theme</button>
 <button commandfor="theme" command="--set" value="dark">Dark</button>
+<button commandfor="theme" command="--reset">Use the default</button>
 ```
 
 ## API
@@ -82,6 +84,7 @@ with no script:
 |---|---|
 | `next()` | Move to the next value (wrapping), without an event. |
 | `previous()` | Move to the previous value (wrapping), without an event. |
+| `reset()` | Forget the stored value and go back to the default (the `value` attribute as first written, or the first value), without an event. |
 
 ### Events
 

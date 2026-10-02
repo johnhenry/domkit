@@ -185,6 +185,15 @@
             },
             {
               "kind": "field",
+              "name": "#authoredValue",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
               "name": "#value",
               "privacy": "private",
               "type": {
@@ -267,6 +276,11 @@
             },
             {
               "kind": "method",
+              "name": "reset",
+              "description": "Forget the stored value and go back to the default (the `value`\nattribute as first written, or the first value), without an event."
+            },
+            {
+              "kind": "method",
               "name": "#query",
               "privacy": "private",
               "parameters": [
@@ -283,6 +297,21 @@
             {
               "kind": "method",
               "name": "#initial",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#default",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#forget",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#userReset",
               "privacy": "private"
             },
             {
