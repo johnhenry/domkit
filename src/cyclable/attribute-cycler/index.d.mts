@@ -20,6 +20,9 @@ export default class AttributeCycler extends HTMLElement {
   next(): void;
   /** Move to the previous value (wrapping), without an event. */
   previous(): void;
+  /** Forget the stored value and go back to the default (the `value`
+   * attribute as first written, or the first value), without an event. */
+  reset(): void;
 }
 
 declare global {

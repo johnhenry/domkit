@@ -13,10 +13,9 @@ const updateLocalStorage = localStorageCycler("my-key", "a", "b", "c");
 updateLocalStorage(); // → { value: "b", key: "my-key", index: 1, result: undefined }
 ```
 
-The call to "localStorageCycler"
-checks for the existence
-of the key ("my-key") in localStorage.
-and sets it to the first key ("a") if not already set.
+The call to "localStorageCycler" reads the key ("my-key") from
+localStorage, starting at the first value ("a") if nothing is stored.
+Nothing is written until a value is chosen.
 
 When called, the "updateLocalStorage" function
 cycles the value associated with the key
@@ -57,18 +56,27 @@ The handler receives one object with four properties:
   an "init" CustomEvent if fired from the initial
   call to localStorageCycler.
 
-## `.previous()`, `.peek()`, `.set()`
+## `.previous()`, `.peek()`, `.set()`, `.reset()`, `.stop()`
 
 The returned function is still directly callable to advance forward
-(as above), and also carries three additional methods:
+(as above), and also carries these methods:
 
 ```javascript
 updateLocalStorage.previous(); // step backward instead of forward
 updateLocalStorage.peek(); // read the current { value, key, index } without changing anything
 updateLocalStorage.set("b"); // jump directly to a specific value (must be one of the configured values)
+updateLocalStorage.reset(); // forget the stored value: back to the first value, as if never chosen
+updateLocalStorage.stop(); // stop following other tabs
 ```
 
 All three return the same `{ value, key, index, result }` shape as the
 main function (`peek()` omits `result` -- it doesn't call the handler).
 `set()` throws if given a value that isn't one of the ones this cycler was
 configured with.
+
+## Other tabs
+
+When another tab changes, resets, or clears the stored value, the
+handler is called here too, with the `storage` event as `events[0]`, so
+every open tab stays in step (like `<attribute-cycler>`). Call `stop()`
+when you no longer need that.

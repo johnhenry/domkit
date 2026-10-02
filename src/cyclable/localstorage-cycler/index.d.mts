@@ -8,6 +8,8 @@
  *   previous(...events: unknown[]): CycleResult,
  *   peek(): { value: string, key: string, index: number },
  *   set(value: string, ...events: unknown[]): CycleResult,
+ *   reset(...events: unknown[]): CycleResult,
+ *   stop(): void,
  * }} Cycler
  *   Call it to step forward; it also carries previous/peek/set.
  */
@@ -31,11 +33,16 @@ export type Cycler = ((...events: unknown[]) => CycleResult) & {
         index: number;
     };
     set(value: string, ...events: unknown[]): CycleResult;
+    reset(...events: unknown[]): CycleResult;
+    stop(): void;
 };
 export default _default;
 /**
  * Cycle a localStorage value through a fixed list. Pass an optional change
  * handler before the values: `localStorageCycler(key, handler, "a", "b")`.
+ * Nothing is stored until a value is chosen. Changes made in other tabs
+ * call the handler too (with the `storage` event as `events[0]`), until
+ * `stop()` is called.
  * @param {string} key
  * @param {...(string | ((change: CycleChange) => unknown))} values
  * @returns {Cycler}

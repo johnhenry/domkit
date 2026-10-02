@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file.
 
 ### Changed (breaking)
 
+- **`localstorage-cycler` no longer stores the default on creation**, so
+  "nothing chosen yet" is a real state, and stepping from it moves to the
+  second value (it used to stay on the first).
+
 - **`query-container`'s internal methods are private.** `setInitial()`,
   `setQueries()`, `triggerQuery()`, and `update()` are gone; set the
   `default` and `query` attributes, or the new matching properties (`default`, `query`).
@@ -53,6 +57,12 @@ All notable changes to this project will be documented in this file.
   and `--domkit-combo-accent`.
 
 ### Added
+
+- **Forgetting a choice in `cyclable`.** `<attribute-cycler>` gains
+  `reset()`, a `--reset` command, and `<button data-cycle="reset">`, which
+  remove the stored value and go back to the default (also followed
+  across tabs). `localstorage-cycler` gains `reset()`, follows other tabs
+  through `storage` events like the element does, and `stop()` ends that.
 
 - **`query-container` and `attribute-provider` report their state.** A
   read-only `activeQueries` lists the queries that currently match, and a

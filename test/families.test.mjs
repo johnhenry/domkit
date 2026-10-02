@@ -18,7 +18,7 @@ test("localstorage-cycler steps forward/back, peeks, sets, and wraps", () => {
   localStorage.clear();
   const seen = [];
   const cycle = localStorageCycler("k", ({ value }) => seen.push(value), "a", "b", "c");
-  assert.equal(localStorage.getItem("k"), "a", "initializes to the first value");
+  assert.equal(cycle.peek().value, "a", "starts at the first value");
   assert.equal(cycle().value, "b");
   assert.equal(cycle().value, "c");
   assert.equal(cycle().value, "a", "wraps forward");
@@ -34,6 +34,32 @@ test("localstorage-cycler resumes from a persisted value", () => {
   const cycle = localStorageCycler("persisted", "a", "b", "c");
   assert.equal(cycle.peek().value, "b");
   assert.equal(cycle().value, "c");
+});
+
+test("localstorage-cycler stores nothing until a value is chosen; reset forgets it", () => {
+  localStorage.clear();
+  const seen = [];
+  const cycle = localStorageCycler("fresh", ({ value }) => seen.push(value), "a", "b", "c");
+  assert.equal(localStorage.getItem("fresh"), null, "init doesn't store");
+  assert.equal(cycle().value, "b", "stepping from the unset default moves on");
+  assert.equal(localStorage.getItem("fresh"), "b");
+  assert.equal(cycle.reset().value, "a");
+  assert.equal(localStorage.getItem("fresh"), null);
+  assert.deepEqual(seen, ["a", "b", "a"]);
+  cycle.stop();
+});
+
+test("localstorage-cycler follows storage events from other tabs until stopped", () => {
+  localStorage.clear();
+  const seen = [];
+  const cycle = localStorageCycler("synced", ({ value }) => seen.push(value), "a", "b");
+  const fire = (newValue) =>
+    window.dispatchEvent(new StorageEvent("storage", { key: "synced", newValue, storageArea: localStorage }));
+  fire("b");
+  fire(null);
+  cycle.stop();
+  fire("b");
+  assert.deepEqual(seen, ["a", "b", "a"]);
 });
 
 test("localstorage-attribute-cycler swaps exactly one of its classes", () => {

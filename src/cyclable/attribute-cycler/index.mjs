@@ -33,31 +33,40 @@ import { applyValue, clearValue } from "../apply-value.mjs";
 export default class AttributeCycler extends HTMLElement {
   static observedAttributes = ["values", "attribute", "target", "storage-key", "value", "disabled"];
   #disabledButtons = new Set(); // buttons this element disabled
+  #authoredValue = null;
 
   #value = null;
   #reflecting = false;
   #onStorage = (event) => {
-    if (event.key && event.key === this.storageKey && event.newValue !== null) {
+    if (event.storageArea !== localStorage || !this.storageKey) return;
+    if (event.key === this.storageKey && event.newValue !== null) {
       this.#set(event.newValue, { persist: false });
+    } else if (event.key === this.storageKey || event.key === null) {
+      // Another tab reset it (or cleared storage): back to the default.
+      this.#set(this.#default(), { persist: false });
     }
   };
 
   constructor() {
     super();
     this.addEventListener("click", (event) => this.#onClick(event));
-    // Invoker commands: <button commandfor="id" command="--next|--previous|--set">
+    // Invoker commands: <button commandfor="id" command="--next|--previous|--set|--reset">
     this.addEventListener("command", (event) => {
       if (this.disabled) return;
       const command = event.command;
       if (command === "--next") this.#userSet(this.#step(1));
       else if (command === "--previous") this.#userSet(this.#step(-1));
       else if (command === "--set") this.#userSet(event.source?.value ?? "");
+      else if (command === "--reset") this.#userReset();
     });
   }
 
   connectedCallback() {
     this.#applyDisabled();
     window.addEventListener("storage", this.#onStorage);
+    // The authored default, before this element starts reflecting the
+    // current value into the `value` attribute.
+    this.#authoredValue ??= this.getAttribute("value");
     this.#set(this.#initial(), { persist: false });
   }
 
@@ -155,6 +164,15 @@ export default class AttributeCycler extends HTMLElement {
     this.#set(this.#step(-1));
   }
 
+  /**
+   * Forget the stored value and go back to the default (the `value`
+   * attribute as first written, or the first value), without an event.
+   */
+  reset() {
+    this.#forget();
+    this.#set(this.#default(), { persist: false });
+  }
+
   #query(selector) {
     try {
       return [...document.querySelectorAll(selector)];
@@ -173,11 +191,32 @@ export default class AttributeCycler extends HTMLElement {
   }
 
   #initial() {
+    const stored = this.#stored();
+    if (stored !== null && this.values.includes(stored)) return stored;
+    const current = this.getAttribute("value");
+    if (current !== null && this.values.includes(current)) return current;
+    return this.#default();
+  }
+
+  // What it shows when nothing has been chosen: the `value` attribute as
+  // first written, or the first value.
+  #default() {
     const values = this.values;
-    for (const candidate of [this.#stored(), this.getAttribute("value")]) {
-      if (candidate !== null && values.includes(candidate)) return candidate;
+    return values.includes(this.#authoredValue) ? this.#authoredValue : (values[0] ?? "");
+  }
+
+  #forget() {
+    if (!this.storageKey) return;
+    try {
+      localStorage.removeItem(this.storageKey);
+    } catch {
+      // storage blocked
     }
-    return values[0] ?? "";
+  }
+
+  #userReset() {
+    this.#forget();
+    if (this.#set(this.#default(), { persist: false })) this.dispatchEvent(new Event("change", { bubbles: true }));
   }
 
   #step(delta) {
@@ -238,6 +277,7 @@ export default class AttributeCycler extends HTMLElement {
     if (button.hasAttribute("commandfor")) return;
     if (button.hasAttribute("value")) this.#userSet(button.value);
     else if (button.dataset.cycle === "previous") this.#userSet(this.#step(-1));
+    else if (button.dataset.cycle === "reset") this.#userReset();
     else this.#userSet(this.#step(1));
   }
 }
