@@ -415,6 +415,39 @@
       ]
     },
     {
+      "name": "pixel-adjust",
+      "description": "A pixel effect: brightness, contrast, saturation, and hue.",
+      "attributes": [
+        {
+          "name": "brightness",
+          "description": "Multiplier: 1 is unchanged, 0 is black. Default 1."
+        },
+        {
+          "name": "contrast",
+          "description": "Multiplier around mid-gray: 1 is unchanged, 0 is flat gray. Default 1."
+        },
+        {
+          "name": "saturation",
+          "description": "Multiplier: 1 is unchanged, 0 is grayscale. Default 1."
+        },
+        {
+          "name": "hue",
+          "description": "Rotation in degrees. Default 0."
+        },
+        {
+          "name": "disabled",
+          "description": "Pass the image through unchanged.",
+          "valueSet": "v"
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/pixelable/pixel-adjust"
+        }
+      ]
+    },
+    {
       "name": "pixel-canvas",
       "description": "Pixel effects on any image, video, or canvas, by wrapping it in effect elements.\n\nEvents: `load`, `error`",
       "attributes": [
@@ -425,12 +458,74 @@
         {
           "name": "height",
           "description": "Working height, if `width` isn't given."
+        },
+        {
+          "name": "effects",
+          "description": "Effects to apply, in order, like CSS `filter`: `mosaic(4) palette(gameboy, ordered) adjust(contrast 1.3)`. They run after any effect elements inside."
         }
       ],
       "references": [
         {
           "name": "Documentation",
           "url": "https://github.com/johnhenry/domkit/tree/main/src/pixelable/pixel-canvas"
+        }
+      ]
+    },
+    {
+      "name": "pixel-chroma-key",
+      "description": "A pixel effect: make a color transparent (green screen).",
+      "attributes": [
+        {
+          "name": "color",
+          "description": "The color to remove, any CSS color. Default `lime`."
+        },
+        {
+          "name": "tolerance",
+          "description": "How different a color can be and still be removed, 0–1. Default 0.3."
+        },
+        {
+          "name": "softness",
+          "description": "A fade beyond the tolerance, 0–1, for smooth edges. Default 0.1."
+        },
+        {
+          "name": "disabled",
+          "description": "Pass the image through unchanged.",
+          "valueSet": "v"
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/pixelable/pixel-chroma-key"
+        }
+      ]
+    },
+    {
+      "name": "pixel-crt",
+      "description": "A pixel effect: an old CRT screen.",
+      "attributes": [
+        {
+          "name": "scanlines",
+          "description": "How much alternate rows are darkened, 0–1. Default 0.35."
+        },
+        {
+          "name": "mask",
+          "description": "Strength of the color stripe mask, 0–1. Default 0.25."
+        },
+        {
+          "name": "glow",
+          "description": "Overall brightness boost. Default 1.15."
+        },
+        {
+          "name": "disabled",
+          "description": "Pass the image through unchanged.",
+          "valueSet": "v"
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/pixelable/pixel-crt"
         }
       ]
     },
@@ -464,6 +559,39 @@
       ]
     },
     {
+      "name": "pixel-halftone",
+      "description": "A pixel effect: halftone dots, like print.",
+      "attributes": [
+        {
+          "name": "size",
+          "description": "Cell size in pixels. Default 6."
+        },
+        {
+          "name": "angle",
+          "description": "Grid angle in degrees. Default 45."
+        },
+        {
+          "name": "ink",
+          "description": "Dot color, any CSS color, or `auto` for each cell's own color. Default black."
+        },
+        {
+          "name": "paper",
+          "description": "Background color. Default white."
+        },
+        {
+          "name": "disabled",
+          "description": "Pass the image through unchanged.",
+          "valueSet": "v"
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/pixelable/pixel-halftone"
+        }
+      ]
+    },
+    {
       "name": "pixel-mosaic",
       "description": "A pixel effect: pixelate into blocks of one color.",
       "attributes": [
@@ -481,6 +609,35 @@
         {
           "name": "Documentation",
           "url": "https://github.com/johnhenry/domkit/tree/main/src/pixelable/pixel-mosaic"
+        }
+      ]
+    },
+    {
+      "name": "pixel-outline",
+      "description": "A pixel effect: line art from edges.",
+      "attributes": [
+        {
+          "name": "threshold",
+          "description": "Edge strength needed for a line, 0–1. Lower draws more lines. Default 0.2."
+        },
+        {
+          "name": "ink",
+          "description": "Line color. Default black."
+        },
+        {
+          "name": "paper",
+          "description": "Background color, or `none` to draw the lines over the image. Default white."
+        },
+        {
+          "name": "disabled",
+          "description": "Pass the image through unchanged.",
+          "valueSet": "v"
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/pixelable/pixel-outline"
         }
       ]
     },

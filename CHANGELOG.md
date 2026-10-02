@@ -6,6 +6,15 @@ All notable changes to this project will be documented in this file.
 
 ### Changed (breaking)
 
+- **`pixelable/pixel-filter.mjs` is now `pixelable/effects.mjs`.**
+  `definePixelFilter(tag, (image, element) => …)` is replaced by
+  `definePixelEffect(name, (image, params) => …, { params })`, which
+  registers `name(…)` for the `effects` attribute and a `<pixel-name>`
+  element. `PixelFilter` is now `PixelEffect`; `<pixel-canvas>`'s list of
+  effect elements is `effectElements` (`effects` now mirrors the
+  attribute); `<pixel-mosaic>`/`<pixel-grid>` lost their `size`
+  properties (use the attributes).
+
 - **`localstorage-cycler` no longer stores the default on creation**, so
   "nothing chosen yet" is a real state, and stepping from it moves to the
   second value (it used to stay on the first).
@@ -57,6 +66,16 @@ All notable changes to this project will be documented in this file.
   and `--domkit-combo-accent`.
 
 ### Added
+
+- **`<pixel-canvas effects="…">`: effects listed like CSS `filter`**
+  (`effects="adjust(contrast 1.3) palette(gameboy, ordered)"`), run left
+  to right after any effect elements, with positional or named parameters
+  (`palette(dither ordered, colors gameboy)`) and repeats allowed. Every
+  effect is one registered function used by both forms.
+- **Five new effects**, each as a function and an element: `adjust`
+  (brightness, contrast, saturation, hue), `halftone` (printed dots, with
+  `ink="auto"` for color), `outline` (line art from edges), `crt`
+  (scanlines and a shadow mask), and `chroma-key` (green screen).
 
 - **`pixelable/`: pixel effects on any image, video, or canvas, in
   HTML.** Wrap the source in effects and those in a `<pixel-canvas>`:

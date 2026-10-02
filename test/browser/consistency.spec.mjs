@@ -23,6 +23,11 @@ const ELEMENTS = {
   "pixelable/pixel-mosaic": "",
   "pixelable/pixel-palette": "",
   "pixelable/pixel-grid": "",
+  "pixelable/pixel-adjust": "",
+  "pixelable/pixel-halftone": "",
+  "pixelable/pixel-outline": "",
+  "pixelable/pixel-crt": "",
+  "pixelable/pixel-chroma-key": "",
 };
 const tagOf = (path) => path.split("/").pop();
 const MODULES = Object.keys(ELEMENTS).map((path) => `src/${path}/global.mjs`);
