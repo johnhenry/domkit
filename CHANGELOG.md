@@ -67,6 +67,14 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **Pixel effects that change over time.** Effects receive
+  `{ time, frame }` from the `<pixel-canvas>` clock, which `fps` drives on
+  a still image and `play()`/`pause()`/`paused` (with events and
+  `--play`/`--pause`/`--toggle` commands) control; reduced motion keeps it
+  still until `play()`. New `glitch(amount, rate)` and
+  `wave(amplitude, wavelength, speed)` effects (and elements), and a
+  `random(seed)` helper for repeatable randomness.
+
 - **`<pixel-sprite>`: pixel art written as text.** One character per
   pixel with a color key (`colors=". transparent; # black; o gold"`, or a
   numbered palette; PICO-8 hex digits by default), blank lines between

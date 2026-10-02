@@ -400,11 +400,15 @@ Pixel effects on any image, video, canvas, or pixel sprite. [Guide](../src/pixel
 | `effects` | `effects` | `string` | Effects to apply, in order, like CSS `filter`: `mosaic(4) palette(gameboy, ordered) adjust(contrast 1.3)`. They run after any effect elements inside. |
 | `swatches` | `swatches` | `number` | Publish the result's N most common colors as `--pixel-swatch-1` … `--pixel-swatch-N` custom properties (and the `palette` property). Default: none. |
 | `swatches-target` | `swatchesTarget` | `string` | A selector for more elements to set those custom properties on (for example `html`, to theme the page). They're always set on the `<pixel-canvas>` itself. |
+| `fps` |  | `number` | Redraw at this rate, so effects that change over time (`glitch`, `wave`, your own) animate even on a still image. Without it, it redraws only when something changes (or every frame of a playing video). |
+| `paused` | `paused` | `boolean` | Stops the clock effects animate by, and the `fps` redraws. Reflects; write it in markup to start paused. |
 
 **Properties**
 
 | Property | Type | Description |
 |---|---|---|
+| `time` (read-only) | `number` | Seconds on the clock that effects animate by. It runs while the element is connected and not paused (and, for visitors who prefer reduced motion, only once `play()` is called). |
+| `paused` (read-only) | `boolean` | Whether the clock is paused. |
 | `source` (read-only) | `Element \| null` | The image, video, canvas, or `<pixel-sprite>` being drawn: the first one inside. |
 | `effectElements` (read-only) | `Element[]` | The effect elements wrapped around the source, in the order they run (innermost first). Disabled ones are included. |
 | `effects` | `string` | Mirrors the `effects` attribute. |
@@ -419,6 +423,8 @@ Pixel effects on any image, video, canvas, or pixel sprite. [Guide](../src/pixel
 
 | Method | Description |
 |---|---|
+| `play()` | Start or resume the clock (and the `fps` redraws). |
+| `pause()` | Pause the clock where it is. |
 | `render()` | Draw now, instead of on the next frame. Returns whether it drew. |
 | `toBlob(type, quality)` | The result as an image file, like `HTMLCanvasElement.toBlob()`. |
 | `toDataURL(type, quality)` | The result as a data: URL, like `HTMLCanvasElement.toDataURL()`. |
@@ -427,6 +433,8 @@ Pixel effects on any image, video, canvas, or pixel sprite. [Guide](../src/pixel
 
 | Event | Description |
 |---|---|
+| `play` | The clock started or resumed. |
+| `pause` | The clock paused. |
 | `load` | The first frame of a source was drawn. |
 | `palettechange` | With `swatches`: the published colors changed. |
 | `error` | The source can't be read (for example, a cross-origin image without CORS) or an effect threw: an `ErrorEvent`, and the original content is shown instead. Also fired, once per name, for an unknown effect in `effects`, which is skipped. |
@@ -455,6 +463,18 @@ A pixel effect: an old CRT screen. [Guide](../src/pixelable/pixel-crt/readme.md)
 | `scanlines` |  | `number` | How much alternate rows are darkened, 0–1. Default 0.35. |
 | `mask` |  | `number` | Strength of the color stripe mask, 0–1. Default 0.25. |
 | `glow` |  | `number` | Overall brightness boost. Default 1.15. |
+| `disabled` |  | `boolean` | Pass the image through unchanged. |
+
+## `<pixel-glitch>`
+
+A pixel effect: animated digital glitches. [Guide](../src/pixelable/pixel-glitch/readme.md) · module `@johnhenry/domkit/pixelable/pixel-glitch`
+
+**Attributes**
+
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `amount` |  | `number` | How broken, 0 (none) to 1. Default 0.3. |
+| `rate` |  | `number` | New glitches per second of the canvas clock. Default 8. |
 | `disabled` |  | `boolean` | Pass the image through unchanged. |
 
 ## `<pixel-grid>`
@@ -571,6 +591,19 @@ Pixel art written as text, with animation frames. [Guide](../src/pixelable/pixel
 | Property | Description |
 |---|---|
 | `--domkit-sprite-scale` | How many screen pixels each sprite pixel takes. Default 8. |
+
+## `<pixel-wave>`
+
+A pixel effect: an animated wave. [Guide](../src/pixelable/pixel-wave/readme.md) · module `@johnhenry/domkit/pixelable/pixel-wave`
+
+**Attributes**
+
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `amplitude` |  | `number` | How far rows move, in pixels. Default 4. |
+| `wavelength` |  | `number` | Rows per wave. Default 32. |
+| `speed` |  | `number` | Waves per second on the canvas clock (negative reverses). Default 0.5. |
+| `disabled` |  | `boolean` | Pass the image through unchanged. |
 
 ## `<polyfill-window>`
 

@@ -449,7 +449,7 @@
     },
     {
       "name": "pixel-canvas",
-      "description": "Pixel effects on any image, video, canvas, or pixel sprite.\n\nEvents: `load`, `palettechange`, `error`",
+      "description": "Pixel effects on any image, video, canvas, or pixel sprite.\n\nEvents: `play`, `pause`, `load`, `palettechange`, `error`",
       "attributes": [
         {
           "name": "width",
@@ -470,6 +470,15 @@
         {
           "name": "swatches-target",
           "description": "A selector for more elements to set those custom properties on (for example `html`, to theme the page). They're always set on the `<pixel-canvas>` itself."
+        },
+        {
+          "name": "fps",
+          "description": "Redraw at this rate, so effects that change over time (`glitch`, `wave`, your own) animate even on a still image. Without it, it redraws only when something changes (or every frame of a playing video)."
+        },
+        {
+          "name": "paused",
+          "description": "Stops the clock effects animate by, and the `fps` redraws. Reflects; write it in markup to start paused.",
+          "valueSet": "v"
         }
       ],
       "references": [
@@ -534,6 +543,31 @@
         {
           "name": "Documentation",
           "url": "https://github.com/johnhenry/domkit/tree/main/src/pixelable/pixel-crt"
+        }
+      ]
+    },
+    {
+      "name": "pixel-glitch",
+      "description": "A pixel effect: animated digital glitches.",
+      "attributes": [
+        {
+          "name": "amount",
+          "description": "How broken, 0 (none) to 1. Default 0.3."
+        },
+        {
+          "name": "rate",
+          "description": "New glitches per second of the canvas clock. Default 8."
+        },
+        {
+          "name": "disabled",
+          "description": "Pass the image through unchanged.",
+          "valueSet": "v"
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/pixelable/pixel-glitch"
         }
       ]
     },
@@ -704,6 +738,35 @@
         {
           "name": "Documentation",
           "url": "https://github.com/johnhenry/domkit/tree/main/src/pixelable/pixel-sprite"
+        }
+      ]
+    },
+    {
+      "name": "pixel-wave",
+      "description": "A pixel effect: an animated wave.",
+      "attributes": [
+        {
+          "name": "amplitude",
+          "description": "How far rows move, in pixels. Default 4."
+        },
+        {
+          "name": "wavelength",
+          "description": "Rows per wave. Default 32."
+        },
+        {
+          "name": "speed",
+          "description": "Waves per second on the canvas clock (negative reverses). Default 0.5."
+        },
+        {
+          "name": "disabled",
+          "description": "Pass the image through unchanged.",
+          "valueSet": "v"
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/pixelable/pixel-wave"
         }
       ]
     },

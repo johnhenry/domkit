@@ -120,6 +120,8 @@ queries, evaluated against an element's size instead of the viewport.
 | [pixel-outline](src/pixelable/pixel-outline/readme.md) | Line art from edges | `<pixel-outline>` |
 | [pixel-crt](src/pixelable/pixel-crt/readme.md) | An old screen: scanlines and a color stripe mask | `<pixel-crt>` |
 | [pixel-chroma-key](src/pixelable/pixel-chroma-key/readme.md) | Make a color transparent (green screen) | `<pixel-chroma-key>` |
+| [pixel-glitch](src/pixelable/pixel-glitch/readme.md) | Animated digital breakup | `<pixel-glitch>` |
+| [pixel-wave](src/pixelable/pixel-wave/readme.md) | Rows rippling along a moving wave | `<pixel-wave>` |
 
 ## Recipes
 

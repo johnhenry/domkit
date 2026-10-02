@@ -3562,7 +3562,7 @@
           "name": "PixelCanvas",
           "cssParts": [
             {
-              "description": "The `<canvas>` showing the result.",
+              "description": "The `<canvas>` showing the result. Invoker commands: `--play`, `--pause`, `--toggle`.",
               "name": "canvas"
             }
           ],
@@ -3657,6 +3657,114 @@
               "kind": "field",
               "name": "#onDefine",
               "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "time",
+              "description": "Seconds on the clock that effects animate by. It runs while the\nelement is connected and not paused (and, for visitors who prefer\nreduced motion, only once `play()` is called).",
+              "type": {
+                "text": "number"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "paused",
+              "description": "Whether the clock is paused.",
+              "type": {
+                "text": "boolean"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "play",
+              "description": "Start or resume the clock (and the `fps` redraws)."
+            },
+            {
+              "kind": "method",
+              "name": "pause",
+              "description": "Pause the clock where it is."
+            },
+            {
+              "kind": "method",
+              "name": "#setPaused",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "paused"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#runClock",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "{ force = false }",
+                  "default": "{}"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#stopClock",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#elapsed",
+              "privacy": "private",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "#startedAt",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#ticker",
+              "privacy": "private",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "#forced",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#reflecting",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#draws",
+              "privacy": "private",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
             },
             {
               "kind": "field",
@@ -3923,6 +4031,20 @@
           ],
           "events": [
             {
+              "name": "play",
+              "type": {
+                "text": "Event"
+              },
+              "description": "The clock started or resumed."
+            },
+            {
+              "name": "pause",
+              "type": {
+                "text": "Event"
+              },
+              "description": "The clock paused."
+            },
+            {
               "name": "load",
               "type": {
                 "text": "Event"
@@ -3979,6 +4101,20 @@
                 "text": "string"
               },
               "description": "A selector for more elements to set those custom properties on (for example `html`, to theme the page). They're always set on the `<pixel-canvas>` itself."
+            },
+            {
+              "name": "fps",
+              "type": {
+                "text": "number"
+              },
+              "description": "Redraw at this rate, so effects that change over time (`glitch`, `wave`, your own) animate even on a still image. Without it, it redraws only when something changes (or every frame of a playing video)."
+            },
+            {
+              "name": "paused",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Stops the clock effects animate by, and the `fps` redraws. Reflects; write it in markup to start paused."
             }
           ],
           "superclass": {
@@ -4134,6 +4270,68 @@
           "declaration": {
             "name": "PixelCrt",
             "module": "src/pixelable/pixel-crt/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/pixelable/pixel-glitch/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Digital breakup: bands of rows slide sideways and the red and blue channels split, differently at each step of the canvas clock. The element form of `glitch(amount, rate)`.",
+          "name": "PixelGlitch",
+          "members": [
+            {
+              "kind": "field",
+              "name": "effect",
+              "type": {
+                "text": "object"
+              },
+              "static": true,
+              "default": "{ name: \"glitch\", params, apply }"
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "How broken, 0 (none) to 1. Default 0.3.",
+              "name": "amount"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "New glitches per second of the canvas clock. Default 8.",
+              "name": "rate"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Pass the image through unchanged.",
+              "name": "disabled"
+            }
+          ],
+          "superclass": {
+            "name": "PixelEffect",
+            "module": "/src/pixelable/effects.mjs"
+          },
+          "tagName": "pixel-glitch",
+          "customElement": true,
+          "summary": "A pixel effect: animated digital glitches."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "PixelGlitch",
+            "module": "src/pixelable/pixel-glitch/index.mjs"
           }
         }
       ]
@@ -4764,6 +4962,75 @@
           "declaration": {
             "name": "PixelSprite",
             "module": "src/pixelable/pixel-sprite/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/pixelable/pixel-wave/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Slides each row sideways along a sine wave that travels over time: water, heat haze, a waving flag. The element form of `wave(amplitude, wavelength, speed)`.",
+          "name": "PixelWave",
+          "members": [
+            {
+              "kind": "field",
+              "name": "effect",
+              "type": {
+                "text": "object"
+              },
+              "static": true,
+              "default": "{ name: \"wave\", params, apply }"
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "How far rows move, in pixels. Default 4.",
+              "name": "amplitude"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "Rows per wave. Default 32.",
+              "name": "wavelength"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "Waves per second on the canvas clock (negative reverses). Default 0.5.",
+              "name": "speed"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Pass the image through unchanged.",
+              "name": "disabled"
+            }
+          ],
+          "superclass": {
+            "name": "PixelEffect",
+            "module": "/src/pixelable/effects.mjs"
+          },
+          "tagName": "pixel-wave",
+          "customElement": true,
+          "summary": "A pixel effect: an animated wave."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "PixelWave",
+            "module": "src/pixelable/pixel-wave/index.mjs"
           }
         }
       ]
