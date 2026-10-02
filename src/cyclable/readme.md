@@ -8,8 +8,8 @@ Three layers. Use the highest one that fits:
 
 | Module | What you write | What it does |
 |---|---|---|
-| [class-cycler](./class-cycler/readme.md) | `<class-cycler classes="light,dark" …><button>…</button></class-cycler>` | The element: buttons inside (or invoker commands from anywhere) cycle a class on a target |
-| [localstorage-class-cycler](./localstorage-class-cycler/readme.md) | `localStorageClassCycler(el, key, ...classes)` | The same, as a JS function |
+| [attribute-cycler](./attribute-cycler/readme.md) | `<attribute-cycler values="light,dark" …><button>…</button></attribute-cycler>` | The element: buttons inside (or invoker commands from anywhere) cycle a class, or any attribute, on a target |
+| [localstorage-attribute-cycler](./localstorage-attribute-cycler/readme.md) | `localStorageAttributeCycler(el, key, values, { attribute })` | The same, as a JS function |
 | [localstorage-cycler](./localstorage-cycler/readme.md) | `localStorageCycler(key, handler?, ...values)` | The engine: a persisted value with `next`/`previous`/`peek`/`set` |
 
 ## Quick start
@@ -17,12 +17,12 @@ Three layers. Use the highest one that fits:
 ```html
 <script
   type="module"
-  src="https://esm.sh/@johnhenry/domkit/cyclable/class-cycler/global.mjs"
+  src="https://esm.sh/@johnhenry/domkit/cyclable/attribute-cycler/global.mjs"
 ></script>
 
-<class-cycler target="html" classes="light,dark" storage-key="theme">
+<attribute-cycler target="html" values="light,dark" storage-key="theme">
   <button>Theme: <output></output></button>
-</class-cycler>
+</attribute-cycler>
 ```
 
 ```css

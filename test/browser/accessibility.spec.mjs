@@ -16,7 +16,7 @@ const MODULES = [
   "src/drill-menu/global.mjs",
   "src/code-color/global.mjs",
   "src/frame-timer/global.mjs",
-  "src/cyclable/class-cycler/global.mjs",
+  "src/cyclable/attribute-cycler/global.mjs",
   "src/matchable/query-container/global.mjs",
   "src/matchable/attribute-provider/global.mjs",
 ];
@@ -67,7 +67,7 @@ const ALL = `
     <a href="#help">Help</a>
   </drill-menu>
   <hotkey-dialog hotkey="mod+k"><dialog aria-label="Palette"><p>Hi</p></dialog></hotkey-dialog>
-  <class-cycler classes="light,dark"><button type="button" value="light">Light</button><button type="button" value="dark">Dark</button> <output></output></class-cycler>
+  <attribute-cycler values="light,dark"><button type="button" value="light">Light</button><button type="button" value="dark">Dark</button> <output></output></attribute-cycler>
   <code-color language="js"><pre>const answer = 42; // comment</pre></code-color>
   <query-container default="ul" query="[(min-width: 600px)] ol"><li>a</li><li>b</li></query-container>
   <attribute-provider classes="[(min-width: 1px)] note"><p>provided</p></attribute-provider>
@@ -102,7 +102,7 @@ test("disabled states pass axe", async ({ page }) => {
   await mount(page, ALL, MODULES);
   await loadStyles(page);
   await page.evaluate(() => {
-    for (const el of document.querySelectorAll("tabbed-ui, stylable-select, infinite-combo-box, drill-menu, class-cycler")) {
+    for (const el of document.querySelectorAll("tabbed-ui, stylable-select, infinite-combo-box, drill-menu, attribute-cycler")) {
       el.disabled = true;
     }
   });

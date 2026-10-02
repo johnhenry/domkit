@@ -69,8 +69,8 @@ queries, evaluated against an element's size instead of the viewport.
 
 | Module | What it's for | `global.mjs` registers |
 |---|---|---|
-| [class-cycler](src/cyclable/class-cycler/readme.md) | Buttons that cycle a persisted class (theme, density), synced across tabs | `<class-cycler>` |
-| [localstorage-class-cycler](src/cyclable/localstorage-class-cycler/readme.md) | The same, as a JS function | |
+| [attribute-cycler](src/cyclable/attribute-cycler/readme.md) | Buttons that cycle a persisted class or attribute (theme, density), synced across tabs | `<attribute-cycler>` |
+| [localstorage-attribute-cycler](src/cyclable/localstorage-attribute-cycler/readme.md) | The same, as a JS function | |
 | [localstorage-cycler](src/cyclable/localstorage-cycler/readme.md) | The engine: a persisted value with `next`/`previous`/`peek`/`set` | |
 
 ### Wiring things up from markup instead of scripts: [`definable/`](src/definable/readme.md)
@@ -114,13 +114,13 @@ plots), and [chernoff-face](src/experimental/chernoff-face/readme.md).
 Complete pages in [`examples/`](examples/) that combine modules the way a
 real site would. Each is plain HTML you can read top to bottom:
 
-- [Theme switcher](examples/theme-switcher.html): `class-cycler` +
+- [Theme switcher](examples/theme-switcher.html): `attribute-cycler` +
   `color-scheme`, synced across tabs.
 - [Command palette](examples/command-palette.html): `hotkey-dialog` +
   `infinite-combo-box` on ⌘K.
 - [Settings panel](examples/settings-panel.html): one `<form>` across
   `drill-menu` screens, with `stylable-select`, `infinite-combo-box`, and
-  `class-cycler` submitting like native controls.
+  `attribute-cycler` submitting like native controls.
 - [Documentation page](examples/documentation-page.html): `tabbed-ui` code
   samples highlighted by `code-color`, plus `query-container`.
 - [Game loop](examples/game-loop.html): `frame-timer` driving an
@@ -232,7 +232,8 @@ repo's known gotchas.
 
 - [`@johnhenry/domable`](https://github.com/johnhenry/domable) converts
   between HTML text, DOM nodes, and React-element-shaped objects, and
-  builds custom-element classes from HTML strings. domkit depends on it.
+  builds custom-element classes from HTML strings. domkit used to depend
+  on it, and is now dependency-free.
 
 ## History
 

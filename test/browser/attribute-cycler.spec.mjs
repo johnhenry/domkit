@@ -1,14 +1,14 @@
 import { test, expect } from "@playwright/test";
 import { mount, recordEvents } from "./helpers.mjs";
 
-const MODULES = ["src/cyclable/class-cycler/global.mjs"];
+const MODULES = ["src/cyclable/attribute-cycler/global.mjs"];
 const THEME = `
-  <class-cycler id="theme" target="html" classes="light,dark,system" storage-key="test-theme">
+  <attribute-cycler id="theme" target="html" values="light,dark,system" storage-key="test-theme">
     <button id="next">Next theme</button>
     <button id="prev" data-cycle="previous">Previous</button>
     <button value="dark" id="dark">Dark</button>
     <output id="out"></output>
-  </class-cycler>`;
+  </attribute-cycler>`;
 
 const state = (page) =>
   page.evaluate(() => ({
@@ -86,7 +86,7 @@ test("script changes are silent; next()/previous()/value work", async ({ page })
 test("other classes on the target are left alone; an empty value means no class", async ({ page }) => {
   await mount(
     page,
-    `<div id="box" class="keep"></div><class-cycler id="theme" target="#box" classes=",highlight"><button id="next">x</button></class-cycler>`,
+    `<div id="box" class="keep"></div><attribute-cycler id="theme" target="#box" values=",highlight"><button id="next">x</button></attribute-cycler>`,
     MODULES,
   );
   const cls = () => page.evaluate(() => document.getElementById("box").className);
@@ -98,9 +98,45 @@ test("other classes on the target are left alone; an empty value means no class"
 });
 
 test("changing target moves the class", async ({ page }) => {
-  await mount(page, `<p id="a"></p><p id="b"></p><class-cycler id="theme" target="#a" classes="x,y"></class-cycler>`, MODULES);
+  await mount(page, `<p id="a"></p><p id="b"></p><attribute-cycler id="theme" target="#a" values="x,y"></attribute-cycler>`, MODULES);
   await page.evaluate(() => document.getElementById("theme").setAttribute("target", "#b"));
   expect(await page.evaluate(() => [document.getElementById("a").className, document.getElementById("b").className])).toEqual(["", "x"]);
+});
+
+test.describe("attribute", () => {
+  test("sets any attribute's whole value; an empty value removes it", async ({ page }) => {
+    await mount(
+      page,
+      `<div id="box" data-theme="mine"></div>
+       <attribute-cycler id="c" target="#box" attribute="data-theme" values=",dark,light"><button id="next">x</button></attribute-cycler>`,
+      MODULES,
+    );
+    const attr = () => page.evaluate(() => document.getElementById("box").getAttribute("data-theme"));
+    expect(await attr(), "the empty first value: the attribute isn't one of ours, so it's left").toBe("mine");
+    await page.locator("#next").click();
+    expect(await attr()).toBe("dark");
+    await page.locator("#next").click();
+    expect(await attr()).toBe("light");
+    await page.locator("#next").click();
+    expect(await attr(), "back to empty: ours is removed").toBe(null);
+  });
+
+  test("changing attribute moves the value, and leaves the class alone", async ({ page }) => {
+    await mount(
+      page,
+      `<div id="box" class="keep"></div><attribute-cycler id="c" target="#box" values="a,b" value="b"></attribute-cycler>`,
+      MODULES,
+    );
+    const read = () => page.evaluate(() => {
+      const box = document.getElementById("box");
+      return [box.className, box.getAttribute("data-mode")];
+    });
+    expect(await read()).toEqual(["keep b", null]);
+    await page.evaluate(() => (document.getElementById("c").attribute = "data-mode"));
+    expect(await read()).toEqual(["keep", "b"]);
+    await page.evaluate(() => document.getElementById("c").removeAttribute("attribute"));
+    expect(await read()).toEqual(["keep b", null]);
+  });
 });
 
 test("invoker commands from buttons anywhere drive it, where supported", async ({ page }) => {

@@ -1,14 +1,17 @@
 // Generated from custom-elements.json by scripts/manifest-outputs.mjs.
 // Do not edit: change the JSDoc in index.mjs and run `npm run manifest`.
 
-/** Cycles a class through a fixed list on target elements, persisted to
- * localStorage, driven by buttons inside it or invoker commands. */
-export default class ClassCycler extends HTMLElement {
+/** Cycles an attribute (a class, by default) through a fixed list of values
+ * on target elements, persisted to localStorage, driven by buttons inside
+ * it or invoker commands. */
+export default class AttributeCycler extends HTMLElement {
   /** The values to cycle through, in order. */
   readonly values: string[];
+  /** The attribute set on the targets. Mirrors the `attribute` attribute. */
+  attribute: string;
   /** The current value. Setting it applies and persists it, without an event. */
   value: string;
-  /** The elements whose class is set. */
+  /** The elements whose attribute is set. */
   readonly targets: Element[];
   /** Mirrors the `disabled` attribute. */
   disabled: boolean;
@@ -21,6 +24,6 @@ export default class ClassCycler extends HTMLElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "class-cycler": ClassCycler;
+    "attribute-cycler": AttributeCycler;
   }
 }

@@ -6,6 +6,16 @@ All notable changes to this project will be documented in this file.
 
 ### Changed (breaking)
 
+- **`class-cycler` is now `<attribute-cycler>`, and can set any
+  attribute.** Module `@johnhenry/domkit/cyclable/attribute-cycler`.
+  `classes` is renamed `values`. The new `attribute` attribute (default
+  `class`) chooses what's set on the targets: one class among their
+  others, as before, or another attribute's whole value
+  (`attribute="data-theme"`), with an empty value removing it. The
+  function `localstorage-class-cycler` is likewise
+  `localstorage-attribute-cycler`, now called as
+  `(targets, key, values, { attribute })`.
+
 - **`frame-delay` is merged into `delay`.** `await delay({ fps: 30 })`
   waits one frame period on an animation frame, as `frameDelay(30)` did;
   `delay()` and `delay(ms)` are unchanged. An invalid `fps` now rejects

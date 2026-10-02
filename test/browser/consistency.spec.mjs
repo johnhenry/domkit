@@ -13,7 +13,7 @@ const ELEMENTS = {
   "drill-menu": "<button>a<template>x</template></button>",
   "code-color": "<pre>let a</pre>",
   "frame-timer": "",
-  "cyclable/class-cycler": "<button>a</button>",
+  "cyclable/attribute-cycler": "<button>a</button>",
   "matchable/query-container": "<li>a</li>",
   "matchable/attribute-provider": "<p>a</p>",
 };
@@ -131,7 +131,7 @@ test("disabled means the same thing everywhere: no interaction, out of the tab o
     `<button id="before">before</button>
      <tabbed-ui id="t" disabled><div><button>A</button><button>B</button></div><p>a</p><p>b</p></tabbed-ui>
      <drill-menu id="m" disabled><button data-key="x">X<template>x</template></button></drill-menu>
-     <class-cycler id="c" disabled classes="p,q"><button id="cb">cycle</button></class-cycler>
+     <attribute-cycler id="c" disabled values="p,q"><button id="cb">cycle</button></attribute-cycler>
      <hotkey-dialog id="h" disabled hotkey="ctrl+k"><dialog id="d">d</dialog></hotkey-dialog>
      <stylable-select id="s" disabled><option>a</option><option>b</option></stylable-select>
      <infinite-combo-box id="i" disabled><option>a</option></infinite-combo-box>

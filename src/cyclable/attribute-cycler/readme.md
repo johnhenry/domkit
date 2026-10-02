@@ -1,22 +1,34 @@
-# class-cycler
+# attribute-cycler
 
-A setting that cycles through a fixed list of classes on some element:
-a theme (`light → dark → system`), a density, a font size. It's remembered
-in `localStorage`, restored on the next visit before anything is clicked,
-and kept in sync across open tabs. Part of [cyclable](../readme.md).
+A setting that cycles through a fixed list of values on some element: a
+theme (`light → dark → system`), a density, a font size. By default the
+value is a class on the target; with `attribute`, it's any attribute's
+value instead (`data-theme="dark"`). It's remembered in `localStorage`,
+restored on the next visit before anything is clicked, and kept in sync
+across open tabs. Part of [cyclable](../readme.md).
 
 ## Usage
 
 ```html
-<script type="module" src="https://esm.sh/@johnhenry/domkit/cyclable/class-cycler/global.mjs"></script>
+<script type="module" src="https://esm.sh/@johnhenry/domkit/cyclable/attribute-cycler/global.mjs"></script>
 
-<class-cycler id="theme" target="html" classes="light,dark,system" storage-key="theme">
+<attribute-cycler id="theme" target="html" values="light,dark,system" storage-key="theme">
   <button>Theme: <output></output></button>
-</class-cycler>
+</attribute-cycler>
 ```
 
 ```css
 html.dark { color-scheme: dark; }
+```
+
+Or set an attribute, for stylesheets written against `[data-theme]`:
+
+```html
+<attribute-cycler attribute="data-theme" values="light,dark" storage-key="theme">…</attribute-cycler>
+```
+
+```css
+html[data-theme="dark"] { color-scheme: dark; }
 ```
 
 Inside the element:
@@ -46,8 +58,9 @@ with no script:
 
 | Attribute | Property | Type | Description |
 |---|---|---|---|
-| `classes` |  | `string` | Comma-separated values to cycle through. An empty entry means "no class". |
-| `target` |  | `string` | Selector for the element(s) whose class is set. Default `html`. |
+| `values` | `values` | `string` | Comma-separated values to cycle through. An empty entry means "none": no class, or no attribute. |
+| `attribute` | `attribute` | `string` | The attribute to set on the targets. Default `class`, where the value is one class among the target's others; any other attribute gets the value as its whole value. |
+| `target` |  | `string` | Selector for the element(s) whose attribute is set. Default `html`. |
 | `storage-key` | `storageKey` | `string` | localStorage key to persist under. Without it, the value isn't persisted. |
 | `value` | `value` | `string` | The current value. Reflects; set it to choose the initial value when nothing is stored. |
 | `disabled` | `disabled` | `boolean` | Its buttons are disabled, and invoker commands are ignored. |
@@ -57,8 +70,9 @@ with no script:
 | Property | Type | Description |
 |---|---|---|
 | `values` (read-only) | `string[]` | The values to cycle through, in order. |
+| `attribute` | `string` | The attribute set on the targets. Mirrors the `attribute` attribute. |
 | `value` | `string` | The current value. Setting it applies and persists it, without an event. |
-| `targets` (read-only) | `Element[]` | The elements whose class is set. |
+| `targets` (read-only) | `Element[]` | The elements whose attribute is set. |
 | `disabled` | `boolean` | Mirrors the `disabled` attribute. |
 | `storageKey` | `string` | Mirrors the `storage-key` attribute. |
 
@@ -81,6 +95,7 @@ with no script:
 
 - Inside a `<form>`, give the buttons `type="button"` so they don't submit.
 - For a JS-only version without an element, see
-  [localstorage-class-cycler](../localstorage-class-cycler/readme.md).
-- Only the cycle's own classes are added and removed. Other classes on the targets are untouched.
+  [localstorage-attribute-cycler](../localstorage-attribute-cycler/readme.md).
+- With `attribute="class"` (the default), only the cycle's own classes are added and removed; other classes on the targets are untouched. With another attribute, the attribute's whole value is set, and an empty value removes it.
+- Changing `attribute` or `target` removes what was set on the old attribute or targets (only if it's still one of the cycle's values).
 - When another tab changes the stored value, this page follows it. No event fires, since this page's user didn't act.

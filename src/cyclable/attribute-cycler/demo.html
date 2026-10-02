@@ -13,7 +13,7 @@
 <script type="module" src="./global.mjs"></script>
 </head>
 <body>
-<class-cycler id="theme" target="html" classes="light,dark,sepia" storage-key="cyclable-demo-theme">
+<attribute-cycler id="theme" target="html" values="light,dark,sepia" storage-key="cyclable-demo-theme">
   <button>Next theme</button>
   <button data-cycle="previous">Previous</button>
   <br />
@@ -21,7 +21,7 @@
   <button value="dark">Dark</button>
   <button value="sepia">Sepia</button>
   <p>Current: <output></output>. It's saved to localStorage, so reload the page, or open it in a second tab and watch them stay in sync.</p>
-</class-cycler>
+</attribute-cycler>
 <p>A button outside the element, using an invoker command:
   <button commandfor="theme" command="--next">Next (commandfor)</button></p>
 </body>

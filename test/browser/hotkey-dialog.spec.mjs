@@ -164,12 +164,12 @@ test.describe("invoker commands", () => {
     expect(await page.evaluate(() => document.getElementById("d").matches(":modal"))).toBe(true);
   });
 
-  test("drives other domkit elements: class-cycler's --next", async ({ page }) => {
+  test("drives other domkit elements: attribute-cycler's --next", async ({ page }) => {
     await mount(
       page,
-      `<class-cycler id="theme" classes="light,dark"><button value="light">L</button><button value="dark">D</button></class-cycler>
+      `<attribute-cycler id="theme" values="light,dark"><button value="light">L</button><button value="dark">D</button></attribute-cycler>
        <hotkey-dialog hotkey="ctrl+j" commandfor="theme" command="--next"></hotkey-dialog>`,
-      [...MODULES, "src/cyclable/class-cycler/global.mjs"],
+      [...MODULES, "src/cyclable/attribute-cycler/global.mjs"],
     );
     expect(await page.evaluate(() => document.getElementById("theme").value)).toBe("light");
     await page.keyboard.press("Control+j");

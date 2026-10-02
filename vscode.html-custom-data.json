@@ -18,16 +18,20 @@
       ]
     },
     {
-      "name": "class-cycler",
-      "description": "A persisted class switch (e.g. a theme toggle) driven by buttons.\n\nEvents: `change`",
+      "name": "attribute-cycler",
+      "description": "A persisted attribute or class switch (e.g. a theme toggle) driven by buttons.\n\nEvents: `change`",
       "attributes": [
         {
-          "name": "classes",
-          "description": "Comma-separated values to cycle through. An empty entry means \"no class\"."
+          "name": "values",
+          "description": "Comma-separated values to cycle through. An empty entry means \"none\": no class, or no attribute."
+        },
+        {
+          "name": "attribute",
+          "description": "The attribute to set on the targets. Default `class`, where the value is one class among the target's others; any other attribute gets the value as its whole value."
         },
         {
           "name": "target",
-          "description": "Selector for the element(s) whose class is set. Default `html`."
+          "description": "Selector for the element(s) whose attribute is set. Default `html`."
         },
         {
           "name": "storage-key",
@@ -46,7 +50,7 @@
       "references": [
         {
           "name": "Documentation",
-          "url": "https://github.com/johnhenry/domkit/tree/main/src/cyclable/class-cycler"
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/cyclable/attribute-cycler"
         }
       ]
     },

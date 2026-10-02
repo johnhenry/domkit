@@ -20,7 +20,7 @@
     "src/delay/index.mjs",
     "src/live-query-selector/index.mjs",
     "src/cyclable/localstorage-cycler/index.mjs",
-    "src/cyclable/localstorage-class-cycler/index.mjs",
+    "src/cyclable/localstorage-attribute-cycler/index.mjs",
     "src/definable/definetag/index.mjs",
     "src/definable/until-window-load/index.mjs",
     "src/hydratable/index.mjs",

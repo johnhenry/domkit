@@ -1,33 +1,37 @@
-// <class-cycler>: one setting, cycled through a fixed list of classes on
-// some target element(s), remembered in localStorage and kept in sync
-// across tabs. Typically a theme switch. See readme.md.
+// <attribute-cycler>: one setting, cycled through a fixed list of values
+// on an attribute of some target element(s) (a class, by default),
+// remembered in localStorage and kept in sync across tabs. Typically a
+// theme switch. See readme.md.
 //
-//   <class-cycler target="html" classes="light,dark" storage-key="theme">
+//   <attribute-cycler attribute="data-theme" values="light,dark" storage-key="theme">
 //     <button>Toggle theme</button>          <- cycles to the next value
 //     <button value="dark">Dark</button>     <- sets that value (aria-pressed)
 //     <output></output>                      <- shows the current value
-//   </class-cycler>
+//   </attribute-cycler>
 //
 // Buttons elsewhere can drive it with invoker commands:
 //   <button commandfor="theme" command="--next">…</button>
+import { applyValue, clearValue } from "../apply-value.mjs";
 
 /**
- * Cycles a class through a fixed list on target elements, persisted to
- * localStorage, driven by buttons inside it or invoker commands.
+ * Cycles an attribute (a class, by default) through a fixed list of values
+ * on target elements, persisted to localStorage, driven by buttons inside
+ * it or invoker commands.
  *
- * @tag class-cycler
- * @summary A persisted class switch (e.g. a theme toggle) driven by buttons.
+ * @tag attribute-cycler
+ * @summary A persisted attribute or class switch (e.g. a theme toggle) driven by buttons.
  *
- * @attr {string} classes - Comma-separated values to cycle through. An empty entry means "no class".
- * @attr {string} target - Selector for the element(s) whose class is set. Default `html`.
+ * @attr {string} values - Comma-separated values to cycle through. An empty entry means "none": no class, or no attribute.
+ * @attr {string} attribute - The attribute to set on the targets. Default `class`, where the value is one class among the target's others; any other attribute gets the value as its whole value.
+ * @attr {string} target - Selector for the element(s) whose attribute is set. Default `html`.
  * @attr {string} storage-key - localStorage key to persist under. Without it, the value isn't persisted.
  * @attr {boolean} disabled - Its buttons are disabled, and invoker commands are ignored.
  * @attr {string} value - The current value. Reflects; set it to choose the initial value when nothing is stored.
  *
  * @fires change - The user changed the value with a button or command.
  */
-export default class ClassCycler extends HTMLElement {
-  static observedAttributes = ["classes", "target", "storage-key", "value", "disabled"];
+export default class AttributeCycler extends HTMLElement {
+  static observedAttributes = ["values", "attribute", "target", "storage-key", "value", "disabled"];
   #disabledButtons = new Set(); // buttons this element disabled
 
   #value = null;
@@ -70,10 +74,13 @@ export default class ClassCycler extends HTMLElement {
     if (name === "value") {
       if (current !== null && current !== this.#value) this.#set(current);
     } else {
-      // classes, target, or storage-key changed: clear the old class from
-      // the old targets, then re-apply.
+      // values, attribute, target, or storage-key changed: clear what was
+      // set on the old targets or attribute, then re-apply.
       if (name === "target" && previous !== null) {
-        for (const element of this.#query(previous)) element.classList.remove(...this.values.filter(Boolean));
+        for (const element of this.#query(previous)) clearValue(element, this.attribute, this.values);
+      }
+      if (name === "attribute") {
+        for (const element of this.targets) clearValue(element, previous ?? "class", this.values);
       }
       this.#set(this.values.includes(this.#value) ? this.#value : this.#initial(), { persist: false });
     }
@@ -85,7 +92,18 @@ export default class ClassCycler extends HTMLElement {
    * @readonly
    */
   get values() {
-    return (this.getAttribute("classes") ?? "").split(",").map((value) => value.trim());
+    return (this.getAttribute("values") ?? "").split(",").map((value) => value.trim());
+  }
+
+  /**
+   * The attribute set on the targets. Mirrors the `attribute` attribute.
+   * @type {string}
+   */
+  get attribute() {
+    return this.getAttribute("attribute")?.trim() || "class";
+  }
+  set attribute(value) {
+    this.setAttribute("attribute", value);
   }
 
   /**
@@ -100,7 +118,7 @@ export default class ClassCycler extends HTMLElement {
   }
 
   /**
-   * The elements whose class is set.
+   * The elements whose attribute is set.
    * @type {Element[]}
    * @readonly
    */
@@ -173,10 +191,7 @@ export default class ClassCycler extends HTMLElement {
     if (!values.includes(value)) return false;
     const previous = this.#value;
     this.#value = value;
-    for (const element of this.targets) {
-      element.classList.remove(...values.filter(Boolean));
-      if (value) element.classList.add(value);
-    }
+    for (const element of this.targets) applyValue(element, this.attribute, values, value);
     if (persist && this.storageKey) {
       try {
         localStorage.setItem(this.storageKey, value);
