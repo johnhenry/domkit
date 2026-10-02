@@ -58,6 +58,15 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **`<draw-svg>`** replaces `experimental/animate-paths`: strokes of the
+  wrapped SVG draw themselves in via `pathLength="1"` and the Web
+  Animations API (no generated styles or inline code, so CSP-safe).
+  `duration`, `delay`, `stagger`, `easing`, `iterations`, `direction`,
+  `erase`, `select`, and `start="visible"`; `play()`/`pause()`/`restart()`
+  with `play`/`pause`/`ended` events and `--play`/`--pause`/`--toggle`/
+  `--restart` commands. Reduced motion shows it drawn; removal restores
+  the SVG as written.
+
 - **`<chernoff-face>`** graduates from `experimental/`, redesigned for
   data: ten features (`face-width`, `eye-size`, `eye-spacing`,
   `pupil-size`, `gaze`, `brow-slant`, `nose-length`, `mouth-width`,

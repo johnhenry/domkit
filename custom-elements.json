@@ -922,6 +922,274 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/draw-svg/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Animates the strokes of the SVG inside it so they draw themselves in,\nwith a media-element-style API.",
+          "name": "DrawSvg",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#animations",
+              "privacy": "private",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "#touched",
+              "privacy": "private",
+              "default": "new Map()"
+            },
+            {
+              "kind": "field",
+              "name": "#observer",
+              "privacy": "private",
+              "default": "new MutationObserver(() => this.#rebuild())"
+            },
+            {
+              "kind": "field",
+              "name": "#visibility",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#reflecting",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#connected",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "paused",
+              "description": "Whether it's paused.",
+              "type": {
+                "text": "boolean"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "shapes",
+              "description": "The shapes being animated.",
+              "type": {
+                "text": "SVGGeometryElement[]"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "play",
+              "description": "Start or resume drawing."
+            },
+            {
+              "kind": "method",
+              "name": "#resume",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#waitingForView",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "method",
+              "name": "pause",
+              "description": "Pause where it is."
+            },
+            {
+              "kind": "method",
+              "name": "restart",
+              "description": "Draw again from the start (and play, unless paused)."
+            },
+            {
+              "kind": "method",
+              "name": "#setPaused",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "paused"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#waitUntilVisible",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#rebuild",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#build",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "{ startPaused }"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#watchEnd",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#run",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "method",
+              "name": "#teardown",
+              "privacy": "private"
+            }
+          ],
+          "events": [
+            {
+              "name": "play",
+              "type": {
+                "text": "Event"
+              },
+              "description": "It started or resumed."
+            },
+            {
+              "name": "pause",
+              "type": {
+                "text": "Event"
+              },
+              "description": "It paused."
+            },
+            {
+              "name": "ended",
+              "type": {
+                "text": "Event"
+              },
+              "description": "Every shape finished drawing (not for `iterations=\"infinite\"`). Invoker commands: `--play`, `--pause`, `--toggle`, and `--restart` (`<button commandfor=\"logo\" command=\"--restart\">`)."
+            }
+          ],
+          "attributes": [
+            {
+              "name": "duration",
+              "type": {
+                "text": "string"
+              },
+              "description": "How long each shape takes to draw: `2s`, `400ms`, or milliseconds. Default `2s`."
+            },
+            {
+              "name": "delay",
+              "type": {
+                "text": "string"
+              },
+              "description": "Wait before the first shape starts. Default `0`."
+            },
+            {
+              "name": "stagger",
+              "type": {
+                "text": "string"
+              },
+              "description": "Extra delay for each next shape, so they draw one after another. Default `0` (together)."
+            },
+            {
+              "name": "easing",
+              "type": {
+                "text": "string"
+              },
+              "description": "A CSS easing function. Default `ease-in-out`."
+            },
+            {
+              "name": "iterations",
+              "type": {
+                "text": "string"
+              },
+              "description": "How many times to draw: a number or `infinite`. Default `1`."
+            },
+            {
+              "name": "direction",
+              "type": {
+                "text": "string"
+              },
+              "description": "`normal`, `reverse`, `alternate`, or `alternate-reverse`, as in CSS animations."
+            },
+            {
+              "name": "erase",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "After drawing in, keep going until the stroke has wiped itself out from its start."
+            },
+            {
+              "name": "select",
+              "type": {
+                "text": "string"
+              },
+              "description": "Which shapes to animate, as a selector. Default: every path, line, polyline, polygon, circle, ellipse, and rect."
+            },
+            {
+              "name": "paused",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether it's paused. Reflects; write it in markup to start paused (strokes hidden)."
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "`visible`: wait to play until the drawing scrolls into view. Default: play on connect.",
+              "name": "start"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "draw-svg",
+          "customElement": true,
+          "summary": "Self-drawing SVG strokes, CSP-safe and reduced-motion aware."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "DrawSvg",
+            "module": "src/draw-svg/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/drill-menu/index.mjs",
       "declarations": [
         {

@@ -19,7 +19,6 @@ real API, tests, and a CHANGELOG entry.
 | [imagedata-emitter](./imagedata-emitter/readme.md) | Emits a bitmap (`ImageData`) as a bubbling `render` event once a second. The source end of the pixel pipeline |
 | [pixel-shader](./pixel-shader/readme.md) | Elements that catch a `render` event, transform its pixels (`zoom`, `grid`), and pass it up. The middle of the pixel pipeline |
 | [canvas-renderer](./canvas-renderer/readme.md) | Draws whatever `render` event reaches it onto a `<canvas>`. The sink end of the pixel pipeline |
-| [animate-paths](./animate-paths/readme.md) | Animated SVG stroke drawing ("self-drawing" logos) from attributes |
 
 ## The pixel pipeline
 

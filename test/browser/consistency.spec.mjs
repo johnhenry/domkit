@@ -18,6 +18,7 @@ const ELEMENTS = {
   "matchable/attribute-provider": "<p>a</p>",
   "scatter-plot": "<template><i></i></template>",
   "chernoff-face": "",
+  "draw-svg": '<svg><path d="M0 0 L9 9" stroke="black"></path></svg>',
 };
 const tagOf = (path) => path.split("/").pop();
 const MODULES = Object.keys(ELEMENTS).map((path) => `src/${path}/global.mjs`);
