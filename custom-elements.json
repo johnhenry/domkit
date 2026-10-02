@@ -3209,6 +3209,59 @@
               }
             },
             {
+              "kind": "method",
+              "name": "namedItem",
+              "parameters": [
+                {
+                  "name": "name",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "The first option whose `id` or `name` is `name`, like a select's.",
+              "return": {
+                "type": {
+                  "text": "Element | null"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "add",
+              "parameters": [
+                {
+                  "name": "element",
+                  "type": {
+                    "text": "Element"
+                  }
+                },
+                {
+                  "name": "before",
+                  "default": "null",
+                  "optional": true,
+                  "type": {
+                    "text": "Element | number | null"
+                  }
+                }
+              ],
+              "description": "Add an option or optgroup, like a select's `add()`: before `before`\n(an option element or an index), or at the end. Throws a\n`NotFoundError` if `before` is an element that isn't in this list."
+            },
+            {
+              "kind": "method",
+              "name": "remove",
+              "parameters": [
+                {
+                  "name": "index",
+                  "optional": true,
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ],
+              "description": "With an index, remove that option, like a select's `remove(index)`.\nWith no argument, remove this element itself, as on any element."
+            },
+            {
               "kind": "field",
               "name": "form",
               "description": "The form this element belongs to.",

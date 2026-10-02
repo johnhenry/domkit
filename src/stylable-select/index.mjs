@@ -221,6 +221,44 @@ export default class StylableSelect extends HTMLElement {
   }
 
   /**
+   * The first option whose `id` or `name` is `name`, like a select's.
+   * @param {string} name
+   * @returns {Element | null}
+   */
+  namedItem(name) {
+    return this.options.find((option) => option.id === name || option.getAttribute("name") === name) ?? null;
+  }
+
+  /**
+   * Add an option or optgroup, like a select's `add()`: before `before`
+   * (an option element or an index), or at the end. Throws a
+   * `NotFoundError` if `before` is an element that isn't in this list.
+   * @param {Element} element
+   * @param {Element | number | null} [before]
+   */
+  add(element, before = null) {
+    if (element.contains(this)) throw new DOMException("Can't add an ancestor of the select", "HierarchyRequestError");
+    const reference = typeof before === "number" ? (this.options[before] ?? null) : before;
+    if (reference && !this.contains(reference)) {
+      throw new DOMException("The element to insert before isn't in this select", "NotFoundError");
+    }
+    if (reference) reference.before(element);
+    else this.append(element);
+    this.#refresh(); // now, not a microtask later, as a native select would
+  }
+
+  /**
+   * With an index, remove that option, like a select's `remove(index)`.
+   * With no argument, remove this element itself, as on any element.
+   * @param {number} [index]
+   */
+  remove(index) {
+    if (arguments.length === 0) return super.remove();
+    this.options[index]?.remove();
+    this.#refresh();
+  }
+
+  /**
    * The form this element belongs to.
    * @type {HTMLFormElement | null}
    * @readonly
@@ -342,16 +380,15 @@ export default class StylableSelect extends HTMLElement {
   // watching them can't feed back into itself.
   #refresh() {
     const options = this.options;
-    for (const option of options) {
-      if (!this.#defaults.has(option)) {
-        this.#defaults.set(option, this.#isSelected(option));
-      }
-    }
+    const added = options.filter((option) => !this.#defaults.has(option));
+    for (const option of added) this.#defaults.set(option, this.#isSelected(option));
     if (!this.multiple) {
-      // At most one selected in single mode (e.g. two `selected` in markup):
-      // like a native select, the last one wins.
+      // At most one selected in single mode. Like a native select, a newly
+      // inserted selected option wins; otherwise (e.g. two `selected` in
+      // markup) the last one does.
       const selected = options.filter((option) => this.#isSelected(option));
-      for (const option of selected.slice(0, -1)) this.#mark(option, false);
+      const winner = added.filter((option) => this.#isSelected(option)).at(-1) ?? selected.at(-1);
+      for (const option of selected) if (option !== winner) this.#mark(option, false);
     }
     for (const option of options) {
       if (option.localName === "option") this.#hookSelected(option);

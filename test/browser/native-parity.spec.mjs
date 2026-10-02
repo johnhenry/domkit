@@ -153,3 +153,39 @@ test("single: the keyboard selects like a native listbox", async ({ page }) => {
   expect(sequence.custom).toEqual(sequence.native);
   expect(sequence.custom.values, "disabled options are skipped").toEqual(["Elderberry", "fig", "apple", "Elderberry"]);
 });
+
+test("add(), remove(), and namedItem() edit the options like a native select", async ({ page }) => {
+  await mount(page, PAGE(), MODULES);
+  const result = await both(page, (el, form) => {
+    const option = (text, attrs = {}) => Object.assign(document.createElement("option"), { textContent: text, ...attrs });
+    el.add(option("Grape", { value: "grape", id: `grape-${el.id}` }));
+    el.add(option("Apricot", { value: "apricot" }), 0);
+    // (A top-level reference: given an option inside an <optgroup>,
+    // Chromium's native add() throws, though the spec allows it.)
+    el.add(option("Kiwi", { value: "kiwi", selected: true }), el.options[4]);
+    el.remove(1);
+    el.remove(99);
+    let notFound = null;
+    try {
+      el.add(option("x"), document.body);
+    } catch (error) {
+      notFound = error.name;
+    }
+    const named = el.namedItem(`grape-${el.id}`)?.value ?? null;
+    return {
+      values: [...el.options].map((o) => o.value),
+      value: el.value,
+      form: [...new FormData(form).entries()],
+      notFound,
+      named,
+      missing: el.namedItem("nope"),
+    };
+  });
+  expect(result.custom).toEqual(result.native);
+  expect(result.custom.values).toEqual(["apricot", "banana", "durian", "kiwi", "Elderberry", "fig", "grape"]);
+  const removedSelf = await page.evaluate(() => {
+    document.getElementById("custom").remove();
+    return document.getElementById("custom");
+  });
+  expect(removedSelf, "remove() with no index removes the element, as on a native select").toBe(null);
+});
