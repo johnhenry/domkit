@@ -14,6 +14,7 @@ const setAttr = (element, name, value) => {
   if (element.getAttribute(name) !== value) element.setAttribute(name, value);
 };
 const TYPEAHEAD_MS = 500;
+const OPTION_SELECTED = Object.getOwnPropertyDescriptor(globalThis.HTMLOptionElement?.prototype ?? {}, "selected");
 
 /**
  * A listbox whose options are ordinary, fully stylable elements, with the
@@ -330,8 +331,9 @@ export default class StylableSelect extends HTMLElement {
   }
 
   // Set an option's selectedness: native state for <option>, aria for others.
+  // (Through the prototype's setter, so the hook below doesn't fire.)
   #mark(option, selected) {
-    if (option.localName === "option") option.selected = selected;
+    if (option.localName === "option") OPTION_SELECTED.set.call(option, selected);
     setAttr(option, "aria-selected", String(selected));
   }
 
@@ -352,6 +354,7 @@ export default class StylableSelect extends HTMLElement {
       for (const option of selected.slice(0, -1)) this.#mark(option, false);
     }
     for (const option of options) {
+      if (option.localName === "option") this.#hookSelected(option);
       if (!option.hasAttribute("role")) option.setAttribute("role", "option");
       option.id ||= `stylable-select-option-${++uid}`;
       setAttr(option, "aria-selected", String(this.#isSelected(option)));
@@ -398,6 +401,33 @@ export default class StylableSelect extends HTMLElement {
     }
     this.#syncFormValue();
   }
+  // `option.selected = true` changes no attribute, so nothing can observe
+  // it. In a native <select> it updates the value the form submits (and,
+  // for a single select, deselects the rest); give each <option> here an
+  // own `selected` property that does the same.
+  #hookSelected(option) {
+    if (Object.hasOwn(option, "selected")) return;
+    Object.defineProperty(option, "selected", {
+      configurable: true,
+      enumerable: false,
+      get() {
+        return OPTION_SELECTED.get.call(this);
+      },
+      set(value) {
+        OPTION_SELECTED.set.call(this, value);
+        const owner = this.closest("stylable-select");
+        if (owner instanceof StylableSelect) owner.#optionSelected(this);
+      },
+    });
+  }
+
+  #optionSelected(option) {
+    if (!this.multiple && this.#isSelected(option)) {
+      for (const other of this.selectedOptions) if (other !== option) this.#mark(other, false);
+    }
+    this.#refresh();
+  }
+
   #ownTabindex = null;
   #ownLabelledby = false;
   #defaults = new WeakMap();

@@ -8,11 +8,15 @@ submits with its form, supports `required`, `disabled`, `<label>`, and
 real `<option>` elements, so `option:checked` and `option:disabled` work in
 your CSS.
 
-> **Do you need it?** Chromium now lets you style a native drop-down
-> `<select>` with `appearance: base-select`, and that's the better choice
-> when it's available. `stylable-select` is for an always-visible list,
-> for multi-select, for option content no native `<option>` allows, or
-> for browsers without `base-select`.
+> **Do you need it?** Browsers are making the native `<select>` fully
+> stylable with
+> [`appearance: base-select`](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Customizable_select),
+> including [listboxes](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Customizable_select_listboxes)
+> (`multiple`, or `size` above 1) with rich content in `<option>`s.
+> Where your users' browsers all support it, use the native element.
+> `stylable-select` is the stand-in until then: it takes the same options
+> and behaves the same, so switching later is a tag rename (see
+> [Moving to a native select](#moving-to-a-native-select)).
 
 ## Usage
 
@@ -41,6 +45,35 @@ depth, typically in `<optgroup>`s. An option's value is its `value`
 (an `<option>` falls back to its text), or `data-value`/text for a
 `role="option"` element. Mark default selections with `selected` on an
 `<option>`, or `aria-selected="true"` on a `role="option"` element.
+
+## Moving to a native select
+
+`test/browser/native-parity.spec.mjs` runs the same `<option>`s through
+`stylable-select` and a native listbox `<select>` (with
+`appearance: base-select`) and checks they agree on `value`,
+`selectedIndex`, `selectedOptions`, `option.selected`, `:checked`, form
+data, reset, `required`, and single-select keyboard selection. To switch:
+
+1. Rename `<stylable-select>` to `<select>`, keeping its attributes
+   (`multiple`, `size`, `name`, `required`, `disabled`) and its
+   `<option>`s and `<optgroup>`s.
+2. Opt in: `select { appearance: base-select; }`.
+3. Move styles across:
+
+| `stylable-select` | Native listbox `<select>` |
+|---|---|
+| `option:checked`, `option:disabled` | the same |
+| `[data-active]` (the keyboard-active option) | `option:focus-visible` (options take focus) |
+| `stylable-select:invalid`, `:disabled` | `select:invalid`, `:disabled` |
+| `--domkit-select-size` (from `size`) | `size`, or a height of your own |
+| `<div role="option">` for rich content | rich content inside the `<option>` itself |
+
+Prefer `<option>` with rich content over `role="option"` elements now,
+since that's what a native `<select>` accepts. Differences to expect: in
+`multiple` mode, a click toggles an option here, while a native listbox
+needs <kbd>Ctrl</kbd>/<kbd>⌘</kbd>-click; and browsers don't yet agree on
+the keyboard for `base-select` listboxes (Chromium's arrow keys move
+focus without selecting, where a classic listbox and WebKit's select).
 
 ## API
 

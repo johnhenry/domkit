@@ -148,9 +148,9 @@ module and the principles disagree, the module is wrong.
   `drill-menu`'s `sync-hash`) used `.path` and threw
   on every push/pop until 0.0.9.
 - **Never use customized built-ins (`is="…"`): Safari doesn't support
-  them.** The two that existed (`hotkey-modal-dialog`, `attribute-cycler-button`)
+  them.** The two that existed (`hotkey-modal-dialog`, `class-cycler-button`)
   were replaced by `<hotkey-dialog>` (wrapping a real `<dialog>`) and
-  buttons inside `<attribute-cycler>`.
+  buttons inside `<class-cycler>` (now `<attribute-cycler>`).
 - **happy-dom differs from browsers in ways that matter here** (all
   checked against Chromium during 0.0.9):
   - Its `innerHTML` setter inserts node by node, so custom elements
