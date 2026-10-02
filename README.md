@@ -110,10 +110,15 @@ queries, evaluated against an element's size instead of the viewport.
 
 | Module | What it's for | `global.mjs` registers |
 |---|---|---|
-| [pixel-canvas](src/pixelable/pixel-canvas/readme.md) | Draws an image, video, or canvas through the effects wrapped around it | `<pixel-canvas>` |
+| [pixel-canvas](src/pixelable/pixel-canvas/readme.md) | Draws an image, video, or canvas through effects, listed like CSS `filter` (`effects="mosaic(4) palette(gameboy)"`) or wrapped around it as elements | `<pixel-canvas>` |
 | [pixel-mosaic](src/pixelable/pixel-mosaic/readme.md) | Pixelate into blocks | `<pixel-mosaic>` |
 | [pixel-palette](src/pixelable/pixel-palette/readme.md) | Limit to a palette (Game Boy, PICO-8, 1-bit, any colors), with dithering | `<pixel-palette>` |
 | [pixel-grid](src/pixelable/pixel-grid/readme.md) | Grid lines between cells | `<pixel-grid>` |
+| [pixel-adjust](src/pixelable/pixel-adjust/readme.md) | Brightness, contrast, saturation, and hue | `<pixel-adjust>` |
+| [pixel-halftone](src/pixelable/pixel-halftone/readme.md) | Printed dots | `<pixel-halftone>` |
+| [pixel-outline](src/pixelable/pixel-outline/readme.md) | Line art from edges | `<pixel-outline>` |
+| [pixel-crt](src/pixelable/pixel-crt/readme.md) | An old screen: scanlines and a color stripe mask | `<pixel-crt>` |
+| [pixel-chroma-key](src/pixelable/pixel-chroma-key/readme.md) | Make a color transparent (green screen) | `<pixel-chroma-key>` |
 
 ## Recipes
 

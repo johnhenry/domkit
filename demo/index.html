@@ -174,14 +174,15 @@
 
   <h2 id="pixels">Pixel effects <span class="count">src/pixelable/*</span></h2>
   <p class="group-note">
-    Wrap an image, video, or canvas in effects (<code>pixel-mosaic</code>,
-    <code>pixel-palette</code>, <code>pixel-grid</code>, or your own), inside a
-    <code>pixel-canvas</code>.
+    List effects on a <code>pixel-canvas</code> like CSS <code>filter</code>
+    (<code>effects="mosaic(4) palette(gameboy, ordered)"</code>), or wrap the
+    image in effect elements: mosaic, palette, grid, adjust, halftone,
+    outline, crt, chroma-key, or your own.
   </p>
   <div class="grid">
     <div class="card tall wide">
       <h3>pixel-canvas</h3>
-      <p>Pixelate, dither to a palette, add a grid, invert with a custom effect, or run a live camera through it.</p>
+      <p>Every built-in effect, a custom one, and a live camera you can restyle.</p>
       <iframe src="../src/pixelable/pixel-canvas/demo.html"></iframe>
     </div>
   </div>

@@ -30,7 +30,7 @@
     "src/hydratable/mounts/unmount.mjs",
     "src/code-color/tokenize.mjs",
     "src/matchable/container-query.mjs",
-    "src/pixelable/pixel-filter.mjs",
+    "src/pixelable/effects.mjs",
     "src/pixelable/pixel-palette/palettes.mjs"
   ]
 }

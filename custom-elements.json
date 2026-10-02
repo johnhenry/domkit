@@ -3478,6 +3478,82 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/pixelable/pixel-adjust/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Adjusts brightness, contrast, saturation, and hue, like the CSS filter functions of those names. The element form of `adjust(brightness, contrast, saturation, hue)`.",
+          "name": "PixelAdjust",
+          "members": [
+            {
+              "kind": "field",
+              "name": "effect",
+              "type": {
+                "text": "object"
+              },
+              "static": true,
+              "default": "{ name: \"adjust\", params, apply }"
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "Multiplier: 1 is unchanged, 0 is black. Default 1.",
+              "name": "brightness"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "Multiplier around mid-gray: 1 is unchanged, 0 is flat gray. Default 1.",
+              "name": "contrast"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "Multiplier: 1 is unchanged, 0 is grayscale. Default 1.",
+              "name": "saturation"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "Rotation in degrees. Default 0.",
+              "name": "hue"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Pass the image through unchanged.",
+              "name": "disabled"
+            }
+          ],
+          "superclass": {
+            "name": "PixelEffect",
+            "module": "/src/pixelable/effects.mjs"
+          },
+          "tagName": "pixel-adjust",
+          "customElement": true,
+          "summary": "A pixel effect: brightness, contrast, saturation, and hue."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "PixelAdjust",
+            "module": "src/pixelable/pixel-adjust/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/pixelable/pixel-canvas/index.mjs",
       "declarations": [
         {
@@ -3573,6 +3649,17 @@
             },
             {
               "kind": "field",
+              "name": "#reportedUnknown",
+              "privacy": "private",
+              "default": "new Set()"
+            },
+            {
+              "kind": "field",
+              "name": "#onDefine",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
               "name": "source",
               "description": "The image, video, or canvas being drawn: the first one inside.",
               "type": {
@@ -3582,12 +3669,20 @@
             },
             {
               "kind": "field",
-              "name": "effects",
-              "description": "The effect elements applied to the source, in the order they run\n(innermost first). Disabled ones are included.",
+              "name": "effectElements",
+              "description": "The effect elements wrapped around the source, in the order they run\n(innermost first). Disabled ones are included.",
               "type": {
                 "text": "Element[]"
               },
               "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "effects",
+              "description": "Mirrors the `effects` attribute.",
+              "type": {
+                "text": "string"
+              }
             },
             {
               "kind": "field",
@@ -3712,6 +3807,16 @@
             },
             {
               "kind": "method",
+              "name": "#unknown",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "name"
+                }
+              ]
+            },
+            {
+              "kind": "method",
               "name": "#fail",
               "privacy": "private",
               "parameters": [
@@ -3769,7 +3874,7 @@
               "type": {
                 "text": "ErrorEvent"
               },
-              "description": "The source can't be read (for example, a cross-origin image without CORS) or an effect threw. An `ErrorEvent`; the original content is shown instead."
+              "description": "The source can't be read (for example, a cross-origin image without CORS) or an effect threw: an `ErrorEvent`, and the original content is shown instead. Also fired, once per name, for an unknown effect in `effects`, which is skipped."
             }
           ],
           "attributes": [
@@ -3786,6 +3891,13 @@
                 "text": "number"
               },
               "description": "Working height, if `width` isn't given."
+            },
+            {
+              "name": "effects",
+              "type": {
+                "text": "string"
+              },
+              "description": "Effects to apply, in order, like CSS `filter`: `mosaic(4) palette(gameboy, ordered) adjust(contrast 1.3)`. They run after any effect elements inside."
             }
           ],
           "superclass": {
@@ -3809,37 +3921,159 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/pixelable/pixel-chroma-key/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Makes one color transparent, like a green screen. The element form of `chroma-key(color, tolerance, softness)`.",
+          "name": "PixelChromaKey",
+          "members": [
+            {
+              "kind": "field",
+              "name": "effect",
+              "type": {
+                "text": "object"
+              },
+              "static": true,
+              "default": "{ name: \"chroma-key\", params, apply }"
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The color to remove, any CSS color. Default `lime`.",
+              "name": "color"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "How different a color can be and still be removed, 0–1. Default 0.3.",
+              "name": "tolerance"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "A fade beyond the tolerance, 0–1, for smooth edges. Default 0.1.",
+              "name": "softness"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Pass the image through unchanged.",
+              "name": "disabled"
+            }
+          ],
+          "superclass": {
+            "name": "PixelEffect",
+            "module": "/src/pixelable/effects.mjs"
+          },
+          "tagName": "pixel-chroma-key",
+          "customElement": true,
+          "summary": "A pixel effect: make a color transparent (green screen)."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "PixelChromaKey",
+            "module": "src/pixelable/pixel-chroma-key/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/pixelable/pixel-crt/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Makes the image look like an old screen: scanlines, a red/green/blue stripe mask, and a little glow. The element form of `crt(scanlines, mask, glow)`.",
+          "name": "PixelCrt",
+          "members": [
+            {
+              "kind": "field",
+              "name": "effect",
+              "type": {
+                "text": "object"
+              },
+              "static": true,
+              "default": "{ name: \"crt\", params, apply }"
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "How much alternate rows are darkened, 0–1. Default 0.35.",
+              "name": "scanlines"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "Strength of the color stripe mask, 0–1. Default 0.25.",
+              "name": "mask"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "Overall brightness boost. Default 1.15.",
+              "name": "glow"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Pass the image through unchanged.",
+              "name": "disabled"
+            }
+          ],
+          "superclass": {
+            "name": "PixelEffect",
+            "module": "/src/pixelable/effects.mjs"
+          },
+          "tagName": "pixel-crt",
+          "customElement": true,
+          "summary": "A pixel effect: an old CRT screen."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "PixelCrt",
+            "module": "src/pixelable/pixel-crt/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/pixelable/pixel-grid/index.mjs",
       "declarations": [
         {
           "kind": "class",
-          "description": "Draws grid lines every `size` pixels.",
+          "description": "Draws grid lines every `size` pixels. The element form of\n`grid(size, color, line)`.",
           "name": "PixelGrid",
           "members": [
             {
               "kind": "field",
-              "name": "size",
-              "description": "Cell size. Mirrors the `size` attribute.",
+              "name": "effect",
               "type": {
-                "text": "number"
-              }
-            },
-            {
-              "kind": "method",
-              "name": "apply",
-              "parameters": [
-                {
-                  "name": "image",
-                  "type": {
-                    "text": "ImageData"
-                  }
-                }
-              ],
-              "return": {
-                "type": {
-                  "text": "ImageData"
-                }
-              }
+                "text": "object"
+              },
+              "static": true,
+              "default": "{ name: \"grid\", params, apply }"
             }
           ],
           "attributes": [
@@ -3873,8 +4107,8 @@
             }
           ],
           "superclass": {
-            "name": "PixelFilter",
-            "module": "/src/pixelable/pixel-filter.mjs"
+            "name": "PixelEffect",
+            "module": "/src/pixelable/effects.mjs"
           },
           "tagName": "pixel-grid",
           "customElement": true,
@@ -3894,37 +4128,97 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/pixelable/pixel-halftone/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Turns the image into printed dots: each cell of a rotated grid becomes one dot, larger where it's darker. The element form of `halftone(size, angle, ink, paper)`.",
+          "name": "PixelHalftone",
+          "members": [
+            {
+              "kind": "field",
+              "name": "effect",
+              "type": {
+                "text": "object"
+              },
+              "static": true,
+              "default": "{ name: \"halftone\", params, apply }"
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "Cell size in pixels. Default 6.",
+              "name": "size"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "Grid angle in degrees. Default 45.",
+              "name": "angle"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Dot color, any CSS color, or `auto` for each cell's own color. Default black.",
+              "name": "ink"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Background color. Default white.",
+              "name": "paper"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Pass the image through unchanged.",
+              "name": "disabled"
+            }
+          ],
+          "superclass": {
+            "name": "PixelEffect",
+            "module": "/src/pixelable/effects.mjs"
+          },
+          "tagName": "pixel-halftone",
+          "customElement": true,
+          "summary": "A pixel effect: halftone dots, like print."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "PixelHalftone",
+            "module": "src/pixelable/pixel-halftone/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/pixelable/pixel-mosaic/index.mjs",
       "declarations": [
         {
           "kind": "class",
-          "description": "Pixelates the image: each `size`×`size` block becomes its average color.",
+          "description": "Pixelates the image: each `size`×`size` block becomes its average color.\nThe element form of `mosaic(size)`.",
           "name": "PixelMosaic",
           "members": [
             {
               "kind": "field",
-              "name": "size",
-              "description": "Block size. Mirrors the `size` attribute.",
+              "name": "effect",
               "type": {
-                "text": "number"
-              }
-            },
-            {
-              "kind": "method",
-              "name": "apply",
-              "parameters": [
-                {
-                  "name": "image",
-                  "type": {
-                    "text": "ImageData"
-                  }
-                }
-              ],
-              "return": {
-                "type": {
-                  "text": "ImageData"
-                }
-              }
+                "text": "object"
+              },
+              "static": true,
+              "default": "{ name: \"mosaic\", params, apply }"
             }
           ],
           "attributes": [
@@ -3944,8 +4238,8 @@
             }
           ],
           "superclass": {
-            "name": "PixelFilter",
-            "module": "/src/pixelable/pixel-filter.mjs"
+            "name": "PixelEffect",
+            "module": "/src/pixelable/effects.mjs"
           },
           "tagName": "pixel-mosaic",
           "customElement": true,
@@ -3965,13 +4259,91 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/pixelable/pixel-outline/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Draws line art from the image's edges. The element form of `outline(threshold, ink, paper)`.",
+          "name": "PixelOutline",
+          "members": [
+            {
+              "kind": "field",
+              "name": "effect",
+              "type": {
+                "text": "object"
+              },
+              "static": true,
+              "default": "{ name: \"outline\", params, apply }"
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "Edge strength needed for a line, 0–1. Lower draws more lines. Default 0.2.",
+              "name": "threshold"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Line color. Default black.",
+              "name": "ink"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Background color, or `none` to draw the lines over the image. Default white.",
+              "name": "paper"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Pass the image through unchanged.",
+              "name": "disabled"
+            }
+          ],
+          "superclass": {
+            "name": "PixelEffect",
+            "module": "/src/pixelable/effects.mjs"
+          },
+          "tagName": "pixel-outline",
+          "customElement": true,
+          "summary": "A pixel effect: line art from edges."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "PixelOutline",
+            "module": "src/pixelable/pixel-outline/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/pixelable/pixel-palette/index.mjs",
       "declarations": [
         {
           "kind": "class",
-          "description": "Reduces the image to a palette, optionally dithered.",
+          "description": "Reduces the image to a palette, optionally dithered. The element form of\n`palette(colors, dither)`.",
           "name": "PixelPalette",
           "members": [
+            {
+              "kind": "field",
+              "name": "effect",
+              "type": {
+                "text": "object"
+              },
+              "static": true,
+              "default": "{ name: \"palette\", params, apply }"
+            },
             {
               "kind": "field",
               "name": "palette",
@@ -3980,23 +4352,6 @@
                 "text": "number[][]"
               },
               "readonly": true
-            },
-            {
-              "kind": "method",
-              "name": "apply",
-              "parameters": [
-                {
-                  "name": "image",
-                  "type": {
-                    "text": "ImageData"
-                  }
-                }
-              ],
-              "return": {
-                "type": {
-                  "text": "ImageData"
-                }
-              }
             }
           ],
           "attributes": [
@@ -4023,8 +4378,8 @@
             }
           ],
           "superclass": {
-            "name": "PixelFilter",
-            "module": "/src/pixelable/pixel-filter.mjs"
+            "name": "PixelEffect",
+            "module": "/src/pixelable/effects.mjs"
           },
           "tagName": "pixel-palette",
           "customElement": true,
@@ -4045,7 +4400,7 @@
           "name": "PALETTES",
           "declaration": {
             "name": "PALETTES",
-            "module": "src/pixelable/pixel-palette/index.mjs"
+            "module": "./effect.mjs"
           }
         }
       ]
