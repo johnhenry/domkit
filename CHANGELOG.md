@@ -67,6 +67,9 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **`grid(size, transparent)` cuts gaps** instead of drawing lines, so the
+  image becomes separate tiles with the background showing through.
+
 - **`<swipe-input>` and `<gamepad-input>`: swipes and game controllers
   that send invoker commands**, like `<hot-key>` does for keys. Swipes
   (touch, pen, or mouse) map `up`/`down`/`left`/`right` to commands, with

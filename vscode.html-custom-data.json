@@ -614,7 +614,7 @@
         },
         {
           "name": "color",
-          "description": "Line color, any CSS color (transparency blends). Default `rgb(0 0 0 / 0.35)`."
+          "description": "Line color, any CSS color (transparency blends). `transparent` cuts gaps instead of drawing lines. Default `rgb(0 0 0 / 0.35)`."
         },
         {
           "name": "line",
