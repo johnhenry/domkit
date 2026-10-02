@@ -98,6 +98,12 @@ queries, evaluated against an element's size instead of the viewport.
 | [hydratable](src/hydratable/readme.md) | A run-once async `hydrate()` (with `dehydrate()` to undo it) for any object |
 | [hydratable/mounts](src/hydratable/mounts/readme.md) | Find or create the element at the start/end of `<body>` to render an app into |
 
+### Data and graphics
+
+| Module | What it's for | `global.mjs` registers |
+|---|---|---|
+| [scatter-plot](src/scatter-plot/readme.md) | A scatter plot of a point you design, styled with ordinary CSS | `<scatter-plot>` |
+
 ### Experimental: [`experimental/`](src/experimental/readme.md)
 
 Sketches without the stable modules' guarantees. Their APIs can change in
@@ -106,8 +112,7 @@ any release. A composable canvas pixel pipeline
 [pixel-shader](src/experimental/pixel-shader/readme.md) →
 [canvas-renderer](src/experimental/canvas-renderer/readme.md)),
 [animate-paths](src/experimental/animate-paths/readme.md) (self-drawing
-SVG), [xy-grapher](src/experimental/xy-grapher/readme.md) (CSS scatter
-plots), and [chernoff-face](src/experimental/chernoff-face/readme.md).
+SVG), and [chernoff-face](src/experimental/chernoff-face/readme.md).
 
 ## Recipes
 

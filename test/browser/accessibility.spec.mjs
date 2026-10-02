@@ -7,7 +7,7 @@ import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { mount } from "./helpers.mjs";
 
-const STYLES = ["theme", "tabbed-ui/index", "stylable-select/index", "infinite-combo-box/index", "drill-menu/index", "code-color/index"];
+const STYLES = ["theme", "scatter-plot/index", "tabbed-ui/index", "stylable-select/index", "infinite-combo-box/index", "drill-menu/index", "code-color/index"];
 const MODULES = [
   "src/tabbed-ui/global.mjs",
   "src/stylable-select/global.mjs",
@@ -19,6 +19,7 @@ const MODULES = [
   "src/cyclable/attribute-cycler/global.mjs",
   "src/matchable/query-container/global.mjs",
   "src/matchable/attribute-provider/global.mjs",
+  "src/scatter-plot/global.mjs",
 ];
 
 // Element fixtures are fragments, not pages: page-level rules (a main
@@ -71,7 +72,8 @@ const ALL = `
   <code-color language="js"><pre>const answer = 42; // comment</pre></code-color>
   <query-container default="ul" query="[(min-width: 600px)] ol"><li>a</li><li>b</li></query-container>
   <attribute-provider classes="[(min-width: 1px)] note"><p>provided</p></attribute-provider>
-  <frame-timer fps="10" paused></frame-timer>`;
+  <frame-timer fps="10" paused></frame-timer>
+  <scatter-plot data='[[1, 2], {"x": 3, "y": 4, "title": "three"}]'></scatter-plot>`;
 
 test("every stable element, at rest, passes axe", async ({ page }) => {
   await mount(page, ALL, MODULES);

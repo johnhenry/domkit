@@ -16,6 +16,7 @@ const ELEMENTS = {
   "cyclable/attribute-cycler": "<button>a</button>",
   "matchable/query-container": "<li>a</li>",
   "matchable/attribute-provider": "<p>a</p>",
+  "scatter-plot": "<template><i></i></template>",
 };
 const tagOf = (path) => path.split("/").pop();
 const MODULES = Object.keys(ELEMENTS).map((path) => `src/${path}/global.mjs`);

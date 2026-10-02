@@ -351,6 +351,41 @@ Swap the element wrapping some content by media query. [Guide](../src/matchable/
 |---|---|
 | `change` | A query started or stopped matching (the viewport or container changed), so `activeQueries` changed. The wrapper may have been swapped. |
 
+## `<scatter-plot>`
+
+A scatter plot of a point template, styled with ordinary CSS. [Guide](../src/scatter-plot/readme.md) · module `@johnhenry/domkit/scatter-plot`
+
+**Attributes**
+
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `data` | `data` | `string` | JSON array of points: `[x, y]` pairs, or `{ x, y, … }` objects whose other keys become attributes on that point. |
+| `x-min` |  | `number` | The x value at the left edge. Default: the smallest x, or 0 if that's positive. |
+| `x-max` |  | `number` | The x value at the right edge. Default: the largest x. |
+| `y-min` |  | `number` | The y value at the bottom edge. Default: the smallest y, or 0 if that's positive. |
+| `y-max` |  | `number` | The y value at the top edge. Default: the largest y. |
+
+**Properties**
+
+| Property | Type | Description |
+|---|---|---|
+| `data` | `Array<[number, number] \| { x: number, y: number, [attribute: string]: unknown }>` | The points. Setting it replots (and doesn't touch the `data` attribute, so it can hold values JSON can't). |
+| `domain` (read-only) | `{ xMin: number, xMax: number, yMin: number, yMax: number }` | The plotted range, after defaults: `{ xMin, xMax, yMin, yMax }`. |
+| `points` (read-only) | `Element[]` | The point elements now plotted, in data order. |
+
+**Events**
+
+| Event | Description |
+|---|---|
+| `error` | The `data` attribute isn't a JSON array. An `ErrorEvent`; the previous data stays plotted. |
+
+**CSS custom properties**
+
+| Property | Description |
+|---|---|
+| `--domkit-point-size` | Size of the default point (index.css). |
+| `--domkit-accent` | Color of the default point (shared token; see theme.css). |
+
 ## `<stylable-select>`
 
 A fully stylable listbox that works like a native select. [Guide](../src/stylable-select/readme.md) · module `@johnhenry/domkit/stylable-select`

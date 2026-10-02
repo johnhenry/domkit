@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>scatter-plot</title>
+<link rel="stylesheet" href="../theme.css" />
+<link rel="stylesheet" href="./index.css" />
+<script type="module" src="./global.mjs"></script>
+<style>
+  body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; display: flex; gap: 24px; flex-wrap: wrap; }
+  figure { margin: 0; inline-size: 220px; }
+  scatter-plot { block-size: 160px; }
+  .peak { inline-size: 12px; block-size: 12px; border-radius: 50%; background: crimson; }
+  .peak[data-label]::after { content: attr(data-label); position: absolute; inset-inline-start: 14px; inset-block-start: -4px; font-size: 11px; }
+  .tiny { inline-size: 3px; block-size: 3px; background: teal; }
+</style>
+</head>
+<body>
+<figure>
+  <scatter-plot x-max="10" y-max="10" aria-label="Five sample points"
+    data='[[1, 2], [3, 5], {"x": 5, "y": 8, "class": "peak", "data-label": "peak"}, [7, 6], [9, 4]]'></scatter-plot>
+  <figcaption>The default point, and one with its own class</figcaption>
+</figure>
+<figure>
+  <scatter-plot id="sine" x-max="10" y-min="-1" y-max="1" aria-label="A sine wave">
+    <template><span class="tiny"></span></template>
+  </scatter-plot>
+  <figcaption>A template point, with data set as a property</figcaption>
+</figure>
+<script type="module">
+  document.getElementById("sine").data = Array.from({ length: 81 }, (_, i) => [i / 8, Math.sin(i / 8)]);
+</script>
+</body>
+</html>

@@ -58,6 +58,14 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **`<scatter-plot>`** graduates from `experimental/xy-grapher`: data
+  (`[x, y]` pairs or `{ x, y, …attributes }`, as a JSON attribute or a
+  `data` property) plotted as copies of a `<template>` point, in the light
+  DOM. `x-min`/`x-max`/`y-min`/`y-max` default to the data; `domain` and
+  `points` are readable; bad JSON fires `error`. It's `role="img"` with a
+  generated summary label unless you write one, and a 150px block even
+  without CSS. `experimental/xy-grapher` is removed.
+
 - **`stylable-select` gains `add()`, `remove(index)`, and `namedItem()`**,
   matching `HTMLSelectElement` (`remove()` with no argument still removes
   the element). Like a native single select, a newly inserted selected

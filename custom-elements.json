@@ -3017,6 +3017,171 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/scatter-plot/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Plots data as copies of a point template, positioned by percentage, in\nthe light DOM so page CSS styles it.",
+          "name": "ScatterPlot",
+          "cssProperties": [
+            {
+              "description": "Size of the default point (index.css).",
+              "name": "--domkit-point-size"
+            },
+            {
+              "description": "Color of the default point (shared token; see theme.css).",
+              "name": "--domkit-accent"
+            }
+          ],
+          "cssParts": [
+            {
+              "description": "The layer holding the points (`[data-points]`).",
+              "name": "points"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "#data",
+              "privacy": "private",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "#layer",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#observer",
+              "privacy": "private",
+              "default": "new MutationObserver(() => this.#render())"
+            },
+            {
+              "kind": "field",
+              "name": "data",
+              "description": "The points. Setting it replots (and doesn't touch the `data`\nattribute, so it can hold values JSON can't).",
+              "type": {
+                "text": "Array<[number, number] | { x: number, y: number, [attribute: string]: unknown }>"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "domain",
+              "description": "The plotted range, after defaults: `{ xMin, xMax, yMin, yMax }`.",
+              "type": {
+                "text": "{ xMin: number, xMax: number, yMin: number, yMax: number }"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "points",
+              "description": "The point elements now plotted, in data order.",
+              "type": {
+                "text": "Element[]"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "#points",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#template",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#render",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#generatedLabel",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            }
+          ],
+          "events": [
+            {
+              "name": "error",
+              "type": {
+                "text": "ErrorEvent"
+              },
+              "description": "The `data` attribute isn't a JSON array. An `ErrorEvent`; the previous data stays plotted."
+            }
+          ],
+          "attributes": [
+            {
+              "name": "data",
+              "type": {
+                "text": "string"
+              },
+              "description": "JSON array of points: `[x, y]` pairs, or `{ x, y, … }` objects whose other keys become attributes on that point."
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "The x value at the left edge. Default: the smallest x, or 0 if that's positive.",
+              "name": "x-min"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "The x value at the right edge. Default: the largest x.",
+              "name": "x-max"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "The y value at the bottom edge. Default: the smallest y, or 0 if that's positive.",
+              "name": "y-min"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "The y value at the top edge. Default: the largest y.",
+              "name": "y-max"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "scatter-plot",
+          "customElement": true,
+          "summary": "A scatter plot of a point template, styled with ordinary CSS."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "ScatterPlot",
+            "module": "src/scatter-plot/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/stylable-select/index.mjs",
       "declarations": [
         {
