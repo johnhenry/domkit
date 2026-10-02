@@ -4,10 +4,15 @@
 /** Wraps its children in a different element depending on media queries:
  * the same items in a `<ul>` on small screens and an `<ol>` on large ones. */
 export default class QueryContainer extends HTMLElement {
-  setInitial(selector: unknown): void;
-  setQueries(queries: unknown): void;
-  triggerQuery(): void;
-  update(): void;
+  /** Mirrors the `default` attribute. */
+  default: string;
+  /** Mirrors the `query` attribute. */
+  query: string;
+  /** The media (or container) queries that currently match, in the order
+   * they're written. */
+  readonly activeQueries: string[];
+  /** The element currently wrapping the children. */
+  readonly wrapper: Element | null;
 }
 
 declare global {

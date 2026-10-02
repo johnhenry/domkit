@@ -56,6 +56,18 @@ Add classes, styles, and attributes to children by media query. [Guide](../src/m
 | `attributes` |  | `string` | `[media query] name=value; name; name=null \| …` sections. `null` removes the attribute while the query matches. |
 | `container` |  | `string` | Container mode: evaluate the queries against an element's size instead of the viewport. Empty = the parent element; otherwise a selector for the closest matching ancestor. |
 
+**Properties**
+
+| Property | Type | Description |
+|---|---|---|
+| `activeQueries` (read-only) | `string[]` | The media (or container) queries that currently match, across `classes`, `styles`, and `attributes`, without duplicates. |
+
+**Events**
+
+| Event | Description |
+|---|---|
+| `change` | A query started or stopped matching (the viewport or container changed), so `activeQueries` changed and the children were updated. |
+
 ## `<code-color>`
 
 Syntax highlighting that never touches your markup. [Guide](../src/code-color/readme.md) · module `@johnhenry/domkit/code-color`
@@ -319,18 +331,24 @@ Swap the element wrapping some content by media query. [Guide](../src/matchable/
 
 | Attribute | Property | Type | Description |
 |---|---|---|---|
-| `default` |  | `string` | Wrapper when no query matches, as a simple selector (`ul`, `ol.steps`, `div#x[data-y=z]`). Defaults to the first section's. |
-| `query` |  | `string` | `[media query] selector` sections separated by `\|`. The last matching section wins. |
+| `default` | `default` | `string` | Wrapper when no query matches, as a simple selector (`ul`, `ol.steps`, `div#x[data-y=z]`). Defaults to the first section's. |
+| `query` | `query` | `string` | `[media query] selector` sections separated by `\|`. The last matching section wins. |
 | `container` |  | `string` | Container mode: evaluate the queries against an element's size instead of the viewport. Empty = the parent element; otherwise a selector for the closest matching ancestor. |
 
-**Methods**
+**Properties**
 
-| Method | Description |
+| Property | Type | Description |
+|---|---|---|
+| `default` | `string` | Mirrors the `default` attribute. |
+| `query` | `string` | Mirrors the `query` attribute. |
+| `activeQueries` (read-only) | `string[]` | The media (or container) queries that currently match, in the order they're written. |
+| `wrapper` (read-only) | `Element \| null` | The element currently wrapping the children. |
+
+**Events**
+
+| Event | Description |
 |---|---|
-| `setInitial(selector)` |  |
-| `setQueries(queries)` |  |
-| `triggerQuery()` |  |
-| `update()` |  |
+| `change` | A query started or stopped matching (the viewport or container changed), so `activeQueries` changed. The wrapper may have been swapped. |
 
 ## `<stylable-select>`
 

@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file.
 
 ### Changed (breaking)
 
+- **`query-container`'s internal methods are private.** `setInitial()`,
+  `setQueries()`, `triggerQuery()`, and `update()` are gone; set the
+  `default` and `query` attributes, or the new matching properties (`default`, `query`).
+
 - **`hotkey-dialog` is now `<hot-key>`** (module
   `@johnhenry/domkit/hot-key`). It toggles a `<dialog>` or popover, or
   runs any invoker command, so the old name undersold it. Attributes,
@@ -49,6 +53,12 @@ All notable changes to this project will be documented in this file.
   and `--domkit-combo-accent`.
 
 ### Added
+
+- **`query-container` and `attribute-provider` report their state.** A
+  read-only `activeQueries` lists the queries that currently match, and a
+  `change` event fires when the viewport or container makes one start or
+  stop matching. `query-container` also gains `default`, `query`, and
+  `wrapper` properties.
 
 - **`until-window-load` waits for components loaded from HTML.** It now
   removes its class only once the window has loaded *and* every

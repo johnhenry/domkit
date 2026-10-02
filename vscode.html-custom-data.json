@@ -258,7 +258,7 @@
     },
     {
       "name": "attribute-provider",
-      "description": "Add classes, styles, and attributes to children by media query.",
+      "description": "Add classes, styles, and attributes to children by media query.\n\nEvents: `change`",
       "attributes": [
         {
           "name": "classes",
@@ -286,7 +286,7 @@
     },
     {
       "name": "query-container",
-      "description": "Swap the element wrapping some content by media query.",
+      "description": "Swap the element wrapping some content by media query.\n\nEvents: `change`",
       "attributes": [
         {
           "name": "default",
