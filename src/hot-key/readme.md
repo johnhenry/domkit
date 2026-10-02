@@ -117,6 +117,9 @@ both in browsers that don't support `closedby` yet.
 - To tell assistive technology about the shortcut, put
   `aria-keyshortcuts` (e.g. `aria-keyshortcuts="Meta+K"`) on whatever
   visible control also opens the dialog.
+- [`<swipe-input>`](../swipe-input/readme.md) and
+  [`<gamepad-input>`](../gamepad-input/readme.md) send commands the same
+  way, from swipes and game controllers.
 - Buttons can open the dialog without any script, using invoker commands:
   `<button commandfor="my-dialog" command="show-modal">`.
 - It has no events of its own: listen to the `<dialog>`'s native `close`, `cancel`, and `toggle` events (or the popover's `toggle`).

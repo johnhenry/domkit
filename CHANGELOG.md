@@ -67,6 +67,21 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **`grid(size, transparent)` cuts gaps** instead of drawing lines, so the
+  image becomes separate tiles with the background showing through.
+
+- **`<swipe-input>` and `<gamepad-input>`: swipes and game controllers
+  that send invoker commands**, like `<hot-key>` does for keys. Swipes
+  (touch, pen, or mouse) map `up`/`down`/`left`/`right` to commands, with
+  a cancelable `swipe` event; controller buttons (standard mapping names,
+  and the left stick as a d-pad) send theirs once per press, with a
+  cancelable `gamepadpress` event. The command-sending code is now shared
+  (`invoke-command.mjs`).
+- **Custom `<pixel-canvas>` sources.** Any element exposing a `canvas`
+  property and firing `framechange` is a source, so games and
+  visualizations can be run through pixel effects. One defined later is
+  picked up when it is.
+
 - **`<pixel-shader>`: pixel effects in GLSL, on the GPU.** A fragment
   shader in a `<script type="x-shader/x-fragment">` child gets the image,
   its size, the canvas clock, and `v_uv` (top-left origin) declared, and

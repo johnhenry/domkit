@@ -1710,6 +1710,152 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/gamepad-input/index.mjs",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "BUTTONS",
+          "type": {
+            "text": "array"
+          },
+          "default": "[\"a\", \"b\", \"x\", \"y\", \"lb\", \"rb\", \"lt\", \"rt\", \"select\", \"start\", \"ls\", \"rs\", \"up\", \"down\", \"left\", \"right\", \"home\"]",
+          "description": "The standard mapping's button names, by index."
+        },
+        {
+          "kind": "class",
+          "description": "Turns a game controller's buttons (and left stick) into invoker\ncommands, sent to the `commandfor` element: one attribute per button,\nnamed as in the standard gamepad mapping.",
+          "name": "GamepadInput",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#frame",
+              "privacy": "private",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "#pressed",
+              "privacy": "private",
+              "default": "new Map()"
+            },
+            {
+              "kind": "field",
+              "name": "#onConnect",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "disabled",
+              "description": "Mirrors the `disabled` attribute.",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "commandForElement",
+              "description": "The element `commandfor` names.",
+              "type": {
+                "text": "Element | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "#pads",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#poll",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#read",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "pad"
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "description": "A button went down, before its command is sent. `detail` is `{ button, gamepad }`; cancel it to skip the command. Fired even when that button has no command.",
+              "name": "gamepadpress"
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The id of the element to send commands to.",
+              "name": "commandfor"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "Which controller (0 is the first connected). Default: any.",
+              "name": "index"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The command for the d-pad (or left stick) up. Likewise `down`, `left`, and `right`.",
+              "name": "up"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The command for the bottom face button. Likewise `b` (right), `x` (left), `y` (top), `lb`, `rb`, `lt`, `rt`, `select`, `start`, `ls`, `rs`, and `home`.",
+              "name": "a"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Button presses do nothing.",
+              "name": "disabled"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "gamepad-input",
+          "customElement": true,
+          "summary": "Game controller buttons that send invoker commands."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "BUTTONS",
+          "declaration": {
+            "name": "BUTTONS",
+            "module": "src/gamepad-input/index.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "GamepadInput",
+            "module": "src/gamepad-input/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/hot-key/index.mjs",
       "declarations": [
         {
@@ -3769,7 +3915,7 @@
             {
               "kind": "field",
               "name": "source",
-              "description": "The image, video, canvas, or `<pixel-sprite>` being drawn: the first\none inside.",
+              "description": "What's being drawn: the first element inside that's an `<img>`,\n`<video>`, or `<canvas>`, or that exposes a `canvas` property (like\n`<pixel-sprite>`).",
               "type": {
                 "text": "Element | null"
               },
@@ -3970,6 +4116,17 @@
             {
               "kind": "field",
               "name": "#swatched",
+              "privacy": "private",
+              "default": "new Set()"
+            },
+            {
+              "kind": "method",
+              "name": "#awaitDefinitions",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#awaiting",
               "privacy": "private",
               "default": "new Set()"
             },
@@ -4367,7 +4524,7 @@
               "type": {
                 "text": "string"
               },
-              "description": "Line color, any CSS color (transparency blends). Default `rgb(0 0 0 / 0.35)`.",
+              "description": "Line color, any CSS color (transparency blends). `transparent` cuts gaps instead of drawing lines. Default `rgb(0 0 0 / 0.35)`.",
               "name": "color"
             },
             {
@@ -5881,6 +6038,155 @@
           "declaration": {
             "name": "StylableSelect",
             "module": "src/stylable-select/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/swipe-input/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Turns swipes on the area it wraps into invoker commands, one per\ndirection, sent to the `commandfor` element.",
+          "name": "SwipeInput",
+          "members": [
+            {
+              "kind": "field",
+              "name": "#start",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "disabled",
+              "description": "Mirrors the `disabled` attribute.",
+              "type": {
+                "text": "boolean"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "commandForElement",
+              "description": "The element `commandfor` names.",
+              "type": {
+                "text": "Element | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "#accepts",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#down",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#up",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "description": "A swipe was recognized, before its command is sent. `detail` is `{ direction, distance }`; cancel it to skip the command. Fired even when that direction has no command.",
+              "name": "swipe"
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The id of the element to send commands to.",
+              "name": "commandfor"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The command for a swipe up (for example `--up`, or a built-in like `show-popover`).",
+              "name": "up"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The command for a swipe down.",
+              "name": "down"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The command for a swipe left.",
+              "name": "left"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "The command for a swipe right.",
+              "name": "right"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "How far, in CSS pixels, a pointer must travel to count as a swipe. Default 30.",
+              "name": "threshold"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Which pointers swipe: `touch`, `pen`, `mouse`, or a space-separated mix. Default: all of them.",
+              "name": "pointers"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Swipes do nothing.",
+              "name": "disabled"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "swipe-input",
+          "customElement": true,
+          "summary": "Swipe gestures that send invoker commands."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "SwipeInput",
+            "module": "src/swipe-input/index.mjs"
           }
         }
       ]
