@@ -67,6 +67,11 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- `custom-elements.json` now says which module registers each tag: a
+  `custom-element-definition` export from the element's `global.mjs`, as
+  the manifest format intends. A tool can load just the elements a page
+  uses. The bogus definitions of a tag named `name` (from
+  `customElements.define(name, …)` calls) are gone.
 - **`grid(size, transparent)` cuts gaps** instead of drawing lines, so the
   image becomes separate tiles with the background showing through.
 

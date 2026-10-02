@@ -4,6 +4,21 @@
   "modules": [
     {
       "kind": "javascript-module",
+      "path": "src/chernoff-face/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "chernoff-face",
+          "declaration": {
+            "name": "ChernoffFace",
+            "module": "src/chernoff-face/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/chernoff-face/index.mjs",
       "declarations": [
         {
@@ -211,6 +226,21 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/code-color/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "code-color",
+          "declaration": {
+            "name": "CodeColor",
+            "module": "src/code-color/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/code-color/index.mjs",
       "declarations": [
         {
@@ -357,6 +387,21 @@
           "declaration": {
             "name": "CodeColor",
             "module": "src/code-color/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/cyclable/attribute-cycler/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "attribute-cycler",
+          "declaration": {
+            "name": "AttributeCycler",
+            "module": "src/cyclable/attribute-cycler/index.mjs"
           }
         }
       ]
@@ -659,6 +704,21 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/definable/define-component/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "define-component",
+          "declaration": {
+            "name": "DefineComponent",
+            "module": "src/definable/define-component/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/definable/define-component/index.mjs",
       "declarations": [
         {
@@ -760,22 +820,6 @@
             "name": "DefineComponent",
             "module": "src/definable/define-component/index.mjs"
           }
-        },
-        {
-          "kind": "custom-element-definition",
-          "name": "name",
-          "declaration": {
-            "name": "exported",
-            "module": "src/definable/define-component/index.mjs"
-          }
-        },
-        {
-          "kind": "custom-element-definition",
-          "name": "name",
-          "declaration": {
-            "name": "anonymous_1",
-            "module": "src/definable/define-component/index.mjs"
-          }
         }
       ]
     },
@@ -790,13 +834,20 @@
           "declaration": {
             "module": "src/definable/definetag/index.mjs"
           }
-        },
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/definable/polyfill-window/global.mjs",
+      "declarations": [],
+      "exports": [
         {
           "kind": "custom-element-definition",
-          "name": "name",
+          "name": "polyfill-window",
           "declaration": {
-            "name": "elementClass",
-            "module": "src/definable/definetag/index.mjs"
+            "name": "PolyfillWindow",
+            "module": "src/definable/polyfill-window/index.mjs"
           }
         }
       ]
@@ -916,6 +967,21 @@
           "name": "default",
           "declaration": {
             "module": "src/delay/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/draw-svg/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "draw-svg",
+          "declaration": {
+            "name": "DrawSvg",
+            "module": "src/draw-svg/index.mjs"
           }
         }
       ]
@@ -1184,6 +1250,21 @@
           "declaration": {
             "name": "DrawSvg",
             "module": "src/draw-svg/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/drill-menu/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "drill-menu",
+          "declaration": {
+            "name": "DrillMenu",
+            "module": "src/drill-menu/index.mjs"
           }
         }
       ]
@@ -1542,6 +1623,21 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/frame-timer/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "frame-timer",
+          "declaration": {
+            "name": "FrameTimer",
+            "module": "src/frame-timer/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/frame-timer/index.mjs",
       "declarations": [
         {
@@ -1710,6 +1806,21 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/gamepad-input/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "gamepad-input",
+          "declaration": {
+            "name": "GamepadInput",
+            "module": "src/gamepad-input/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/gamepad-input/index.mjs",
       "declarations": [
         {
@@ -1850,6 +1961,21 @@
           "declaration": {
             "name": "GamepadInput",
             "module": "src/gamepad-input/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/hot-key/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "hot-key",
+          "declaration": {
+            "name": "HotKey",
+            "module": "src/hot-key/index.mjs"
           }
         }
       ]
@@ -2182,6 +2308,21 @@
           "declaration": {
             "name": "TEARDOWN",
             "module": "src/hydratable/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/infinite-combo-box/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "infinite-combo-box",
+          "declaration": {
+            "name": "InfiniteComboBox",
+            "module": "src/infinite-combo-box/index.mjs"
           }
         }
       ]
@@ -3251,6 +3392,21 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/matchable/attribute-provider/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "attribute-provider",
+          "declaration": {
+            "name": "AttributeProvider",
+            "module": "src/matchable/attribute-provider/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/matchable/attribute-provider/index.mjs",
       "declarations": [
         {
@@ -3462,6 +3618,21 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/matchable/query-container/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "query-container",
+          "declaration": {
+            "name": "QueryContainer",
+            "module": "src/matchable/query-container/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/matchable/query-container/index.mjs",
       "declarations": [
         {
@@ -3624,6 +3795,21 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/pixelable/pixel-adjust/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "pixel-adjust",
+          "declaration": {
+            "name": "PixelAdjust",
+            "module": "src/pixelable/pixel-adjust/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/pixelable/pixel-adjust/index.mjs",
       "declarations": [
         {
@@ -3694,6 +3880,21 @@
           "declaration": {
             "name": "PixelAdjust",
             "module": "src/pixelable/pixel-adjust/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/pixelable/pixel-canvas/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "pixel-canvas",
+          "declaration": {
+            "name": "PixelCanvas",
+            "module": "src/pixelable/pixel-canvas/index.mjs"
           }
         }
       ]
@@ -4295,6 +4496,21 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/pixelable/pixel-chroma-key/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "pixel-chroma-key",
+          "declaration": {
+            "name": "PixelChromaKey",
+            "module": "src/pixelable/pixel-chroma-key/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/pixelable/pixel-chroma-key/index.mjs",
       "declarations": [
         {
@@ -4358,6 +4574,21 @@
           "declaration": {
             "name": "PixelChromaKey",
             "module": "src/pixelable/pixel-chroma-key/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/pixelable/pixel-crt/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "pixel-crt",
+          "declaration": {
+            "name": "PixelCrt",
+            "module": "src/pixelable/pixel-crt/index.mjs"
           }
         }
       ]
@@ -4433,6 +4664,21 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/pixelable/pixel-glitch/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "pixel-glitch",
+          "declaration": {
+            "name": "PixelGlitch",
+            "module": "src/pixelable/pixel-glitch/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/pixelable/pixel-glitch/index.mjs",
       "declarations": [
         {
@@ -4489,6 +4735,21 @@
           "declaration": {
             "name": "PixelGlitch",
             "module": "src/pixelable/pixel-glitch/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/pixelable/pixel-grid/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "pixel-grid",
+          "declaration": {
+            "name": "PixelGrid",
+            "module": "src/pixelable/pixel-grid/index.mjs"
           }
         }
       ]
@@ -4558,6 +4819,21 @@
           "declaration": {
             "name": "PixelGrid",
             "module": "src/pixelable/pixel-grid/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/pixelable/pixel-halftone/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "pixel-halftone",
+          "declaration": {
+            "name": "PixelHalftone",
+            "module": "src/pixelable/pixel-halftone/index.mjs"
           }
         }
       ]
@@ -4640,6 +4916,21 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/pixelable/pixel-mosaic/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "pixel-mosaic",
+          "declaration": {
+            "name": "PixelMosaic",
+            "module": "src/pixelable/pixel-mosaic/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/pixelable/pixel-mosaic/index.mjs",
       "declarations": [
         {
@@ -4689,6 +4980,21 @@
           "declaration": {
             "name": "PixelMosaic",
             "module": "src/pixelable/pixel-mosaic/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/pixelable/pixel-outline/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "pixel-outline",
+          "declaration": {
+            "name": "PixelOutline",
+            "module": "src/pixelable/pixel-outline/index.mjs"
           }
         }
       ]
@@ -4758,6 +5064,21 @@
           "declaration": {
             "name": "PixelOutline",
             "module": "src/pixelable/pixel-outline/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/pixelable/pixel-palette/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "pixel-palette",
+          "declaration": {
+            "name": "PixelPalette",
+            "module": "src/pixelable/pixel-palette/index.mjs"
           }
         }
       ]
@@ -4850,6 +5171,21 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/pixelable/pixel-shader/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "pixel-shader",
+          "declaration": {
+            "name": "PixelShader",
+            "module": "src/pixelable/pixel-shader/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/pixelable/pixel-shader/index.mjs",
       "declarations": [
         {
@@ -4916,6 +5252,21 @@
           "declaration": {
             "name": "PixelShader",
             "module": "src/pixelable/pixel-shader/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/pixelable/pixel-sprite/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "pixel-sprite",
+          "declaration": {
+            "name": "PixelSprite",
+            "module": "src/pixelable/pixel-sprite/index.mjs"
           }
         }
       ]
@@ -5197,6 +5548,21 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/pixelable/pixel-wave/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "pixel-wave",
+          "declaration": {
+            "name": "PixelWave",
+            "module": "src/pixelable/pixel-wave/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/pixelable/pixel-wave/index.mjs",
       "declarations": [
         {
@@ -5260,6 +5626,21 @@
           "declaration": {
             "name": "PixelWave",
             "module": "src/pixelable/pixel-wave/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/scatter-plot/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "scatter-plot",
+          "declaration": {
+            "name": "ScatterPlot",
+            "module": "src/scatter-plot/index.mjs"
           }
         }
       ]
@@ -5425,6 +5806,21 @@
           "declaration": {
             "name": "ScatterPlot",
             "module": "src/scatter-plot/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/stylable-select/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "stylable-select",
+          "declaration": {
+            "name": "StylableSelect",
+            "module": "src/stylable-select/index.mjs"
           }
         }
       ]
@@ -6044,6 +6440,21 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/swipe-input/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "swipe-input",
+          "declaration": {
+            "name": "SwipeInput",
+            "module": "src/swipe-input/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/swipe-input/index.mjs",
       "declarations": [
         {
@@ -6187,6 +6598,21 @@
           "declaration": {
             "name": "SwipeInput",
             "module": "src/swipe-input/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/tabbed-ui/global.mjs",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "tabbed-ui",
+          "declaration": {
+            "name": "TabbedUI",
+            "module": "src/tabbed-ui/index.mjs"
           }
         }
       ]
