@@ -6,8 +6,8 @@
     <title>Recipe: command palette</title>
     <link rel="stylesheet" href="recipes.css" />
     <link rel="stylesheet" href="../src/infinite-combo-box/index.css" />
-    <!-- In your own page: https://esm.sh/@johnhenry/domkit/hotkey-dialog/global.mjs, …/infinite-combo-box/global.mjs -->
-    <script type="module" src="../src/hotkey-dialog/global.mjs"></script>
+    <!-- In your own page: https://esm.sh/@johnhenry/domkit/hot-key/global.mjs, …/infinite-combo-box/global.mjs -->
+    <script type="module" src="../src/hot-key/global.mjs"></script>
     <script type="module" src="../src/infinite-combo-box/global.mjs"></script>
     <style>
       #palette-dialog {
@@ -39,7 +39,7 @@
 
     <p><button type="button" commandfor="palette-dialog" command="show-modal" aria-keyshortcuts="Meta+K Control+K /">Open palette</button></p>
 
-    <hotkey-dialog hotkey="mod+k /">
+    <hot-key hotkey="mod+k /">
       <dialog id="palette-dialog" closedby="any" aria-label="Command palette">
         <infinite-combo-box id="palette" aria-label="Command" inline>
           <input autofocus placeholder="Type a command…" />
@@ -55,7 +55,7 @@
           </optgroup>
         </infinite-combo-box>
       </dialog>
-    </hotkey-dialog>
+    </hot-key>
 
     <div class="panel"><strong>Last command:</strong> <output id="log">(none yet)</output></div>
 

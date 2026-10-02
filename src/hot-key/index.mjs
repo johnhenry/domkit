@@ -1,4 +1,4 @@
-// <hotkey-dialog>: toggle the <dialog> or popover inside it with a keyboard
+// <hot-key>: toggle the <dialog> or popover inside it with a keyboard
 // shortcut, or run an invoker command (`commandfor` + `command`, like a
 // button) on any element. A dialog stays a real, native <dialog>: its own
 // `open`, `close` event, `returnValue`, focus handling, `::backdrop`, and
@@ -70,7 +70,7 @@ const isEditable = (element) =>
  * shortcut, keeping it fully native, or runs an invoker command on any
  * element. Polyfills `closedby="any"`/`"none"` on dialogs.
  *
- * @tag hotkey-dialog
+ * @tag hot-key
  * @summary Toggle a native dialog or popover, or run an invoker command, with a keyboard shortcut.
  *
  * @attr {string} hotkey - One or more space-separated shortcuts, e.g. `mod+k /`. `mod` is ⌘ on Apple platforms and Ctrl elsewhere.
@@ -79,7 +79,7 @@ const isEditable = (element) =>
  * @attr {boolean} non-modal - Open a dialog with `show()` instead of `showModal()`.
  * @attr {boolean} disabled - The shortcut does nothing. The dialog or popover itself is unaffected.
  */
-export default class HotkeyDialog extends HTMLElement {
+export default class HotKey extends HTMLElement {
   static observedAttributes = ["hotkey"];
 
   #shortcuts = [];

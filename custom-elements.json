@@ -1220,7 +1220,7 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/hotkey-dialog/index.mjs",
+      "path": "src/hot-key/index.mjs",
       "declarations": [
         {
           "kind": "variable",
@@ -1229,7 +1229,7 @@
         {
           "kind": "class",
           "description": "Opens and closes the `<dialog>` or popover inside it with a keyboard\nshortcut, keeping it fully native, or runs an invoker command on any\nelement. Polyfills `closedby=\"any\"`/`\"none\"` on dialogs.",
-          "name": "HotkeyDialog",
+          "name": "HotKey",
           "members": [
             {
               "kind": "field",
@@ -1459,7 +1459,7 @@
           "superclass": {
             "name": "HTMLElement"
           },
-          "tagName": "hotkey-dialog",
+          "tagName": "hot-key",
           "customElement": true,
           "summary": "Toggle a native dialog or popover, or run an invoker command, with a keyboard shortcut."
         }
@@ -1469,8 +1469,8 @@
           "kind": "js",
           "name": "default",
           "declaration": {
-            "name": "HotkeyDialog",
-            "module": "src/hotkey-dialog/index.mjs"
+            "name": "HotKey",
+            "module": "src/hot-key/index.mjs"
           }
         }
       ]

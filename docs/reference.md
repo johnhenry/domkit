@@ -175,9 +175,9 @@ A frame-paced ticking clock with play/pause. [Guide](../src/frame-timer/readme.m
 | `pause` | The timer paused. |
 | `tick` | Once per period while playing. Read `ticks` for the count. |
 
-## `<hotkey-dialog>`
+## `<hot-key>`
 
-Toggle a native dialog or popover, or run an invoker command, with a keyboard shortcut. [Guide](../src/hotkey-dialog/readme.md) · module `@johnhenry/domkit/hotkey-dialog`
+Toggle a native dialog or popover, or run an invoker command, with a keyboard shortcut. [Guide](../src/hot-key/readme.md) · module `@johnhenry/domkit/hot-key`
 
 **Attributes**
 

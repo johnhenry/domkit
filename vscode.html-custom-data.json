@@ -158,7 +158,7 @@
       ]
     },
     {
-      "name": "hotkey-dialog",
+      "name": "hot-key",
       "description": "Toggle a native dialog or popover, or run an invoker command, with a keyboard shortcut.",
       "attributes": [
         {
@@ -187,7 +187,7 @@
       "references": [
         {
           "name": "Documentation",
-          "url": "https://github.com/johnhenry/domkit/tree/main/src/hotkey-dialog"
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/hot-key"
         }
       ]
     },

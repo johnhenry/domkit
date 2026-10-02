@@ -4,7 +4,7 @@
 /** Opens and closes the `<dialog>` or popover inside it with a keyboard
  * shortcut, keeping it fully native, or runs an invoker command on any
  * element. Polyfills `closedby="any"`/`"none"` on dialogs. */
-export default class HotkeyDialog extends HTMLElement {
+export default class HotKey extends HTMLElement {
   /** The `<dialog>` or popover this element opens and closes: its first
    * `<dialog>` or `[popover]` descendant. */
   readonly target: HTMLElement | null;
@@ -32,6 +32,6 @@ export default class HotkeyDialog extends HTMLElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "hotkey-dialog": HotkeyDialog;
+    "hot-key": HotKey;
   }
 }
