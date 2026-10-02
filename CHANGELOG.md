@@ -58,6 +58,12 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **`delay` can be cancelled**: pass `{ signal }` (or `{ fps, signal }`)
+  and aborting clears the timer or animation frame and rejects with
+  `signal.reason`. **`live-query-selector` can watch attributes**:
+  `{ attributes: true }` or `{ attributes: ["class"] }` picks up elements
+  that start or stop matching because an attribute changed.
+
 - **`<tabbed-ui>` and `<frame-timer>` take invoker commands.**
   `tabbed-ui` gains `next()`/`previous()` and `--next`, `--previous`, and
   `--select` (index from the button's `value`), so wizard buttons need no

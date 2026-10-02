@@ -21,12 +21,13 @@ items.stop(); // when you no longer need updates
 
 ## API
 
-`liveQuerySelector(selector, root = document)`
+`liveQuerySelector(selector, root = document, { attributes })`
 
 | Parameter | Description |
 |---|---|
 | `selector` | Any CSS selector |
 | `root` | Element (or document) to search within and watch |
+| `attributes` | Also watch attribute changes: `true` for any attribute, or a list of names (`["class"]`) to limit the work. Default `false` |
 
 It returns a plain array of elements, with three non-enumerable extras:
 
@@ -41,9 +42,10 @@ It returns a plain array of elements, with three non-enumerable extras:
 - Updates are asynchronous (they happen in a `MutationObserver` callback),
   so the list catches up one microtask after the DOM changes. Listen for
   `change` rather than reading it right after a mutation.
-- Only additions and removals (`childList`, whole subtree) are watched.
-  An element that starts or stops matching because an **attribute**
-  changed (a class toggled, say) won't be picked up until the next
-  addition or removal under `root`.
+- By default only additions and removals (`childList`, whole subtree) are
+  watched, so an element that starts or stops matching because an
+  **attribute** changed (a class toggled, say) is only picked up at the
+  next addition or removal under `root`. Pass `attributes` to watch those
+  too; a list of names (`{ attributes: ["class"] }`) keeps it cheap.
 - The whole list is re-queried on every change, which is fine for
   ordinary pages but expensive under a heavy mutation load.
