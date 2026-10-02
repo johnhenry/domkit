@@ -23,7 +23,8 @@
     <a href="#declarative">Wiring from markup</a>
     <a href="#utilities">Utilities</a>
     <a href="#bootstrap">App bootstrap</a>
-    <a href="#experimental">Experimental</a>
+    <a href="#graphics">Data and graphics</a>
+    <a href="#pixels">Pixel effects</a>
     <a href="../examples/">Recipes</a>
     <a href="https://github.com/johnhenry/domkit">Source</a>
   </nav>
@@ -154,7 +155,7 @@
 
   <h2 id="graphics">Data and graphics</h2>
   <div class="grid">
-    <div class="card">
+    <div class="card tall">
       <h3>scatter-plot</h3>
       <p>Data plotted as copies of a point you design, positioned by percentage and styled with CSS.</p>
       <iframe src="../src/scatter-plot/demo.html"></iframe>
@@ -164,24 +165,24 @@
       <p>Data as facial features, each a number from 0 to 1, alone or as scatter-plot points.</p>
       <iframe src="../src/chernoff-face/demo.html"></iframe>
     </div>
-    <div class="card">
+    <div class="card tall">
       <h3>draw-svg</h3>
       <p>SVG strokes that draw themselves in, with play/pause, stagger, and erase.</p>
       <iframe src="../src/draw-svg/demo.html"></iframe>
     </div>
   </div>
 
-  <h2 id="experimental">Experimental <span class="count">src/experimental/*</span></h2>
+  <h2 id="pixels">Pixel effects <span class="count">src/pixelable/*</span></h2>
   <p class="group-note">
-    Sketches, not supported API — see the
-    <a href="../src/experimental/readme.md">experimental readme</a> for what
-    that means.
+    Wrap an image, video, or canvas in effects (<code>pixel-mosaic</code>,
+    <code>pixel-palette</code>, <code>pixel-grid</code>, or your own), inside a
+    <code>pixel-canvas</code>.
   </p>
   <div class="grid">
-    <div class="card">
-      <h3>imagedata-emitter → pixel-shader → canvas-renderer</h3>
-      <p>A <code>render</code>-event pixel pipeline: emit an ImageData, transform it on the way up, draw it.</p>
-      <iframe src="../src/experimental/canvas-renderer/demo.html"></iframe>
+    <div class="card tall wide">
+      <h3>pixel-canvas</h3>
+      <p>Pixelate, dither to a palette, add a grid, invert with a custom effect, or run a live camera through it.</p>
+      <iframe src="../src/pixelable/pixel-canvas/demo.html"></iframe>
     </div>
   </div>
 

@@ -415,6 +415,101 @@
       ]
     },
     {
+      "name": "pixel-canvas",
+      "description": "Pixel effects on any image, video, or canvas, by wrapping it in effect elements.\n\nEvents: `load`, `error`",
+      "attributes": [
+        {
+          "name": "width",
+          "description": "Working width in pixels: the source is scaled to it (keeping its aspect ratio) before the effects run. Smaller is faster and chunkier. Default: the source's own width."
+        },
+        {
+          "name": "height",
+          "description": "Working height, if `width` isn't given."
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/pixelable/pixel-canvas"
+        }
+      ]
+    },
+    {
+      "name": "pixel-grid",
+      "description": "A pixel effect: grid lines between cells.",
+      "attributes": [
+        {
+          "name": "size",
+          "description": "Cell size, in the working image's pixels. Default 8."
+        },
+        {
+          "name": "color",
+          "description": "Line color, any CSS color (transparency blends). Default `rgb(0 0 0 / 0.35)`."
+        },
+        {
+          "name": "line",
+          "description": "Line thickness in pixels. Default 1."
+        },
+        {
+          "name": "disabled",
+          "description": "Pass the image through unchanged.",
+          "valueSet": "v"
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/pixelable/pixel-grid"
+        }
+      ]
+    },
+    {
+      "name": "pixel-mosaic",
+      "description": "A pixel effect: pixelate into blocks of one color.",
+      "attributes": [
+        {
+          "name": "size",
+          "description": "Block size, in the working image's pixels. Default 8."
+        },
+        {
+          "name": "disabled",
+          "description": "Pass the image through unchanged.",
+          "valueSet": "v"
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/pixelable/pixel-mosaic"
+        }
+      ]
+    },
+    {
+      "name": "pixel-palette",
+      "description": "A pixel effect: limit colors to a palette, with dithering.",
+      "attributes": [
+        {
+          "name": "colors",
+          "description": "A named palette (`1bit`, `gameboy`, `grayscale`, `cga`, `sepia`, `pico-8`) or space-separated CSS colors. Default `1bit`."
+        },
+        {
+          "name": "dither",
+          "description": "`none` (default), `floyd-steinberg` (error diffusion), or `ordered` (a 4×4 Bayer pattern)."
+        },
+        {
+          "name": "disabled",
+          "description": "Pass the image through unchanged.",
+          "valueSet": "v"
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/pixelable/pixel-palette"
+        }
+      ]
+    },
+    {
       "name": "scatter-plot",
       "description": "A scatter plot of a point template, styled with ordinary CSS.\n\nEvents: `error`",
       "attributes": [

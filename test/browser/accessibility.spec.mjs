@@ -22,6 +22,7 @@ const MODULES = [
   "src/scatter-plot/global.mjs",
   "src/chernoff-face/global.mjs",
   "src/draw-svg/global.mjs",
+  "src/pixelable/global.mjs",
 ];
 
 // Element fixtures are fragments, not pages: page-level rules (a main
@@ -76,6 +77,7 @@ const ALL = `
   <attribute-provider classes="[(min-width: 1px)] note"><p>provided</p></attribute-provider>
   <frame-timer fps="10" paused></frame-timer>
   <chernoff-face smile="0.8"></chernoff-face>
+  <pixel-canvas><pixel-palette colors="gameboy"><img src="/src/pixelable/pixel-canvas/scene.svg" alt="A sunset"></pixel-palette></pixel-canvas>
   <draw-svg><svg viewBox="0 0 10 10" role="img" aria-label="A line"><path d="M1 1 L9 9" stroke="black"></path></svg></draw-svg>
   <scatter-plot data='[[1, 2], {"x": 3, "y": 4, "title": "three"}]'></scatter-plot>`;
 

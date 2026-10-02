@@ -373,6 +373,114 @@ An accessible autocomplete with paged ("infinite") results. [Guide](../src/infin
 | `--domkit-highlight` | Background of the active option (shared token; see theme.css). |
 | `--domkit-surface` | Background of the popup list (shared token). |
 
+## `<pixel-canvas>`
+
+Pixel effects on any image, video, or canvas, by wrapping it in effect elements. [Guide](../src/pixelable/pixel-canvas/readme.md) · module `@johnhenry/domkit/pixelable/pixel-canvas`
+
+**Attributes**
+
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `width` | `width` | `number` | Working width in pixels: the source is scaled to it (keeping its aspect ratio) before the effects run. Smaller is faster and chunkier. Default: the source's own width. |
+| `height` | `height` | `number` | Working height, if `width` isn't given. |
+
+**Properties**
+
+| Property | Type | Description |
+|---|---|---|
+| `source` (read-only) | `HTMLImageElement \| HTMLVideoElement \| HTMLCanvasElement \| null` | The image, video, or canvas being drawn: the first one inside. |
+| `effects` (read-only) | `Element[]` | The effect elements applied to the source, in the order they run (innermost first). Disabled ones are included. |
+| `canvas` (read-only) | `HTMLCanvasElement` | The canvas showing the result (in the shadow root). |
+| `width` | `number` | Mirrors the `width` attribute. |
+| `height` | `number` | Mirrors the `height` attribute. |
+
+**Methods**
+
+| Method | Description |
+|---|---|
+| `render()` | Draw now, instead of on the next frame. Returns whether it drew. |
+| `toBlob(type, quality)` | The result as an image file, like `HTMLCanvasElement.toBlob()`. |
+| `toDataURL(type, quality)` | The result as a data: URL, like `HTMLCanvasElement.toDataURL()`. |
+
+**Events**
+
+| Event | Description |
+|---|---|
+| `load` | The first frame of a source was drawn. |
+| `error` | The source can't be read (for example, a cross-origin image without CORS) or an effect threw. An `ErrorEvent`; the original content is shown instead. |
+
+## `<pixel-grid>`
+
+A pixel effect: grid lines between cells. [Guide](../src/pixelable/pixel-grid/readme.md) · module `@johnhenry/domkit/pixelable/pixel-grid`
+
+**Attributes**
+
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `size` | `size` | `number` | Cell size, in the working image's pixels. Default 8. |
+| `color` |  | `string` | Line color, any CSS color (transparency blends). Default `rgb(0 0 0 / 0.35)`. |
+| `line` |  | `number` | Line thickness in pixels. Default 1. |
+| `disabled` |  | `boolean` | Pass the image through unchanged. |
+
+**Properties**
+
+| Property | Type | Description |
+|---|---|---|
+| `size` | `number` | Cell size. Mirrors the `size` attribute. |
+
+**Methods**
+
+| Method | Description |
+|---|---|
+| `apply(image)` |  |
+
+## `<pixel-mosaic>`
+
+A pixel effect: pixelate into blocks of one color. [Guide](../src/pixelable/pixel-mosaic/readme.md) · module `@johnhenry/domkit/pixelable/pixel-mosaic`
+
+**Attributes**
+
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `size` | `size` | `number` | Block size, in the working image's pixels. Default 8. |
+| `disabled` |  | `boolean` | Pass the image through unchanged. |
+
+**Properties**
+
+| Property | Type | Description |
+|---|---|---|
+| `size` | `number` | Block size. Mirrors the `size` attribute. |
+
+**Methods**
+
+| Method | Description |
+|---|---|
+| `apply(image)` |  |
+
+## `<pixel-palette>`
+
+A pixel effect: limit colors to a palette, with dithering. [Guide](../src/pixelable/pixel-palette/readme.md) · module `@johnhenry/domkit/pixelable/pixel-palette`
+
+**Attributes**
+
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `colors` |  | `string` | A named palette (`1bit`, `gameboy`, `grayscale`, `cga`, `sepia`, `pico-8`) or space-separated CSS colors. Default `1bit`. |
+| `dither` |  | `string` | `none` (default), `floyd-steinberg` (error diffusion), or `ordered` (a 4×4 Bayer pattern). |
+| `disabled` |  | `boolean` | Pass the image through unchanged. |
+
+**Properties**
+
+| Property | Type | Description |
+|---|---|---|
+| `palette` (read-only) | `number[][]` | The resolved palette, as `[r, g, b]` triples. |
+
+**Methods**
+
+| Method | Description |
+|---|---|
+| `apply(image)` |  |
+
 ## `<polyfill-window>`
 
 Load a module's export onto window, in HTML. [Guide](../src/definable/polyfill-window/readme.md) · module `@johnhenry/domkit/definable/polyfill-window`

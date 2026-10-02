@@ -86,6 +86,8 @@ p.group-note {
   background: #fff;
 }
 .card.tall iframe { height: 320px; }
+.card.wide { grid-column: 1 / -1; }
+.card.wide.tall iframe { height: 760px; }
 .unimplemented {
   max-width: 900px;
   margin: 16px auto 0;

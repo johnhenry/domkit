@@ -19,6 +19,10 @@ const ELEMENTS = {
   "scatter-plot": "<template><i></i></template>",
   "chernoff-face": "",
   "draw-svg": '<svg><path d="M0 0 L9 9" stroke="black"></path></svg>',
+  "pixelable/pixel-canvas": "<canvas></canvas>",
+  "pixelable/pixel-mosaic": "",
+  "pixelable/pixel-palette": "",
+  "pixelable/pixel-grid": "",
 };
 const tagOf = (path) => path.split("/").pop();
 const MODULES = Object.keys(ELEMENTS).map((path) => `src/${path}/global.mjs`);
