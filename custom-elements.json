@@ -3686,6 +3686,31 @@
             },
             {
               "kind": "field",
+              "name": "swatches",
+              "description": "How many swatches to publish. Mirrors the `swatches` attribute.",
+              "type": {
+                "text": "number"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "swatchesTarget",
+              "description": "Mirrors the `swatches-target` attribute.",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "palette",
+              "description": "With `swatches`: the result's most common colors, as `#rrggbb`, most\ncommon first. Empty otherwise.",
+              "type": {
+                "text": "string[]"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
               "name": "canvas",
               "description": "The canvas showing the result (in the shadow root).",
               "type": {
@@ -3807,6 +3832,31 @@
             },
             {
               "kind": "method",
+              "name": "#publish",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "colors"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "#palette",
+              "privacy": "private",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "#swatched",
+              "privacy": "private",
+              "default": "new Set()"
+            },
+            {
+              "kind": "method",
               "name": "#unknown",
               "privacy": "private",
               "parameters": [
@@ -3870,6 +3920,13 @@
               "description": "The first frame of a source was drawn."
             },
             {
+              "name": "palettechange",
+              "type": {
+                "text": "Event"
+              },
+              "description": "With `swatches`: the published colors changed."
+            },
+            {
               "name": "error",
               "type": {
                 "text": "ErrorEvent"
@@ -3898,6 +3955,20 @@
                 "text": "string"
               },
               "description": "Effects to apply, in order, like CSS `filter`: `mosaic(4) palette(gameboy, ordered) adjust(contrast 1.3)`. They run after any effect elements inside."
+            },
+            {
+              "name": "swatches",
+              "type": {
+                "text": "number"
+              },
+              "description": "Publish the result's N most common colors as `--pixel-swatch-1` … `--pixel-swatch-N` custom properties (and the `palette` property). Default: none."
+            },
+            {
+              "name": "swatches-target",
+              "type": {
+                "text": "string"
+              },
+              "description": "A selector for more elements to set those custom properties on (for example `html`, to theme the page). They're always set on the `<pixel-canvas>` itself."
             }
           ],
           "superclass": {
@@ -4347,7 +4418,7 @@
             {
               "kind": "field",
               "name": "palette",
-              "description": "The resolved palette, as `[r, g, b]` triples.",
+              "description": "The resolved palette, as `[r, g, b]` triples. Empty for `auto`, which\ndepends on the image (see `<pixel-canvas>`'s `palette`).",
               "type": {
                 "text": "number[][]"
               },
@@ -4359,7 +4430,7 @@
               "type": {
                 "text": "string"
               },
-              "description": "A named palette (`1bit`, `gameboy`, `grayscale`, `cga`, `sepia`, `pico-8`) or space-separated CSS colors. Default `1bit`.",
+              "description": "A named palette (`1bit`, `gameboy`, `grayscale`, `cga`, `sepia`, `pico-8`), space-separated CSS colors, or `auto` (the image's own dominant colors). Default `1bit`.",
               "name": "colors"
             },
             {
@@ -4368,6 +4439,13 @@
               },
               "description": "`none` (default), `floyd-steinberg` (error diffusion), or `ordered` (a 4×4 Bayer pattern).",
               "name": "dither"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "With `colors=\"auto\"`: how many colors to pick. Default 8.",
+              "name": "count"
             },
             {
               "type": {
