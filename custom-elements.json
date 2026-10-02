@@ -3661,9 +3661,9 @@
             {
               "kind": "field",
               "name": "source",
-              "description": "The image, video, or canvas being drawn: the first one inside.",
+              "description": "The image, video, canvas, or `<pixel-sprite>` being drawn: the first\none inside.",
               "type": {
-                "text": "HTMLImageElement | HTMLVideoElement | HTMLCanvasElement | null"
+                "text": "Element | null"
               },
               "readonly": true
             },
@@ -3805,6 +3805,16 @@
               "kind": "method",
               "name": "#stopVideo",
               "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#drawable",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "source"
+                }
+              ]
             },
             {
               "kind": "method",
@@ -3976,7 +3986,7 @@
           },
           "tagName": "pixel-canvas",
           "customElement": true,
-          "summary": "Pixel effects on any image, video, or canvas, by wrapping it in effect elements."
+          "summary": "Pixel effects on any image, video, canvas, or pixel sprite."
         }
       ],
       "exports": [
@@ -4479,6 +4489,281 @@
           "declaration": {
             "name": "PALETTES",
             "module": "./effect.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/pixelable/pixel-sprite/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Pixel art written as text: one character per pixel, one line per row,\nand a blank line between animation frames.",
+          "name": "PixelSprite",
+          "cssProperties": [
+            {
+              "description": "How many screen pixels each sprite pixel takes. Default 8.",
+              "name": "--domkit-sprite-scale"
+            }
+          ],
+          "cssParts": [
+            {
+              "description": "The `<canvas>` it's drawn on. Invoker commands: `--play`, `--pause`, `--toggle`.",
+              "name": "canvas"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "#canvas",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#sizing",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#frames",
+              "privacy": "private",
+              "type": {
+                "text": "array"
+              },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "#key",
+              "privacy": "private",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}"
+            },
+            {
+              "kind": "field",
+              "name": "#frame",
+              "privacy": "private",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "#raf",
+              "privacy": "private",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "#last",
+              "privacy": "private",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "#reflecting",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#observer",
+              "privacy": "private",
+              "default": "new MutationObserver(() => this.#parse())"
+            },
+            {
+              "kind": "field",
+              "name": "canvas",
+              "description": "The canvas it's drawn on (in the shadow root), at one pixel per\ncharacter.",
+              "type": {
+                "text": "HTMLCanvasElement"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "frames",
+              "description": "How many frames there are.",
+              "type": {
+                "text": "number"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "frame",
+              "description": "The frame showing, from 0. Setting it shows that frame (wrapping).",
+              "type": {
+                "text": "number"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "paused",
+              "description": "Whether the animation is paused.",
+              "type": {
+                "text": "boolean"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "play",
+              "description": "Play the frames (at `fps`)."
+            },
+            {
+              "kind": "method",
+              "name": "pause",
+              "description": "Pause on the current frame."
+            },
+            {
+              "kind": "method",
+              "name": "#setPaused",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "paused"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#parse",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#draw",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#start",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "{ force = false }",
+                  "default": "{}"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#stop",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#label",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#generatedLabel",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "width",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "height",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            }
+          ],
+          "events": [
+            {
+              "name": "play",
+              "type": {
+                "text": "Event"
+              },
+              "description": "The animation started or resumed."
+            },
+            {
+              "name": "pause",
+              "type": {
+                "text": "Event"
+              },
+              "description": "The animation paused."
+            },
+            {
+              "name": "framechange",
+              "type": {
+                "text": "Event"
+              },
+              "description": "It was redrawn: the frame advanced, or its pixels or colors changed."
+            }
+          ],
+          "attributes": [
+            {
+              "name": "colors",
+              "type": {
+                "text": "string"
+              },
+              "description": "What each character means: `char color` pairs separated by `;` (`. transparent; # black; o gold`), or a named palette whose colors are numbered `0`–`9` then `a`–`z` (`pico-8`, the default; `gameboy`; `1bit`; …). `.` is transparent unless you say otherwise."
+            },
+            {
+              "name": "fps",
+              "type": {
+                "text": "number"
+              },
+              "description": "Play the frames at this rate. Without it (or with one frame), it's still."
+            },
+            {
+              "name": "paused",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the animation is paused. Reflects; write it in markup to start paused."
+            },
+            {
+              "name": "alt",
+              "type": {
+                "text": "string"
+              },
+              "description": "A text alternative, as on `<img>`. An empty `alt` marks it decorative."
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "pixel-sprite",
+          "customElement": true,
+          "summary": "Pixel art written as text, with animation frames."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "PixelSprite",
+            "module": "src/pixelable/pixel-sprite/index.mjs"
           }
         }
       ]

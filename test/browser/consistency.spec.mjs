@@ -28,6 +28,7 @@ const ELEMENTS = {
   "pixelable/pixel-outline": "",
   "pixelable/pixel-crt": "",
   "pixelable/pixel-chroma-key": "",
+  "pixelable/pixel-sprite": ".8.\n888",
 };
 const tagOf = (path) => path.split("/").pop();
 const MODULES = Object.keys(ELEMENTS).map((path) => `src/${path}/global.mjs`);

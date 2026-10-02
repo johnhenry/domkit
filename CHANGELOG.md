@@ -67,6 +67,15 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **`<pixel-sprite>`: pixel art written as text.** One character per
+  pixel with a color key (`colors=". transparent; # black; o gold"`, or a
+  numbered palette; PICO-8 hex digits by default), blank lines between
+  animation frames played at `fps` (with `paused`, `play()`/`pause()`,
+  `frame`, commands, and reduced-motion respect). It shows itself crisply
+  scaled (`--domkit-sprite-scale`), is named by `alt` like an `<img>`, and
+  is a `<pixel-canvas>` source, redrawn every frame. `<pixel-canvas>` now
+  enlarges small sources without smoothing.
+
 - **Colors from the image.** `palette(auto, dither, count)` (and
   `<pixel-palette colors="auto" count="…">`) reduces an image to its own
   dominant colors. `<pixel-canvas swatches="N" swatches-target="html">`

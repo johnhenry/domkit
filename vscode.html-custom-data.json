@@ -449,7 +449,7 @@
     },
     {
       "name": "pixel-canvas",
-      "description": "Pixel effects on any image, video, or canvas, by wrapping it in effect elements.\n\nEvents: `load`, `palettechange`, `error`",
+      "description": "Pixel effects on any image, video, canvas, or pixel sprite.\n\nEvents: `load`, `palettechange`, `error`",
       "attributes": [
         {
           "name": "width",
@@ -675,6 +675,35 @@
         {
           "name": "Documentation",
           "url": "https://github.com/johnhenry/domkit/tree/main/src/pixelable/pixel-palette"
+        }
+      ]
+    },
+    {
+      "name": "pixel-sprite",
+      "description": "Pixel art written as text, with animation frames.\n\nEvents: `play`, `pause`, `framechange`",
+      "attributes": [
+        {
+          "name": "colors",
+          "description": "What each character means: `char color` pairs separated by `;` (`. transparent; # black; o gold`), or a named palette whose colors are numbered `0`–`9` then `a`–`z` (`pico-8`, the default; `gameboy`; `1bit`; …). `.` is transparent unless you say otherwise."
+        },
+        {
+          "name": "fps",
+          "description": "Play the frames at this rate. Without it (or with one frame), it's still."
+        },
+        {
+          "name": "paused",
+          "description": "Whether the animation is paused. Reflects; write it in markup to start paused.",
+          "valueSet": "v"
+        },
+        {
+          "name": "alt",
+          "description": "A text alternative, as on `<img>`. An empty `alt` marks it decorative."
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/pixelable/pixel-sprite"
         }
       ]
     },
