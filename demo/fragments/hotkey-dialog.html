@@ -12,7 +12,8 @@
 </head>
 <body>
 <p>Click into this frame, then press <kbd>Ctrl/⌘ K</kbd> or <kbd>/</kbd>
-(not while typing in the field).</p>
+(not while typing in the field) for a dialog, or <kbd>?</kbd> for a
+popover.</p>
 <input placeholder="typing / here doesn't open it" />
 <hotkey-dialog hotkey="mod+k /">
   <dialog closedby="any">
@@ -21,6 +22,9 @@
       <button>Close</button>
     </form>
   </dialog>
+</hotkey-dialog>
+<hotkey-dialog hotkey="?">
+  <div popover style="padding: 12px; border-radius: 8px;">A popover: press <kbd>?</kbd> again, Esc, or click outside.</div>
 </hotkey-dialog>
 </body>
 </html>

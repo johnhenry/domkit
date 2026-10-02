@@ -155,20 +155,28 @@
     },
     {
       "name": "hotkey-dialog",
-      "description": "Toggle a native dialog with a keyboard shortcut.",
+      "description": "Toggle a native dialog or popover, or run an invoker command, with a keyboard shortcut.",
       "attributes": [
         {
           "name": "hotkey",
           "description": "One or more space-separated shortcuts, e.g. `mod+k /`. `mod` is ⌘ on Apple platforms and Ctrl elsewhere."
         },
         {
+          "name": "commandfor",
+          "description": "The id of an element to send `command` to, as on a `<button>`. Without it, the shortcut toggles the `<dialog>` or popover inside."
+        },
+        {
+          "name": "command",
+          "description": "With `commandfor`: the command to run, a built-in one (`show-modal`, `close`, `request-close`, `show-popover`, `hide-popover`, `toggle-popover`) or a custom `--name` (dispatched as a `command` event)."
+        },
+        {
           "name": "non-modal",
-          "description": "Open with `show()` instead of `showModal()`.",
+          "description": "Open a dialog with `show()` instead of `showModal()`.",
           "valueSet": "v"
         },
         {
           "name": "disabled",
-          "description": "The shortcut does nothing. The dialog itself is unaffected.",
+          "description": "The shortcut does nothing. The dialog or popover itself is unaffected.",
           "valueSet": "v"
         }
       ],

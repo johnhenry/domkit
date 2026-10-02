@@ -1,9 +1,10 @@
-// <hotkey-dialog>: open and close the <dialog> inside it with a keyboard
-// shortcut. The dialog stays a real, native <dialog>: its own `open`,
-// `close` event, `returnValue`, focus handling, `::backdrop`, and the
-// `closedby` attribute all work as usual. `closedby="any"` (light dismiss)
-// and `closedby="none"` (no Esc) are polyfilled where the browser doesn't
-// support the attribute yet. See readme.md.
+// <hotkey-dialog>: toggle the <dialog> or popover inside it with a keyboard
+// shortcut, or run an invoker command (`commandfor` + `command`, like a
+// button) on any element. A dialog stays a real, native <dialog>: its own
+// `open`, `close` event, `returnValue`, focus handling, `::backdrop`, and
+// the `closedby` attribute all work as usual. `closedby="any"` (light
+// dismiss) and `closedby="none"` (no Esc) are polyfilled where the browser
+// doesn't support the attribute yet. See readme.md.
 
 const MODIFIERS = ["ctrl", "alt", "shift", "meta"];
 const IS_MAC = /mac|iphone|ipad|ipod/i.test(globalThis.navigator?.platform ?? "");
@@ -45,21 +46,38 @@ const matches = (shortcut, event) => {
   );
 };
 
+// The built-in invoker commands, run directly (a synthetic CommandEvent
+// doesn't trigger the browser's own behavior). Custom `--commands` are
+// dispatched as a `command` event, as a button would.
+const BUILT_IN = {
+  "show-modal": (el) => el instanceof HTMLDialogElement && !el.open && el.showModal(),
+  close: (el) => el instanceof HTMLDialogElement && el.close(),
+  "request-close": (el) => el instanceof HTMLDialogElement && (el.requestClose ? el.requestClose() : el.close()),
+  "show-popover": (el) => el.popover !== null && !el.matches(":popover-open") && el.showPopover(),
+  "hide-popover": (el) => el.popover !== null && el.matches(":popover-open") && el.hidePopover(),
+  "toggle-popover": (el) => el.popover !== null && el.togglePopover(),
+};
+
+const isPopover = (element) => element?.hasAttribute("popover") ?? false;
+
 const isEditable = (element) =>
   element instanceof Element &&
   (element.isContentEditable ||
     element.closest("input, textarea, select, [contenteditable='' i], [contenteditable='true' i]") !== null);
 
 /**
- * Opens and closes the `<dialog>` inside it with a keyboard shortcut,
- * keeping the dialog fully native. Polyfills `closedby="any"`/`"none"`.
+ * Opens and closes the `<dialog>` or popover inside it with a keyboard
+ * shortcut, keeping it fully native, or runs an invoker command on any
+ * element. Polyfills `closedby="any"`/`"none"` on dialogs.
  *
  * @tag hotkey-dialog
- * @summary Toggle a native dialog with a keyboard shortcut.
+ * @summary Toggle a native dialog or popover, or run an invoker command, with a keyboard shortcut.
  *
  * @attr {string} hotkey - One or more space-separated shortcuts, e.g. `mod+k /`. `mod` is ⌘ on Apple platforms and Ctrl elsewhere.
- * @attr {boolean} non-modal - Open with `show()` instead of `showModal()`.
- * @attr {boolean} disabled - The shortcut does nothing. The dialog itself is unaffected.
+ * @attr {string} commandfor - The id of an element to send `command` to, as on a `<button>`. Without it, the shortcut toggles the `<dialog>` or popover inside.
+ * @attr {string} command - With `commandfor`: the command to run, a built-in one (`show-modal`, `close`, `request-close`, `show-popover`, `hide-popover`, `toggle-popover`) or a custom `--name` (dispatched as a `command` event).
+ * @attr {boolean} non-modal - Open a dialog with `show()` instead of `showModal()`.
+ * @attr {boolean} disabled - The shortcut does nothing. The dialog or popover itself is unaffected.
  */
 export default class HotkeyDialog extends HTMLElement {
   static observedAttributes = ["hotkey"];
@@ -89,12 +107,44 @@ export default class HotkeyDialog extends HTMLElement {
   }
 
   /**
-   * The `<dialog>` this element controls: its first `<dialog>` descendant.
+   * The `<dialog>` or popover this element opens and closes: its first
+   * `<dialog>` or `[popover]` descendant.
+   * @type {HTMLElement | null}
+   * @readonly
+   */
+  get target() {
+    return this.querySelector("dialog, [popover]");
+  }
+
+  /**
+   * The `<dialog>` this element controls, if its target is one.
    * @type {HTMLDialogElement | null}
    * @readonly
    */
   get dialog() {
-    return this.querySelector("dialog");
+    const target = this.target;
+    return target instanceof HTMLDialogElement ? target : null;
+  }
+
+  /** @type {string} */
+  get command() {
+    return this.getAttribute("command") ?? "";
+  }
+  set command(value) {
+    this.setAttribute("command", value);
+  }
+
+  /**
+   * The element `commandfor` names, like a button's `commandForElement`.
+   * @type {Element | null}
+   */
+  get commandForElement() {
+    const id = this.getAttribute("commandfor");
+    return id ? (this.getRootNode().getElementById?.(id) ?? null) : null;
+  }
+  set commandForElement(element) {
+    if (element?.id) this.setAttribute("commandfor", element.id);
+    else this.removeAttribute("commandfor");
   }
 
   /** @type {string} */
@@ -124,30 +174,68 @@ export default class HotkeyDialog extends HTMLElement {
     this.toggleAttribute("non-modal", Boolean(value));
   }
 
-  /** Open the dialog (modally, unless `non-modal`). */
+  /**
+   * Whether the dialog or popover is open.
+   * @type {boolean}
+   * @readonly
+   */
+  get open() {
+    const target = this.target;
+    if (!target) return false;
+    return isPopover(target) ? target.matches(":popover-open") : target.open;
+  }
+
+  /** Open the dialog (modally, unless `non-modal`) or popover. */
   show() {
-    const dialog = this.dialog;
-    if (!dialog || dialog.open) return;
+    const target = this.target;
+    if (!target || this.open) return;
+    if (isPopover(target)) return target.showPopover();
     this.#bindDialog();
-    if (this.nonModal) dialog.show();
-    else dialog.showModal();
+    if (this.nonModal) target.show();
+    else target.showModal();
   }
 
   /**
-   * Close the dialog.
-   * @param {string} [returnValue]
+   * Close the dialog or popover.
+   * @param {string} [returnValue] for a dialog
    */
   close(returnValue) {
-    this.dialog?.close(returnValue);
+    const target = this.target;
+    if (!target || !this.open) return;
+    if (isPopover(target)) target.hidePopover();
+    else target.close(returnValue);
   }
 
-  /** Open the dialog if it's closed, close it if it's open. */
+  /** Open the dialog or popover if it's closed, close it if it's open. */
   toggle() {
-    if (this.dialog?.open) this.close();
+    if (this.open) this.close();
     else this.show();
   }
 
+  /**
+   * Run `command` on the `commandfor` element, as a button would. Returns
+   * false if there's no such element or command.
+   * @returns {boolean}
+   */
+  runCommand() {
+    const element = this.commandForElement;
+    const command = this.command;
+    if (!element || !command) return false;
+    if (command.startsWith("--")) {
+      const event = globalThis.CommandEvent
+        ? new CommandEvent("command", { command, source: this, cancelable: true })
+        : Object.assign(new Event("command", { cancelable: true }), { command, source: this });
+      element.dispatchEvent(event);
+      return true;
+    }
+    const run = BUILT_IN[command];
+    if (!run) return false;
+    run(element);
+    return true;
+  }
+
   // Listen on the current dialog (it may be swapped out after connect).
+  // Popovers need nothing: light dismiss and Esc are native.
   #bindDialog(dialog = this.dialog) {
     if (this.#bound === dialog) return;
     if (this.#bound) {
@@ -170,7 +258,12 @@ export default class HotkeyDialog extends HTMLElement {
     if (!shortcut) return;
     // A bare key ("/", "?") shouldn't fire while someone is typing.
     const bare = !shortcut.ctrl && !shortcut.alt && !shortcut.meta;
-    if (bare && isEditable(event.target) && !this.dialog?.contains(event.target)) return;
+    if (bare && isEditable(event.target) && !this.target?.contains(event.target)) return;
+    if (this.hasAttribute("commandfor")) {
+      if (this.runCommand()) event.preventDefault();
+      return;
+    }
+    if (!this.target) return;
     event.preventDefault();
     this.toggle();
   }

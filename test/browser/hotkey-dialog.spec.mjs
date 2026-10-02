@@ -94,3 +94,99 @@ test("hotkey changes apply, and disconnecting removes the listener", async ({ pa
   await page.keyboard.press("Alt+j");
   expect(await page.evaluate(() => window.toggled)).toBe(0);
 });
+
+test.describe("popovers", () => {
+  const POPOVER = `
+    <hotkey-dialog id="h" hotkey="ctrl+j">
+      <div id="p" popover><button id="in">inside</button></div>
+    </hotkey-dialog>`;
+  const popoverOpen = (page) => page.evaluate(() => document.getElementById("p").matches(":popover-open"));
+
+  test("the shortcut toggles a popover child; Esc and light dismiss stay native", async ({ page }) => {
+    await mount(page, POPOVER, MODULES);
+    await page.keyboard.press("Control+j");
+    expect(await popoverOpen(page)).toBe(true);
+    expect(await page.evaluate(() => document.getElementById("h").open)).toBe(true);
+    await page.keyboard.press("Control+j");
+    expect(await popoverOpen(page)).toBe(false);
+    await page.keyboard.press("Control+j");
+    await page.keyboard.press("Escape");
+    expect(await popoverOpen(page), "Esc").toBe(false);
+  });
+
+  test("show(), close(), toggle(), and target work for popovers", async ({ page }) => {
+    await mount(page, POPOVER, MODULES);
+    const states = await page.evaluate(() => {
+      const h = document.getElementById("h");
+      const seen = [h.target.id, h.dialog];
+      h.show();
+      seen.push(h.open);
+      h.toggle();
+      seen.push(h.open);
+      h.toggle();
+      h.close();
+      seen.push(h.open);
+      return seen;
+    });
+    expect(states).toEqual(["p", null, true, false, false]);
+  });
+});
+
+test.describe("invoker commands", () => {
+  test("commandfor + a custom --command dispatches a command event, like a button", async ({ page }) => {
+    await mount(
+      page,
+      `<div id="target"></div>
+       <hotkey-dialog id="h" hotkey="ctrl+j" commandfor="target" command="--next"></hotkey-dialog>`,
+      MODULES,
+    );
+    await page.evaluate(() => {
+      window.got = [];
+      document.getElementById("target").addEventListener("command", (e) => window.got.push([e.command, e.source.id]));
+    });
+    await page.keyboard.press("Control+j");
+    expect(await page.evaluate(() => window.got)).toEqual([["--next", "h"]]);
+  });
+
+  test("built-in commands open dialogs and popovers elsewhere on the page", async ({ page }) => {
+    await mount(
+      page,
+      `<dialog id="d"><p>dialog</p></dialog><div id="p" popover>popover</div>
+       <hotkey-dialog hotkey="ctrl+j" commandfor="d" command="show-modal"></hotkey-dialog>
+       <hotkey-dialog hotkey="ctrl+l" commandfor="p" command="toggle-popover"></hotkey-dialog>`,
+      MODULES,
+    );
+    await page.keyboard.press("Control+l");
+    expect(await page.evaluate(() => document.getElementById("p").matches(":popover-open"))).toBe(true);
+    await page.keyboard.press("Control+l");
+    expect(await page.evaluate(() => document.getElementById("p").matches(":popover-open"))).toBe(false);
+    await page.keyboard.press("Control+j");
+    expect(await page.evaluate(() => document.getElementById("d").matches(":modal"))).toBe(true);
+  });
+
+  test("drives other domkit elements: class-cycler's --next", async ({ page }) => {
+    await mount(
+      page,
+      `<class-cycler id="theme" classes="light,dark"><button value="light">L</button><button value="dark">D</button></class-cycler>
+       <hotkey-dialog hotkey="ctrl+j" commandfor="theme" command="--next"></hotkey-dialog>`,
+      [...MODULES, "src/cyclable/class-cycler/global.mjs"],
+    );
+    expect(await page.evaluate(() => document.getElementById("theme").value)).toBe("light");
+    await page.keyboard.press("Control+j");
+    expect(await page.evaluate(() => document.getElementById("theme").value)).toBe("dark");
+  });
+
+  test("an unknown command or missing element doesn't swallow the key", async ({ page }) => {
+    await mount(
+      page,
+      `<hotkey-dialog hotkey="ctrl+j" commandfor="nope" command="--next"></hotkey-dialog>`,
+      MODULES,
+    );
+    const prevented = await page.evaluate(() => {
+      const event = new KeyboardEvent("keydown", { key: "j", ctrlKey: true, cancelable: true, bubbles: true });
+      document.body.dispatchEvent(event);
+      return event.defaultPrevented;
+    });
+    expect(prevented).toBe(false);
+  });
+});

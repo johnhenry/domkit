@@ -51,7 +51,7 @@ Or skip installing: every path above also works as
 | [tabbed-ui](src/tabbed-ui/readme.md) | Tabs and panels from plain children, matched by position | `<tabbed-ui>` |
 | [stylable-select](src/stylable-select/readme.md) | A listbox whose options you can fully style | `<stylable-select>` |
 | [infinite-combo-box](src/infinite-combo-box/readme.md) | Autocomplete with paged ("infinite") results: filters its own options, or searches a URL or function as you type | `<infinite-combo-box>` |
-| [hotkey-dialog](src/hotkey-dialog/readme.md) | Toggle a native `<dialog>` with a keyboard shortcut (`mod+k`, `/`) | `<hotkey-dialog>` |
+| [hotkey-dialog](src/hotkey-dialog/readme.md) | Keyboard shortcuts (`mod+k`, `/`) that toggle a native `<dialog>` or popover, or run any invoker command | `<hotkey-dialog>` |
 | [drill-menu](src/drill-menu/readme.md) | A list that drills into sub-screens and back (settings menus, mobile nav), optionally synced to the URL hash | `<drill-menu>` |
 | [code-color](src/code-color/readme.md) | Syntax highlighting (JS, CSS, HTML) that never changes your markup, themable with CSS | `<code-color>` |
 
