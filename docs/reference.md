@@ -69,6 +69,38 @@ Add classes, styles, and attributes to children by media query. [Guide](../src/m
 |---|---|
 | `change` | A query started or stopped matching (the viewport or container changed), so `activeQueries` changed and the children were updated. |
 
+## `<chernoff-face>`
+
+A face whose features show data: each is a number from 0 to 1. [Guide](../src/chernoff-face/readme.md) · module `@johnhenry/domkit/chernoff-face`
+
+**Attributes**
+
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `face-width` |  | `number` | 0 narrow … 1 wide. Default 0.5, like every feature. |
+| `eye-size` |  | `number` | 0 small … 1 large eyes. |
+| `eye-spacing` |  | `number` | 0 close … 1 far-apart eyes. |
+| `pupil-size` |  | `number` | 0 small … 1 large pupils. |
+| `gaze` |  | `number` | 0 looking left … 1 looking right. |
+| `brow-slant` |  | `number` | 0 angry … 1 worried brows. |
+| `nose-length` |  | `number` | 0 short … 1 long nose. |
+| `mouth-width` |  | `number` | 0 narrow … 1 wide mouth. |
+| `smile` |  | `number` | 0 frown … 1 smile. |
+| `mouth-open` |  | `number` | 0 closed … 1 open mouth. |
+
+**Properties**
+
+| Property | Type | Description |
+|---|---|---|
+| `features` | `Record<string, number>` | Every feature's current value (0–1), keyed in camelCase (`{ eyeSize: 0.5, smile: 0.9, … }`). Setting it writes the matching attributes; keys you leave out are unchanged. |
+
+**CSS custom properties**
+
+| Property | Description |
+|---|---|
+| `--domkit-face-fill` | Fill of the face (index.css). |
+| `--domkit-face-stroke` | Line color (index.css; defaults to currentColor). |
+
 ## `<code-color>`
 
 Syntax highlighting that never touches your markup. [Guide](../src/code-color/readme.md) · module `@johnhenry/domkit/code-color`

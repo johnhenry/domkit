@@ -1,0 +1,17 @@
+/* Optional defaults for <chernoff-face>. Without this file it's already a
+   line drawing in currentColor, 4em square. */
+chernoff-face svg {
+  stroke: var(--domkit-face-stroke, currentColor);
+}
+chernoff-face .face {
+  fill: var(--domkit-face-fill, color-mix(in srgb, var(--domkit-accent, currentColor) 18%, transparent));
+}
+chernoff-face .eye {
+  fill: Canvas;
+}
+chernoff-face .pupil {
+  fill: var(--domkit-face-stroke, currentColor);
+}
+chernoff-face .mouth[data-open] {
+  fill: color-mix(in srgb, var(--domkit-face-stroke, currentColor) 70%, transparent);
+}
