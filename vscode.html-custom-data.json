@@ -309,6 +309,38 @@
       ]
     },
     {
+      "name": "scatter-plot",
+      "description": "A scatter plot of a point template, styled with ordinary CSS.\n\nEvents: `error`",
+      "attributes": [
+        {
+          "name": "data",
+          "description": "JSON array of points: `[x, y]` pairs, or `{ x, y, … }` objects whose other keys become attributes on that point."
+        },
+        {
+          "name": "x-min",
+          "description": "The x value at the left edge. Default: the smallest x, or 0 if that's positive."
+        },
+        {
+          "name": "x-max",
+          "description": "The x value at the right edge. Default: the largest x."
+        },
+        {
+          "name": "y-min",
+          "description": "The y value at the bottom edge. Default: the smallest y, or 0 if that's positive."
+        },
+        {
+          "name": "y-max",
+          "description": "The y value at the top edge. Default: the largest y."
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/scatter-plot"
+        }
+      ]
+    },
+    {
       "name": "stylable-select",
       "description": "A fully stylable listbox that works like a native select.\n\nEvents: `input`, `change`",
       "attributes": [
