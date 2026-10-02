@@ -470,126 +470,11 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/definable/define-component-by-content/index.mjs",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "Registers a markup-only custom element whose content comes from a\n`<template>` child (or a `content` attribute).",
-          "name": "DefineComponentByContent",
-          "members": [
-            {
-              "kind": "field",
-              "name": "#done",
-              "privacy": "private",
-              "type": {
-                "text": "boolean"
-              },
-              "default": "false"
-            },
-            {
-              "kind": "method",
-              "name": "#define",
-              "privacy": "private"
-            }
-          ],
-          "events": [
-            {
-              "name": "load",
-              "type": {
-                "text": "Event"
-              },
-              "description": "The element is registered (or the name already was)."
-            },
-            {
-              "name": "error",
-              "type": {
-                "text": "ErrorEvent"
-              },
-              "description": "Missing/invalid name or mode. An `ErrorEvent`."
-            }
-          ],
-          "attributes": [
-            {
-              "type": {
-                "text": "string"
-              },
-              "description": "The tag name to register.",
-              "name": "name"
-            },
-            {
-              "type": {
-                "text": "string"
-              },
-              "description": "The markup, if there's no `<template>` child.",
-              "name": "content"
-            },
-            {
-              "type": {
-                "text": "string"
-              },
-              "description": "`open` (default) or `closed` shadow root, or `none` to append the markup as light DOM.",
-              "name": "mode"
-            }
-          ],
-          "superclass": {
-            "name": "HTMLElement"
-          },
-          "tagName": "define-component-by-content",
-          "customElement": true,
-          "summary": "Register a markup-only custom element from inline HTML."
-        },
-        {
-          "kind": "variable",
-          "name": "name"
-        },
-        {
-          "kind": "class",
-          "description": "",
-          "name": "anonymous_0",
-          "members": [
-            {
-              "kind": "field",
-              "name": "#filled",
-              "privacy": "private",
-              "type": {
-                "text": "boolean"
-              },
-              "default": "false"
-            }
-          ],
-          "superclass": {
-            "name": "HTMLElement"
-          },
-          "tagName": "name",
-          "customElement": true
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "default",
-          "declaration": {
-            "name": "DefineComponentByContent",
-            "module": "src/definable/define-component-by-content/index.mjs"
-          }
-        },
-        {
-          "kind": "custom-element-definition",
-          "name": "name",
-          "declaration": {
-            "name": "anonymous_0",
-            "module": "src/definable/define-component-by-content/index.mjs"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
       "path": "src/definable/define-component/index.mjs",
       "declarations": [
         {
           "kind": "class",
-          "description": "Imports a module and registers its export as a custom element. Fires\n`load`/`error` like `<script src>`.",
+          "description": "Registers a custom element from HTML: a class exported by a module\n(`src`), or markup written in the page (a `<template>` child or a\n`content` attribute). Use one source, not both. Fires `load`/`error`\nlike `<script src>`.",
           "name": "DefineComponent",
           "members": [
             {
@@ -625,7 +510,7 @@
               "description": "The element is registered (or the name already was)."
             },
             {
-              "description": "The module failed to load, lacked the export, or the export isn't a class. An `ErrorEvent`.",
+              "description": "No source or two sources, an invalid name or mode, or (with `src`) the module failed to load, lacked the export, or the export isn't a class. An `ErrorEvent`.",
               "name": "error"
             }
           ],
@@ -641,15 +526,29 @@
               "type": {
                 "text": "string"
               },
-              "description": "URL of the module, resolved against the document's base URL.",
+              "description": "URL of a module exporting the element class, resolved against the document's base URL. Not allowed with inline markup.",
               "name": "src"
             },
             {
               "type": {
                 "text": "string"
               },
-              "description": "Name of the export to register. Default `default`.",
+              "description": "With `src`: the name of the export to register. Default `default`.",
               "name": "import"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Inline markup, if there's no `<template>` child. Not allowed with `src`.",
+              "name": "content"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "With inline markup: `open` (default) or `closed` shadow root, or `none` to append the markup as light DOM.",
+              "name": "mode"
             }
           ],
           "superclass": {
@@ -657,7 +556,7 @@
           },
           "tagName": "define-component",
           "customElement": true,
-          "summary": "Register a custom element from a module URL, in HTML."
+          "summary": "Register a custom element in HTML, from a module or from inline markup."
         },
         {
           "kind": "variable",
@@ -678,6 +577,14 @@
           "name": "name",
           "declaration": {
             "name": "exported",
+            "module": "src/definable/define-component/index.mjs"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "name",
+          "declaration": {
+            "name": "anonymous_1",
             "module": "src/definable/define-component/index.mjs"
           }
         }

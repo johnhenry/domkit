@@ -51,32 +51,8 @@
       ]
     },
     {
-      "name": "define-component-by-content",
-      "description": "Register a markup-only custom element from inline HTML.\n\nEvents: `load`, `error`",
-      "attributes": [
-        {
-          "name": "name",
-          "description": "The tag name to register."
-        },
-        {
-          "name": "content",
-          "description": "The markup, if there's no `<template>` child."
-        },
-        {
-          "name": "mode",
-          "description": "`open` (default) or `closed` shadow root, or `none` to append the markup as light DOM."
-        }
-      ],
-      "references": [
-        {
-          "name": "Documentation",
-          "url": "https://github.com/johnhenry/domkit/tree/main/src/definable/define-component-by-content"
-        }
-      ]
-    },
-    {
       "name": "define-component",
-      "description": "Register a custom element from a module URL, in HTML.\n\nEvents: `load`, `error`",
+      "description": "Register a custom element in HTML, from a module or from inline markup.\n\nEvents: `load`, `error`",
       "attributes": [
         {
           "name": "name",
@@ -84,11 +60,19 @@
         },
         {
           "name": "src",
-          "description": "URL of the module, resolved against the document's base URL."
+          "description": "URL of a module exporting the element class, resolved against the document's base URL. Not allowed with inline markup."
         },
         {
           "name": "import",
-          "description": "Name of the export to register. Default `default`."
+          "description": "With `src`: the name of the export to register. Default `default`."
+        },
+        {
+          "name": "content",
+          "description": "Inline markup, if there's no `<template>` child. Not allowed with `src`."
+        },
+        {
+          "name": "mode",
+          "description": "With inline markup: `open` (default) or `closed` shadow root, or `none` to append the markup as light DOM."
         }
       ],
       "references": [

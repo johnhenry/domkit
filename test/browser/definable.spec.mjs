@@ -3,7 +3,6 @@ import { mount } from "./helpers.mjs";
 
 const MODULES = [
   "src/definable/define-component/global.mjs",
-  "src/definable/define-component-by-content/global.mjs",
   "src/definable/polyfill-window/global.mjs",
 ];
 
@@ -89,13 +88,13 @@ test.describe("define-component", () => {
   });
 });
 
-test.describe("define-component-by-content", () => {
+test.describe("define-component, inline markup", () => {
   test("defines an element from a <template>, in a shadow root with working slots and scoped styles", async ({ page }) => {
     await mount(
       page,
-      `<define-component-by-content id="d" name="x-callout">
+      `<define-component id="d" name="x-callout">
          <template><style>:host { display: block; color: rgb(0, 128, 128); }</style><b>Note:</b> <slot></slot></template>
-       </define-component-by-content>
+       </define-component>
        <x-callout id="one">first</x-callout><x-callout id="two">second</x-callout><p id="outside">outside</p>`,
       MODULES,
     );
@@ -112,8 +111,8 @@ test.describe("define-component-by-content", () => {
   test("mode=none appends light DOM; the content attribute works too", async ({ page }) => {
     await mount(
       page,
-      `<define-component-by-content name="x-light" mode="none"><template><em>light</em></template></define-component-by-content>
-       <define-component-by-content name="x-attr" content="<i>from attribute</i>"></define-component-by-content>
+      `<define-component name="x-light" mode="none"><template><em>light</em></template></define-component>
+       <define-component name="x-attr" content="<i>from attribute</i>"></define-component>
        <x-light></x-light><x-attr></x-attr>`,
       MODULES,
     );
@@ -126,11 +125,43 @@ test.describe("define-component-by-content", () => {
     const events = await page.evaluate(async () => {
       const seen = [];
       document.addEventListener("error", (e) => seen.push(e.target.id), true);
-      document.body.insertAdjacentHTML("beforeend", '<define-component-by-content id="bad" name="nohyphen"></define-component-by-content>');
+      document.body.insertAdjacentHTML("beforeend", '<define-component id="bad" name="nohyphen"></define-component>');
       await new Promise((r) => setTimeout(r, 20));
       return seen;
     });
     expect(events).toEqual(["bad"]);
+  });
+});
+
+test.describe("define-component, one source", () => {
+  test("src and inline markup together, or neither, fire error and register nothing", async ({ page }) => {
+    await mount(page, "", MODULES);
+    const unhandled = [];
+    page.on("pageerror", (e) => unhandled.push(e.message));
+    const events = await run(
+      page,
+      `<define-component id="both" name="x-both" src="modules/widget.mjs"><template><b>inline</b></template></define-component>
+       <define-component id="both-attr" name="x-both-attr" src="modules/widget.mjs" content="<b>inline</b>"></define-component>
+       <define-component id="neither" name="x-neither"></define-component>`,
+    );
+    expect(events.map(([type, id]) => [type, id]).sort()).toEqual([
+      ["error", "both"],
+      ["error", "both-attr"],
+      ["error", "neither"],
+    ]);
+    expect(events.find(([, id]) => id === "both")[2]).toContain("not both");
+    expect(events.find(([, id]) => id === "neither")[2]).toContain("needs src");
+    expect(await page.evaluate(() => ["x-both", "x-both-attr", "x-neither"].map((n) => customElements.get(n) ?? null))).toEqual([null, null, null]);
+    expect(unhandled).toEqual([]);
+  });
+
+  test("ready resolves with the class for inline markup too", async ({ page }) => {
+    await mount(page, "", MODULES);
+    const ok = await page.evaluate(async () => {
+      document.body.insertAdjacentHTML("beforeend", '<define-component id="r" name="x-ready" content="<i>hi</i>"></define-component>');
+      return (await document.getElementById("r").ready) === customElements.get("x-ready");
+    });
+    expect(ok).toBe(true);
   });
 });
 

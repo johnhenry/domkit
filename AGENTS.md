@@ -195,7 +195,7 @@ module and the principles disagree, the module is wrong.
   write an import map. The last two (`parsel-js`, `@johnhenry/domable`)
   were removed in favor of small in-repo code (`matchable/simple-selector.mjs`,
   and a direct `<template>`-cloning implementation in
-  `define-component-by-content`). The browser fixture has no import map,
+  `define-component`'s inline mode). The browser fixture has no import map,
   so any new bare import fails the browser tests.
 - **Things that are NOT in this package**: `simple-element`,
   `create-element`, `text-to-dom`/`dom-to-text`, `react-to-dom`/

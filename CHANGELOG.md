@@ -6,6 +6,14 @@ All notable changes to this project will be documented in this file.
 
 ### Changed (breaking)
 
+- **`define-component-by-content` is merged into `<define-component>`.**
+  One element now registers a tag either from a module (`src`, with
+  `import` naming the export, default `default`) or from markup in the
+  page (a `<template>` child or a `content` attribute, with `mode`).
+  Giving both, or neither, fires `error`. Both kinds have the `ready`
+  promise. The `define-component-by-content` module and tag are gone:
+  rename the tag to `define-component`.
+
 - **`combo-box` is now `<infinite-combo-box>`** (module
   `@johnhenry/domkit/infinite-combo-box`), named for its new paging.
 
