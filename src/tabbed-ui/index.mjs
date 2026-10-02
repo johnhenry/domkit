@@ -26,9 +26,9 @@ const nextId = (prefix) => `${prefix}-${++uid}`;
  *
  * @attr {number} selected-index - Index of the selected tab. Reflects the current selection.
  * @attr {boolean} manual - Arrow keys move focus only; Enter/Space selects (manual activation).
- * @attr {boolean} disabled - No tab can be selected by the user, and the tabs leave the tab order. Panels stay as they are.
+ * @attr {boolean} disabled - No tab can be selected by the user (or by commands), and the tabs leave the tab order. Panels stay as they are.
  *
- * @fires change - The user selected a different tab (click or keyboard). Not fired for script changes.
+ * @fires change - The user selected a different tab (click, keyboard, or an invoker command). Not fired for script changes.
  *
  * @cssprop --domkit-tab-gap - Space between tabs (index.css).
  * @cssprop --domkit-tab-padding - Padding inside each tab (index.css).
@@ -47,6 +47,19 @@ export default class TabbedUI extends HTMLElement {
     super();
     this.addEventListener("click", (event) => this.#onClick(event));
     this.addEventListener("keydown", (event) => this.#onKeyDown(event));
+    // Invoker commands: <button commandfor="id" command="--next|--previous|--select" value="2">
+    this.addEventListener("command", (event) => {
+      if (this.disabled || this.#index < 0) return;
+      const command = event.command;
+      let target;
+      if (command === "--next") target = this.#step(this.#index, 1);
+      else if (command === "--previous") target = this.#step(this.#index, -1);
+      else if (command === "--select") {
+        target = Number.parseInt(event.source?.value ?? "", 10);
+        if (!Number.isInteger(target) || !this.tabs[target] || this.#isDisabled(this.tabs[target])) return;
+      } else return;
+      this.#select(target, { user: true });
+    });
   }
 
   connectedCallback() {
@@ -185,6 +198,27 @@ export default class TabbedUI extends HTMLElement {
     this.#observe();
   }
 
+  /** Select the next enabled tab (wrapping), without an event. */
+  next() {
+    if (this.#index >= 0) this.#select(this.#step(this.#index, 1), { user: false });
+  }
+
+  /** Select the previous enabled tab (wrapping), without an event. */
+  previous() {
+    if (this.#index >= 0) this.#select(this.#step(this.#index, -1), { user: false });
+  }
+
+  // The nearest enabled tab `delta` steps from `from`, wrapping; `from`
+  // itself if every other tab is disabled.
+  #step(from, delta) {
+    const tabs = this.tabs;
+    for (let i = 1; i <= tabs.length; i++) {
+      const next = (from + delta * i + tabs.length * i) % tabs.length;
+      if (!this.#isDisabled(tabs[next])) return next;
+    }
+    return from;
+  }
+
   #isDisabled(tab) {
     return tab.hasAttribute("disabled") || tab.getAttribute("aria-disabled") === "true";
   }
@@ -247,13 +281,7 @@ export default class TabbedUI extends HTMLElement {
     const current = tabs.indexOf(tab);
     const vertical = this.tabList.getAttribute("aria-orientation") === "vertical";
     const rtl = getComputedStyle(this.tabList).direction === "rtl";
-    const step = (from, delta) => {
-      for (let i = 1; i <= tabs.length; i++) {
-        const next = (from + delta * i + tabs.length * i) % tabs.length;
-        if (!this.#isDisabled(tabs[next])) return next;
-      }
-      return from;
-    };
+    const step = (from, delta) => this.#step(from, delta);
     const firstEnabled = () => step(-1, 1);
     const lastEnabled = () => step(tabs.length, -1);
     let target;

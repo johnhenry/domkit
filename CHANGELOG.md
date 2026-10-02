@@ -58,6 +58,12 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **`<tabbed-ui>` and `<frame-timer>` take invoker commands.**
+  `tabbed-ui` gains `next()`/`previous()` and `--next`, `--previous`, and
+  `--select` (index from the button's `value`), so wizard buttons need no
+  script; `frame-timer` takes `--play`, `--pause`, and `--toggle`. The
+  game-loop recipe's button now uses `--toggle`.
+
 - **Forgetting a choice in `cyclable`.** `<attribute-cycler>` gains
   `reset()`, a `--reset` command, and `<button data-cycle="reset">`, which
   remove the stored value and go back to the default (also followed

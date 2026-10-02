@@ -208,3 +208,50 @@ test("before upgrade, every panel is readable", async ({ page }) => {
   await expect(page.locator("#p1")).toBeVisible();
   await expect(page.locator("#p2")).toBeVisible();
 });
+
+test.describe("next(), previous(), and invoker commands", () => {
+  const command = (page, name, value) =>
+    page.evaluate(([name, value]) => {
+      const source = Object.assign(document.createElement("button"), { value: value ?? "" });
+      const event = Object.assign(new Event("command", { cancelable: true }), { command: name, source });
+      document.getElementById("t").dispatchEvent(event);
+    }, [name, value]);
+
+  test("next()/previous() wrap, skip disabled tabs, and are silent", async ({ page }) => {
+    await mount(page, TABS.replace('<button id="b">', '<button id="b" disabled>'), MODULES);
+    const events = await recordEvents(page, ["change"]);
+    const index = () => page.evaluate(() => document.getElementById("t").selectedIndex);
+    await page.evaluate(() => document.getElementById("t").next());
+    expect(await index(), "skips the disabled B").toBe(2);
+    await page.evaluate(() => document.getElementById("t").next());
+    expect(await index(), "wraps").toBe(0);
+    await page.evaluate(() => document.getElementById("t").previous());
+    expect(await index()).toBe(2);
+    expect(await events.take()).toEqual([]);
+  });
+
+  test("--next, --previous, and --select drive it from anywhere, firing change", async ({ page }) => {
+    await mount(page, TABS, MODULES);
+    const events = await recordEvents(page, ["change"]);
+    await command(page, "--next");
+    expect((await state(page)).index).toBe(1);
+    await command(page, "--previous");
+    expect((await state(page)).index).toBe(0);
+    await command(page, "--select", "2");
+    expect((await state(page)).index).toBe(2);
+    await command(page, "--select", "9");
+    expect((await state(page)).index, "an out-of-range index is ignored").toBe(2);
+    expect(await events.take()).toEqual([["change", "t"], ["change", "t"], ["change", "t"]]);
+    await page.evaluate(() => (document.getElementById("t").disabled = true));
+    await command(page, "--next");
+    expect((await state(page)).index, "disabled ignores commands").toBe(2);
+  });
+
+  test("a real commandfor button works, where supported", async ({ page }) => {
+    await mount(page, `${TABS}<button id="go" commandfor="t" command="--next">Next step</button>`, MODULES);
+    const supported = await page.evaluate(() => "command" in HTMLButtonElement.prototype);
+    test.skip(!supported, "this engine doesn't support invoker commands yet");
+    await page.locator("#go").click();
+    expect((await state(page)).index).toBe(1);
+  });
+});

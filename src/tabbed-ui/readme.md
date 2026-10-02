@@ -46,6 +46,24 @@ Attributes you can write on the parts:
 | the tab list | `aria-orientation="vertical"` | <kbd>↑</kbd>/<kbd>↓</kbd> instead of <kbd>←</kbd>/<kbd>→</kbd> (index.css stacks it too) |
 | anything | `role`, `id`, `tabindex` you write | Kept. The element only fills in what's missing |
 
+## Driving it from elsewhere
+
+`next()` and `previous()` select the next or previous enabled tab
+(wrapping), without an event. Buttons anywhere on the page can do the
+same with [invoker commands](https://developer.mozilla.org/docs/Web/API/Invoker_Commands_API),
+with no script, for "Next step" buttons in a wizard. These count as the
+user's choice, so `change` fires:
+
+```html
+<tabbed-ui id="steps">…</tabbed-ui>
+<button commandfor="steps" command="--previous">Back</button>
+<button commandfor="steps" command="--next">Next</button>
+<button commandfor="steps" command="--select" value="0">Start over</button>
+```
+
+`--select` takes the tab's index from the button's `value`. Disabled
+tabs are skipped, and a disabled `<tabbed-ui>` ignores commands.
+
 ## API
 
 <!-- api:start (generated from custom-elements.json by `npm run manifest`; edit the JSDoc instead) -->
@@ -56,7 +74,7 @@ Attributes you can write on the parts:
 |---|---|---|---|
 | `selected-index` | `selectedIndex` | `number` | Index of the selected tab. Reflects the current selection. |
 | `manual` | `manual` | `boolean` | Arrow keys move focus only; Enter/Space selects (manual activation). |
-| `disabled` | `disabled` | `boolean` | No tab can be selected by the user, and the tabs leave the tab order. Panels stay as they are. |
+| `disabled` | `disabled` | `boolean` | No tab can be selected by the user (or by commands), and the tabs leave the tab order. Panels stay as they are. |
 
 ### Properties
 
@@ -69,11 +87,18 @@ Attributes you can write on the parts:
 | `selectedIndex` | `number` | Index of the selected tab. Setting it does not fire `change`. |
 | `manual` | `boolean` | With `manual`, arrow keys move focus and Enter/Space selects. |
 
+### Methods
+
+| Method | Description |
+|---|---|
+| `next()` | Select the next enabled tab (wrapping), without an event. |
+| `previous()` | Select the previous enabled tab (wrapping), without an event. |
+
 ### Events
 
 | Event | Description |
 |---|---|
-| `change` | The user selected a different tab (click or keyboard). Not fired for script changes. |
+| `change` | The user selected a different tab (click, keyboard, or an invoker command). Not fired for script changes. |
 
 ### CSS custom properties
 
