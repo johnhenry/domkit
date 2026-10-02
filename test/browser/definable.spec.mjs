@@ -185,12 +185,45 @@ test.describe("polyfill-window", () => {
   });
 });
 
-test("until-window-load removes its class once the page has loaded", async ({ page }) => {
-  await page.goto("/test/browser/fixture.html");
-  const cls = await page.evaluate(async () => {
-    document.body.innerHTML = '<p class="until-window-load keep">x</p>';
-    await import("/src/definable/until-window-load/global.mjs");
-    return document.querySelector("p").className;
+test.describe("until-window-load", () => {
+  test("removes its class once the page has loaded", async ({ page }) => {
+    await page.goto("/test/browser/fixture.html");
+    await page.evaluate(async () => {
+      document.body.innerHTML = '<p class="until-window-load keep">x</p>';
+      await import("/src/definable/until-window-load/global.mjs");
+    });
+    await expect.poll(() => page.evaluate(() => document.querySelector("p").className)).toBe("keep");
   });
-  expect(cls).toBe("keep");
+
+  test("waits for <define-component> and <polyfill-window> to finish, even if one fails", async ({ page }) => {
+    let release;
+    const held = new Promise((resolve) => (release = resolve));
+    await page.route("**/slow-widget.mjs", async (route) => {
+      await held;
+      await route.fulfill({
+        contentType: "text/javascript",
+        body: "export default class extends HTMLElement { connectedCallback() { this.textContent = 'defined'; } }",
+      });
+    });
+    await page.route("**/until-ready.html", (route) =>
+      route.fulfill({
+        contentType: "text/html",
+        body: `<!doctype html>
+          <script type="module" src="/src/definable/define-component/global.mjs"></script>
+          <script type="module" src="/src/definable/polyfill-window/global.mjs"></script>
+          <script type="module" src="/src/definable/until-window-load/global.mjs"></script>
+          <define-component name="x-slow" src="/test/browser/modules/slow-widget.mjs"></define-component>
+          <polyfill-window name="neverThere" src="/test/browser/modules/nope.mjs"></polyfill-window>
+          <x-slow id="w" class="until-window-load"></x-slow>`,
+      }),
+    );
+    // WebKit holds the window's load event for the pending import, so don't
+    // wait for it; either way the class must stay until x-slow is defined.
+    await page.goto("/test/browser/until-ready.html", { waitUntil: "domcontentloaded" });
+    await page.waitForTimeout(300);
+    expect(await page.evaluate(() => document.getElementById("w").className), "still loading x-slow").toBe("until-window-load");
+    release();
+    await expect.poll(() => page.evaluate(() => document.getElementById("w").className)).toBe("");
+    await expect(page.locator("#w")).toHaveText("defined");
+  });
 });

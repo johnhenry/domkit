@@ -79,7 +79,7 @@ queries, evaluated against an element's size instead of the viewport.
 |---|---|---|
 | [define-component](src/definable/define-component/readme.md) | Register a custom element from a module URL or from inline markup | `<define-component>` |
 | [polyfill-window](src/definable/polyfill-window/readme.md) | Load a module onto `window` | `<polyfill-window>` |
-| [until-window-load](src/definable/until-window-load/readme.md) | Hide content until the page has loaded | (strips the `until-window-load` class) |
+| [until-window-load](src/definable/until-window-load/readme.md) | Hide content until the page and its `<define-component>`s have loaded | (strips the `until-window-load` class) |
 | [definetag](src/definable/definetag/readme.md) | Curried `customElements.define` | |
 
 ### Timing, collections, and small helpers
