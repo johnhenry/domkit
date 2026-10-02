@@ -32,6 +32,7 @@
     "src/matchable/container-query.mjs",
     "src/pixelable/effects.mjs",
     "src/pixelable/pixel-palette/palettes.mjs",
-    "src/pixelable/quantize.mjs"
+    "src/pixelable/quantize.mjs",
+    "src/pixelable/shader.mjs"
   ]
 }

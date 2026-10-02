@@ -31,6 +31,7 @@ const ELEMENTS = {
   "pixelable/pixel-sprite": ".8.\n888",
   "pixelable/pixel-glitch": "",
   "pixelable/pixel-wave": "",
+  "pixelable/pixel-shader": '<script type="x-shader/x-fragment">color = pixel;</script>',
 };
 const tagOf = (path) => path.split("/").pop();
 const MODULES = Object.keys(ELEMENTS).map((path) => `src/${path}/global.mjs`);

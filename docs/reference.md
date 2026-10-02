@@ -547,6 +547,28 @@ A pixel effect: limit colors to a palette, with dithering. [Guide](../src/pixela
 |---|---|---|
 | `palette` (read-only) | `number[][]` | The resolved palette, as `[r, g, b]` triples. Empty for `auto`, which depends on the image (see `<pixel-canvas>`'s `palette`). |
 
+## `<pixel-shader>`
+
+A pixel effect written as a GLSL fragment shader, run on the GPU. [Guide](../src/pixelable/pixel-shader/readme.md) · module `@johnhenry/domkit/pixelable/pixel-shader`
+
+**Attributes**
+
+| Attribute | Property | Type | Description |
+|---|---|---|---|
+| `disabled` |  | `boolean` | Pass the image through unchanged. |
+
+**Properties**
+
+| Property | Type | Description |
+|---|---|---|
+| `source` (read-only) | `string` | The shader's code: the text of its `<script type="x-shader/x-fragment">` child. |
+
+**Methods**
+
+| Method | Description |
+|---|---|
+| `apply(image, context)` |  |
+
 ## `<pixel-sprite>`
 
 Pixel art written as text, with animation frames. [Guide](../src/pixelable/pixel-sprite/readme.md) · module `@johnhenry/domkit/pixelable/pixel-sprite`
