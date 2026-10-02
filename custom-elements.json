@@ -4693,6 +4693,78 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/pixelable/pixel-shader/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Runs the image through the GLSL fragment shader in its\n`<script type=\"x-shader/x-fragment\">` child, on the GPU. Each `u_name`\nuniform the shader uses (beyond the built-in ones) is a float set from\nthis element's `name` attribute.",
+          "name": "PixelShader",
+          "members": [
+            {
+              "kind": "field",
+              "name": "source",
+              "description": "The shader's code: the text of its `<script type=\"x-shader/x-fragment\">`\nchild.",
+              "type": {
+                "text": "string"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "apply",
+              "parameters": [
+                {
+                  "name": "image",
+                  "type": {
+                    "text": "ImageData"
+                  }
+                },
+                {
+                  "name": "context",
+                  "optional": true,
+                  "type": {
+                    "text": "{ time: number, frame: number }"
+                  }
+                }
+              ],
+              "return": {
+                "type": {
+                  "text": "ImageData"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Pass the image through unchanged.",
+              "name": "disabled"
+            }
+          ],
+          "superclass": {
+            "name": "PixelEffect",
+            "module": "/src/pixelable/effects.mjs"
+          },
+          "tagName": "pixel-shader",
+          "customElement": true,
+          "summary": "A pixel effect written as a GLSL fragment shader, run on the GPU."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "PixelShader",
+            "module": "src/pixelable/pixel-shader/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/pixelable/pixel-sprite/index.mjs",
       "declarations": [
         {

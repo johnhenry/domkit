@@ -713,6 +713,23 @@
       ]
     },
     {
+      "name": "pixel-shader",
+      "description": "A pixel effect written as a GLSL fragment shader, run on the GPU.",
+      "attributes": [
+        {
+          "name": "disabled",
+          "description": "Pass the image through unchanged.",
+          "valueSet": "v"
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/pixelable/pixel-shader"
+        }
+      ]
+    },
+    {
       "name": "pixel-sprite",
       "description": "Pixel art written as text, with animation frames.\n\nEvents: `play`, `pause`, `framechange`",
       "attributes": [

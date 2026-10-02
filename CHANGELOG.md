@@ -67,6 +67,15 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **`<pixel-shader>`: pixel effects in GLSL, on the GPU.** A fragment
+  shader in a `<script type="x-shader/x-fragment">` child gets the image,
+  its size, the canvas clock, and `v_uv` (top-left origin) declared, and
+  any `u_name` it uses becomes a float set from the `name` attribute;
+  without a `main()` the code is its body, with `pixel` already read.
+  `definePixelShader(name, code)` (in `pixelable/shader.mjs`) makes a
+  shader a named effect for the attribute and element forms. Compile
+  errors fire `error` with the compiler's message.
+
 - **Pixel effects that change over time.** Effects receive
   `{ time, frame }` from the `<pixel-canvas>` clock, which `fps` drives on
   a still image and `play()`/`pause()`/`paused` (with events and

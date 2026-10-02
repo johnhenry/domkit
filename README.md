@@ -122,6 +122,7 @@ queries, evaluated against an element's size instead of the viewport.
 | [pixel-chroma-key](src/pixelable/pixel-chroma-key/readme.md) | Make a color transparent (green screen) | `<pixel-chroma-key>` |
 | [pixel-glitch](src/pixelable/pixel-glitch/readme.md) | Animated digital breakup | `<pixel-glitch>` |
 | [pixel-wave](src/pixelable/pixel-wave/readme.md) | Rows rippling along a moving wave | `<pixel-wave>` |
+| [pixel-shader](src/pixelable/pixel-shader/readme.md) | Your own effect in GLSL, run on the GPU | `<pixel-shader>` |
 
 ## Recipes
 
