@@ -35,6 +35,12 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **`until-window-load` waits for components loaded from HTML.** It now
+  removes its class only once the window has loaded *and* every
+  `<define-component>` and `<polyfill-window>` has finished (succeeded or
+  failed), so content isn't revealed before its components exist. The
+  function returns a promise that resolves when the classes are removed.
+
 - **`<hotkey-dialog>` toggles popovers, and runs invoker commands.** A
   `[popover]` child works like a `<dialog>` child (`target` and `open`
   are new). With `commandfor` and `command`, the shortcut acts like a

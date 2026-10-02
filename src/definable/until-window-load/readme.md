@@ -1,48 +1,50 @@
 # until-window-load
 
-Hide content until the page has fully loaded, to avoid a flash of
-unarranged content while custom elements upgrade: it removes a class from
-every element that has it once `window` fires `load`, or immediately if
-that has already happened. Part of [definable](../readme.md).
+Hide content until the page is ready, to avoid a flash of unstyled or
+unarranged content while custom elements load and upgrade. It removes a
+class from every element that has it once `window` has fired `load` **and**
+every `<define-component>` and `<polyfill-window>` on the page has
+finished, so components registered from HTML exist before anything is
+shown. Part of [definable](../readme.md).
 
 ## Usage
 
-### Manual
+Load the global script, hide the class, and put it on whatever should
+wait:
 
-Define the class to be removed:
+```html
+<script type="module" src="https://esm.sh/@johnhenry/domkit/definable/until-window-load/global.mjs"></script>
+<script type="module" src="https://esm.sh/@johnhenry/domkit/definable/define-component/global.mjs"></script>
+<style>
+  .until-window-load { visibility: hidden; }
+</style>
+
+<define-component name="fancy-card" src="/components/fancy-card.mjs"></define-component>
+<fancy-card class="until-window-load">Shown once fancy-card is defined</fancy-card>
+```
+
+To use your own class names, call the function instead:
 
 ```js
-import removeLoadingClasses from "https://esm.sh/@johnhenry/domkit/definable/until-window-load/index.mjs";
-removeLoadingClasses("custom-loading-class");
+import untilWindowLoad from "@johnhenry/domkit/definable/until-window-load";
+
+await untilWindowLoad("loading", "skeleton"); // resolves once both are removed
 ```
 
-```css
-.custom-loading-class {
-  visibility: hidden;
-}
-```
+## API
 
-```html
-<custom-component class="custom-loading-class"
-  >Hide me until window load</custom-component
->
-```
+`untilWindowLoad(...classNames)` returns a promise that resolves once the
+classes have been removed. It waits for:
 
-### Automatic
+1. the window's `load` event, unless it has already fired;
+2. the `ready` promise of every `<define-component>` and
+   `<polyfill-window>` in the document at that point, whether it
+   resolves or rejects. A failed load still reveals the page.
 
-Use the "global" import to automatically use the class name `until-window-load`:
+## Notes
 
-```html
-<script
-  type="module"
-  src="https://esm.sh/@johnhenry/domkit/definable/until-window-load/global.mjs"
-></script>
-<style>
-  .until-window-load {
-    visibility: hidden;
-  }
-</style>
-<custom-component class="until-window-load"
-  >Hide me until window load</custom-component
->
-```
+- Only loaders already in the document when the window loads are waited
+  for. One that isn't upgraded (because its script never loaded) is
+  skipped instead of waited on forever.
+- For a custom element you register yourself, CSS alone can do this:
+  `fancy-card:not(:defined) { visibility: hidden }`.
