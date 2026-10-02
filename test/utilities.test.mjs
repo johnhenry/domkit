@@ -45,6 +45,38 @@ test("live-query-selector tracks additions/removals until stopped", async () => 
   assert.ok(!Object.keys(live).includes("stop"), "stop is non-enumerable");
 });
 
+test("delay rejects with the signal's reason when aborted, and never resolves", async () => {
+  const controller = new AbortController();
+  let resolved = false;
+  const waiting = delay(50, "v", { signal: controller.signal }).then(() => (resolved = true));
+  controller.abort(new Error("stop"));
+  await assert.rejects(waiting, /stop/);
+  await delay(80);
+  assert.equal(resolved, false);
+  await assert.rejects(delay(5, "v", { signal: AbortSignal.abort() }), { name: "AbortError" });
+  await assert.rejects(delay({ fps: 30, signal: AbortSignal.abort() }), { name: "AbortError" });
+  const frameController = new AbortController();
+  const frame = delay({ fps: 1, signal: frameController.signal });
+  frameController.abort();
+  await assert.rejects(frame, { name: "AbortError" });
+  const micro = new AbortController();
+  const soon = delay(undefined, 1, { signal: micro.signal });
+  micro.abort();
+  await assert.rejects(soon, { name: "AbortError" });
+});
+
+test("live-query-selector with attributes picks up class changes", async () => {
+  const root = render(`<ul id="l"><li></li><li class="x"></li></ul>`).querySelector("#l");
+  const plain = liveQuerySelector("li.x", root);
+  const watching = liveQuerySelector("li.x", root, { attributes: ["class"] });
+  root.firstElementChild.classList.add("x");
+  await tick();
+  assert.equal(plain.length, 1, "by default, attribute changes aren't watched");
+  assert.equal(watching.length, 2);
+  plain.stop();
+  watching.stop();
+});
+
 test("live-query-selector fires change only when its matches change", async () => {
   const root = render(`<ul id="l"><li class="x"></li></ul>`).querySelector("#l");
   const live = liveQuerySelector("li.x", root);

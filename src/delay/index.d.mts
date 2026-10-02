@@ -9,12 +9,18 @@ export default _default;
  *   an animation frame. Use it to pace a loop. Like all
  *   `requestAnimationFrame` work, it waits while the page is hidden.
  *
- * Rejects with a `RangeError` if `fps` isn't a positive number.
+ * Pass an `AbortSignal` as `signal` (in the options, or in the `{ fps }`
+ * object) to cancel the wait: it then rejects with `signal.reason`, like
+ * `fetch`. Rejects with a `RangeError` if `fps` isn't a positive number.
  * @template T
- * @param {number | { fps: number }} [wait]
+ * @param {number | { fps: number, signal?: AbortSignal }} [wait]
  * @param {T} [value]
+ * @param {{ signal?: AbortSignal }} [options]
  * @returns {Promise<T>}
  */
 declare function _default<T>(wait?: number | {
     fps: number;
-}, value?: T): Promise<T>;
+    signal?: AbortSignal;
+}, value?: T, { signal }?: {
+    signal?: AbortSignal;
+}): Promise<T>;

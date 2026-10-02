@@ -2610,9 +2610,20 @@
               "type": {
                 "text": "ParentNode"
               }
+            },
+            {
+              "name": "{ attributes = false }",
+              "default": "{}"
+            },
+            {
+              "name": "options",
+              "optional": true,
+              "type": {
+                "text": "{ attributes?: boolean | string[] }"
+              }
             }
           ],
-          "description": "`querySelectorAll` that stays current: the returned array is refreshed in\nplace as elements are added to or removed from `root`, and fires `change`\nwhen its contents change. Call `stop()` on it when done.",
+          "description": "`querySelectorAll` that stays current: the returned array is refreshed in\nplace as elements are added to or removed from `root`, and fires `change`\nwhen its contents change. Call `stop()` on it when done.\n\nBy default only additions and removals are watched. With `attributes`,\nattribute changes are too, so an element that starts or stops matching\nbecause, say, a class was toggled is picked up: `true` for any attribute,\nor a list of attribute names to limit the work.",
           "return": {
             "type": {
               "text": "LiveElementList"

@@ -21,7 +21,7 @@ while (running) {
 
 ## API
 
-`delay(wait, value)`
+`delay(wait, value, { signal })`
 
 | `wait` | Waits for |
 |---|---|
@@ -31,6 +31,19 @@ while (running) {
 
 It resolves with `value`. `fps` can be any positive number; anything else
 rejects with a `RangeError`.
+
+## Cancelling
+
+Pass an `AbortSignal` to stop waiting. The timer (or animation frame) is
+cancelled and the promise rejects with `signal.reason`, as `fetch` does:
+
+```javascript
+const controller = new AbortController();
+delay(5000, "late", { signal: controller.signal }).catch((reason) => console.log(reason.name)); // "AbortError"
+controller.abort();
+
+await delay({ fps: 30, signal }); // in the { fps } form, the signal goes in the same object
+```
 
 ## Notes
 
