@@ -3242,6 +3242,26 @@
               "privacy": "private"
             },
             {
+              "kind": "method",
+              "name": "#hookSelected",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "option"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#optionSelected",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "option"
+                }
+              ]
+            },
+            {
               "kind": "field",
               "name": "#ownTabindex",
               "privacy": "private",

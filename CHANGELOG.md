@@ -121,6 +121,13 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- **`option.selected = …` on a `stylable-select` option updates its form
+  value**, and in single mode deselects the others, as in a native
+  `<select>`. Found by the new native-parity test, which checks that
+  `stylable-select` and a native listbox `<select>` (with
+  `appearance: base-select`) agree, so moving to the native element
+  later is a tag rename. The readme explains the move.
+
 - **`infinite-combo-box` starts new results at the top.** It kept the
   previous scroll position, which could leave "Load more" in view and
   fetch a second page nobody asked for (seen in Firefox).
