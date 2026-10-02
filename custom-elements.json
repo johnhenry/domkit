@@ -3113,14 +3113,6 @@
                 "text": "null"
               },
               "default": "null"
-            },
-            {
-              "kind": "field",
-              "name": "textContent",
-              "type": {
-                "text": "string"
-              },
-              "default": "\":host(:not([hidden])) { display: block; position: relative; block-size: 150px; } ::slotted(template) { display: none; }\""
             }
           ],
           "events": [

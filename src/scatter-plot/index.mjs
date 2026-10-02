@@ -45,7 +45,7 @@ export default class ScatterPlot extends HTMLElement {
     // still hides it. Everything plotted stays in the light DOM (the slot).
     const shadow = this.attachShadow({ mode: "open" });
     const style = document.createElement("style");
-    style.textContent = ":host(:not([hidden])) { display: block; position: relative; block-size: 150px; } ::slotted(template) { display: none; }";
+    style.append(":host(:not([hidden])) { display: block; position: relative; block-size: 150px; } ::slotted(template) { display: none; }");
     shadow.append(style, document.createElement("slot"));
   }
 

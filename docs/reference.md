@@ -372,7 +372,6 @@ A scatter plot of a point template, styled with ordinary CSS. [Guide](../src/sca
 | `data` | `Array<[number, number] \| { x: number, y: number, [attribute: string]: unknown }>` | The points. Setting it replots (and doesn't touch the `data` attribute, so it can hold values JSON can't). |
 | `domain` (read-only) | `{ xMin: number, xMax: number, yMin: number, yMax: number }` | The plotted range, after defaults: `{ xMin, xMax, yMin, yMax }`. |
 | `points` (read-only) | `Element[]` | The point elements now plotted, in data order. |
-| `textContent` | `string` |  |
 
 **Events**
 

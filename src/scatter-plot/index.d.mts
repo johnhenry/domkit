@@ -11,7 +11,6 @@ export default class ScatterPlot extends HTMLElement {
   readonly domain: { xMin: number, xMax: number, yMin: number, yMax: number };
   /** The point elements now plotted, in data order. */
   readonly points: Element[];
-  textContent: string;
 }
 
 declare global {
