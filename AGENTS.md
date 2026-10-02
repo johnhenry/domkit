@@ -170,7 +170,7 @@ module and the principles disagree, the module is wrong.
     by hand for anything rate-based (see the `frame-timer` test).
 - **A hidden browser tab doesn't deliver `requestAnimationFrame` or
   `matchMedia` change events.** When verifying `frame-timer`,
-  `frame-delay`, or `matchable` in a real browser, the tab must be visible.
+  `delay({ fps })`, or `matchable` in a real browser, the tab must be visible.
 - **`matchable/query-sections.mjs` is the one place the
   `[query] value | …` grammar is parsed.** `query-container` and
   `attribute-provider` both use it. They once had separate copies that

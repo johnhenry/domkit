@@ -18,9 +18,7 @@
   "files": [
     "src/clamp/index.mjs",
     "src/delay/index.mjs",
-    "src/frame-delay/index.mjs",
     "src/live-query-selector/index.mjs",
-    "src/create-mutable-nodelist/index.mjs",
     "src/cyclable/localstorage-cycler/index.mjs",
     "src/cyclable/localstorage-class-cycler/index.mjs",
     "src/definable/definetag/index.mjs",

@@ -97,20 +97,18 @@ void resolved, found;
 // Plain-function modules (declarations emitted by tsc from JSDoc).
 import clamp from "@johnhenry/domkit/clamp";
 import delay from "@johnhenry/domkit/delay";
-import frameDelay from "@johnhenry/domkit/frame-delay";
 import liveQuerySelector from "@johnhenry/domkit/live-query-selector";
-import createMutableNodeList from "@johnhenry/domkit/create-mutable-nodelist";
 import localStorageCycler from "@johnhenry/domkit/cyclable/localstorage-cycler";
 import Hydratable from "@johnhenry/domkit/hydratable";
 import { tokenize } from "@johnhenry/domkit/code-color/tokenize.mjs";
 
 const pct: number = clamp(0, 100)(150);
 const waited: string = await delay(10, "done");
-const framed: number = await frameDelay(30, 1);
+const framed: number = await delay({ fps: 30 }, 1);
 const live = liveQuerySelector("li");
+live.addEventListener("change", () => live.length);
+const first: Element | undefined = live[0];
 live.stop();
-const list = createMutableNodeList(document.body);
-list.push(document.createElement("p"));
 const cycle = localStorageCycler("k", ({ value }) => value.toUpperCase(), "a", "b");
 const stepped: string = cycle().value;
 const peeked: number = cycle.peek().index;
@@ -118,7 +116,9 @@ const mixin = Hydratable(async function () {});
 const spans: [string, number, number][] = tokenize("let x", "js");
 // @ts-expect-error -- clamp needs numbers
 clamp("a", 1);
-void pct, waited, framed, stepped, peeked, mixin, spans;
+// @ts-expect-error -- fps, not frames
+delay({ frames: 2 });
+void pct, waited, framed, first, stepped, peeked, mixin, spans;
 
 // matchable container mode.
 import { compileQuery, ContainerQueryList } from "@johnhenry/domkit/matchable/container-query.mjs";

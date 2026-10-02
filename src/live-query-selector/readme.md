@@ -2,7 +2,8 @@
 
 `querySelectorAll`, but the result stays current. The returned array is
 refreshed in place whenever elements are added to or removed from the
-root, so a reference you're holding always reflects the DOM.
+root, so a reference you're holding always reflects the DOM, and it fires
+`change` when its contents change.
 
 ## Usage
 
@@ -11,31 +12,35 @@ import liveQuerySelector from "@johnhenry/domkit/live-query-selector";
 
 const items = liveQuerySelector("li.todo", document.getElementById("list"));
 items.length; // 3
+items.addEventListener("change", () => render(items));
 document.getElementById("list").append(newTodo);
-// after the MutationObserver callback (a microtask later):
-items.length; // 4
+// a microtask later: items.length is 4, and "change" has fired
 
 items.stop(); // when you no longer need updates
 ```
 
 ## API
 
-`liveQuerySelector(selector, root = document, useNodeList = false)`
+`liveQuerySelector(selector, root = document)`
 
 | Parameter | Description |
 |---|---|
 | `selector` | Any CSS selector |
 | `root` | Element (or document) to search within and watch |
-| `useNodeList` | Return a [MutableNodeList](../create-mutable-nodelist/readme.md) instead of an array |
 
-The result has a non-enumerable `stop()` method that disconnects the
-underlying `MutationObserver`. Call it when you're done, or the observer
-lives as long as `root` does.
+It returns a plain array of elements, with three non-enumerable extras:
+
+| Member | Description |
+|---|---|
+| `addEventListener("change", listener)` | Called after the array's contents change (an element matched or stopped matching, or the order changed). Not called when the DOM changes but the matches don't. |
+| `removeEventListener("change", listener)` | Stop listening. |
+| `stop()` | Disconnect the underlying `MutationObserver`. Call it when you're done, or the observer lives as long as `root` does. |
 
 ## Notes
 
 - Updates are asynchronous (they happen in a `MutationObserver` callback),
-  so the list catches up one microtask after the DOM changes.
+  so the list catches up one microtask after the DOM changes. Listen for
+  `change` rather than reading it right after a mutation.
 - Only additions and removals (`childList`, whole subtree) are watched.
   An element that starts or stops matching because an **attribute**
   changed (a class toggled, say) won't be picked up until the next

@@ -67,4 +67,4 @@ The element renders nothing. It's only a clock.
 - Removing the element stops the clock, and putting it back resumes it
   unless it's paused.
 - For a one-off wait instead of a clock, use
-  [frame-delay](../frame-delay/readme.md).
+  [delay](../delay/readme.md): `await delay({ fps: 30 })`.
