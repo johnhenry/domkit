@@ -67,6 +67,14 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **Colors from the image.** `palette(auto, dither, count)` (and
+  `<pixel-palette colors="auto" count="…">`) reduces an image to its own
+  dominant colors. `<pixel-canvas swatches="N" swatches-target="html">`
+  publishes the result's N most common colors as `--pixel-swatch-1…N`
+  custom properties, with a `palette` property and a `palettechange`
+  event, so a page can take its theme from a picture. Both use a new
+  median-cut-plus-k-means quantizer (`pixelable/quantize.mjs`).
+
 - **`<pixel-canvas effects="…">`: effects listed like CSS `filter`**
   (`effects="adjust(contrast 1.3) palette(gameboy, ordered)"`), run left
   to right after any effect elements, with positional or named parameters

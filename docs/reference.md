@@ -398,6 +398,8 @@ Pixel effects on any image, video, or canvas, by wrapping it in effect elements.
 | `width` | `width` | `number` | Working width in pixels: the source is scaled to it (keeping its aspect ratio) before the effects run. Smaller is faster and chunkier. Default: the source's own width. |
 | `height` | `height` | `number` | Working height, if `width` isn't given. |
 | `effects` | `effects` | `string` | Effects to apply, in order, like CSS `filter`: `mosaic(4) palette(gameboy, ordered) adjust(contrast 1.3)`. They run after any effect elements inside. |
+| `swatches` | `swatches` | `number` | Publish the result's N most common colors as `--pixel-swatch-1` … `--pixel-swatch-N` custom properties (and the `palette` property). Default: none. |
+| `swatches-target` | `swatchesTarget` | `string` | A selector for more elements to set those custom properties on (for example `html`, to theme the page). They're always set on the `<pixel-canvas>` itself. |
 
 **Properties**
 
@@ -406,6 +408,9 @@ Pixel effects on any image, video, or canvas, by wrapping it in effect elements.
 | `source` (read-only) | `HTMLImageElement \| HTMLVideoElement \| HTMLCanvasElement \| null` | The image, video, or canvas being drawn: the first one inside. |
 | `effectElements` (read-only) | `Element[]` | The effect elements wrapped around the source, in the order they run (innermost first). Disabled ones are included. |
 | `effects` | `string` | Mirrors the `effects` attribute. |
+| `swatches` | `number` | How many swatches to publish. Mirrors the `swatches` attribute. |
+| `swatchesTarget` | `string` | Mirrors the `swatches-target` attribute. |
+| `palette` (read-only) | `string[]` | With `swatches`: the result's most common colors, as `#rrggbb`, most common first. Empty otherwise. |
 | `canvas` (read-only) | `HTMLCanvasElement` | The canvas showing the result (in the shadow root). |
 | `width` | `number` | Mirrors the `width` attribute. |
 | `height` | `number` | Mirrors the `height` attribute. |
@@ -423,6 +428,7 @@ Pixel effects on any image, video, or canvas, by wrapping it in effect elements.
 | Event | Description |
 |---|---|
 | `load` | The first frame of a source was drawn. |
+| `palettechange` | With `swatches`: the published colors changed. |
 | `error` | The source can't be read (for example, a cross-origin image without CORS) or an effect threw: an `ErrorEvent`, and the original content is shown instead. Also fired, once per name, for an unknown effect in `effects`, which is skipped. |
 
 ## `<pixel-chroma-key>`
@@ -510,15 +516,16 @@ A pixel effect: limit colors to a palette, with dithering. [Guide](../src/pixela
 
 | Attribute | Property | Type | Description |
 |---|---|---|---|
-| `colors` |  | `string` | A named palette (`1bit`, `gameboy`, `grayscale`, `cga`, `sepia`, `pico-8`) or space-separated CSS colors. Default `1bit`. |
+| `colors` |  | `string` | A named palette (`1bit`, `gameboy`, `grayscale`, `cga`, `sepia`, `pico-8`), space-separated CSS colors, or `auto` (the image's own dominant colors). Default `1bit`. |
 | `dither` |  | `string` | `none` (default), `floyd-steinberg` (error diffusion), or `ordered` (a 4×4 Bayer pattern). |
+| `count` |  | `number` | With `colors="auto"`: how many colors to pick. Default 8. |
 | `disabled` |  | `boolean` | Pass the image through unchanged. |
 
 **Properties**
 
 | Property | Type | Description |
 |---|---|---|
-| `palette` (read-only) | `number[][]` | The resolved palette, as `[r, g, b]` triples. |
+| `palette` (read-only) | `number[][]` | The resolved palette, as `[r, g, b]` triples. Empty for `auto`, which depends on the image (see `<pixel-canvas>`'s `palette`). |
 
 ## `<polyfill-window>`
 

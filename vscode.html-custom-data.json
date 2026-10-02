@@ -449,7 +449,7 @@
     },
     {
       "name": "pixel-canvas",
-      "description": "Pixel effects on any image, video, or canvas, by wrapping it in effect elements.\n\nEvents: `load`, `error`",
+      "description": "Pixel effects on any image, video, or canvas, by wrapping it in effect elements.\n\nEvents: `load`, `palettechange`, `error`",
       "attributes": [
         {
           "name": "width",
@@ -462,6 +462,14 @@
         {
           "name": "effects",
           "description": "Effects to apply, in order, like CSS `filter`: `mosaic(4) palette(gameboy, ordered) adjust(contrast 1.3)`. They run after any effect elements inside."
+        },
+        {
+          "name": "swatches",
+          "description": "Publish the result's N most common colors as `--pixel-swatch-1` … `--pixel-swatch-N` custom properties (and the `palette` property). Default: none."
+        },
+        {
+          "name": "swatches-target",
+          "description": "A selector for more elements to set those custom properties on (for example `html`, to theme the page). They're always set on the `<pixel-canvas>` itself."
         }
       ],
       "references": [
@@ -647,11 +655,15 @@
       "attributes": [
         {
           "name": "colors",
-          "description": "A named palette (`1bit`, `gameboy`, `grayscale`, `cga`, `sepia`, `pico-8`) or space-separated CSS colors. Default `1bit`."
+          "description": "A named palette (`1bit`, `gameboy`, `grayscale`, `cga`, `sepia`, `pico-8`), space-separated CSS colors, or `auto` (the image's own dominant colors). Default `1bit`."
         },
         {
           "name": "dither",
           "description": "`none` (default), `floyd-steinberg` (error diffusion), or `ordered` (a 4×4 Bayer pattern)."
+        },
+        {
+          "name": "count",
+          "description": "With `colors=\"auto\"`: how many colors to pick. Default 8."
         },
         {
           "name": "disabled",
