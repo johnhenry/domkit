@@ -17,6 +17,7 @@ const ELEMENTS = {
   "matchable/query-container": "<li>a</li>",
   "matchable/attribute-provider": "<p>a</p>",
   "scatter-plot": "<template><i></i></template>",
+  "chernoff-face": "",
 };
 const tagOf = (path) => path.split("/").pop();
 const MODULES = Object.keys(ELEMENTS).map((path) => `src/${path}/global.mjs`);

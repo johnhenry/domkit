@@ -20,7 +20,6 @@ real API, tests, and a CHANGELOG entry.
 | [pixel-shader](./pixel-shader/readme.md) | Elements that catch a `render` event, transform its pixels (`zoom`, `grid`), and pass it up. The middle of the pixel pipeline |
 | [canvas-renderer](./canvas-renderer/readme.md) | Draws whatever `render` event reaches it onto a `<canvas>`. The sink end of the pixel pipeline |
 | [animate-paths](./animate-paths/readme.md) | Animated SVG stroke drawing ("self-drawing" logos) from attributes |
-| [chernoff-face](./chernoff-face/readme.md) | [Chernoff faces](https://en.wikipedia.org/wiki/Chernoff_face): data shown as facial features |
 
 ## The pixel pipeline
 

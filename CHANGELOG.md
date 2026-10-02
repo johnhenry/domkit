@@ -58,6 +58,14 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **`<chernoff-face>`** graduates from `experimental/`, redesigned for
+  data: ten features (`face-width`, `eye-size`, `eye-spacing`,
+  `pupil-size`, `gaze`, `brow-slant`, `nose-length`, `mouth-width`,
+  `smile`, `mouth-open`), each a number from 0 to 1 with 0.5 neutral,
+  replacing the raw SVG coordinates. A `features` property, an SVG in the
+  light DOM updated in place, `role="img"` with a generated label, and it
+  works as a `<scatter-plot>` point.
+
 - **`<scatter-plot>`** graduates from `experimental/xy-grapher`: data
   (`[x, y]` pairs or `{ x, y, …attributes }`, as a JSON attribute or a
   `data` property) plotted as copies of a `<template>` point, in the light

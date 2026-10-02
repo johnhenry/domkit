@@ -103,6 +103,7 @@ queries, evaluated against an element's size instead of the viewport.
 | Module | What it's for | `global.mjs` registers |
 |---|---|---|
 | [scatter-plot](src/scatter-plot/readme.md) | A scatter plot of a point you design, styled with ordinary CSS | `<scatter-plot>` |
+| [chernoff-face](src/chernoff-face/readme.md) | A face whose features show data, each a number from 0 to 1 | `<chernoff-face>` |
 
 ### Experimental: [`experimental/`](src/experimental/readme.md)
 
@@ -112,7 +113,7 @@ any release. A composable canvas pixel pipeline
 [pixel-shader](src/experimental/pixel-shader/readme.md) →
 [canvas-renderer](src/experimental/canvas-renderer/readme.md)),
 [animate-paths](src/experimental/animate-paths/readme.md) (self-drawing
-SVG), and [chernoff-face](src/experimental/chernoff-face/readme.md).
+SVG).
 
 ## Recipes
 

@@ -4,6 +4,199 @@
   "modules": [
     {
       "kind": "javascript-module",
+      "path": "src/chernoff-face/index.mjs",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "FEATURES",
+          "type": {
+            "text": "object"
+          },
+          "default": "{ \"face-width\": \"narrow → wide face\", \"eye-size\": \"small → large eyes\", \"eye-spacing\": \"close → far-apart eyes\", \"pupil-size\": \"small → large pupils\", gaze: \"looking left → right\", \"brow-slant\": \"angry → worried brows\", \"nose-length\": \"short → long nose\", \"mouth-width\": \"narrow → wide mouth\", smile: \"frown → smile\", \"mouth-open\": \"closed → open mouth\", }",
+          "description": "The features, in attribute form, with what 0 and 1 mean."
+        },
+        {
+          "kind": "class",
+          "description": "A Chernoff face: each facial feature is a number from 0 to 1 (0.5 is\nneutral), drawn as an SVG in the light DOM.",
+          "name": "ChernoffFace",
+          "cssProperties": [
+            {
+              "description": "Fill of the face (index.css).",
+              "name": "--domkit-face-fill"
+            },
+            {
+              "description": "Line color (index.css; defaults to currentColor).",
+              "name": "--domkit-face-stroke"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "#svg",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#parts",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#generatedLabel",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "features",
+              "description": "Every feature's current value (0–1), keyed in camelCase\n(`{ eyeSize: 0.5, smile: 0.9, … }`). Setting it writes the matching\nattributes; keys you leave out are unchanged.",
+              "type": {
+                "text": "Record<string, number>"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#value",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "name"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#build",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#draw",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#label",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "values"
+                }
+              ]
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "0 narrow … 1 wide. Default 0.5, like every feature.",
+              "name": "face-width"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "0 small … 1 large eyes.",
+              "name": "eye-size"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "0 close … 1 far-apart eyes.",
+              "name": "eye-spacing"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "0 small … 1 large pupils.",
+              "name": "pupil-size"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "0 looking left … 1 looking right.",
+              "name": "gaze"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "0 angry … 1 worried brows.",
+              "name": "brow-slant"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "0 short … 1 long nose.",
+              "name": "nose-length"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "0 narrow … 1 wide mouth.",
+              "name": "mouth-width"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "0 frown … 1 smile.",
+              "name": "smile"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "0 closed … 1 open mouth.",
+              "name": "mouth-open"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "chernoff-face",
+          "customElement": true,
+          "summary": "A face whose features show data: each is a number from 0 to 1."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "FEATURES",
+          "declaration": {
+            "name": "FEATURES",
+            "module": "src/chernoff-face/index.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "ChernoffFace",
+            "module": "src/chernoff-face/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/clamp/index.mjs",
       "declarations": [],
       "exports": [
