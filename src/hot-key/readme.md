@@ -1,4 +1,4 @@
-# hotkey-dialog
+# hot-key
 
 Give something a keyboard shortcut: a command palette on <kbd>⌘K</kbd>,
 help on <kbd>?</kbd>, a menu on <kbd>/</kbd>, the next theme on
@@ -11,16 +11,16 @@ opens and closes it, or point it at any element with `commandfor` and
 ## Usage
 
 ```html
-<script type="module" src="https://esm.sh/@johnhenry/domkit/hotkey-dialog/global.mjs"></script>
+<script type="module" src="https://esm.sh/@johnhenry/domkit/hot-key/global.mjs"></script>
 
-<hotkey-dialog hotkey="mod+k">
+<hot-key hotkey="mod+k">
   <dialog closedby="any">
     <form method="dialog">
       <p>Press ⌘K / Ctrl+K again, click outside, or press Esc to close.</p>
       <button>Close</button>
     </form>
   </dialog>
-</hotkey-dialog>
+</hot-key>
 ```
 
 ## Popovers
@@ -29,9 +29,9 @@ A `[popover]` child works the same way. Esc and clicking outside close it
 natively (for `popover="auto"`, the default):
 
 ```html
-<hotkey-dialog hotkey="/">
+<hot-key hotkey="/">
   <nav popover>…</nav>
-</hotkey-dialog>
+</hot-key>
 ```
 
 ## Commands
@@ -45,10 +45,10 @@ respond to it:
 
 ```html
 <dialog id="help">…</dialog>
-<hotkey-dialog hotkey="?" commandfor="help" command="show-modal"></hotkey-dialog>
+<hot-key hotkey="?" commandfor="help" command="show-modal"></hot-key>
 
 <attribute-cycler id="theme" values="light,dark">…</attribute-cycler>
-<hotkey-dialog hotkey="mod+j" commandfor="theme" command="--next"></hotkey-dialog>
+<hot-key hotkey="mod+j" commandfor="theme" command="--next"></hot-key>
 ```
 
 If `commandfor` names no element, or the command isn't one of these,
@@ -69,7 +69,7 @@ in a field.
 **On the `<dialog>`**, use the native
 [`closedby`](https://developer.mozilla.org/docs/Web/HTML/Element/dialog#closedby)
 attribute: `closedby="any"` closes on a click outside (light dismiss),
-and `closedby="none"` blocks <kbd>Esc</kbd>. `<hotkey-dialog>` polyfills
+and `closedby="none"` blocks <kbd>Esc</kbd>. `<hot-key>` polyfills
 both in browsers that don't support `closedby` yet.
 
 ## API

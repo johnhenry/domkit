@@ -41,10 +41,10 @@ const chosenOption: Element | null = combo.selectedOption;
 combo.open = true;
 void comboValue, chosenOption;
 
-// hotkey-dialog and attribute-cycler.
-import "@johnhenry/domkit/hotkey-dialog/global.mjs";
+// hot-key and attribute-cycler.
+import "@johnhenry/domkit/hot-key/global.mjs";
 import "@johnhenry/domkit/cyclable/attribute-cycler/global.mjs";
-const hk = document.querySelector("hotkey-dialog")!;
+const hk = document.querySelector("hot-key")!;
 const dlg: HTMLDialogElement | null = hk.dialog;
 hk.toggle();
 hk.close("done");

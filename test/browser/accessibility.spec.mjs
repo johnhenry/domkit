@@ -12,7 +12,7 @@ const MODULES = [
   "src/tabbed-ui/global.mjs",
   "src/stylable-select/global.mjs",
   "src/infinite-combo-box/global.mjs",
-  "src/hotkey-dialog/global.mjs",
+  "src/hot-key/global.mjs",
   "src/drill-menu/global.mjs",
   "src/code-color/global.mjs",
   "src/frame-timer/global.mjs",
@@ -66,7 +66,7 @@ const ALL = `
     <button data-key="p">Profile<template><h2>Profile</h2><button data-back>Back</button></template></button>
     <a href="#help">Help</a>
   </drill-menu>
-  <hotkey-dialog hotkey="mod+k"><dialog aria-label="Palette"><p>Hi</p></dialog></hotkey-dialog>
+  <hot-key hotkey="mod+k"><dialog aria-label="Palette"><p>Hi</p></dialog></hot-key>
   <attribute-cycler values="light,dark"><button type="button" value="light">Light</button><button type="button" value="dark">Dark</button> <output></output></attribute-cycler>
   <code-color language="js"><pre>const answer = 42; // comment</pre></code-color>
   <query-container default="ul" query="[(min-width: 600px)] ol"><li>a</li><li>b</li></query-container>
@@ -94,7 +94,7 @@ test("open and active states pass axe too", async ({ page }) => {
   await page.getByRole("tab", { name: "Three" }).click();
   expect(await audit(page)).toEqual([]);
   // dialog open
-  await page.evaluate(() => document.querySelector("hotkey-dialog").show());
+  await page.evaluate(() => document.querySelector("hot-key").show());
   expect(await audit(page)).toEqual([]);
 });
 

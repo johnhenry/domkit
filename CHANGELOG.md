@@ -6,6 +6,11 @@ All notable changes to this project will be documented in this file.
 
 ### Changed (breaking)
 
+- **`hotkey-dialog` is now `<hot-key>`** (module
+  `@johnhenry/domkit/hot-key`). It toggles a `<dialog>` or popover, or
+  runs any invoker command, so the old name undersold it. Attributes,
+  properties, and methods are unchanged.
+
 - **`class-cycler` is now `<attribute-cycler>`, and can set any
   attribute.** Module `@johnhenry/domkit/cyclable/attribute-cycler`.
   `classes` is renamed `values`. The new `attribute` attribute (default

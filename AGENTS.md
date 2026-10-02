@@ -149,7 +149,7 @@ module and the principles disagree, the module is wrong.
   on every push/pop until 0.0.9.
 - **Never use customized built-ins (`is="…"`): Safari doesn't support
   them.** The two that existed (`hotkey-modal-dialog`, `class-cycler-button`)
-  were replaced by `<hotkey-dialog>` (wrapping a real `<dialog>`) and
+  were replaced by `<hotkey-dialog>` (now `<hot-key>`, wrapping a real `<dialog>`) and
   buttons inside `<class-cycler>` (now `<attribute-cycler>`).
 - **happy-dom differs from browsers in ways that matter here** (all
   checked against Chromium during 0.0.9):

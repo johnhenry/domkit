@@ -1,12 +1,12 @@
 import { test, expect } from "@playwright/test";
 import { mount } from "./helpers.mjs";
 
-const MODULES = ["src/hotkey-dialog/global.mjs"];
+const MODULES = ["src/hot-key/global.mjs"];
 const DIALOG = (attrs = 'hotkey="ctrl+k"', dialogAttrs = "") => `
   <input id="field" />
-  <hotkey-dialog id="h" ${attrs}>
+  <hot-key id="h" ${attrs}>
     <dialog id="d" ${dialogAttrs}><p>Hello</p><button id="inside">ok</button></dialog>
-  </hotkey-dialog>`;
+  </hot-key>`;
 const isOpen = (page) => page.evaluate(() => document.getElementById("d").open);
 
 test("its shortcut toggles a real, modal <dialog>", async ({ page }) => {
@@ -97,9 +97,9 @@ test("hotkey changes apply, and disconnecting removes the listener", async ({ pa
 
 test.describe("popovers", () => {
   const POPOVER = `
-    <hotkey-dialog id="h" hotkey="ctrl+j">
+    <hot-key id="h" hotkey="ctrl+j">
       <div id="p" popover><button id="in">inside</button></div>
-    </hotkey-dialog>`;
+    </hot-key>`;
   const popoverOpen = (page) => page.evaluate(() => document.getElementById("p").matches(":popover-open"));
 
   test("the shortcut toggles a popover child; Esc and light dismiss stay native", async ({ page }) => {
@@ -137,7 +137,7 @@ test.describe("invoker commands", () => {
     await mount(
       page,
       `<div id="target"></div>
-       <hotkey-dialog id="h" hotkey="ctrl+j" commandfor="target" command="--next"></hotkey-dialog>`,
+       <hot-key id="h" hotkey="ctrl+j" commandfor="target" command="--next"></hot-key>`,
       MODULES,
     );
     await page.evaluate(() => {
@@ -152,8 +152,8 @@ test.describe("invoker commands", () => {
     await mount(
       page,
       `<dialog id="d"><p>dialog</p></dialog><div id="p" popover>popover</div>
-       <hotkey-dialog hotkey="ctrl+j" commandfor="d" command="show-modal"></hotkey-dialog>
-       <hotkey-dialog hotkey="ctrl+l" commandfor="p" command="toggle-popover"></hotkey-dialog>`,
+       <hot-key hotkey="ctrl+j" commandfor="d" command="show-modal"></hot-key>
+       <hot-key hotkey="ctrl+l" commandfor="p" command="toggle-popover"></hot-key>`,
       MODULES,
     );
     await page.keyboard.press("Control+l");
@@ -168,7 +168,7 @@ test.describe("invoker commands", () => {
     await mount(
       page,
       `<attribute-cycler id="theme" values="light,dark"><button value="light">L</button><button value="dark">D</button></attribute-cycler>
-       <hotkey-dialog hotkey="ctrl+j" commandfor="theme" command="--next"></hotkey-dialog>`,
+       <hot-key hotkey="ctrl+j" commandfor="theme" command="--next"></hot-key>`,
       [...MODULES, "src/cyclable/attribute-cycler/global.mjs"],
     );
     expect(await page.evaluate(() => document.getElementById("theme").value)).toBe("light");
@@ -179,7 +179,7 @@ test.describe("invoker commands", () => {
   test("an unknown command or missing element doesn't swallow the key", async ({ page }) => {
     await mount(
       page,
-      `<hotkey-dialog hotkey="ctrl+j" commandfor="nope" command="--next"></hotkey-dialog>`,
+      `<hot-key hotkey="ctrl+j" commandfor="nope" command="--next"></hot-key>`,
       MODULES,
     );
     const prevented = await page.evaluate(() => {
