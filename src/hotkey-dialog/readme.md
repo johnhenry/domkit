@@ -1,10 +1,12 @@
 # hotkey-dialog
 
-Open and close a `<dialog>` with a keyboard shortcut: a command palette
-on <kbd>⌘K</kbd>, help on <kbd>?</kbd>. Wrap a native `<dialog>` in it,
-and the dialog stays fully native: `showModal()`, `::backdrop`, focus
-trapping and focus return, `returnValue`, and the `close`/`cancel`
-events all work as usual.
+Give something a keyboard shortcut: a command palette on <kbd>⌘K</kbd>,
+help on <kbd>?</kbd>, a menu on <kbd>/</kbd>, the next theme on
+<kbd>⌘J</kbd>. Wrap a native `<dialog>` or popover in it and the shortcut
+opens and closes it, or point it at any element with `commandfor` and
+`command`, exactly like a `<button>`. A dialog stays fully native:
+`showModal()`, `::backdrop`, focus trapping and focus return,
+`returnValue`, and the `close`/`cancel` events all work as usual.
 
 ## Usage
 
@@ -20,6 +22,37 @@ events all work as usual.
   </dialog>
 </hotkey-dialog>
 ```
+
+## Popovers
+
+A `[popover]` child works the same way. Esc and clicking outside close it
+natively (for `popover="auto"`, the default):
+
+```html
+<hotkey-dialog hotkey="/">
+  <nav popover>…</nav>
+</hotkey-dialog>
+```
+
+## Commands
+
+With `commandfor` and `command`, the shortcut does what a button with
+those attributes would do when clicked, on any element in the page. The
+built-in commands (`show-modal`, `close`, `request-close`,
+`show-popover`, `hide-popover`, `toggle-popover`) run directly; a custom
+`--command` is sent as a `command` event, so other domkit elements
+respond to it:
+
+```html
+<dialog id="help">…</dialog>
+<hotkey-dialog hotkey="?" commandfor="help" command="show-modal"></hotkey-dialog>
+
+<class-cycler id="theme" classes="light,dark">…</class-cycler>
+<hotkey-dialog hotkey="mod+j" commandfor="theme" command="--next"></hotkey-dialog>
+```
+
+If `commandfor` names no element, or the command isn't one of these,
+the key press is left alone.
 
 ## Shortcut syntax
 
@@ -48,25 +81,32 @@ both in browsers that don't support `closedby` yet.
 | Attribute | Property | Type | Description |
 |---|---|---|---|
 | `hotkey` | `hotkey` | `string` | One or more space-separated shortcuts, e.g. `mod+k /`. `mod` is ⌘ on Apple platforms and Ctrl elsewhere. |
-| `non-modal` | `nonModal` | `boolean` | Open with `show()` instead of `showModal()`. |
-| `disabled` | `disabled` | `boolean` | The shortcut does nothing. The dialog itself is unaffected. |
+| `commandfor` |  | `string` | The id of an element to send `command` to, as on a `<button>`. Without it, the shortcut toggles the `<dialog>` or popover inside. |
+| `command` | `command` | `string` | With `commandfor`: the command to run, a built-in one (`show-modal`, `close`, `request-close`, `show-popover`, `hide-popover`, `toggle-popover`) or a custom `--name` (dispatched as a `command` event). |
+| `non-modal` | `nonModal` | `boolean` | Open a dialog with `show()` instead of `showModal()`. |
+| `disabled` | `disabled` | `boolean` | The shortcut does nothing. The dialog or popover itself is unaffected. |
 
 ### Properties
 
 | Property | Type | Description |
 |---|---|---|
-| `dialog` (read-only) | `HTMLDialogElement \| null` | The `<dialog>` this element controls: its first `<dialog>` descendant. |
+| `target` (read-only) | `HTMLElement \| null` | The `<dialog>` or popover this element opens and closes: its first `<dialog>` or `[popover]` descendant. |
+| `dialog` (read-only) | `HTMLDialogElement \| null` | The `<dialog>` this element controls, if its target is one. |
+| `command` | `string` | Mirrors the `command` attribute. |
+| `commandForElement` | `Element \| null` | The element `commandfor` names, like a button's `commandForElement`. |
 | `hotkey` | `string` | Mirrors the `hotkey` attribute. |
 | `disabled` | `boolean` | Mirrors the `disabled` attribute. |
 | `nonModal` | `boolean` | Mirrors the `non-modal` attribute. |
+| `open` (read-only) | `boolean` | Whether the dialog or popover is open. |
 
 ### Methods
 
 | Method | Description |
 |---|---|
-| `show()` | Open the dialog (modally, unless `non-modal`). |
-| `close(returnValue)` | Close the dialog. |
-| `toggle()` | Open the dialog if it's closed, close it if it's open. |
+| `show()` | Open the dialog (modally, unless `non-modal`) or popover. |
+| `close(returnValue)` | Close the dialog or popover. |
+| `toggle()` | Open the dialog or popover if it's closed, close it if it's open. |
+| `runCommand()` | Run `command` on the `commandfor` element, as a button would. Returns false if there's no such element or command. |
 
 <!-- api:end -->
 
@@ -79,4 +119,5 @@ both in browsers that don't support `closedby` yet.
   visible control also opens the dialog.
 - Buttons can open the dialog without any script, using invoker commands:
   `<button commandfor="my-dialog" command="show-modal">`.
-- It has no events of its own: listen to the `<dialog>`'s native `close`, `cancel`, and `toggle` events.
+- It has no events of its own: listen to the `<dialog>`'s native `close`, `cancel`, and `toggle` events (or the popover's `toggle`).
+- `closedby` is only polyfilled for a `<dialog>` it wraps; popovers have light dismiss natively.

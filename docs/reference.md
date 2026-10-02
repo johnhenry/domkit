@@ -175,32 +175,39 @@ A frame-paced ticking clock with play/pause. [Guide](../src/frame-timer/readme.m
 
 ## `<hotkey-dialog>`
 
-Toggle a native dialog with a keyboard shortcut. [Guide](../src/hotkey-dialog/readme.md) · module `@johnhenry/domkit/hotkey-dialog`
+Toggle a native dialog or popover, or run an invoker command, with a keyboard shortcut. [Guide](../src/hotkey-dialog/readme.md) · module `@johnhenry/domkit/hotkey-dialog`
 
 **Attributes**
 
 | Attribute | Property | Type | Description |
 |---|---|---|---|
 | `hotkey` | `hotkey` | `string` | One or more space-separated shortcuts, e.g. `mod+k /`. `mod` is ⌘ on Apple platforms and Ctrl elsewhere. |
-| `non-modal` | `nonModal` | `boolean` | Open with `show()` instead of `showModal()`. |
-| `disabled` | `disabled` | `boolean` | The shortcut does nothing. The dialog itself is unaffected. |
+| `commandfor` |  | `string` | The id of an element to send `command` to, as on a `<button>`. Without it, the shortcut toggles the `<dialog>` or popover inside. |
+| `command` | `command` | `string` | With `commandfor`: the command to run, a built-in one (`show-modal`, `close`, `request-close`, `show-popover`, `hide-popover`, `toggle-popover`) or a custom `--name` (dispatched as a `command` event). |
+| `non-modal` | `nonModal` | `boolean` | Open a dialog with `show()` instead of `showModal()`. |
+| `disabled` | `disabled` | `boolean` | The shortcut does nothing. The dialog or popover itself is unaffected. |
 
 **Properties**
 
 | Property | Type | Description |
 |---|---|---|
-| `dialog` (read-only) | `HTMLDialogElement \| null` | The `<dialog>` this element controls: its first `<dialog>` descendant. |
+| `target` (read-only) | `HTMLElement \| null` | The `<dialog>` or popover this element opens and closes: its first `<dialog>` or `[popover]` descendant. |
+| `dialog` (read-only) | `HTMLDialogElement \| null` | The `<dialog>` this element controls, if its target is one. |
+| `command` | `string` | Mirrors the `command` attribute. |
+| `commandForElement` | `Element \| null` | The element `commandfor` names, like a button's `commandForElement`. |
 | `hotkey` | `string` | Mirrors the `hotkey` attribute. |
 | `disabled` | `boolean` | Mirrors the `disabled` attribute. |
 | `nonModal` | `boolean` | Mirrors the `non-modal` attribute. |
+| `open` (read-only) | `boolean` | Whether the dialog or popover is open. |
 
 **Methods**
 
 | Method | Description |
 |---|---|
-| `show()` | Open the dialog (modally, unless `non-modal`). |
-| `close(returnValue)` | Close the dialog. |
-| `toggle()` | Open the dialog if it's closed, close it if it's open. |
+| `show()` | Open the dialog (modally, unless `non-modal`) or popover. |
+| `close(returnValue)` | Close the dialog or popover. |
+| `toggle()` | Open the dialog or popover if it's closed, close it if it's open. |
+| `runCommand()` | Run `command` on the `commandfor` element, as a button would. Returns false if there's no such element or command. |
 
 ## `<infinite-combo-box>`
 

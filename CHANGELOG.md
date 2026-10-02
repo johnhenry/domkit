@@ -35,6 +35,14 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **`<hotkey-dialog>` toggles popovers, and runs invoker commands.** A
+  `[popover]` child works like a `<dialog>` child (`target` and `open`
+  are new). With `commandfor` and `command`, the shortcut acts like a
+  button with those attributes: built-in commands (`show-modal`,
+  `toggle-popover`, …) run directly, and custom `--commands` are sent as
+  `command` events, so a shortcut can drive `<class-cycler>`'s `--next`
+  or `<drill-menu>`'s `--back`.
+
 - **`theme.css`** (`@johnhenry/domkit/theme.css`): ready-made,
   `light-dark()`-aware values for the shared tokens. Every `index.css`
   also works without it.

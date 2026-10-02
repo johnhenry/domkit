@@ -1213,7 +1213,7 @@
         },
         {
           "kind": "class",
-          "description": "Opens and closes the `<dialog>` inside it with a keyboard shortcut,\nkeeping the dialog fully native. Polyfills `closedby=\"any\"`/`\"none\"`.",
+          "description": "Opens and closes the `<dialog>` or popover inside it with a keyboard\nshortcut, keeping it fully native, or runs an invoker command on any\nelement. Polyfills `closedby=\"any\"`/`\"none\"` on dialogs.",
           "name": "HotkeyDialog",
           "members": [
             {
@@ -1265,12 +1265,36 @@
             },
             {
               "kind": "field",
+              "name": "target",
+              "description": "The `<dialog>` or popover this element opens and closes: its first\n`<dialog>` or `[popover]` descendant.",
+              "type": {
+                "text": "HTMLElement | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
               "name": "dialog",
-              "description": "The `<dialog>` this element controls: its first `<dialog>` descendant.",
+              "description": "The `<dialog>` this element controls, if its target is one.",
               "type": {
                 "text": "HTMLDialogElement | null"
               },
               "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "command",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "commandForElement",
+              "description": "The element `commandfor` names, like a button's `commandForElement`.",
+              "type": {
+                "text": "Element | null"
+              }
             },
             {
               "kind": "field",
@@ -1295,9 +1319,18 @@
               }
             },
             {
+              "kind": "field",
+              "name": "open",
+              "description": "Whether the dialog or popover is open.",
+              "type": {
+                "text": "boolean"
+              },
+              "readonly": true
+            },
+            {
               "kind": "method",
               "name": "show",
-              "description": "Open the dialog (modally, unless `non-modal`)."
+              "description": "Open the dialog (modally, unless `non-modal`) or popover."
             },
             {
               "kind": "method",
@@ -1305,18 +1338,29 @@
               "parameters": [
                 {
                   "name": "returnValue",
+                  "description": "for a dialog",
                   "optional": true,
                   "type": {
                     "text": "string"
                   }
                 }
               ],
-              "description": "Close the dialog."
+              "description": "Close the dialog or popover."
             },
             {
               "kind": "method",
               "name": "toggle",
-              "description": "Open the dialog if it's closed, close it if it's open."
+              "description": "Open the dialog or popover if it's closed, close it if it's open."
+            },
+            {
+              "kind": "method",
+              "name": "runCommand",
+              "description": "Run `command` on the `commandfor` element, as a button would. Returns\nfalse if there's no such element or command.",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
             },
             {
               "kind": "method",
@@ -1370,16 +1414,30 @@
             },
             {
               "type": {
+                "text": "string"
+              },
+              "description": "The id of an element to send `command` to, as on a `<button>`. Without it, the shortcut toggles the `<dialog>` or popover inside.",
+              "name": "commandfor"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "With `commandfor`: the command to run, a built-in one (`show-modal`, `close`, `request-close`, `show-popover`, `hide-popover`, `toggle-popover`) or a custom `--name` (dispatched as a `command` event).",
+              "name": "command"
+            },
+            {
+              "type": {
                 "text": "boolean"
               },
-              "description": "Open with `show()` instead of `showModal()`.",
+              "description": "Open a dialog with `show()` instead of `showModal()`.",
               "name": "non-modal"
             },
             {
               "type": {
                 "text": "boolean"
               },
-              "description": "The shortcut does nothing. The dialog itself is unaffected.",
+              "description": "The shortcut does nothing. The dialog or popover itself is unaffected.",
               "name": "disabled"
             }
           ],
@@ -1388,7 +1446,7 @@
           },
           "tagName": "hotkey-dialog",
           "customElement": true,
-          "summary": "Toggle a native dialog with a keyboard shortcut."
+          "summary": "Toggle a native dialog or popover, or run an invoker command, with a keyboard shortcut."
         }
       ],
       "exports": [
