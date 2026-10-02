@@ -29,6 +29,8 @@
     "src/hydratable/mounts/last.mjs",
     "src/hydratable/mounts/unmount.mjs",
     "src/code-color/tokenize.mjs",
-    "src/matchable/container-query.mjs"
+    "src/matchable/container-query.mjs",
+    "src/pixelable/pixel-filter.mjs",
+    "src/pixelable/pixel-palette/palettes.mjs"
   ]
 }

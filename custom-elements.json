@@ -3478,6 +3478,580 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/pixelable/pixel-canvas/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Draws its source image, video, or canvas through the pixel effects\nwrapped around it.",
+          "name": "PixelCanvas",
+          "cssParts": [
+            {
+              "description": "The `<canvas>` showing the result.",
+              "name": "canvas"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "#canvas",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#slot",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#scheduled",
+              "privacy": "private",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "#frame",
+              "privacy": "private",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "#video",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#source",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#loadedSource",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#failed",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#observer",
+              "privacy": "private",
+              "default": "new MutationObserver((records) => { if (records.some((record) => record.target !== this || record.type === \"childList\")) this.#schedule(); })"
+            },
+            {
+              "kind": "field",
+              "name": "#onSourceEvent",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#onPixelChange",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "source",
+              "description": "The image, video, or canvas being drawn: the first one inside.",
+              "type": {
+                "text": "HTMLImageElement | HTMLVideoElement | HTMLCanvasElement | null"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "effects",
+              "description": "The effect elements applied to the source, in the order they run\n(innermost first). Disabled ones are included.",
+              "type": {
+                "text": "Element[]"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "canvas",
+              "description": "The canvas showing the result (in the shadow root).",
+              "type": {
+                "text": "HTMLCanvasElement"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "render",
+              "description": "Draw now, instead of on the next frame. Returns whether it drew.",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "toBlob",
+              "parameters": [
+                {
+                  "name": "type",
+                  "description": "e.g. \"image/png\" (the default)",
+                  "optional": true,
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "quality",
+                  "optional": true,
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ],
+              "description": "The result as an image file, like `HTMLCanvasElement.toBlob()`.",
+              "return": {
+                "type": {
+                  "text": "Promise<Blob | null>"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "toDataURL",
+              "parameters": [
+                {
+                  "name": "type",
+                  "optional": true,
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "quality",
+                  "optional": true,
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ],
+              "description": "The result as a data: URL, like `HTMLCanvasElement.toDataURL()`.",
+              "return": {
+                "type": {
+                  "text": "string"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "#schedule",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#bindSource",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "source"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#watchVideo",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#stopVideo",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#size",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "source"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#draw",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#loadedSrc",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "method",
+              "name": "#fail",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "error"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#label",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "source"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "#generatedLabel",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "width",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "height",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            }
+          ],
+          "events": [
+            {
+              "name": "load",
+              "type": {
+                "text": "Event"
+              },
+              "description": "The first frame of a source was drawn."
+            },
+            {
+              "name": "error",
+              "type": {
+                "text": "ErrorEvent"
+              },
+              "description": "The source can't be read (for example, a cross-origin image without CORS) or an effect threw. An `ErrorEvent`; the original content is shown instead."
+            }
+          ],
+          "attributes": [
+            {
+              "name": "width",
+              "type": {
+                "text": "number"
+              },
+              "description": "Working width in pixels: the source is scaled to it (keeping its aspect ratio) before the effects run. Smaller is faster and chunkier. Default: the source's own width."
+            },
+            {
+              "name": "height",
+              "type": {
+                "text": "number"
+              },
+              "description": "Working height, if `width` isn't given."
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "pixel-canvas",
+          "customElement": true,
+          "summary": "Pixel effects on any image, video, or canvas, by wrapping it in effect elements."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "PixelCanvas",
+            "module": "src/pixelable/pixel-canvas/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/pixelable/pixel-grid/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Draws grid lines every `size` pixels.",
+          "name": "PixelGrid",
+          "members": [
+            {
+              "kind": "field",
+              "name": "size",
+              "description": "Cell size. Mirrors the `size` attribute.",
+              "type": {
+                "text": "number"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "apply",
+              "parameters": [
+                {
+                  "name": "image",
+                  "type": {
+                    "text": "ImageData"
+                  }
+                }
+              ],
+              "return": {
+                "type": {
+                  "text": "ImageData"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "Cell size, in the working image's pixels. Default 8.",
+              "name": "size"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Line color, any CSS color (transparency blends). Default `rgb(0 0 0 / 0.35)`.",
+              "name": "color"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "Line thickness in pixels. Default 1.",
+              "name": "line"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Pass the image through unchanged.",
+              "name": "disabled"
+            }
+          ],
+          "superclass": {
+            "name": "PixelFilter",
+            "module": "/src/pixelable/pixel-filter.mjs"
+          },
+          "tagName": "pixel-grid",
+          "customElement": true,
+          "summary": "A pixel effect: grid lines between cells."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "PixelGrid",
+            "module": "src/pixelable/pixel-grid/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/pixelable/pixel-mosaic/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Pixelates the image: each `size`×`size` block becomes its average color.",
+          "name": "PixelMosaic",
+          "members": [
+            {
+              "kind": "field",
+              "name": "size",
+              "description": "Block size. Mirrors the `size` attribute.",
+              "type": {
+                "text": "number"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "apply",
+              "parameters": [
+                {
+                  "name": "image",
+                  "type": {
+                    "text": "ImageData"
+                  }
+                }
+              ],
+              "return": {
+                "type": {
+                  "text": "ImageData"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "Block size, in the working image's pixels. Default 8.",
+              "name": "size"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Pass the image through unchanged.",
+              "name": "disabled"
+            }
+          ],
+          "superclass": {
+            "name": "PixelFilter",
+            "module": "/src/pixelable/pixel-filter.mjs"
+          },
+          "tagName": "pixel-mosaic",
+          "customElement": true,
+          "summary": "A pixel effect: pixelate into blocks of one color."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "PixelMosaic",
+            "module": "src/pixelable/pixel-mosaic/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/pixelable/pixel-palette/index.mjs",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Reduces the image to a palette, optionally dithered.",
+          "name": "PixelPalette",
+          "members": [
+            {
+              "kind": "field",
+              "name": "palette",
+              "description": "The resolved palette, as `[r, g, b]` triples.",
+              "type": {
+                "text": "number[][]"
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "apply",
+              "parameters": [
+                {
+                  "name": "image",
+                  "type": {
+                    "text": "ImageData"
+                  }
+                }
+              ],
+              "return": {
+                "type": {
+                  "text": "ImageData"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "A named palette (`1bit`, `gameboy`, `grayscale`, `cga`, `sepia`, `pico-8`) or space-separated CSS colors. Default `1bit`.",
+              "name": "colors"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "`none` (default), `floyd-steinberg` (error diffusion), or `ordered` (a 4×4 Bayer pattern).",
+              "name": "dither"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Pass the image through unchanged.",
+              "name": "disabled"
+            }
+          ],
+          "superclass": {
+            "name": "PixelFilter",
+            "module": "/src/pixelable/pixel-filter.mjs"
+          },
+          "tagName": "pixel-palette",
+          "customElement": true,
+          "summary": "A pixel effect: limit colors to a palette, with dithering."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "PixelPalette",
+            "module": "src/pixelable/pixel-palette/index.mjs"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "PALETTES",
+          "declaration": {
+            "name": "PALETTES",
+            "module": "src/pixelable/pixel-palette/index.mjs"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/scatter-plot/index.mjs",
       "declarations": [
         {

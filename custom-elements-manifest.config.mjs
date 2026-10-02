@@ -5,6 +5,5 @@
 // turns the manifest into editor autocomplete data and TypeScript types.
 export default {
   globs: ["src/**/index.mjs"],
-  exclude: ["src/experimental/**"],
   outdir: ".",
 };

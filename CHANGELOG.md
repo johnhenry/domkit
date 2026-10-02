@@ -58,6 +58,20 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **`pixelable/`: pixel effects on any image, video, or canvas, in
+  HTML.** Wrap the source in effects and those in a `<pixel-canvas>`:
+  `<pixel-mosaic>` (pixelate), `<pixel-palette>` (named palettes such as
+  `gameboy`, `pico-8`, `1bit`, or any CSS colors, with Floyd–Steinberg or
+  ordered dithering), and `<pixel-grid>`, applied innermost first, each
+  switchable with `disabled`. `<pixel-canvas>` redraws on load, on
+  changes, and every frame of a playing video; takes a working `width`;
+  is named from the source's `alt`; offers `toBlob()`/`toDataURL()`; and
+  shows the original if the source can't be read. Write your own effect
+  with `definePixelFilter()` or the `PixelFilter` class. This replaces
+  `experimental/imagedata-emitter`, `pixel-shader`, and
+  `canvas-renderer`. With that, `experimental/` is gone: everything in the
+  package is stable.
+
 - **`<draw-svg>`** replaces `experimental/animate-paths`: strokes of the
   wrapped SVG draw themselves in via `pathLength="1"` and the Web
   Animations API (no generated styles or inline code, so CSP-safe).

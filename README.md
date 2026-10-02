@@ -106,13 +106,14 @@ queries, evaluated against an element's size instead of the viewport.
 | [chernoff-face](src/chernoff-face/readme.md) | A face whose features show data, each a number from 0 to 1 | `<chernoff-face>` |
 | [draw-svg](src/draw-svg/readme.md) | SVG strokes that draw themselves in, CSP-safe and reduced-motion aware | `<draw-svg>` |
 
-### Experimental: [`experimental/`](src/experimental/readme.md)
+### Pixel effects on images and video: [`pixelable/`](src/pixelable/readme.md)
 
-Sketches without the stable modules' guarantees. Their APIs can change in
-any release. A composable canvas pixel pipeline
-([imagedata-emitter](src/experimental/imagedata-emitter/readme.md) →
-[pixel-shader](src/experimental/pixel-shader/readme.md) →
-[canvas-renderer](src/experimental/canvas-renderer/readme.md)).
+| Module | What it's for | `global.mjs` registers |
+|---|---|---|
+| [pixel-canvas](src/pixelable/pixel-canvas/readme.md) | Draws an image, video, or canvas through the effects wrapped around it | `<pixel-canvas>` |
+| [pixel-mosaic](src/pixelable/pixel-mosaic/readme.md) | Pixelate into blocks | `<pixel-mosaic>` |
+| [pixel-palette](src/pixelable/pixel-palette/readme.md) | Limit to a palette (Game Boy, PICO-8, 1-bit, any colors), with dithering | `<pixel-palette>` |
+| [pixel-grid](src/pixelable/pixel-grid/readme.md) | Grid lines between cells | `<pixel-grid>` |
 
 ## Recipes
 
@@ -135,7 +136,7 @@ real site would. Each is plain HTML you can read top to bottom:
 
 - **One directory per module**, under `src/`. Related modules are grouped
   one level deeper (`matchable/`, `cyclable/`, `definable/`,
-  `hydratable/`, `experimental/`), and the group is part of the import
+  `hydratable/`, `pixelable/`), and the group is part of the import
   path.
 - **`@johnhenry/domkit/<module>`** imports the module's `index.mjs`: an
   element class (unregistered) or a function. Any file inside can be
@@ -195,7 +196,7 @@ attribute, property, method, event, and CSS custom property.
 
 ## Stability
 
-Everything outside `experimental/` is stable: documented, held to
+Every module is stable: documented, held to
 [the principles](docs/principles.md), tested in Chromium, Firefox, and
 WebKit, and versioned with semver. While the version is `0.x`, a breaking
 change can only land in a minor release (`0.1` → `0.2`), never a patch,
