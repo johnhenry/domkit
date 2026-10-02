@@ -13,7 +13,7 @@ writing the loop yourself.
 <script type="module" src="https://esm.sh/@johnhenry/domkit/frame-timer/global.mjs"></script>
 
 <frame-timer id="clock" fps="30"></frame-timer>
-<button onclick="clock.paused ? clock.play() : clock.pause()">Play/pause</button>
+<button commandfor="clock" command="--toggle">Play/pause</button>
 <output id="count">0</output>
 
 <script type="module">
@@ -22,6 +22,17 @@ writing the loop yourself.
 ```
 
 The element renders nothing. It's only a clock.
+
+## Commands
+
+Buttons can control it with
+[invoker commands](https://developer.mozilla.org/docs/Web/API/Invoker_Commands_API),
+with no script: `--play`, `--pause`, and `--toggle`.
+
+```html
+<frame-timer id="clock" fps="30"></frame-timer>
+<button commandfor="clock" command="--toggle">Play/pause</button>
+```
 
 ## API
 
@@ -54,7 +65,7 @@ The element renders nothing. It's only a clock.
 | Event | Description |
 |---|---|
 | `play` | The timer started (or resumed). |
-| `pause` | The timer paused. |
+| `pause` | The timer paused. Invoker commands: `--play`, `--pause`, and `--toggle` (`<button commandfor="clock" command="--toggle">`). |
 | `tick` | Once per period while playing. Read `ticks` for the count. |
 
 <!-- api:end -->

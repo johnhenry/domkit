@@ -358,7 +358,7 @@
         },
         {
           "name": "disabled",
-          "description": "No tab can be selected by the user, and the tabs leave the tab order. Panels stay as they are.",
+          "description": "No tab can be selected by the user (or by commands), and the tabs leave the tab order. Panels stay as they are.",
           "valueSet": "v"
         }
       ],

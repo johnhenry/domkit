@@ -1202,7 +1202,7 @@
               "type": {
                 "text": "Event"
               },
-              "description": "The timer paused."
+              "description": "The timer paused. Invoker commands: `--play`, `--pause`, and `--toggle` (`<button commandfor=\"clock\" command=\"--toggle\">`)."
             },
             {
               "name": "tick",
@@ -3682,6 +3682,29 @@
             },
             {
               "kind": "method",
+              "name": "next",
+              "description": "Select the next enabled tab (wrapping), without an event."
+            },
+            {
+              "kind": "method",
+              "name": "previous",
+              "description": "Select the previous enabled tab (wrapping), without an event."
+            },
+            {
+              "kind": "method",
+              "name": "#step",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "from"
+                },
+                {
+                  "name": "delta"
+                }
+              ]
+            },
+            {
+              "kind": "method",
               "name": "#isDisabled",
               "privacy": "private",
               "parameters": [
@@ -3740,7 +3763,7 @@
               "type": {
                 "text": "Event"
               },
-              "description": "The user selected a different tab (click or keyboard). Not fired for script changes."
+              "description": "The user selected a different tab (click, keyboard, or an invoker command). Not fired for script changes."
             }
           ],
           "attributes": [
@@ -3763,7 +3786,7 @@
               "type": {
                 "text": "boolean"
               },
-              "description": "No tab can be selected by the user, and the tabs leave the tab order. Panels stay as they are."
+              "description": "No tab can be selected by the user (or by commands), and the tabs leave the tab order. Panels stay as they are."
             }
           ],
           "superclass": {

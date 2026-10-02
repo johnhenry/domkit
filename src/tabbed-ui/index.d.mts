@@ -17,6 +17,10 @@ export default class TabbedUI extends HTMLElement {
   selectedIndex: number;
   /** With `manual`, arrow keys move focus and Enter/Space selects. */
   manual: boolean;
+  /** Select the next enabled tab (wrapping), without an event. */
+  next(): void;
+  /** Select the previous enabled tab (wrapping), without an event. */
+  previous(): void;
 }
 
 declare global {

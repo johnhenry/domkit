@@ -25,7 +25,7 @@
     <div id="field"><div id="ball"></div></div>
 
     <div class="controls">
-      <button type="button" id="toggle" aria-pressed="false">Pause</button>
+      <button type="button" id="toggle" aria-pressed="false" commandfor="clock" command="--toggle">Pause</button>
       <label>Speed
         <select id="fps">
           <option value="15">15 fps</option>
@@ -54,7 +54,10 @@
       const toggle = document.getElementById("toggle");
       clock.addEventListener("pause", () => { toggle.textContent = "Play"; toggle.setAttribute("aria-pressed", "true"); });
       clock.addEventListener("play", () => { toggle.textContent = "Pause"; toggle.setAttribute("aria-pressed", "false"); });
-      toggle.onclick = () => (clock.paused ? clock.play() : clock.pause());
+      // Where invoker commands aren't supported yet, the button does it.
+      if (!("command" in HTMLButtonElement.prototype)) {
+        toggle.onclick = () => (clock.paused ? clock.play() : clock.pause());
+      }
       document.getElementById("fps").onchange = (event) => (clock.fps = event.target.value);
     </script>
   </body>

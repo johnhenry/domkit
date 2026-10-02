@@ -16,11 +16,24 @@
  * @fires tick - Once per period while playing. Read `ticks` for the count.
  * @fires play - The timer started (or resumed).
  * @fires pause - The timer paused.
+ *
+ * Invoker commands: `--play`, `--pause`, and `--toggle`
+ * (`<button commandfor="clock" command="--toggle">`).
  */
 export default class FrameTimer extends HTMLElement {
   static observedAttributes = ["paused", "fps"];
 
   #frame = 0;
+
+  constructor() {
+    super();
+    this.addEventListener("command", (event) => {
+      if (event.command === "--play") this.play();
+      else if (event.command === "--pause") this.pause();
+      else if (event.command === "--toggle") this.paused ? this.play() : this.pause();
+    });
+  }
+
   #next = 0;
   #ticks = 0;
   #reflecting = false;

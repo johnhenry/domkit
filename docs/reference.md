@@ -185,7 +185,7 @@ A frame-paced ticking clock with play/pause. [Guide](../src/frame-timer/readme.m
 | Event | Description |
 |---|---|
 | `play` | The timer started (or resumed). |
-| `pause` | The timer paused. |
+| `pause` | The timer paused. Invoker commands: `--play`, `--pause`, and `--toggle` (`<button commandfor="clock" command="--toggle">`). |
 | `tick` | Once per period while playing. Read `ticks` for the count. |
 
 ## `<hot-key>`
@@ -421,7 +421,7 @@ Accessible tabs and panels from plain children. [Guide](../src/tabbed-ui/readme.
 |---|---|---|---|
 | `selected-index` | `selectedIndex` | `number` | Index of the selected tab. Reflects the current selection. |
 | `manual` | `manual` | `boolean` | Arrow keys move focus only; Enter/Space selects (manual activation). |
-| `disabled` | `disabled` | `boolean` | No tab can be selected by the user, and the tabs leave the tab order. Panels stay as they are. |
+| `disabled` | `disabled` | `boolean` | No tab can be selected by the user (or by commands), and the tabs leave the tab order. Panels stay as they are. |
 
 **Properties**
 
@@ -434,11 +434,18 @@ Accessible tabs and panels from plain children. [Guide](../src/tabbed-ui/readme.
 | `selectedIndex` | `number` | Index of the selected tab. Setting it does not fire `change`. |
 | `manual` | `boolean` | With `manual`, arrow keys move focus and Enter/Space selects. |
 
+**Methods**
+
+| Method | Description |
+|---|---|
+| `next()` | Select the next enabled tab (wrapping), without an event. |
+| `previous()` | Select the previous enabled tab (wrapping), without an event. |
+
 **Events**
 
 | Event | Description |
 |---|---|
-| `change` | The user selected a different tab (click or keyboard). Not fired for script changes. |
+| `change` | The user selected a different tab (click, keyboard, or an invoker command). Not fired for script changes. |
 
 **CSS custom properties**
 
