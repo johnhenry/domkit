@@ -264,6 +264,39 @@
       ]
     },
     {
+      "name": "gamepad-input",
+      "description": "Game controller buttons that send invoker commands.\n\nEvents: `gamepadpress`",
+      "attributes": [
+        {
+          "name": "commandfor",
+          "description": "The id of the element to send commands to."
+        },
+        {
+          "name": "index",
+          "description": "Which controller (0 is the first connected). Default: any."
+        },
+        {
+          "name": "up",
+          "description": "The command for the d-pad (or left stick) up. Likewise `down`, `left`, and `right`."
+        },
+        {
+          "name": "a",
+          "description": "The command for the bottom face button. Likewise `b` (right), `x` (left), `y` (top), `lb`, `rb`, `lt`, `rt`, `select`, `start`, `ls`, `rs`, and `home`."
+        },
+        {
+          "name": "disabled",
+          "description": "Button presses do nothing.",
+          "valueSet": "v"
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/gamepad-input"
+        }
+      ]
+    },
+    {
       "name": "hot-key",
       "description": "Toggle a native dialog or popover, or run an invoker command, with a keyboard shortcut.",
       "attributes": [
@@ -851,6 +884,51 @@
         {
           "name": "Documentation",
           "url": "https://github.com/johnhenry/domkit/tree/main/src/stylable-select"
+        }
+      ]
+    },
+    {
+      "name": "swipe-input",
+      "description": "Swipe gestures that send invoker commands.\n\nEvents: `swipe`",
+      "attributes": [
+        {
+          "name": "commandfor",
+          "description": "The id of the element to send commands to."
+        },
+        {
+          "name": "up",
+          "description": "The command for a swipe up (for example `--up`, or a built-in like `show-popover`)."
+        },
+        {
+          "name": "down",
+          "description": "The command for a swipe down."
+        },
+        {
+          "name": "left",
+          "description": "The command for a swipe left."
+        },
+        {
+          "name": "right",
+          "description": "The command for a swipe right."
+        },
+        {
+          "name": "threshold",
+          "description": "How far, in CSS pixels, a pointer must travel to count as a swipe. Default 30."
+        },
+        {
+          "name": "pointers",
+          "description": "Which pointers swipe: `touch`, `pen`, `mouse`, or a space-separated mix. Default: all of them."
+        },
+        {
+          "name": "disabled",
+          "description": "Swipes do nothing.",
+          "valueSet": "v"
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/swipe-input"
         }
       ]
     },

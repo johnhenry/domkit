@@ -10,6 +10,8 @@ const ELEMENTS = {
   "stylable-select": "<option>a</option>",
   "infinite-combo-box": "<option>a</option>",
   "hot-key": "<dialog>d</dialog>",
+  "swipe-input": "<p>area</p>",
+  "gamepad-input": "",
   "drill-menu": "<button>a<template>x</template></button>",
   "code-color": "<pre>let a</pre>",
   "frame-timer": "",

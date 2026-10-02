@@ -6,6 +6,8 @@
 // dismiss) and `closedby="none"` (no Esc) are polyfilled where the browser
 // doesn't support the attribute yet. See readme.md.
 
+import { invokeCommand, commandForElement } from "../invoke-command.mjs";
+
 const MODIFIERS = ["ctrl", "alt", "shift", "meta"];
 const IS_MAC = /mac|iphone|ipad|ipod/i.test(globalThis.navigator?.platform ?? "");
 const NATIVE_CLOSEDBY = "closedBy" in (globalThis.HTMLDialogElement?.prototype ?? {});
@@ -44,18 +46,6 @@ const matches = (shortcut, event) => {
     event.metaKey === shortcut.meta &&
     (symbol || event.shiftKey === shortcut.shift)
   );
-};
-
-// The built-in invoker commands, run directly (a synthetic CommandEvent
-// doesn't trigger the browser's own behavior). Custom `--commands` are
-// dispatched as a `command` event, as a button would.
-const BUILT_IN = {
-  "show-modal": (el) => el instanceof HTMLDialogElement && !el.open && el.showModal(),
-  close: (el) => el instanceof HTMLDialogElement && el.close(),
-  "request-close": (el) => el instanceof HTMLDialogElement && (el.requestClose ? el.requestClose() : el.close()),
-  "show-popover": (el) => el.popover !== null && !el.matches(":popover-open") && el.showPopover(),
-  "hide-popover": (el) => el.popover !== null && el.matches(":popover-open") && el.hidePopover(),
-  "toggle-popover": (el) => el.popover !== null && el.togglePopover(),
 };
 
 const isPopover = (element) => element?.hasAttribute("popover") ?? false;
@@ -139,8 +129,7 @@ export default class HotKey extends HTMLElement {
    * @type {Element | null}
    */
   get commandForElement() {
-    const id = this.getAttribute("commandfor");
-    return id ? (this.getRootNode().getElementById?.(id) ?? null) : null;
+    return commandForElement(this);
   }
   set commandForElement(element) {
     if (element?.id) this.setAttribute("commandfor", element.id);
@@ -218,20 +207,7 @@ export default class HotKey extends HTMLElement {
    * @returns {boolean}
    */
   runCommand() {
-    const element = this.commandForElement;
-    const command = this.command;
-    if (!element || !command) return false;
-    if (command.startsWith("--")) {
-      const event = globalThis.CommandEvent
-        ? new CommandEvent("command", { command, source: this, cancelable: true })
-        : Object.assign(new Event("command", { cancelable: true }), { command, source: this });
-      element.dispatchEvent(event);
-      return true;
-    }
-    const run = BUILT_IN[command];
-    if (!run) return false;
-    run(element);
-    return true;
+    return invokeCommand(this.commandForElement, this.command, this);
   }
 
   // Listen on the current dialog (it may be swapped out after connect).

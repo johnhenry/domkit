@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
+  swipe-input { border: 1px dashed #888; border-radius: 8px; padding: 8px; }
+  #board { position: relative; width: 200px; height: 120px; margin: auto; background: #f4f4f4; }
+  #dot { position: absolute; width: 20px; height: 20px; border-radius: 50%; background: teal; transition: translate 0.1s; }
+  #log { font-family: ui-monospace, monospace; }
+</style>
+<script type="module" src="../../src/hot-key/global.mjs"></script>
+<script type="module" src="../../src/swipe-input/global.mjs"></script>
+<script type="module" src="../../src/gamepad-input/global.mjs"></script>
+</head>
+<body>
+<p>Move the dot with the arrow keys (click in here first), a swipe in the box, or a game controller's d-pad.</p>
+<swipe-input commandfor="board" up="--up" down="--down" left="--left" right="--right">
+  <div id="board"><div id="dot"></div></div>
+</swipe-input>
+<hot-key hotkey="arrowup" commandfor="board" command="--up"></hot-key>
+<hot-key hotkey="arrowdown" commandfor="board" command="--down"></hot-key>
+<hot-key hotkey="arrowleft" commandfor="board" command="--left"></hot-key>
+<hot-key hotkey="arrowright" commandfor="board" command="--right"></hot-key>
+<gamepad-input commandfor="board" up="--up" down="--down" left="--left" right="--right"></gamepad-input>
+<p>Last command: <span id="log">none</span></p>
+<script type="module">
+  const board = document.getElementById("board");
+  const dot = document.getElementById("dot");
+  let x = 90, y = 50;
+  const steps = { "--up": [0, -20], "--down": [0, 20], "--left": [-20, 0], "--right": [20, 0] };
+  board.addEventListener("command", (event) => {
+    const [dx, dy] = steps[event.command] ?? [0, 0];
+    x = Math.min(180, Math.max(0, x + dx));
+    y = Math.min(100, Math.max(0, y + dy));
+    dot.style.translate = `${x}px ${y}px`;
+    document.getElementById("log").textContent = `${event.command} from <${event.source.localName}>`;
+  });
+  dot.style.translate = `${x}px ${y}px`;
+</script>
+</body>
+</html>
