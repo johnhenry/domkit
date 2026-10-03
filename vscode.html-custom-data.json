@@ -269,7 +269,7 @@
       "attributes": [
         {
           "name": "commandfor",
-          "description": "The id of the element to send commands to."
+          "description": "The id of the element to send commands to. Without it, `--custom` commands bubble up from this element as `command` events, for an ancestor to handle."
         },
         {
           "name": "index",
@@ -306,7 +306,7 @@
         },
         {
           "name": "commandfor",
-          "description": "The id of an element to send `command` to, as on a `<button>`. Without it, the shortcut toggles the `<dialog>` or popover inside."
+          "description": "The id of an element to send `command` to, as on a `<button>`. Without it, a `--custom` command bubbles up from this element as a `command` event (for an ancestor to handle), and with no command the shortcut toggles the `<dialog>` or popover inside."
         },
         {
           "name": "command",
@@ -893,7 +893,7 @@
       "attributes": [
         {
           "name": "commandfor",
-          "description": "The id of the element to send commands to."
+          "description": "The id of the element to send commands to. Without it, `--custom` commands bubble up from this element as `command` events, for an ancestor to handle."
         },
         {
           "name": "up",

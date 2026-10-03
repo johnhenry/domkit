@@ -34,6 +34,26 @@ A command is sent when a button goes down, once; holding it doesn't
 repeat. Before the command, a cancelable `gamepadpress` event fires with
 `{ button, gamepad }` in `detail`, for every button, mapped or not.
 
+## Without `commandfor`: inside what it controls
+
+Leave out `commandfor` and a custom `--command` bubbles up instead: it's
+dispatched on the <gamepad-input> itself as a bubbling `command` event, for the
+element it's inside to handle. Controls can then live inside what they
+control, with no ids, and move (or leave) along with it:
+
+```html
+<game-player>
+  <gamepad-input up="--up" down="--down" left="--left" right="--right" a="--jump"></gamepad-input>
+</game-player>
+```
+
+```js
+player.addEventListener("command", (event) => move(event.command)); // event.source is the <gamepad-input>
+```
+
+A built-in command (`show-modal`, …) still needs a `commandfor` target. If
+`commandfor` names no element, nothing is sent: it doesn't bubble instead.
+
 ## API
 
 <!-- api:start (generated from custom-elements.json by `npm run manifest`; edit the JSDoc instead) -->
@@ -42,7 +62,7 @@ repeat. Before the command, a cancelable `gamepadpress` event fires with
 
 | Attribute | Property | Type | Description |
 |---|---|---|---|
-| `commandfor` |  | `string` | The id of the element to send commands to. |
+| `commandfor` |  | `string` | The id of the element to send commands to. Without it, `--custom` commands bubble up from this element as `command` events, for an ancestor to handle. |
 | `index` |  | `number` | Which controller (0 is the first connected). Default: any. |
 | `up` |  | `string` | The command for the d-pad (or left stick) up. Likewise `down`, `left`, and `right`. |
 | `a` |  | `string` | The command for the bottom face button. Likewise `b` (right), `x` (left), `y` (top), `lb`, `rb`, `lt`, `rt`, `select`, `start`, `ls`, `rs`, and `home`. |

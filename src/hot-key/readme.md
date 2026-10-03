@@ -54,6 +54,26 @@ respond to it:
 If `commandfor` names no element, or the command isn't one of these,
 the key press is left alone.
 
+### Without `commandfor`: inside what it controls
+
+Leave out `commandfor` and a custom `--command` bubbles up instead: it's
+dispatched on the <hot-key> itself as a bubbling `command` event, for the
+element it's inside to handle. Controls can then live inside what they
+control, with no ids, and move (or leave) along with it:
+
+```html
+<game-player>
+  <hot-key hotkey="arrowup" command="--up"></hot-key>
+</game-player>
+```
+
+```js
+player.addEventListener("command", (event) => move(event.command)); // event.source is the <hot-key>
+```
+
+A built-in command (`show-modal`, …) still needs a `commandfor` target. If
+`commandfor` names no element, nothing is sent: it doesn't bubble instead.
+
 ## Shortcut syntax
 
 Modifiers joined by `+`, then a key (the
@@ -81,7 +101,7 @@ both in browsers that don't support `closedby` yet.
 | Attribute | Property | Type | Description |
 |---|---|---|---|
 | `hotkey` | `hotkey` | `string` | One or more space-separated shortcuts, e.g. `mod+k /`. `mod` is ⌘ on Apple platforms and Ctrl elsewhere. |
-| `commandfor` |  | `string` | The id of an element to send `command` to, as on a `<button>`. Without it, the shortcut toggles the `<dialog>` or popover inside. |
+| `commandfor` |  | `string` | The id of an element to send `command` to, as on a `<button>`. Without it, a `--custom` command bubbles up from this element as a `command` event (for an ancestor to handle), and with no command the shortcut toggles the `<dialog>` or popover inside. |
 | `command` | `command` | `string` | With `commandfor`: the command to run, a built-in one (`show-modal`, `close`, `request-close`, `show-popover`, `hide-popover`, `toggle-popover`) or a custom `--name` (dispatched as a `command` event). |
 | `non-modal` | `nonModal` | `boolean` | Open a dialog with `show()` instead of `showModal()`. |
 | `disabled` | `disabled` | `boolean` | The shortcut does nothing. The dialog or popover itself is unaffected. |
@@ -106,7 +126,7 @@ both in browsers that don't support `closedby` yet.
 | `show()` | Open the dialog (modally, unless `non-modal`) or popover. |
 | `close(returnValue)` | Close the dialog or popover. |
 | `toggle()` | Open the dialog or popover if it's closed, close it if it's open. |
-| `runCommand()` | Run `command` on the `commandfor` element, as a button would. Returns false if there's no such element or command. |
+| `runCommand()` | Run `command` on the `commandfor` element, as a button would; without `commandfor`, a `--custom` command bubbles up from this element as a `command` event. Returns false if there's no such element or command. |
 
 <!-- api:end -->
 

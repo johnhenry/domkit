@@ -5,7 +5,7 @@
 //   <swipe-input commandfor="player" up="--up" down="--down" left="--left" right="--right">
 //     <canvas>…</canvas>
 //   </swipe-input>
-import { invokeCommand, commandForElement } from "../invoke-command.mjs";
+import { sendCommand, commandForElement } from "../invoke-command.mjs";
 
 
 /**
@@ -15,7 +15,7 @@ import { invokeCommand, commandForElement } from "../invoke-command.mjs";
  * @tag swipe-input
  * @summary Swipe gestures that send invoker commands.
  *
- * @attr {string} commandfor - The id of the element to send commands to.
+ * @attr {string} commandfor - The id of the element to send commands to. Without it, `--custom` commands bubble up from this element as `command` events, for an ancestor to handle.
  * @attr {string} up - The command for a swipe up (for example `--up`, or a built-in like `show-popover`).
  * @attr {string} down - The command for a swipe down.
  * @attr {string} left - The command for a swipe left.
@@ -90,7 +90,7 @@ export default class SwipeInput extends HTMLElement {
     const direction = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : dy > 0 ? "down" : "up";
     const swipe = new CustomEvent("swipe", { bubbles: true, cancelable: true, detail: { direction, distance } });
     if (!this.dispatchEvent(swipe)) return;
-    invokeCommand(this.commandForElement, this.getAttribute(direction), this);
+    sendCommand(this, this.getAttribute(direction));
   }
 }
 

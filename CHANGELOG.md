@@ -67,6 +67,11 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **`<hot-key>`, `<gamepad-input>`, and `<swipe-input>` work without
+  `commandfor`:** a custom `--command` then bubbles up from the input as a
+  `command` event, for the element it's inside to handle. Controls can
+  live inside what they control, with no ids. (`commandfor` naming a
+  missing element still sends nothing.)
 - `custom-elements.json` now says which module registers each tag: a
   `custom-element-definition` export from the element's `global.mjs`, as
   the manifest format intends. A tool can load just the elements a page

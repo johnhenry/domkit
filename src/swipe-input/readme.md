@@ -30,6 +30,26 @@ Before the command, a cancelable `swipe` event fires with
 `{ direction, distance }` in `detail`, also for directions without a
 command, so a page can react to swipes directly.
 
+### Without `commandfor`: inside what it controls
+
+Leave out `commandfor` and a custom `--command` bubbles up instead: it's
+dispatched on the <swipe-input> itself as a bubbling `command` event, for the
+element it's inside to handle. Controls can then live inside what they
+control, with no ids, and move (or leave) along with it:
+
+```html
+<game-player>
+  <swipe-input up="--up" down="--down" left="--left" right="--right">…</swipe-input>
+</game-player>
+```
+
+```js
+player.addEventListener("command", (event) => move(event.command)); // event.source is the <swipe-input>
+```
+
+A built-in command (`show-modal`, …) still needs a `commandfor` target. If
+`commandfor` names no element, nothing is sent: it doesn't bubble instead.
+
 ## API
 
 <!-- api:start (generated from custom-elements.json by `npm run manifest`; edit the JSDoc instead) -->
@@ -38,7 +58,7 @@ command, so a page can react to swipes directly.
 
 | Attribute | Property | Type | Description |
 |---|---|---|---|
-| `commandfor` |  | `string` | The id of the element to send commands to. |
+| `commandfor` |  | `string` | The id of the element to send commands to. Without it, `--custom` commands bubble up from this element as `command` events, for an ancestor to handle. |
 | `up` |  | `string` | The command for a swipe up (for example `--up`, or a built-in like `show-popover`). |
 | `down` |  | `string` | The command for a swipe down. |
 | `left` |  | `string` | The command for a swipe left. |

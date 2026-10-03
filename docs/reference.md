@@ -270,7 +270,7 @@ Game controller buttons that send invoker commands. [Guide](../src/gamepad-input
 
 | Attribute | Property | Type | Description |
 |---|---|---|---|
-| `commandfor` |  | `string` | The id of the element to send commands to. |
+| `commandfor` |  | `string` | The id of the element to send commands to. Without it, `--custom` commands bubble up from this element as `command` events, for an ancestor to handle. |
 | `index` |  | `number` | Which controller (0 is the first connected). Default: any. |
 | `up` |  | `string` | The command for the d-pad (or left stick) up. Likewise `down`, `left`, and `right`. |
 | `a` |  | `string` | The command for the bottom face button. Likewise `b` (right), `x` (left), `y` (top), `lb`, `rb`, `lt`, `rt`, `select`, `start`, `ls`, `rs`, and `home`. |
@@ -298,7 +298,7 @@ Toggle a native dialog or popover, or run an invoker command, with a keyboard sh
 | Attribute | Property | Type | Description |
 |---|---|---|---|
 | `hotkey` | `hotkey` | `string` | One or more space-separated shortcuts, e.g. `mod+k /`. `mod` is ⌘ on Apple platforms and Ctrl elsewhere. |
-| `commandfor` |  | `string` | The id of an element to send `command` to, as on a `<button>`. Without it, the shortcut toggles the `<dialog>` or popover inside. |
+| `commandfor` |  | `string` | The id of an element to send `command` to, as on a `<button>`. Without it, a `--custom` command bubbles up from this element as a `command` event (for an ancestor to handle), and with no command the shortcut toggles the `<dialog>` or popover inside. |
 | `command` | `command` | `string` | With `commandfor`: the command to run, a built-in one (`show-modal`, `close`, `request-close`, `show-popover`, `hide-popover`, `toggle-popover`) or a custom `--name` (dispatched as a `command` event). |
 | `non-modal` | `nonModal` | `boolean` | Open a dialog with `show()` instead of `showModal()`. |
 | `disabled` | `disabled` | `boolean` | The shortcut does nothing. The dialog or popover itself is unaffected. |
@@ -323,7 +323,7 @@ Toggle a native dialog or popover, or run an invoker command, with a keyboard sh
 | `show()` | Open the dialog (modally, unless `non-modal`) or popover. |
 | `close(returnValue)` | Close the dialog or popover. |
 | `toggle()` | Open the dialog or popover if it's closed, close it if it's open. |
-| `runCommand()` | Run `command` on the `commandfor` element, as a button would. Returns false if there's no such element or command. |
+| `runCommand()` | Run `command` on the `commandfor` element, as a button would; without `commandfor`, a `--custom` command bubbles up from this element as a `command` event. Returns false if there's no such element or command. |
 
 ## `<infinite-combo-box>`
 
@@ -812,7 +812,7 @@ Swipe gestures that send invoker commands. [Guide](../src/swipe-input/readme.md)
 
 | Attribute | Property | Type | Description |
 |---|---|---|---|
-| `commandfor` |  | `string` | The id of the element to send commands to. |
+| `commandfor` |  | `string` | The id of the element to send commands to. Without it, `--custom` commands bubble up from this element as `command` events, for an ancestor to handle. |
 | `up` |  | `string` | The command for a swipe up (for example `--up`, or a built-in like `show-popover`). |
 | `down` |  | `string` | The command for a swipe down. |
 | `left` |  | `string` | The command for a swipe left. |

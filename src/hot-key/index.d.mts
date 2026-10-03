@@ -25,8 +25,9 @@ export default class HotKey extends HTMLElement {
   close(returnValue?: string): void;
   /** Open the dialog or popover if it's closed, close it if it's open. */
   toggle(): void;
-  /** Run `command` on the `commandfor` element, as a button would. Returns
-   * false if there's no such element or command. */
+  /** Run `command` on the `commandfor` element, as a button would; without
+   * `commandfor`, a `--custom` command bubbles up from this element as a
+   * `command` event. Returns false if there's no such element or command. */
   runCommand(): boolean;
 }
 

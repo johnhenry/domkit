@@ -1906,7 +1906,7 @@
               "type": {
                 "text": "string"
               },
-              "description": "The id of the element to send commands to.",
+              "description": "The id of the element to send commands to. Without it, `--custom` commands bubble up from this element as `command` events, for an ancestor to handle.",
               "name": "commandfor"
             },
             {
@@ -2132,7 +2132,7 @@
             {
               "kind": "method",
               "name": "runCommand",
-              "description": "Run `command` on the `commandfor` element, as a button would. Returns\nfalse if there's no such element or command.",
+              "description": "Run `command` on the `commandfor` element, as a button would; without\n`commandfor`, a `--custom` command bubbles up from this element as a\n`command` event. Returns false if there's no such element or command.",
               "return": {
                 "type": {
                   "text": "boolean"
@@ -2193,7 +2193,7 @@
               "type": {
                 "text": "string"
               },
-              "description": "The id of an element to send `command` to, as on a `<button>`. Without it, the shortcut toggles the `<dialog>` or popover inside.",
+              "description": "The id of an element to send `command` to, as on a `<button>`. Without it, a `--custom` command bubbles up from this element as a `command` event (for an ancestor to handle), and with no command the shortcut toggles the `<dialog>` or popover inside.",
               "name": "commandfor"
             },
             {
@@ -6530,7 +6530,7 @@
               "type": {
                 "text": "string"
               },
-              "description": "The id of the element to send commands to.",
+              "description": "The id of the element to send commands to. Without it, `--custom` commands bubble up from this element as `command` events, for an ancestor to handle.",
               "name": "commandfor"
             },
             {

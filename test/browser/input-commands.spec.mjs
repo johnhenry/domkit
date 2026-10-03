@@ -141,3 +141,57 @@ test.describe("gamepad-input", () => {
     expect(await page.evaluate(() => window.commands.map(([c]) => c))).toEqual(["--jump"]);
   });
 });
+
+// Without commandfor, custom commands bubble up from the input, for the
+// element it's inside to handle: controls live inside what they control.
+test.describe("commands that bubble (no commandfor)", () => {
+  const MODULES_ALL = [...MODULES, "src/hot-key/global.mjs"];
+  const record = (page) =>
+    page.evaluate(() => {
+      window.got = [];
+      document.getElementById("owner").addEventListener("command", (e) => window.got.push([e.command, e.source.localName, e.target.localName, e.bubbles]));
+    });
+
+  test("hot-key: a --command bubbles to the element it's in; a built-in one needs a target", async ({ page }) => {
+    await mount(page, `<section id="owner"><hot-key hotkey="ctrl+j" command="--next"></hot-key><hot-key hotkey="ctrl+k" command="show-modal"></hot-key></section>`, MODULES_ALL);
+    await record(page);
+    await page.keyboard.press("Control+j");
+    await page.keyboard.press("Control+k");
+    expect(await page.evaluate(() => window.got)).toEqual([["--next", "hot-key", "hot-key", true]]);
+  });
+
+  test("hot-key: with commandfor naming no element, nothing is sent (it doesn't bubble instead)", async ({ page }) => {
+    await mount(page, `<section id="owner"><hot-key hotkey="ctrl+j" commandfor="gone" command="--next"></hot-key></section>`, MODULES_ALL);
+    await record(page);
+    await page.keyboard.press("Control+j");
+    expect(await page.evaluate(() => window.got)).toEqual([]);
+  });
+
+  test("hot-key: with no command, it still toggles the dialog inside", async ({ page }) => {
+    await mount(page, `<section id="owner"><hot-key hotkey="ctrl+j"><dialog><p>hi</p></dialog></hot-key></section>`, MODULES_ALL);
+    await page.keyboard.press("Control+j");
+    expect(await page.evaluate(() => document.querySelector("dialog").open)).toBe(true);
+  });
+
+  test("swipe-input bubbles its commands to the element it's in", async ({ page }) => {
+    await mount(page, `<section id="owner"><swipe-input right="--right" style="width: 300px; height: 300px"></swipe-input></section>`, MODULES_ALL);
+    await record(page);
+    await page.mouse.move(150, 150);
+    await page.mouse.down();
+    await page.mouse.move(260, 150, { steps: 4 });
+    await page.mouse.up();
+    expect(await page.evaluate(() => window.got)).toEqual([["--right", "swipe-input", "swipe-input", true]]);
+  });
+
+  test("gamepad-input bubbles its commands to the element it's in", async ({ page }) => {
+    await page.addInitScript(() => {
+      window.pad = { index: 0, buttons: Array.from({ length: 17 }, () => ({ pressed: false })), axes: [0, 0] };
+      navigator.getGamepads = () => [window.pad];
+    });
+    await mount(page, `<section id="owner"><gamepad-input a="--jump"></gamepad-input></section>`, MODULES_ALL);
+    await record(page);
+    await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+    await page.evaluate(() => (window.pad.buttons[0].pressed = true));
+    await expect.poll(() => page.evaluate(() => window.got)).toEqual([["--jump", "gamepad-input", "gamepad-input", true]]);
+  });
+});
