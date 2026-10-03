@@ -15,14 +15,19 @@
 </head>
 <body>
 <p>Move the dot with the arrow keys (click in here first), a swipe in the box, or a game controller's d-pad.</p>
+<!-- The swipe area wraps the board, so it names it with commandfor. The keys
+     and controller sit inside the board with no commandfor: their commands
+     bubble up to it, no ids needed. -->
 <swipe-input commandfor="board" up="--up" down="--down" left="--left" right="--right">
-  <div id="board"><div id="dot"></div></div>
+  <div id="board">
+    <div id="dot"></div>
+    <hot-key hotkey="arrowup" command="--up"></hot-key>
+    <hot-key hotkey="arrowdown" command="--down"></hot-key>
+    <hot-key hotkey="arrowleft" command="--left"></hot-key>
+    <hot-key hotkey="arrowright" command="--right"></hot-key>
+    <gamepad-input up="--up" down="--down" left="--left" right="--right"></gamepad-input>
+  </div>
 </swipe-input>
-<hot-key hotkey="arrowup" commandfor="board" command="--up"></hot-key>
-<hot-key hotkey="arrowdown" commandfor="board" command="--down"></hot-key>
-<hot-key hotkey="arrowleft" commandfor="board" command="--left"></hot-key>
-<hot-key hotkey="arrowright" commandfor="board" command="--right"></hot-key>
-<gamepad-input commandfor="board" up="--up" down="--down" left="--left" right="--right"></gamepad-input>
 <p>Last command: <span id="log">none</span></p>
 <script type="module">
   const board = document.getElementById("board");
