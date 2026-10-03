@@ -15,3 +15,13 @@ export declare function invokeCommand(target: Element | null | undefined, comman
  * @returns {Element | null}
  */
 export declare function commandForElement(element: Element): Element | null;
+/**
+ * Send `command` from an input element: to the element its `commandfor`
+ * names (nothing, if no element has that id), or, without `commandfor`, as
+ * a `command` event bubbling up from the input itself (custom `--commands`
+ * only: a built-in command needs a target). Returns whether it was sent.
+ * @param {Element} source the input
+ * @param {string | null | undefined} command
+ * @returns {boolean}
+ */
+export declare function sendCommand(source: Element, command: string | null | undefined): boolean;

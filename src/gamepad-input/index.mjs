@@ -4,7 +4,7 @@
 // connected and sends a command when a button goes down. See readme.md.
 //
 //   <gamepad-input commandfor="player" up="--up" down="--down" a="--jump" start="--toggle"></gamepad-input>
-import { invokeCommand, commandForElement } from "../invoke-command.mjs";
+import { sendCommand, commandForElement } from "../invoke-command.mjs";
 
 /** The standard mapping's button names, by index. */
 export const BUTTONS = ["a", "b", "x", "y", "lb", "rb", "lt", "rt", "select", "start", "ls", "rs", "up", "down", "left", "right", "home"];
@@ -18,7 +18,7 @@ const STICK = 0.5; // how far the left stick must lean to count as a direction
  * @tag gamepad-input
  * @summary Game controller buttons that send invoker commands.
  *
- * @attr {string} commandfor - The id of the element to send commands to.
+ * @attr {string} commandfor - The id of the element to send commands to. Without it, `--custom` commands bubble up from this element as `command` events, for an ancestor to handle.
  * @attr {number} index - Which controller (0 is the first connected). Default: any.
  * @attr {string} up - The command for the d-pad (or left stick) up. Likewise `down`, `left`, and `right`.
  * @attr {string} a - The command for the bottom face button. Likewise `b` (right), `x` (left), `y` (top), `lb`, `rb`, `lt`, `rt`, `select`, `start`, `ls`, `rs`, and `home`.
@@ -101,7 +101,7 @@ export default class GamepadInput extends HTMLElement {
     for (const button of held) {
       if (before.has(button)) continue; // only on the way down
       const press = new CustomEvent("gamepadpress", { bubbles: true, cancelable: true, detail: { button, gamepad: pad } });
-      if (this.dispatchEvent(press)) invokeCommand(this.commandForElement, this.getAttribute(button), this);
+      if (this.dispatchEvent(press)) sendCommand(this, this.getAttribute(button));
     }
   }
 }

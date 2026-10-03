@@ -6,7 +6,7 @@
 // dismiss) and `closedby="none"` (no Esc) are polyfilled where the browser
 // doesn't support the attribute yet. See readme.md.
 
-import { invokeCommand, commandForElement } from "../invoke-command.mjs";
+import { sendCommand, commandForElement } from "../invoke-command.mjs";
 
 const MODIFIERS = ["ctrl", "alt", "shift", "meta"];
 const IS_MAC = /mac|iphone|ipad|ipod/i.test(globalThis.navigator?.platform ?? "");
@@ -64,7 +64,7 @@ const isEditable = (element) =>
  * @summary Toggle a native dialog or popover, or run an invoker command, with a keyboard shortcut.
  *
  * @attr {string} hotkey - One or more space-separated shortcuts, e.g. `mod+k /`. `mod` is ⌘ on Apple platforms and Ctrl elsewhere.
- * @attr {string} commandfor - The id of an element to send `command` to, as on a `<button>`. Without it, the shortcut toggles the `<dialog>` or popover inside.
+ * @attr {string} commandfor - The id of an element to send `command` to, as on a `<button>`. Without it, a `--custom` command bubbles up from this element as a `command` event (for an ancestor to handle), and with no command the shortcut toggles the `<dialog>` or popover inside.
  * @attr {string} command - With `commandfor`: the command to run, a built-in one (`show-modal`, `close`, `request-close`, `show-popover`, `hide-popover`, `toggle-popover`) or a custom `--name` (dispatched as a `command` event).
  * @attr {boolean} non-modal - Open a dialog with `show()` instead of `showModal()`.
  * @attr {boolean} disabled - The shortcut does nothing. The dialog or popover itself is unaffected.
@@ -202,12 +202,13 @@ export default class HotKey extends HTMLElement {
   }
 
   /**
-   * Run `command` on the `commandfor` element, as a button would. Returns
-   * false if there's no such element or command.
+   * Run `command` on the `commandfor` element, as a button would; without
+   * `commandfor`, a `--custom` command bubbles up from this element as a
+   * `command` event. Returns false if there's no such element or command.
    * @returns {boolean}
    */
   runCommand() {
-    return invokeCommand(this.commandForElement, this.command, this);
+    return sendCommand(this, this.command);
   }
 
   // Listen on the current dialog (it may be swapped out after connect).
@@ -235,7 +236,7 @@ export default class HotKey extends HTMLElement {
     // A bare key ("/", "?") shouldn't fire while someone is typing.
     const bare = !shortcut.ctrl && !shortcut.alt && !shortcut.meta;
     if (bare && isEditable(event.target) && !this.target?.contains(event.target)) return;
-    if (this.hasAttribute("commandfor")) {
+    if (this.hasAttribute("commandfor") || this.command?.startsWith("--")) {
       if (this.runCommand()) event.preventDefault();
       return;
     }
