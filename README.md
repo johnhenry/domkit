@@ -190,8 +190,9 @@ values, or set the tokens yourself to theme every element at once:
 
 The package ships [`custom-elements.json`](custom-elements.json), a
 standard manifest of every element's tag, attributes, properties, events,
-and CSS custom properties. Tools that read it (Storybook, many IDE
-plugins) work out of the box. For VS Code's HTML autocomplete and hover
+and CSS custom properties, and which module registers each tag (its
+`global.mjs`, as a `custom-element-definition` export). Tools that read it
+(Storybook, many IDE plugins, page builders) work out of the box. For VS Code's HTML autocomplete and hover
 docs, add the generated data file to your settings:
 
 ```json

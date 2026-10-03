@@ -22,6 +22,31 @@ const manifest = JSON.parse(await readFile(join(ROOT, "custom-elements.json"), "
 // The analyzer emits modules in file-system order, which varies between
 // runs; sort so the committed manifest is reproducible (CI checks drift).
 manifest.modules.sort((a, b) => a.path.localeCompare(b.path));
+
+// Say which module registers each tag, as the manifest format intends (a
+// `custom-element-definition` export), so tools can load just the element
+// they need: an element's sibling global.mjs. The analyzer only sees
+// `customElements.define(name, …)` calls with a runtime name, which it
+// reports as definitions of a tag called "name"; drop those.
+for (const mod of manifest.modules) {
+  if (!mod.exports) continue;
+  mod.exports = mod.exports.filter((e) => e.kind !== "custom-element-definition" || VALID_TAG.test(e.name));
+}
+for (const mod of [...manifest.modules]) {
+  for (const d of mod.declarations ?? []) {
+    if (!d.customElement || !VALID_TAG.test(d.tagName ?? "")) continue;
+    const globalPath = join(dirname(mod.path), "global.mjs");
+    const exists = await readFile(join(ROOT, globalPath), "utf8").then(() => true, () => false);
+    if (!exists) continue;
+    manifest.modules.push({
+      kind: "javascript-module",
+      path: globalPath,
+      declarations: [],
+      exports: [{ kind: "custom-element-definition", name: d.tagName, declaration: { name: d.name, module: mod.path } }],
+    });
+  }
+}
+manifest.modules.sort((a, b) => a.path.localeCompare(b.path));
 await writeFile(join(ROOT, "custom-elements.json"), JSON.stringify(manifest, null, 2) + "\n");
 
 const elements = manifest.modules.flatMap((mod) =>
