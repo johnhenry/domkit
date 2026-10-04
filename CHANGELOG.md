@@ -7,10 +7,10 @@ All notable changes to this project will be documented in this file.
 ### Changed (breaking)
 
 - **The pixel effects moved to their own package,
-  [`@johnhenry/pixelable`](https://github.com/johnhenry/pixelable)**, with
+  [`@johnhenry/canvas-fx`](https://github.com/johnhenry/canvas-fx)**, with
   their history: `<pixel-canvas>`, `<pixel-sprite>`, every effect element,
   and `pixelable/effects.mjs`, `shader.mjs`, and `quantize.mjs`.
-  `@johnhenry/domkit/pixelable/…` is now `@johnhenry/pixelable/…`. Its
+  `@johnhenry/domkit/pixelable/…` is now `@johnhenry/canvas-fx/…`. Its
   CHANGELOG covers everything the family gained here.
 - **`localstorage-cycler` no longer stores the default on creation**, so
   "nothing chosen yet" is a real state, and stepping from it moves to the
