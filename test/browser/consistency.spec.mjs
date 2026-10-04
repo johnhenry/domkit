@@ -18,8 +18,6 @@ const ELEMENTS = {
   "cyclable/attribute-cycler": "<button>a</button>",
   "matchable/query-container": "<li>a</li>",
   "matchable/attribute-provider": "<p>a</p>",
-  "scatter-plot": "<template><i></i></template>",
-  "chernoff-face": "",
   "draw-svg": '<svg><path d="M0 0 L9 9" stroke="black"></path></svg>',
 };
 const tagOf = (path) => path.split("/").pop();

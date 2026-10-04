@@ -12,6 +12,12 @@ All notable changes to this project will be documented in this file.
 
 ### Changed (breaking)
 
+- **`<scatter-plot>` and `<chernoff-face>` moved to their own package,
+  [`@johnhenry/data-plot`](https://github.com/johnhenry/data-plot)**, with
+  their history. `<scatter-plot>` is replaced there by `<data-plot>` with
+  `<plot-marks>` (real scales, axes, data from a `<table>` or
+  `<datalist>`); `<chernoff-face>` keeps its API, and its CSS properties
+  are now `--chernoff-face-fill` and `--chernoff-face-stroke`.
 - **The pixel effects moved to their own package,
   [`@johnhenry/canvas-fx`](https://github.com/johnhenry/canvas-fx)**, with
   their history: `<pixel-canvas>`, `<pixel-sprite>`, every effect element,

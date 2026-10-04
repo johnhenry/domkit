@@ -137,7 +137,7 @@ module and the principles disagree, the module is wrong.
   when that exact line runs, so they survive `node --check` and casual
   testing: `react` (react-to-dom), `children` (dom-to-React), `cc` and
   `result` (code-color's vendored highlighter, broken since extraction),
-  `loadStr` (infinite-combo, now infinite-combo-box), `genSVG` (xy-grapher, now scatter-plot).
+  `loadStr` (infinite-combo, now infinite-combo-box), `genSVG` (xy-grapher, later scatter-plot, now in `@johnhenry/data-plot`).
 - **`@johnhenry/domable`'s `textToDom` returns a `DocumentFragment`, not a
   `NodeList`.** `lib`'s original `text-to-DOM-nodes` returned an iterable
   `NodeList`. When 0.0.1 switched `infinite-combo` (now `infinite-combo-box`, which
@@ -216,8 +216,9 @@ module and the principles disagree, the module is wrong.
 
 - No bundling or build step. Modules ship as source.
 - No unfinished modules in the package. The last `experimental/` sketches
-  graduated (`scatter-plot`, `chernoff-face`, `draw-svg`, and `pixelable/`,
-  since moved to `@johnhenry/canvas-fx`)
+  graduated (`draw-svg`; `scatter-plot` and `chernoff-face`, since moved to
+  `@johnhenry/data-plot`; and `pixelable/`, since moved to
+  `@johnhenry/canvas-fx`)
   and the directory is gone; a new idea joins the package once it meets
   the definition of done.
 - No TypeScript sources. Type declarations (`.d.ts` next to the `.mjs`)
