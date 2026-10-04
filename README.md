@@ -108,11 +108,11 @@ queries, evaluated against an element's size instead of the viewport.
 | [chernoff-face](src/chernoff-face/readme.md) | A face whose features show data, each a number from 0 to 1 | `<chernoff-face>` |
 | [draw-svg](src/draw-svg/readme.md) | SVG strokes that draw themselves in, CSP-safe and reduced-motion aware | `<draw-svg>` |
 
-### Pixel effects: moved to [`@johnhenry/pixelable`](https://github.com/johnhenry/pixelable)
+### Pixel effects: moved to [`@johnhenry/canvas-fx`](https://github.com/johnhenry/canvas-fx)
 
 `<pixel-canvas>`, `<pixel-sprite>`, and the pixel effects (mosaic,
 palettes, CRT, shaders, …) are their own package now:
-[`@johnhenry/pixelable`](https://github.com/johnhenry/pixelable).
+[`@johnhenry/canvas-fx`](https://github.com/johnhenry/canvas-fx).
 
 ## Recipes
 
