@@ -122,6 +122,7 @@ footer {
   padding: 8px 12px 12px;
   font: 12px/1.45 ui-monospace, monospace;
   overflow: auto;
+  overflow-anchor: none;
   height: 100%;
   max-height: 220px;
 }
