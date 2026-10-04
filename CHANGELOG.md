@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- **The gallery shows each example's source beside it** (`demo/`, not
+  published): the exact file each card's frame runs, highlighted by
+  `<code-color>`, with a checkbox to hide it.
+
 ### Changed (breaking)
 
 - **The pixel effects moved to their own package,
