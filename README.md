@@ -108,23 +108,11 @@ queries, evaluated against an element's size instead of the viewport.
 | [chernoff-face](src/chernoff-face/readme.md) | A face whose features show data, each a number from 0 to 1 | `<chernoff-face>` |
 | [draw-svg](src/draw-svg/readme.md) | SVG strokes that draw themselves in, CSP-safe and reduced-motion aware | `<draw-svg>` |
 
-### Pixel effects on images and video: [`pixelable/`](src/pixelable/readme.md)
+### Pixel effects: moved to [`@johnhenry/pixelable`](https://github.com/johnhenry/pixelable)
 
-| Module | What it's for | `global.mjs` registers |
-|---|---|---|
-| [pixel-sprite](src/pixelable/pixel-sprite/readme.md) | Pixel art written as text, with animation frames; a source for `<pixel-canvas>` | `<pixel-sprite>` |
-| [pixel-canvas](src/pixelable/pixel-canvas/readme.md) | Draws an image, video, or canvas through effects, listed like CSS `filter` (`effects="mosaic(4) palette(gameboy)"`) or wrapped around it as elements | `<pixel-canvas>` |
-| [pixel-mosaic](src/pixelable/pixel-mosaic/readme.md) | Pixelate into blocks | `<pixel-mosaic>` |
-| [pixel-palette](src/pixelable/pixel-palette/readme.md) | Limit to a palette (Game Boy, PICO-8, 1-bit, any colors), with dithering | `<pixel-palette>` |
-| [pixel-grid](src/pixelable/pixel-grid/readme.md) | Grid lines between cells | `<pixel-grid>` |
-| [pixel-adjust](src/pixelable/pixel-adjust/readme.md) | Brightness, contrast, saturation, and hue | `<pixel-adjust>` |
-| [pixel-halftone](src/pixelable/pixel-halftone/readme.md) | Printed dots | `<pixel-halftone>` |
-| [pixel-outline](src/pixelable/pixel-outline/readme.md) | Line art from edges | `<pixel-outline>` |
-| [pixel-crt](src/pixelable/pixel-crt/readme.md) | An old screen: scanlines and a color stripe mask | `<pixel-crt>` |
-| [pixel-chroma-key](src/pixelable/pixel-chroma-key/readme.md) | Make a color transparent (green screen) | `<pixel-chroma-key>` |
-| [pixel-glitch](src/pixelable/pixel-glitch/readme.md) | Animated digital breakup | `<pixel-glitch>` |
-| [pixel-wave](src/pixelable/pixel-wave/readme.md) | Rows rippling along a moving wave | `<pixel-wave>` |
-| [pixel-shader](src/pixelable/pixel-shader/readme.md) | Your own effect in GLSL, run on the GPU | `<pixel-shader>` |
+`<pixel-canvas>`, `<pixel-sprite>`, and the pixel effects (mosaic,
+palettes, CRT, shaders, …) are their own package now:
+[`@johnhenry/pixelable`](https://github.com/johnhenry/pixelable).
 
 ## Recipes
 
@@ -147,7 +135,7 @@ real site would. Each is plain HTML you can read top to bottom:
 
 - **One directory per module**, under `src/`. Related modules are grouped
   one level deeper (`matchable/`, `cyclable/`, `definable/`,
-  `hydratable/`, `pixelable/`), and the group is part of the import
+  `hydratable/`), and the group is part of the import
   path.
 - **`@johnhenry/domkit/<module>`** imports the module's `index.mjs`: an
   element class (unregistered) or a function. Any file inside can be

@@ -6,15 +6,12 @@ All notable changes to this project will be documented in this file.
 
 ### Changed (breaking)
 
-- **`pixelable/pixel-filter.mjs` is now `pixelable/effects.mjs`.**
-  `definePixelFilter(tag, (image, element) => …)` is replaced by
-  `definePixelEffect(name, (image, params) => …, { params })`, which
-  registers `name(…)` for the `effects` attribute and a `<pixel-name>`
-  element. `PixelFilter` is now `PixelEffect`; `<pixel-canvas>`'s list of
-  effect elements is `effectElements` (`effects` now mirrors the
-  attribute); `<pixel-mosaic>`/`<pixel-grid>` lost their `size`
-  properties (use the attributes).
-
+- **The pixel effects moved to their own package,
+  [`@johnhenry/pixelable`](https://github.com/johnhenry/pixelable)**, with
+  their history: `<pixel-canvas>`, `<pixel-sprite>`, every effect element,
+  and `pixelable/effects.mjs`, `shader.mjs`, and `quantize.mjs`.
+  `@johnhenry/domkit/pixelable/…` is now `@johnhenry/pixelable/…`. Its
+  CHANGELOG covers everything the family gained here.
 - **`localstorage-cycler` no longer stores the default on creation**, so
   "nothing chosen yet" is a real state, and stepping from it moves to the
   second value (it used to stay on the first).
@@ -77,8 +74,6 @@ All notable changes to this project will be documented in this file.
   the manifest format intends. A tool can load just the elements a page
   uses. The bogus definitions of a tag named `name` (from
   `customElements.define(name, …)` calls) are gone.
-- **`grid(size, transparent)` cuts gaps** instead of drawing lines, so the
-  image becomes separate tiles with the background showing through.
 
 - **`<swipe-input>` and `<gamepad-input>`: swipes and game controllers
   that send invoker commands**, like `<hot-key>` does for keys. Swipes
@@ -87,68 +82,6 @@ All notable changes to this project will be documented in this file.
   and the left stick as a d-pad) send theirs once per press, with a
   cancelable `gamepadpress` event. The command-sending code is now shared
   (`invoke-command.mjs`).
-- **Custom `<pixel-canvas>` sources.** Any element exposing a `canvas`
-  property and firing `framechange` is a source, so games and
-  visualizations can be run through pixel effects. One defined later is
-  picked up when it is.
-
-- **`<pixel-shader>`: pixel effects in GLSL, on the GPU.** A fragment
-  shader in a `<script type="x-shader/x-fragment">` child gets the image,
-  its size, the canvas clock, and `v_uv` (top-left origin) declared, and
-  any `u_name` it uses becomes a float set from the `name` attribute;
-  without a `main()` the code is its body, with `pixel` already read.
-  `definePixelShader(name, code)` (in `pixelable/shader.mjs`) makes a
-  shader a named effect for the attribute and element forms. Compile
-  errors fire `error` with the compiler's message.
-
-- **Pixel effects that change over time.** Effects receive
-  `{ time, frame }` from the `<pixel-canvas>` clock, which `fps` drives on
-  a still image and `play()`/`pause()`/`paused` (with events and
-  `--play`/`--pause`/`--toggle` commands) control; reduced motion keeps it
-  still until `play()`. New `glitch(amount, rate)` and
-  `wave(amplitude, wavelength, speed)` effects (and elements), and a
-  `random(seed)` helper for repeatable randomness.
-
-- **`<pixel-sprite>`: pixel art written as text.** One character per
-  pixel with a color key (`colors=". transparent; # black; o gold"`, or a
-  numbered palette; PICO-8 hex digits by default), blank lines between
-  animation frames played at `fps` (with `paused`, `play()`/`pause()`,
-  `frame`, commands, and reduced-motion respect). It shows itself crisply
-  scaled (`--domkit-sprite-scale`), is named by `alt` like an `<img>`, and
-  is a `<pixel-canvas>` source, redrawn every frame. `<pixel-canvas>` now
-  enlarges small sources without smoothing.
-
-- **Colors from the image.** `palette(auto, dither, count)` (and
-  `<pixel-palette colors="auto" count="…">`) reduces an image to its own
-  dominant colors. `<pixel-canvas swatches="N" swatches-target="html">`
-  publishes the result's N most common colors as `--pixel-swatch-1…N`
-  custom properties, with a `palette` property and a `palettechange`
-  event, so a page can take its theme from a picture. Both use a new
-  median-cut-plus-k-means quantizer (`pixelable/quantize.mjs`).
-
-- **`<pixel-canvas effects="…">`: effects listed like CSS `filter`**
-  (`effects="adjust(contrast 1.3) palette(gameboy, ordered)"`), run left
-  to right after any effect elements, with positional or named parameters
-  (`palette(dither ordered, colors gameboy)`) and repeats allowed. Every
-  effect is one registered function used by both forms.
-- **Five new effects**, each as a function and an element: `adjust`
-  (brightness, contrast, saturation, hue), `halftone` (printed dots, with
-  `ink="auto"` for color), `outline` (line art from edges), `crt`
-  (scanlines and a shadow mask), and `chroma-key` (green screen).
-
-- **`pixelable/`: pixel effects on any image, video, or canvas, in
-  HTML.** Wrap the source in effects and those in a `<pixel-canvas>`:
-  `<pixel-mosaic>` (pixelate), `<pixel-palette>` (named palettes such as
-  `gameboy`, `pico-8`, `1bit`, or any CSS colors, with Floyd–Steinberg or
-  ordered dithering), and `<pixel-grid>`, applied innermost first, each
-  switchable with `disabled`. `<pixel-canvas>` redraws on load, on
-  changes, and every frame of a playing video; takes a working `width`;
-  is named from the source's `alt`; offers `toBlob()`/`toDataURL()`; and
-  shows the original if the source can't be read. Write your own effect
-  with `definePixelFilter()` or the `PixelFilter` class. This replaces
-  `experimental/imagedata-emitter`, `pixel-shader`, and
-  `canvas-renderer`. With that, `experimental/` is gone: everything in the
-  package is stable.
 
 - **`<draw-svg>`** replaces `experimental/animate-paths`: strokes of the
   wrapped SVG draw themselves in via `pathLength="1"` and the Web
