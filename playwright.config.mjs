@@ -19,5 +19,12 @@ export default defineConfig({
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
     { name: "firefox", use: { ...devices["Desktop Firefox"] } },
     { name: "webkit", use: { ...devices["Desktop Safari"] } },
+    // HTML-in-canvas is behind a flag in Chromium for now: run the specs
+    // that use it with the flag on too (they test the fallback elsewhere).
+    {
+      name: "chromium-html-in-canvas",
+      testMatch: /html-in-canvas\.spec\.mjs/,
+      use: { ...devices["Desktop Chrome"], launchOptions: { args: ["--enable-blink-features=CanvasDrawElement"] } },
+    },
   ],
 });

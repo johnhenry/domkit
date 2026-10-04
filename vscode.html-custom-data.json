@@ -512,6 +512,11 @@
           "name": "paused",
           "description": "Stops the clock effects animate by, and the `fps` redraws. Reflects; write it in markup to start paused.",
           "valueSet": "v"
+        },
+        {
+          "name": "html",
+          "description": "Experimental: draw its own HTML content (live, and still interactive) through the effects, where the browser supports HTML-in-canvas; elsewhere the content shows as it is. Without `width`/`height`, one working pixel is one CSS pixel.",
+          "valueSet": "v"
         }
       ],
       "references": [

@@ -3909,8 +3909,12 @@
           "name": "PixelCanvas",
           "cssParts": [
             {
-              "description": "The `<canvas>` showing the result. Invoker commands: `--play`, `--pause`, `--toggle`.",
+              "description": "The `<canvas>` showing the result.",
               "name": "canvas"
+            },
+            {
+              "description": "With `html`, where supported: the `<canvas layoutsubtree>` its content is laid out in and the result is drawn on. Invoker commands: `--play`, `--pause`, `--toggle`.",
+              "name": "html-canvas"
             }
           ],
           "members": [
@@ -4297,6 +4301,78 @@
             },
             {
               "kind": "method",
+              "name": "#applyEffects",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "image"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#publishSwatches",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "image"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "#htmlCanvas",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#htmlFailed",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#resizeObserver",
+              "privacy": "private",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "#onPaint",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#setHTMLMode",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "#observeContent",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#fitHTML",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "#paintHTML",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
               "name": "#publish",
               "privacy": "private",
               "parameters": [
@@ -4473,6 +4549,13 @@
                 "text": "boolean"
               },
               "description": "Stops the clock effects animate by, and the `fps` redraws. Reflects; write it in markup to start paused."
+            },
+            {
+              "name": "html",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Experimental: draw its own HTML content (live, and still interactive) through the effects, where the browser supports HTML-in-canvas; elsewhere the content shows as it is. Without `width`/`height`, one working pixel is one CSS pixel."
             }
           ],
           "superclass": {

@@ -67,6 +67,13 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **`<pixel-canvas html>` (experimental):** draws its own HTML content
+  (a form, text, anything) live through the effects, and it stays
+  interactive, using the proposed HTML-in-canvas API (`<canvas
+  layoutsubtree>`, `drawElementImage()`; in Chromium behind
+  `chrome://flags/#canvas-draw-element`). Where the API is missing, the
+  content shows as it is. The browser tests run a Chromium project with the
+  flag on.
 - **`<hot-key>`, `<gamepad-input>`, and `<swipe-input>` work without
   `commandfor`:** a custom `--command` then bubbles up from the input as a
   `command` event, for the element it's inside to handle. Controls can
