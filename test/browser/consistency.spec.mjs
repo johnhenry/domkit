@@ -21,19 +21,6 @@ const ELEMENTS = {
   "scatter-plot": "<template><i></i></template>",
   "chernoff-face": "",
   "draw-svg": '<svg><path d="M0 0 L9 9" stroke="black"></path></svg>',
-  "pixelable/pixel-canvas": "<canvas></canvas>",
-  "pixelable/pixel-mosaic": "",
-  "pixelable/pixel-palette": "",
-  "pixelable/pixel-grid": "",
-  "pixelable/pixel-adjust": "",
-  "pixelable/pixel-halftone": "",
-  "pixelable/pixel-outline": "",
-  "pixelable/pixel-crt": "",
-  "pixelable/pixel-chroma-key": "",
-  "pixelable/pixel-sprite": ".8.\n888",
-  "pixelable/pixel-glitch": "",
-  "pixelable/pixel-wave": "",
-  "pixelable/pixel-shader": '<script type="x-shader/x-fragment">color = pixel;</script>',
 };
 const tagOf = (path) => path.split("/").pop();
 const MODULES = Object.keys(ELEMENTS).map((path) => `src/${path}/global.mjs`);

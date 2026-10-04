@@ -12,9 +12,10 @@ file.
   `global.mjs`, where present, registers the element under its documented
   tag. `readme.md` documents it, and `demo.html`/`demo.htm` exercises it.
 - `src/<family>/<module>/`: the grouped families `definable/`,
-  `matchable/`, `cyclable/`, `hydratable/` (hydratable is both a family and
-  a module: `src/hydratable/index.mjs` is the mixin, `mounts/` its sibling),
-  and `pixelable/`. Each family directory has its own `readme.md`.
+  `matchable/`, `cyclable/`, and `hydratable/` (hydratable is both a family
+  and a module: `src/hydratable/index.mjs` is the mixin, `mounts/` its
+  sibling). Each family directory has its own `readme.md`. (`pixelable/`
+  moved to its own package, `@johnhenry/pixelable`.)
 - `package.json` `exports`: `@johnhenry/domkit/<path>` maps to
   `src/<path>/index.mjs`, and any `.mjs`/`.css` file is reachable by its
   full path. Adding a module needs no `package.json` change.
@@ -215,7 +216,8 @@ module and the principles disagree, the module is wrong.
 
 - No bundling or build step. Modules ship as source.
 - No unfinished modules in the package. The last `experimental/` sketches
-  graduated (`scatter-plot`, `chernoff-face`, `draw-svg`, `pixelable/`)
+  graduated (`scatter-plot`, `chernoff-face`, `draw-svg`, and `pixelable/`,
+  since moved to `@johnhenry/pixelable`)
   and the directory is gone; a new idea joins the package once it meets
   the definition of done.
 - No TypeScript sources. Type declarations (`.d.ts` next to the `.mjs`)
