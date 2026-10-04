@@ -7,7 +7,7 @@ import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { mount } from "./helpers.mjs";
 
-const STYLES = ["theme", "scatter-plot/index", "chernoff-face/index", "tabbed-ui/index", "stylable-select/index", "infinite-combo-box/index", "drill-menu/index", "code-color/index"];
+const STYLES = ["theme", "tabbed-ui/index", "stylable-select/index", "infinite-combo-box/index", "drill-menu/index", "code-color/index"];
 const MODULES = [
   "src/tabbed-ui/global.mjs",
   "src/stylable-select/global.mjs",
@@ -19,8 +19,6 @@ const MODULES = [
   "src/cyclable/attribute-cycler/global.mjs",
   "src/matchable/query-container/global.mjs",
   "src/matchable/attribute-provider/global.mjs",
-  "src/scatter-plot/global.mjs",
-  "src/chernoff-face/global.mjs",
   "src/draw-svg/global.mjs",
 ];
 
@@ -75,9 +73,7 @@ const ALL = `
   <query-container default="ul" query="[(min-width: 600px)] ol"><li>a</li><li>b</li></query-container>
   <attribute-provider classes="[(min-width: 1px)] note"><p>provided</p></attribute-provider>
   <frame-timer fps="10" paused></frame-timer>
-  <chernoff-face smile="0.8"></chernoff-face>
-  <draw-svg><svg viewBox="0 0 10 10" role="img" aria-label="A line"><path d="M1 1 L9 9" stroke="black"></path></svg></draw-svg>
-  <scatter-plot data='[[1, 2], {"x": 3, "y": 4, "title": "three"}]'></scatter-plot>`;
+  <draw-svg><svg viewBox="0 0 10 10" role="img" aria-label="A line"><path d="M1 1 L9 9" stroke="black"></path></svg></draw-svg>`;
 
 test("every stable element, at rest, passes axe", async ({ page }) => {
   await mount(page, ALL, MODULES);

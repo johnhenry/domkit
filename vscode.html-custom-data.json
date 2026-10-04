@@ -2,58 +2,6 @@
   "version": 1.1,
   "tags": [
     {
-      "name": "chernoff-face",
-      "description": "A face whose features show data: each is a number from 0 to 1.",
-      "attributes": [
-        {
-          "name": "face-width",
-          "description": "0 narrow … 1 wide. Default 0.5, like every feature."
-        },
-        {
-          "name": "eye-size",
-          "description": "0 small … 1 large eyes."
-        },
-        {
-          "name": "eye-spacing",
-          "description": "0 close … 1 far-apart eyes."
-        },
-        {
-          "name": "pupil-size",
-          "description": "0 small … 1 large pupils."
-        },
-        {
-          "name": "gaze",
-          "description": "0 looking left … 1 looking right."
-        },
-        {
-          "name": "brow-slant",
-          "description": "0 angry … 1 worried brows."
-        },
-        {
-          "name": "nose-length",
-          "description": "0 short … 1 long nose."
-        },
-        {
-          "name": "mouth-width",
-          "description": "0 narrow … 1 wide mouth."
-        },
-        {
-          "name": "smile",
-          "description": "0 frown … 1 smile."
-        },
-        {
-          "name": "mouth-open",
-          "description": "0 closed … 1 open mouth."
-        }
-      ],
-      "references": [
-        {
-          "name": "Documentation",
-          "url": "https://github.com/johnhenry/domkit/tree/main/src/chernoff-face"
-        }
-      ]
-    },
-    {
       "name": "code-color",
       "description": "Syntax highlighting that never touches your markup.",
       "attributes": [
@@ -444,38 +392,6 @@
         {
           "name": "Documentation",
           "url": "https://github.com/johnhenry/domkit/tree/main/src/matchable/query-container"
-        }
-      ]
-    },
-    {
-      "name": "scatter-plot",
-      "description": "A scatter plot of a point template, styled with ordinary CSS.\n\nEvents: `error`",
-      "attributes": [
-        {
-          "name": "data",
-          "description": "JSON array of points: `[x, y]` pairs, or `{ x, y, … }` objects whose other keys become attributes on that point."
-        },
-        {
-          "name": "x-min",
-          "description": "The x value at the left edge. Default: the smallest x, or 0 if that's positive."
-        },
-        {
-          "name": "x-max",
-          "description": "The x value at the right edge. Default: the largest x."
-        },
-        {
-          "name": "y-min",
-          "description": "The y value at the bottom edge. Default: the smallest y, or 0 if that's positive."
-        },
-        {
-          "name": "y-max",
-          "description": "The y value at the top edge. Default: the largest y."
-        }
-      ],
-      "references": [
-        {
-          "name": "Documentation",
-          "url": "https://github.com/johnhenry/domkit/tree/main/src/scatter-plot"
         }
       ]
     },

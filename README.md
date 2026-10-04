@@ -100,12 +100,12 @@ queries, evaluated against an element's size instead of the viewport.
 | [hydratable](src/hydratable/readme.md) | A run-once async `hydrate()` (with `dehydrate()` to undo it) for any object |
 | [hydratable/mounts](src/hydratable/mounts/readme.md) | Find or create the element at the start/end of `<body>` to render an app into |
 
-### Data and graphics
+### Graphics
+
+Plots and `<chernoff-face>` moved to [`@johnhenry/data-plot`](https://github.com/johnhenry/data-plot).
 
 | Module | What it's for | `global.mjs` registers |
 |---|---|---|
-| [scatter-plot](src/scatter-plot/readme.md) | A scatter plot of a point you design, styled with ordinary CSS | `<scatter-plot>` |
-| [chernoff-face](src/chernoff-face/readme.md) | A face whose features show data, each a number from 0 to 1 | `<chernoff-face>` |
 | [draw-svg](src/draw-svg/readme.md) | SVG strokes that draw themselves in, CSP-safe and reduced-motion aware | `<draw-svg>` |
 
 ### Pixel effects: moved to [`@johnhenry/canvas-fx`](https://github.com/johnhenry/canvas-fx)
