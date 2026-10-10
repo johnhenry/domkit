@@ -7,7 +7,7 @@ import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { mount } from "./helpers.mjs";
 
-const STYLES = ["theme", "tabbed-ui/index", "stylable-select/index", "infinite-combo-box/index", "drill-menu/index", "code-color/index"];
+const STYLES = ["theme", "tabbed-ui/index", "stylable-select/index", "infinite-combo-box/index", "drill-menu/index", "code-color/index", "code-editor/index"];
 const MODULES = [
   "src/tabbed-ui/global.mjs",
   "src/stylable-select/global.mjs",
@@ -15,6 +15,7 @@ const MODULES = [
   "src/hot-key/global.mjs",
   "src/drill-menu/global.mjs",
   "src/code-color/global.mjs",
+  "src/code-editor/global.mjs",
   "src/frame-timer/global.mjs",
   "src/cyclable/attribute-cycler/global.mjs",
   "src/matchable/query-container/global.mjs",
@@ -62,6 +63,8 @@ const ALL = `
     </stylable-select>
     <label for="c">City</label>
     <infinite-combo-box id="c" name="city" placeholder="Search"><option>Paris</option><option>Tokyo</option></infinite-combo-box>
+    <label for="ed">Script</label>
+    <code-editor id="ed" name="script" language="js" required placeholder="Write code">const answer = 42;</code-editor>
   </form>
   <drill-menu aria-label="Settings">
     <button data-key="p">Profile<template><h2>Profile</h2><button data-back>Back</button></template></button>
@@ -92,6 +95,9 @@ test("open and active states pass axe too", async ({ page }) => {
   await page.keyboard.press("ArrowDown");
   // drill menu: a screen open
   await page.getByRole("button", { name: "Profile" }).click();
+  // code editor: focused, with a selection
+  await page.locator("#ed textarea").focus();
+  await page.keyboard.press("ControlOrMeta+a");
   // tabs: a different panel
   await page.getByRole("tab", { name: "Three" }).click();
   expect(await audit(page)).toEqual([]);
@@ -104,7 +110,7 @@ test("disabled states pass axe", async ({ page }) => {
   await mount(page, ALL, MODULES);
   await loadStyles(page);
   await page.evaluate(() => {
-    for (const el of document.querySelectorAll("tabbed-ui, stylable-select, infinite-combo-box, drill-menu, attribute-cycler")) {
+    for (const el of document.querySelectorAll("tabbed-ui, stylable-select, infinite-combo-box, drill-menu, attribute-cycler, code-editor")) {
       el.disabled = true;
     }
   });

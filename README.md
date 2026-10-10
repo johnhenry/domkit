@@ -56,6 +56,7 @@ Or skip installing: every path above also works as
 | [hot-key](src/hot-key/readme.md) | Keyboard shortcuts (`mod+k`, `/`) that toggle a native `<dialog>` or popover, or run any invoker command | `<hot-key>` |
 | [drill-menu](src/drill-menu/readme.md) | A list that drills into sub-screens and back (settings menus, mobile nav), optionally synced to the URL hash | `<drill-menu>` |
 | [code-color](src/code-color/readme.md) | Syntax highlighting (JS, CSS, HTML) that never changes your markup, themable with CSS | `<code-color>` |
+| [code-editor](src/code-editor/readme.md) | An editable, highlighted code field that works like a `<textarea>` (forms, events, selection), with indent, auto-indent, and bracket pairs on the native undo stack | `<code-editor>` |
 
 ### Responding to screen size: [`matchable/`](src/matchable/readme.md)
 

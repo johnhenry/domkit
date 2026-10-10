@@ -1,0 +1,37 @@
+/* Optional defaults for <code-editor>. The element works without this
+   file (its layout is set inline); this adds a monospace font, a border,
+   scrolling, and the focus ring. Colors come from the shared tokens in
+   ../theme.css, and token colors from code-color's highlights.
+
+   Height: the editor grows with its content. `rows` (or CSS min-height)
+   sets a minimum; cap it with max-height, and it scrolls. */
+@import url("../code-color/index.css");
+
+code-editor:not([hidden]) {
+  display: block;
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 0.5em 0.75em;
+  border: 1px solid var(--domkit-border, color-mix(in srgb, currentColor 25%, transparent));
+  border-radius: var(--domkit-radius, 0.375em);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.875em;
+  line-height: 1.5;
+  cursor: text;
+}
+/* The ring goes on the whole editor, not the textarea inside it. */
+code-editor textarea {
+  outline: none;
+}
+code-editor:focus-within {
+  outline: var(--domkit-focus-ring, 2px solid currentColor);
+  outline-offset: 1px;
+}
+code-editor textarea::placeholder {
+  color: inherit;
+  opacity: 0.55;
+}
+code-editor:is([disabled], :disabled) {
+  opacity: var(--domkit-disabled-opacity, 0.5);
+  cursor: not-allowed;
+}
