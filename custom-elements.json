@@ -807,6 +807,15 @@
               "default": "null"
             },
             {
+              "kind": "field",
+              "name": "#revealQueued",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
               "kind": "method",
               "name": "#unpaint",
               "privacy": "private"
