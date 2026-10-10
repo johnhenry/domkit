@@ -478,7 +478,9 @@ test.describe("attributes and lifecycle", () => {
     expect(scroll.top).toBeGreaterThan(150);
     expect(await page.evaluate(() => document.getElementById("e").textarea.scrollTop)).toBe(0);
     for (let i = 0; i < 12; i++) await page.keyboard.press("ArrowUp");
-    expect(await page.evaluate(() => document.getElementById("e").scrollTop)).toBe(0);
+    // Following the caret happens after the selection changes (asynchronously
+    // in some engines): wait for it rather than reading it immediately.
+    await expect.poll(() => page.evaluate(() => document.getElementById("e").scrollTop)).toBe(0);
   });
 
   test("long lines wrap by default; wrap=off scrolls them sideways, following the caret", async ({ page }) => {
