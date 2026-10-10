@@ -769,9 +769,17 @@ export default class CodeEditor extends HTMLElement {
       this.#probe.style.cssText = "position:absolute;inline-size:1px;pointer-events:none;visibility:hidden";
     }
     const probe = this.#probe;
-    probe.style.top = `${rect.top - box.top}px`;
+    let top = rect.top - box.top;
+    let bottom = top + Math.max(rect.height, 1);
+    // On the first or last line, reveal the padding too, as a textarea does:
+    // scrolled all the way to the top (or bottom), not to the line's
+    // sub-pixel edge (which left Chromium 1px short of 0).
+    const host = this.getBoundingClientRect();
+    if (top < rect.height / 2) top = host.top + this.clientTop - box.top;
+    if (bottom > box.height - rect.height / 2) bottom = Math.max(bottom, host.bottom - this.clientTop - box.top);
+    probe.style.top = `${top}px`;
     probe.style.left = `${rect.left - box.left}px`;
-    probe.style.height = `${Math.max(rect.height, 1)}px`;
+    probe.style.height = `${Math.max(bottom - top, 1)}px`;
     this.#surface.append(probe);
     probe.scrollIntoView({ block: "nearest", inline: "nearest" });
     probe.remove(); // left in place, it would keep stretching the scroll area
