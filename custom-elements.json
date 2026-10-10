@@ -318,6 +318,24 @@
             },
             {
               "kind": "field",
+              "name": "#userEdited",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#autofocused",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
               "name": "#formDisabled",
               "privacy": "private",
               "type": {
@@ -454,7 +472,7 @@
             {
               "kind": "field",
               "name": "rows",
-              "description": "Minimum height in lines, or 0 for none.",
+              "description": "Minimum height in lines (default 2, like a textarea).",
               "type": {
                 "text": "number"
               }
@@ -462,7 +480,31 @@
             {
               "kind": "field",
               "name": "wrap",
-              "description": "\"soft\" or \"off\" (the default).",
+              "description": "Reflects the `wrap` attribute as written (\"\" when absent), like a\ntextarea's. Long lines wrap unless it is `off`.",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "maxLength",
+              "description": "Mirrors the `maxlength` attribute; -1 when absent, like a textarea's.",
+              "type": {
+                "text": "number"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "minLength",
+              "description": "Mirrors the `minlength` attribute; -1 when absent, like a textarea's.",
+              "type": {
+                "text": "number"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "autocomplete",
+              "description": "Mirrors the `autocomplete` attribute.",
               "type": {
                 "text": "string"
               }
@@ -868,14 +910,14 @@
               "type": {
                 "text": "number"
               },
-              "description": "Minimum height in lines (sets `--domkit-code-editor-rows`). The editor grows with its content; cap it with CSS `max-height`."
+              "description": "Minimum height in lines, default 2 like a textarea (sets `--domkit-code-editor-rows`). The editor grows with its content; cap it with CSS `max-height`."
             },
             {
               "name": "wrap",
               "type": {
                 "text": "string"
               },
-              "description": "`soft` (or empty) wraps long lines; `off` (the default) scrolls them horizontally."
+              "description": "Long lines wrap by default, like a textarea (`soft`, `hard`, empty or absent); `off` scrolls them horizontally."
             },
             {
               "type": {
@@ -883,6 +925,69 @@
               },
               "description": "Name submitted with the form.",
               "name": "name"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "Maximum length; typing stops there, and a longer value the user typed is `tooLong`, like a textarea.",
+              "name": "maxlength"
+            },
+            {
+              "type": {
+                "text": "number"
+              },
+              "description": "Minimum length; a shorter, non-empty value the user typed is `tooShort`, like a textarea.",
+              "name": "minlength"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Off by default (code isn't prose); `spellcheck=\"true\"` turns the browser's checking back on.",
+              "name": "spellcheck"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Off by default for code; any value is passed to the textarea.",
+              "name": "autocapitalize"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Off by default for code; any value is passed to the textarea.",
+              "name": "autocorrect"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Off by default for code; any value is passed to the textarea.",
+              "name": "autocomplete"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Passed to the textarea (virtual keyboard hint).",
+              "name": "inputmode"
+            },
+            {
+              "type": {
+                "text": "string"
+              },
+              "description": "Passed to the textarea (virtual keyboard Enter label).",
+              "name": "enterkeyhint"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Focus the editor when it is first connected, if nothing else has focus.",
+              "name": "autofocus"
             },
             {
               "type": {

@@ -3,8 +3,8 @@
    scrolling, and the focus ring. Colors come from the shared tokens in
    ../theme.css, and token colors from code-color's highlights.
 
-   Height: the editor grows with its content. `rows` (or CSS min-height)
-   sets a minimum; cap it with max-height, and it scrolls. */
+   Height: at least `rows` lines (default 2, like a textarea), growing with
+   its content; cap it with max-height, and it scrolls. */
 @import url("../code-color/index.css");
 
 code-editor:not([hidden]) {

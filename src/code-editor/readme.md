@@ -79,16 +79,39 @@ editor.addEventListener("keydown", (event) => {
 
 ## Height and wrapping
 
-The editor grows with its content. `rows` sets a minimum height in lines
-(or use CSS `min-height`); cap it with CSS `max-height` and it scrolls,
-keeping the caret in view:
+Like a `<textarea>`, the editor is at least `rows` lines tall (default 2) and
+wraps long lines (`wrap` absent, `soft`, or `hard`). Unlike one, it also grows
+with its content; cap it with CSS `max-height` and it scrolls, keeping the
+caret in view:
 
 ```css
 code-editor { max-height: 20lh; }
 ```
 
-Long lines scroll sideways by default. `wrap="soft"` (or just `wrap`)
-wraps them instead.
+`wrap="off"` scrolls long lines sideways instead.
+
+## Differences from a textarea
+
+The element follows `<textarea>` wherever it can; these are the deliberate
+exceptions:
+
+- **It grows with its content.** A textarea stays at `rows` lines and
+  scrolls; the editor uses `rows` as a minimum.
+- **Spellcheck, autocapitalize, autocorrect and autocomplete are off by
+  default**, because code isn't prose. Set any of them on the element
+  (`spellcheck="true"`, `autocapitalize="sentences"`, ...) and it is passed to
+  the textarea.
+- **`wrap="hard"` wraps like `soft`**, but the submitted value is not
+  hard-wrapped (the element submits its value itself, through
+  ElementInternals).
+- **No `cols` or `dirname`.** Size it with CSS.
+- **Tab indents.** Escape, then Tab, moves focus out (see Keys).
+
+`maxlength`, `minlength`, `inputmode` and `enterkeyhint` are passed to the
+textarea and behave natively: typing stops at `maxlength`, and `validity`
+reports `tooLong`/`tooShort` only for a value the user typed, as a textarea
+does. `autofocus` focuses the editor when it is first connected, if nothing
+else has focus.
 
 ## Why a textarea
 
@@ -141,9 +164,18 @@ highlights.
 | `readonly` |  | `boolean` | The value can be selected and copied but not edited. Tab then moves focus as usual. |
 | `required` | `required` | `boolean` | The form is invalid while the value is empty. |
 | `tab-size` | `tabSize` | `number` | Spaces per indent level, for Tab/Shift+Tab, auto-indent, and how tab characters display. Default 2. |
-| `rows` | `rows` | `number` | Minimum height in lines (sets `--domkit-code-editor-rows`). The editor grows with its content; cap it with CSS `max-height`. |
-| `wrap` | `wrap` | `string` | `soft` (or empty) wraps long lines; `off` (the default) scrolls them horizontally. |
+| `rows` | `rows` | `number` | Minimum height in lines, default 2 like a textarea (sets `--domkit-code-editor-rows`). The editor grows with its content; cap it with CSS `max-height`. |
+| `wrap` | `wrap` | `string` | Long lines wrap by default, like a textarea (`soft`, `hard`, empty or absent); `off` scrolls them horizontally. |
 | `name` | `name` | `string` | Name submitted with the form. |
+| `maxlength` |  | `number` | Maximum length; typing stops there, and a longer value the user typed is `tooLong`, like a textarea. |
+| `minlength` |  | `number` | Minimum length; a shorter, non-empty value the user typed is `tooShort`, like a textarea. |
+| `spellcheck` |  | `string` | Off by default (code isn't prose); `spellcheck="true"` turns the browser's checking back on. |
+| `autocapitalize` |  | `string` | Off by default for code; any value is passed to the textarea. |
+| `autocorrect` |  | `string` | Off by default for code; any value is passed to the textarea. |
+| `autocomplete` | `autocomplete` | `string` | Off by default for code; any value is passed to the textarea. |
+| `inputmode` |  | `string` | Passed to the textarea (virtual keyboard hint). |
+| `enterkeyhint` |  | `string` | Passed to the textarea (virtual keyboard Enter label). |
+| `autofocus` |  | `boolean` | Focus the editor when it is first connected, if nothing else has focus. |
 | `no-auto-close` | `noAutoClose` | `boolean` | Don't auto-close brackets and quotes (also turns off typing over a closer and deleting an empty pair). |
 
 ### Properties
@@ -162,8 +194,11 @@ highlights.
 | `readOnly` | `boolean` | Mirrors the `readonly` attribute. |
 | `required` | `boolean` | Mirrors the `required` attribute. |
 | `tabSize` | `number` | Spaces per indent level (default 2). |
-| `rows` | `number` | Minimum height in lines, or 0 for none. |
-| `wrap` | `string` | "soft" or "off" (the default). |
+| `rows` | `number` | Minimum height in lines (default 2, like a textarea). |
+| `wrap` | `string` | Reflects the `wrap` attribute as written ("" when absent), like a textarea's. Long lines wrap unless it is `off`. |
+| `maxLength` | `number` | Mirrors the `maxlength` attribute; -1 when absent, like a textarea's. |
+| `minLength` | `number` | Mirrors the `minlength` attribute; -1 when absent, like a textarea's. |
+| `autocomplete` | `string` | Mirrors the `autocomplete` attribute. |
 | `noAutoClose` | `boolean` | Mirrors the `no-auto-close` attribute. |
 | `textarea` (read-only) | `HTMLTextAreaElement \| null` | The `<textarea>` that does the editing (for advanced use: measuring, or a library that needs a real text control). |
 | `selectionStart` | `number` |  |

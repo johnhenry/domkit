@@ -16,7 +16,25 @@
 import { languageOf, tokenize } from "../code-color/tokenize.mjs";
 import { TOKEN_TYPES } from "../code-color/index.mjs";
 import { sharedHighlights } from "../code-color/highlights.mjs";
-import { valueMissingText } from "../native-validation.mjs";
+import { valueMissingText, tooLongText, tooShortText } from "../native-validation.mjs";
+
+// Attributes a <textarea> understands that the editor hands straight to its
+// textarea, so they behave natively.
+const PASSED_THROUGH = ["maxlength", "minlength", "inputmode", "enterkeyhint"];
+// Text-entry helpers that are right for prose and wrong for code: off by
+// default, and passed through when the author sets them.
+const CODE_DEFAULTS = [
+  ["spellcheck", "false"],
+  ["autocapitalize", "off"],
+  ["autocorrect", "off"],
+  ["autocomplete", "off"],
+];
+
+/** A non-negative integer attribute, or -1 (absent or invalid), like a textarea's maxLength. */
+function lengthAttribute(element, name) {
+  const value = Number.parseInt(element.getAttribute(name) ?? "", 10);
+  return Number.isFinite(value) && value >= 0 ? value : -1;
+}
 import { applyEdit, backspace, indent, newline, typeCharacter } from "./edits.mjs";
 
 // code-color's highlights (the same Highlight objects), so one theme
@@ -42,8 +60,17 @@ const MODIFIER_KEYS = new Set(["Shift", "Control", "Alt", "Meta", "AltGraph", "C
  * @attr {string} language - `js`, `css`, or `html` (plus aliases like `javascript`, `ts`, `json`, `xml`), as for code-color. Default: a `language-*` class on a `<code>` in the initial markup, else `html`.
  * @attr {string} placeholder - Text shown while the value is empty.
  * @attr {number} tab-size - Spaces per indent level, for Tab/Shift+Tab, auto-indent, and how tab characters display. Default 2.
- * @attr {number} rows - Minimum height in lines (sets `--domkit-code-editor-rows`). The editor grows with its content; cap it with CSS `max-height`.
- * @attr {string} wrap - `soft` (or empty) wraps long lines; `off` (the default) scrolls them horizontally.
+ * @attr {number} rows - Minimum height in lines, default 2 like a textarea (sets `--domkit-code-editor-rows`). The editor grows with its content; cap it with CSS `max-height`.
+ * @attr {string} wrap - Long lines wrap by default, like a textarea (`soft`, `hard`, empty or absent); `off` scrolls them horizontally.
+ * @attr {number} maxlength - Maximum length; typing stops there, and a longer value the user typed is `tooLong`, like a textarea.
+ * @attr {number} minlength - Minimum length; a shorter, non-empty value the user typed is `tooShort`, like a textarea.
+ * @attr {string} spellcheck - Off by default (code isn't prose); `spellcheck="true"` turns the browser's checking back on.
+ * @attr {string} autocapitalize - Off by default for code; any value is passed to the textarea.
+ * @attr {string} autocorrect - Off by default for code; any value is passed to the textarea.
+ * @attr {string} autocomplete - Off by default for code; any value is passed to the textarea.
+ * @attr {string} inputmode - Passed to the textarea (virtual keyboard hint).
+ * @attr {string} enterkeyhint - Passed to the textarea (virtual keyboard Enter label).
+ * @attr {boolean} autofocus - Focus the editor when it is first connected, if nothing else has focus.
  * @attr {boolean} no-auto-close - Don't auto-close brackets and quotes (also turns off typing over a closer and deleting an empty pair).
  * @attr {boolean} readonly - The value can be selected and copied but not edited. Tab then moves focus as usual.
  * @attr {boolean} disabled - Blocks interaction and form submission. Also inherited from a disabled fieldset.
@@ -58,7 +85,10 @@ const MODIFIER_KEYS = new Set(["Shift", "Control", "Alt", "Meta", "AltGraph", "C
  */
 export default class CodeEditor extends HTMLElement {
   static formAssociated = true;
-  static observedAttributes = ["value", "language", "placeholder", "disabled", "readonly", "required", "tab-size", "rows", "wrap"];
+  static observedAttributes = [
+    "value", "language", "placeholder", "disabled", "readonly", "required", "tab-size", "rows", "wrap",
+    ...PASSED_THROUGH, ...CODE_DEFAULTS.map(([name]) => name),
+  ];
 
   #internals = this.attachInternals();
   #input = null; // the <textarea>
@@ -70,6 +100,8 @@ export default class CodeEditor extends HTMLElement {
   #markupLanguage = null; // from a language-* class in the initial markup
   #initialValue = null; // value set from script before the element was built
   #dirty = false; // like a textarea's dirty value flag
+  #userEdited = false; // the value was last changed by the user (tooLong/tooShort apply only then)
+  #autofocused = false;
   #formDisabled = false;
   #customError = "";
   #escaped = false; // Escape was just pressed: the next Tab leaves
@@ -95,6 +127,15 @@ export default class CodeEditor extends HTMLElement {
     this.#bindLabels();
     this.#refresh();
     this.#paint();
+    // Like autofocus on a native control: once, and only if nothing else
+    // has taken focus by the time the document is ready for it.
+    if (this.hasAttribute("autofocus") && !this.#autofocused) {
+      this.#autofocused = true;
+      queueMicrotask(() => {
+        const active = this.ownerDocument.activeElement;
+        if (this.isConnected && (!active || active === this.ownerDocument.body)) this.#input?.focus();
+      });
+    }
   }
 
   disconnectedCallback() {
@@ -106,7 +147,7 @@ export default class CodeEditor extends HTMLElement {
   attributeChangedCallback(name, previous, current) {
     if (name === "rows") {
       const rows = this.rows;
-      if (rows > 0) this.style.setProperty("--domkit-code-editor-rows", String(rows));
+      if (this.hasAttribute("rows")) this.style.setProperty("--domkit-code-editor-rows", String(rows));
       else this.style.removeProperty("--domkit-code-editor-rows");
     }
     if (!this.#input) return;
@@ -133,6 +174,7 @@ export default class CodeEditor extends HTMLElement {
   set value(value) {
     value = String(value ?? "").replace(/\r\n?/g, "\n");
     this.#dirty = true;
+    this.#userEdited = false;
     if (!this.#input) {
       this.#initialValue = value;
       return;
@@ -244,27 +286,60 @@ export default class CodeEditor extends HTMLElement {
   }
 
   /**
-   * Minimum height in lines, or 0 for none.
+   * Minimum height in lines (default 2, like a textarea).
    * @type {number}
    */
   get rows() {
     const rows = Number.parseInt(this.getAttribute("rows") ?? "", 10);
-    return Number.isFinite(rows) && rows > 0 ? rows : 0;
+    return Number.isFinite(rows) && rows > 0 ? rows : 2;
   }
   set rows(value) {
     this.setAttribute("rows", String(value));
   }
 
   /**
-   * "soft" or "off" (the default).
+   * Reflects the `wrap` attribute as written ("" when absent), like a
+   * textarea's. Long lines wrap unless it is `off`.
    * @type {string}
    */
   get wrap() {
-    const wrap = this.getAttribute("wrap");
-    return wrap === "" || wrap?.toLowerCase() === "soft" ? "soft" : "off";
+    return this.getAttribute("wrap") ?? "";
   }
   set wrap(value) {
     this.setAttribute("wrap", value);
+  }
+
+  /**
+   * Mirrors the `maxlength` attribute; -1 when absent, like a textarea's.
+   * @type {number}
+   */
+  get maxLength() {
+    return lengthAttribute(this, "maxlength");
+  }
+  set maxLength(value) {
+    this.setAttribute("maxlength", String(value));
+  }
+
+  /**
+   * Mirrors the `minlength` attribute; -1 when absent, like a textarea's.
+   * @type {number}
+   */
+  get minLength() {
+    return lengthAttribute(this, "minlength");
+  }
+  set minLength(value) {
+    this.setAttribute("minlength", String(value));
+  }
+
+  /**
+   * Mirrors the `autocomplete` attribute.
+   * @type {string}
+   */
+  get autocomplete() {
+    return this.getAttribute("autocomplete") ?? "";
+  }
+  set autocomplete(value) {
+    this.setAttribute("autocomplete", value);
   }
 
   /**
@@ -335,6 +410,7 @@ export default class CodeEditor extends HTMLElement {
     if (start === undefined) this.#input.setRangeText(replacement);
     else this.#input.setRangeText(replacement, start, end ?? start, selectMode);
     this.#dirty = true;
+    this.#userEdited = false;
     this.#sync();
   }
 
@@ -420,6 +496,7 @@ export default class CodeEditor extends HTMLElement {
 
   formResetCallback() {
     this.#dirty = false;
+    this.#userEdited = false;
     if (!this.#input) {
       this.#initialValue = null;
       return;
@@ -464,10 +541,6 @@ export default class CodeEditor extends HTMLElement {
     // on its own: the element does all three (an empty form id matches
     // nothing).
     input.setAttribute("form", "");
-    input.autocomplete = "off";
-    input.spellcheck = false;
-    input.setAttribute("autocapitalize", "off");
-    input.setAttribute("autocorrect", "off");
     input.setAttribute("aria-multiline", "true");
     input.id ||= `code-editor-input-${++uid}`;
 
@@ -496,7 +569,7 @@ export default class CodeEditor extends HTMLElement {
       // over all the text after it. pointer-events: none is enough to keep
       // selection in the textarea.)
       "position:relative;pointer-events:none;" +
-      "min-block-size:calc(var(--domkit-code-editor-rows, 1) * 1lh)";
+      "min-block-size:calc(var(--domkit-code-editor-rows, 2) * 1lh)";
     // The mirror paints above the textarea, so the textarea's own selection
     // and caret show through beneath the colored text.
     surface.append(input, mirror);
@@ -506,6 +579,7 @@ export default class CodeEditor extends HTMLElement {
     input.addEventListener("input", (event) => {
       event.stopPropagation(); // the element fires its own
       this.#dirty = true;
+      this.#userEdited = true;
       this.#sync();
       this.#reveal();
       this.#fire(event);
@@ -574,7 +648,13 @@ export default class CodeEditor extends HTMLElement {
     setAttr(input, "aria-required", String(this.required));
     if (this.hasAttribute("placeholder")) setAttr(input, "placeholder", this.placeholder);
     else input.removeAttribute("placeholder");
-    const wrap = this.wrap === "soft";
+    for (const name of PASSED_THROUGH) {
+      if (this.hasAttribute(name)) setAttr(input, name, this.getAttribute(name));
+      else input.removeAttribute(name);
+    }
+    // Code isn't prose: these are off unless the author sets them.
+    for (const [name, fallback] of CODE_DEFAULTS) setAttr(input, name, this.getAttribute(name) ?? fallback);
+    const wrap = this.wrap.toLowerCase() !== "off";
     setAttr(input, "wrap", wrap ? "soft" : "off");
     for (const element of [input, this.#mirror]) {
       element.style.whiteSpace = wrap ? "pre-wrap" : "pre";
@@ -593,6 +673,10 @@ export default class CodeEditor extends HTMLElement {
       this.#internals.setValidity({ customError: true }, this.#customError, input);
     } else if (this.required && !input.value) {
       this.#internals.setValidity({ valueMissing: true }, valueMissingText(), input);
+    } else if (this.#userEdited && this.maxLength >= 0 && input.value.length > this.maxLength) {
+      this.#internals.setValidity({ tooLong: true }, tooLongText(this.maxLength, input.value.length), input);
+    } else if (this.#userEdited && this.minLength > 0 && input.value.length > 0 && input.value.length < this.minLength) {
+      this.#internals.setValidity({ tooShort: true }, tooShortText(this.minLength, input.value.length), input);
     } else {
       this.#internals.setValidity({});
     }
@@ -731,6 +815,7 @@ export default class CodeEditor extends HTMLElement {
         if (!done || input.value === before.value) input.setRangeText(change.text, change.start, change.end);
         else input.value = expected;
         this.#dirty = true;
+        this.#userEdited = true;
         this.#sync();
         this.#fire(new InputEvent("input", { inputType: change.text ? "insertText" : "deleteContentBackward", data: change.text || null }));
       }

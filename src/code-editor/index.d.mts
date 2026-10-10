@@ -27,10 +27,17 @@ export default class CodeEditor extends HTMLElement {
   required: boolean;
   /** Spaces per indent level (default 2). */
   tabSize: number;
-  /** Minimum height in lines, or 0 for none. */
+  /** Minimum height in lines (default 2, like a textarea). */
   rows: number;
-  /** "soft" or "off" (the default). */
+  /** Reflects the `wrap` attribute as written ("" when absent), like a
+   * textarea's. Long lines wrap unless it is `off`. */
   wrap: string;
+  /** Mirrors the `maxlength` attribute; -1 when absent, like a textarea's. */
+  maxLength: number;
+  /** Mirrors the `minlength` attribute; -1 when absent, like a textarea's. */
+  minLength: number;
+  /** Mirrors the `autocomplete` attribute. */
+  autocomplete: string;
   /** Mirrors the `no-auto-close` attribute. */
   noAutoClose: boolean;
   /** The `<textarea>` that does the editing (for advanced use: measuring,

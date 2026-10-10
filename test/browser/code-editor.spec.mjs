@@ -81,7 +81,8 @@ test.describe("structure and accessibility", () => {
   });
 
   test("the mirror lines up with the textarea and grows with the content", async ({ page }) => {
-    await mount(page, `<code-editor id="e" language="js">a</code-editor>`, MODULES);
+    // rows="1": start from a single line so growth is measurable (the default minimum is 2, like a textarea).
+    await mount(page, `<code-editor id="e" language="js" rows="1">a</code-editor>`, MODULES);
     const one = await page.evaluate(() => document.getElementById("e").getBoundingClientRect().height);
     await place(page, 1);
     await page.keyboard.press("Enter");
@@ -433,7 +434,7 @@ test.describe("attributes and lifecycle", () => {
       const defaults = [el.tabSize, el.rows, el.wrap, el.language, el.resolvedLanguage, textarea.style.whiteSpace];
       el.tabSize = 4;
       el.rows = 3;
-      el.wrap = "soft";
+      el.wrap = "off";
       el.placeholder = "Type";
       el.name = "n";
       el.language = "ts";
@@ -451,18 +452,22 @@ test.describe("attributes and lifecycle", () => {
       };
     });
     expect(result).toEqual({
-      defaults: [2, 0, "off", "", "html", "pre"],
-      attrs: ["4", "3", "soft", "Type", "n", "ts"],
-      effects: ["pre-wrap", "pre-wrap", "4", "3", "Type", "js"],
+      // Like a textarea: 2 rows, and wrap reflects the (absent) attribute while long lines wrap.
+      defaults: [2, 2, "", "", "html", "pre-wrap"],
+      attrs: ["4", "3", "off", "Type", "n", "ts"],
+      effects: ["pre", "pre", "4", "3", "Type", "js"],
     });
   });
 
-  test("rows sets a minimum height; max-height makes it scroll and follow the caret", async ({ page }) => {
+  test("rows sets a minimum height (2 by default, like a textarea); max-height makes it scroll and follow the caret", async ({ page }) => {
     await mount(page, `<code-editor id="e" style="display: block; line-height: 20px; max-height: 100px; overflow: auto"></code-editor>`, MODULES);
-    const empty = await page.evaluate(() => document.getElementById("e").getBoundingClientRect().height);
+    const two = await page.evaluate(() => document.getElementById("e").getBoundingClientRect().height);
+    await page.evaluate(() => (document.getElementById("e").rows = 1));
+    const one = await page.evaluate(() => document.getElementById("e").getBoundingClientRect().height);
+    expect(two - one).toBeCloseTo(20, 0);
     await page.evaluate(() => (document.getElementById("e").rows = 3));
     const three = await page.evaluate(() => document.getElementById("e").getBoundingClientRect().height);
-    expect(three - empty).toBeCloseTo(40, 0);
+    expect(three - one).toBeCloseTo(40, 0);
     await place(page, 0);
     for (let i = 0; i < 12; i++) await page.keyboard.press("Enter");
     const scroll = await page.evaluate(() => {
@@ -476,8 +481,14 @@ test.describe("attributes and lifecycle", () => {
     expect(await page.evaluate(() => document.getElementById("e").scrollTop)).toBe(0);
   });
 
-  test("unwrapped long lines scroll sideways, following the caret; wrap wraps them", async ({ page }) => {
-    await mount(page, `<code-editor id="e" style="display: block; width: 200px; overflow: auto"></code-editor>`, MODULES);
+  test("long lines wrap by default; wrap=off scrolls them sideways, following the caret", async ({ page }) => {
+    await mount(page, `<code-editor id="d" style="display: block; width: 200px; overflow: auto"></code-editor>`, MODULES);
+    await page.evaluate(() => (document.getElementById("d").value = "x".repeat(80)));
+    expect(await page.evaluate(() => {
+      const el = document.getElementById("d");
+      return { wide: el.scrollWidth > el.clientWidth, tall: el.getBoundingClientRect().height > 60 };
+    })).toEqual({ wide: false, tall: true });
+    await mount(page, `<code-editor id="e" wrap="off" style="display: block; width: 200px; overflow: auto"></code-editor>`, MODULES);
     await place(page, 0);
     await page.keyboard.type("x".repeat(80));
     const unwrapped = await page.evaluate(() => {
@@ -493,6 +504,53 @@ test.describe("attributes and lifecycle", () => {
       return { wide: el.scrollWidth > el.clientWidth, tall: el.getBoundingClientRect().height > 40 };
     });
     expect(wrapped).toEqual({ wide: false, tall: true });
+  });
+
+  test("maxlength and minlength behave like a textarea's: typing stops, and only user edits are tooLong/tooShort", async ({ page }) => {
+    await mount(page, `<code-editor id="e" maxlength="5" minlength="3"></code-editor>`, MODULES);
+    const scripted = await page.evaluate(() => {
+      const el = document.getElementById("e");
+      el.value = "abcdefgh"; // script may exceed maxlength, and isn't flagged
+      return { tooLong: el.validity.tooLong, maxLength: el.maxLength, minLength: el.minLength, inner: el.textarea.maxLength };
+    });
+    expect(scripted).toEqual({ tooLong: false, maxLength: 5, minLength: 3, inner: 5 });
+    await page.evaluate(() => (document.getElementById("e").value = ""));
+    await place(page, 0);
+    await page.keyboard.type("abcdefgh");
+    expect(await page.evaluate(() => document.getElementById("e").value)).toBe("abcde");
+    await page.keyboard.press("Backspace");
+    await page.keyboard.press("Backspace");
+    await page.keyboard.press("Backspace");
+    await page.keyboard.press("Backspace");
+    const short = await page.evaluate(() => {
+      const el = document.getElementById("e");
+      return { value: el.value, tooShort: el.validity.tooShort, valid: el.checkValidity() };
+    });
+    expect(short).toEqual({ value: "a", tooShort: true, valid: false });
+    const absent = await page.evaluate(() => {
+      const el = document.createElement("code-editor");
+      return [el.maxLength, el.minLength];
+    });
+    expect(absent).toEqual([-1, -1]);
+  });
+
+  test("text-entry attributes: code defaults are off, and author values pass through", async ({ page }) => {
+    await mount(page, `<code-editor id="a"></code-editor><code-editor id="b" spellcheck="true" autocapitalize="sentences" inputmode="numeric" enterkeyhint="done"></code-editor>`, MODULES);
+    const attrs = await page.evaluate(() =>
+      ["a", "b"].map((id) => {
+        const t = document.getElementById(id).textarea;
+        return ["spellcheck", "autocapitalize", "autocorrect", "autocomplete", "inputmode", "enterkeyhint"].map((n) => t.getAttribute(n));
+      }),
+    );
+    expect(attrs).toEqual([
+      ["false", "off", "off", "off", null, null],
+      ["true", "sentences", "off", "off", "numeric", "done"],
+    ]);
+  });
+
+  test("autofocus focuses the editor when nothing else has focus", async ({ page }) => {
+    await mount(page, `<code-editor id="e" autofocus>x</code-editor>`, MODULES);
+    await page.waitForFunction(() => document.activeElement === document.getElementById("e").textarea);
   });
 
   test("the placeholder shows while empty", async ({ page }) => {

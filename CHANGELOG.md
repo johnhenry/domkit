@@ -14,8 +14,13 @@ All notable changes to this project will be documented in this file.
   and outdent (Escape, then Tab, leaves), Enter keeps indentation and
   splits a bracket pair, and brackets and quotes auto-close with
   type-over and pair delete (`no-auto-close` turns that off), all on the
-  browser's own undo stack. `tab-size`, `rows`, and `wrap` attributes; it
-  grows with its content, and `max-height` makes it scroll. Highlighting
+  browser's own undo stack. Defaults follow `<textarea>`: at least
+  `rows` lines (2), long lines wrap unless `wrap="off"`, and `maxlength`,
+  `minlength`, `inputmode`, `enterkeyhint` and `autofocus` behave
+  natively (`tooLong`/`tooShort` only for user edits). The documented
+  exceptions: it grows with its content (`max-height` makes it scroll),
+  and spellcheck, autocapitalize, autocorrect and autocomplete are off
+  unless set. Highlighting
   is code-color's (same tokenizer, `language` values, and
   `::highlight(domkit-*)` names), updated incrementally, with no global
   listeners, so hundreds of editors on a page stay cheap. The editing

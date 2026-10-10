@@ -107,9 +107,18 @@ A syntax-highlighted code field that works like a textarea. [Guide](../src/code-
 | `readonly` |  | `boolean` | The value can be selected and copied but not edited. Tab then moves focus as usual. |
 | `required` | `required` | `boolean` | The form is invalid while the value is empty. |
 | `tab-size` | `tabSize` | `number` | Spaces per indent level, for Tab/Shift+Tab, auto-indent, and how tab characters display. Default 2. |
-| `rows` | `rows` | `number` | Minimum height in lines (sets `--domkit-code-editor-rows`). The editor grows with its content; cap it with CSS `max-height`. |
-| `wrap` | `wrap` | `string` | `soft` (or empty) wraps long lines; `off` (the default) scrolls them horizontally. |
+| `rows` | `rows` | `number` | Minimum height in lines, default 2 like a textarea (sets `--domkit-code-editor-rows`). The editor grows with its content; cap it with CSS `max-height`. |
+| `wrap` | `wrap` | `string` | Long lines wrap by default, like a textarea (`soft`, `hard`, empty or absent); `off` scrolls them horizontally. |
 | `name` | `name` | `string` | Name submitted with the form. |
+| `maxlength` |  | `number` | Maximum length; typing stops there, and a longer value the user typed is `tooLong`, like a textarea. |
+| `minlength` |  | `number` | Minimum length; a shorter, non-empty value the user typed is `tooShort`, like a textarea. |
+| `spellcheck` |  | `string` | Off by default (code isn't prose); `spellcheck="true"` turns the browser's checking back on. |
+| `autocapitalize` |  | `string` | Off by default for code; any value is passed to the textarea. |
+| `autocorrect` |  | `string` | Off by default for code; any value is passed to the textarea. |
+| `autocomplete` | `autocomplete` | `string` | Off by default for code; any value is passed to the textarea. |
+| `inputmode` |  | `string` | Passed to the textarea (virtual keyboard hint). |
+| `enterkeyhint` |  | `string` | Passed to the textarea (virtual keyboard Enter label). |
+| `autofocus` |  | `boolean` | Focus the editor when it is first connected, if nothing else has focus. |
 | `no-auto-close` | `noAutoClose` | `boolean` | Don't auto-close brackets and quotes (also turns off typing over a closer and deleting an empty pair). |
 
 **Properties**
@@ -128,8 +137,11 @@ A syntax-highlighted code field that works like a textarea. [Guide](../src/code-
 | `readOnly` | `boolean` | Mirrors the `readonly` attribute. |
 | `required` | `boolean` | Mirrors the `required` attribute. |
 | `tabSize` | `number` | Spaces per indent level (default 2). |
-| `rows` | `number` | Minimum height in lines, or 0 for none. |
-| `wrap` | `string` | "soft" or "off" (the default). |
+| `rows` | `number` | Minimum height in lines (default 2, like a textarea). |
+| `wrap` | `string` | Reflects the `wrap` attribute as written ("" when absent), like a textarea's. Long lines wrap unless it is `off`. |
+| `maxLength` | `number` | Mirrors the `maxlength` attribute; -1 when absent, like a textarea's. |
+| `minLength` | `number` | Mirrors the `minlength` attribute; -1 when absent, like a textarea's. |
+| `autocomplete` | `string` | Mirrors the `autocomplete` attribute. |
 | `noAutoClose` | `boolean` | Mirrors the `no-auto-close` attribute. |
 | `textarea` (read-only) | `HTMLTextAreaElement \| null` | The `<textarea>` that does the editing (for advanced use: measuring, or a library that needs a real text control). |
 | `selectionStart` | `number` |  |
