@@ -1,6 +1,6 @@
 {
   "name": "@johnhenry/domkit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Small, independent custom elements and DOM utilities -- drop-in UI widgets, media-query-driven containers, persisted UI state, declarative loaders -- shipped as source, no build step.",
   "type": "module",
   "exports": {

@@ -146,3 +146,19 @@ import { DEFAULT_STRINGS } from "@johnhenry/domkit/infinite-combo-box";
 const defaults: Readonly<Record<string, unknown>> = DEFAULT_STRINGS;
 paged.strings = { loadMore: "Mehr laden" };
 void defaults;
+
+// code-editor: the textarea-like contract.
+import CodeEditor from "@johnhenry/domkit/code-editor";
+import "@johnhenry/domkit/code-editor/global.mjs";
+const editor = document.querySelector("code-editor")!;
+const source: string = editor.value;
+editor.value = source + "\n";
+editor.tabSize = 4;
+editor.setSelectionRange(0, editor.textLength, "forward");
+const editorStart: number = editor.selectionStart;
+const editorArea: HTMLTextAreaElement | null = editor.textarea;
+const editorValid: boolean = editor.checkValidity();
+// @ts-expect-error -- resolvedLanguage is read-only
+editor.resolvedLanguage = "js";
+const builtEditor: CodeEditor = new CodeEditor();
+void editorStart, editorArea, editorValid, builtEditor;

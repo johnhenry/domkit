@@ -5,25 +5,11 @@
 // screen readers, and even editing behave exactly as on plain text.
 // Where the API isn't supported, the code simply stays uncolored.
 import { languageOf, tokenize } from "./tokenize.mjs";
+import { SUPPORTED, sharedHighlights } from "./highlights.mjs";
 
 /** @type {readonly string[]} The token types, each a highlight named `domkit-<type>`. */
 export const TOKEN_TYPES = ["comment", "keyword", "string", "number", "function", "property", "tag", "attribute"];
-const SUPPORTED = typeof CSS !== "undefined" && "highlights" in CSS && typeof Highlight === "function";
-
-// One shared Highlight per token type, holding ranges from every instance.
-const highlights = SUPPORTED
-  ? Object.fromEntries(
-      TOKEN_TYPES.map((type) => {
-        const name = `domkit-${type}`;
-        let highlight = CSS.highlights.get(name);
-        if (!highlight) {
-          highlight = new Highlight();
-          CSS.highlights.set(name, highlight);
-        }
-        return [type, highlight];
-      }),
-    )
-  : null;
+const highlights = sharedHighlights(TOKEN_TYPES);
 
 /**
  * Highlights the code inside it (JavaScript, CSS, or HTML) with the CSS

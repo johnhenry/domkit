@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>code-editor</title>
+<link rel="stylesheet" href="../theme.css" />
+<link rel="stylesheet" href="./index.css" />
+<script type="module" src="./global.mjs"></script>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 14px/1.5 system-ui, sans-serif; margin: 12px; }
+  label { display: block; font-weight: 600; margin: 0.75em 0 0.25em; }
+  code-editor { max-height: 14em; }
+  output { display: block; white-space: pre-wrap; font: 12px ui-monospace, monospace; opacity: 0.8; margin-top: 0.25em; }
+  .hint { font-size: 12px; opacity: 0.75; }
+</style>
+</head>
+<body>
+<form id="form">
+  <label for="js">JavaScript (Ctrl/Cmd+Enter runs it)</label>
+  <code-editor id="js" name="code" language="js" rows="4">
+<pre>// Tab indents, Enter keeps indentation, brackets close themselves.
+function greet(name) {
+  return `Hello, ${name}!`;
+}
+greet("domkit");</pre>
+  </code-editor>
+  <output id="result"></output>
+
+  <label for="css">CSS (soft-wrapped, tab-size 4)</label>
+  <code-editor id="css" name="style" language="css" wrap="soft" tab-size="4" placeholder="Write some CSS">.card:hover { color: #0a3069; padding: 1em !important; }</code-editor>
+
+  <p>
+    <button type="submit">Submit</button>
+    <button type="reset">Reset</button>
+  </p>
+  <output id="submitted"></output>
+</form>
+<p class="hint">Press Escape, then Tab, to move focus out of an editor.</p>
+<script type="module">
+  const js = document.getElementById("js");
+  js.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
+      event.preventDefault();
+      let output;
+      try {
+        output = String((0, eval)(js.value)); // the demo's own "Run"
+      } catch (error) {
+        output = String(error);
+      }
+      document.getElementById("result").textContent = `→ ${output}`;
+    }
+  });
+  document.getElementById("form").addEventListener("submit", (event) => {
+    event.preventDefault();
+    document.getElementById("submitted").textContent = JSON.stringify(Object.fromEntries(new FormData(event.target)), null, 2);
+  });
+</script>
+</body>
+</html>

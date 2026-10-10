@@ -22,3 +22,17 @@ export function valueMissingSelect() {
   }
   return select.validationMessage || "Please select an item in the list.";
 }
+
+/**
+ * A too-long message. Fixed English: a native control only reports tooLong
+ * after a real user edit, so (unlike valueMissing) its wording can't be
+ * borrowed from a detached element.
+ */
+export function tooLongText(max, length) {
+  return `Please shorten this text to ${max} characters or less (you are currently using ${length} characters).`;
+}
+
+/** A too-short message (fixed English, for the same reason as tooLongText). */
+export function tooShortText(min, length) {
+  return `Please lengthen this text to ${min} characters or more (you are currently using ${length} characters).`;
+}

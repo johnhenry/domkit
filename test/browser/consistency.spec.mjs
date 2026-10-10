@@ -14,6 +14,7 @@ const ELEMENTS = {
   "gamepad-input": "",
   "drill-menu": "<button>a<template>x</template></button>",
   "code-color": "<pre>let a</pre>",
+  "code-editor": "<pre>let a</pre>",
   "frame-timer": "",
   "cyclable/attribute-cycler": "<button>a</button>",
   "matchable/query-container": "<li>a</li>",
@@ -22,7 +23,7 @@ const ELEMENTS = {
 };
 const tagOf = (path) => path.split("/").pop();
 const MODULES = Object.keys(ELEMENTS).map((path) => `src/${path}/global.mjs`);
-const STYLES = ["tabbed-ui", "stylable-select", "infinite-combo-box", "drill-menu", "code-color"];
+const STYLES = ["tabbed-ui", "stylable-select", "infinite-combo-box", "drill-menu", "code-color", "code-editor"];
 
 const loadStyles = (page) =>
   page.evaluate((styles) => {
@@ -62,9 +63,9 @@ test("elements nested in a hidden tabbed-ui panel stay hidden", async ({ page })
   const visible = await page.evaluate(() => {
     document.body.innerHTML = `<tabbed-ui><div><button>1</button><button>2</button></div>
       <section>first</section>
-      <section><code-color><pre>let x</pre></code-color><stylable-select><option>a</option></stylable-select><infinite-combo-box></infinite-combo-box></section>
+      <section><code-color><pre>let x</pre></code-color><stylable-select><option>a</option></stylable-select><infinite-combo-box></infinite-combo-box><code-editor>let y</code-editor></section>
     </tabbed-ui>`;
-    return [...document.querySelectorAll("code-color, stylable-select, infinite-combo-box")].filter((el) => el.checkVisibility()).length;
+    return [...document.querySelectorAll("code-color, stylable-select, infinite-combo-box, code-editor")].filter((el) => el.checkVisibility()).length;
   });
   expect(visible).toBe(0);
 });
@@ -107,6 +108,7 @@ test("form-associated elements behave alike in one form", async ({ page }) => {
        <select name="select"><option>s</option></select>
        <stylable-select name="stylable"><option selected>a</option></stylable-select>
        <infinite-combo-box name="combo" value="c"><option>c</option></infinite-combo-box>
+       <code-editor name="code">x</code-editor>
      </form>`,
     MODULES,
   );
@@ -122,10 +124,10 @@ test("form-associated elements behave alike in one form", async ({ page }) => {
     fieldset.disabled = false;
     return { before, disabled, matches, elements: [...form.elements].map((el) => el.localName) };
   });
-  expect(result.before).toEqual(["native", "select", "stylable", "combo"]);
+  expect(result.before).toEqual(["native", "select", "stylable", "combo", "code"]);
   expect(result.disabled, "a disabled fieldset disables all of them").toEqual([]);
-  expect(result.matches).toEqual([true, true, true, true]);
-  expect(result.elements).toEqual(expect.arrayContaining(["stylable-select", "infinite-combo-box"]));
+  expect(result.matches).toEqual([true, true, true, true, true]);
+  expect(result.elements).toEqual(expect.arrayContaining(["stylable-select", "infinite-combo-box", "code-editor"]));
 });
 
 test("disabled means the same thing everywhere: no interaction, out of the tab order, no events", async ({ page }) => {
@@ -138,6 +140,7 @@ test("disabled means the same thing everywhere: no interaction, out of the tab o
      <hot-key id="h" disabled hotkey="ctrl+k"><dialog id="d">d</dialog></hot-key>
      <stylable-select id="s" disabled><option>a</option><option>b</option></stylable-select>
      <infinite-combo-box id="i" disabled><option>a</option></infinite-combo-box>
+     <code-editor id="ce" disabled>x</code-editor>
      <input id="after" aria-label="after" />`,
     MODULES,
   );

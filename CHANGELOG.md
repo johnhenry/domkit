@@ -2,7 +2,35 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.1.1] - 2026-10-09
+
+### Added
+
+- **`<code-editor>`: an editable, syntax-highlighted code field that
+  works like a `<textarea>`** (module `@johnhenry/domkit/code-editor`).
+  It's form-associated, with a textarea's `value`/`defaultValue`,
+  selection API, `setRangeText()`, `required`/`disabled`/`readonly`/
+  `placeholder`, and `input`/`change` timing. Tab and Shift+Tab indent
+  and outdent (Escape, then Tab, leaves), Enter keeps indentation and
+  splits a bracket pair, and brackets and quotes auto-close with
+  type-over and pair delete (`no-auto-close` turns that off), all on the
+  browser's own undo stack. Defaults follow `<textarea>`: at least
+  `rows` lines (2), long lines wrap unless `wrap="off"`, and `maxlength`,
+  `minlength`, `inputmode`, `enterkeyhint` and `autofocus` behave
+  natively (`tooLong`/`tooShort` only for user edits). The documented
+  exceptions: it grows with its content (`max-height` makes it scroll),
+  and spellcheck, autocapitalize, autocorrect and autocomplete are off
+  unless set. Highlighting
+  is code-color's (same tokenizer, `language` values, and
+  `::highlight(domkit-*)` names), updated incrementally, with no global
+  listeners, so hundreds of editors on a page stay cheap. The editing
+  surface is a real `<textarea>` under a highlighted mirror; the README
+  explains why.
+
+## Shipped in 0.1.0, recorded late
+
+The 0.1.0 published to npm on 2026-10-07 also contained the changes below. This file listed them under
+`[Unreleased]` until 0.1.1; they are not new in 0.1.1.
 
 ### Added
 

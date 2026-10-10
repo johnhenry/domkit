@@ -18,6 +18,103 @@
       ]
     },
     {
+      "name": "code-editor",
+      "description": "A syntax-highlighted code field that works like a textarea.\n\nEvents: `change`, `input`",
+      "attributes": [
+        {
+          "name": "value",
+          "description": "Default value (what `form.reset()` restores). Without it, the element's initial text content is the default: a `<textarea>`'s, a `<pre>`'s, or its own."
+        },
+        {
+          "name": "language",
+          "description": "`js`, `css`, or `html` (plus aliases like `javascript`, `ts`, `json`, `xml`), as for code-color. Default: a `language-*` class on a `<code>` in the initial markup, else `html`."
+        },
+        {
+          "name": "placeholder",
+          "description": "Text shown while the value is empty."
+        },
+        {
+          "name": "disabled",
+          "description": "Blocks interaction and form submission. Also inherited from a disabled fieldset.",
+          "valueSet": "v"
+        },
+        {
+          "name": "readonly",
+          "description": "The value can be selected and copied but not edited. Tab then moves focus as usual.",
+          "valueSet": "v"
+        },
+        {
+          "name": "required",
+          "description": "The form is invalid while the value is empty.",
+          "valueSet": "v"
+        },
+        {
+          "name": "tab-size",
+          "description": "Spaces per indent level, for Tab/Shift+Tab, auto-indent, and how tab characters display. Default 2."
+        },
+        {
+          "name": "rows",
+          "description": "Minimum height in lines, default 2 like a textarea (sets `--domkit-code-editor-rows`). The editor grows with its content; cap it with CSS `max-height`."
+        },
+        {
+          "name": "wrap",
+          "description": "Long lines wrap by default, like a textarea (`soft`, `hard`, empty or absent); `off` scrolls them horizontally."
+        },
+        {
+          "name": "name",
+          "description": "Name submitted with the form."
+        },
+        {
+          "name": "maxlength",
+          "description": "Maximum length; typing stops there, and a longer value the user typed is `tooLong`, like a textarea."
+        },
+        {
+          "name": "minlength",
+          "description": "Minimum length; a shorter, non-empty value the user typed is `tooShort`, like a textarea."
+        },
+        {
+          "name": "spellcheck",
+          "description": "Off by default (code isn't prose); `spellcheck=\"true\"` turns the browser's checking back on."
+        },
+        {
+          "name": "autocapitalize",
+          "description": "Off by default for code; any value is passed to the textarea."
+        },
+        {
+          "name": "autocorrect",
+          "description": "Off by default for code; any value is passed to the textarea."
+        },
+        {
+          "name": "autocomplete",
+          "description": "Off by default for code; any value is passed to the textarea."
+        },
+        {
+          "name": "inputmode",
+          "description": "Passed to the textarea (virtual keyboard hint)."
+        },
+        {
+          "name": "enterkeyhint",
+          "description": "Passed to the textarea (virtual keyboard Enter label)."
+        },
+        {
+          "name": "autofocus",
+          "description": "Focus the editor when it is first connected, if nothing else has focus.",
+          "valueSet": "v"
+        },
+        {
+          "name": "no-auto-close",
+          "description": "Don't auto-close brackets and quotes (also turns off typing over a closer and deleting an empty pair).",
+          "valueSet": "v"
+        }
+      ],
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://github.com/johnhenry/domkit/tree/main/src/code-editor"
+        }
+      ]
+    },
+    {
       "name": "attribute-cycler",
       "description": "A persisted attribute or class switch (e.g. a theme toggle) driven by buttons.\n\nEvents: `change`",
       "attributes": [
