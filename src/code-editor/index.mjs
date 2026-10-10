@@ -594,6 +594,18 @@ export default class CodeEditor extends HTMLElement {
       input.scrollLeft = 0;
       this.#reveal();
     });
+    // Keyboard navigation (arrows, Home/End, Page keys) changes no text, so
+    // only the browser's own caret-into-view runs, which stops at the line
+    // and leaves the padding hidden. Reveal again once it has settled, so
+    // the first and last lines scroll to the edge as in a textarea.
+    input.addEventListener("keydown", () => {
+      if (this.#revealQueued) return;
+      this.#revealQueued = true;
+      requestAnimationFrame(() => {
+        this.#revealQueued = false;
+        this.#reveal();
+      });
+    });
     input.addEventListener("change", (event) => {
       event.stopPropagation();
       this.dispatchEvent(new Event("change", { bubbles: true }));
@@ -774,9 +786,12 @@ export default class CodeEditor extends HTMLElement {
     // On the first or last line, reveal the padding too, as a textarea does:
     // scrolled all the way to the top (or bottom), not to the line's
     // sub-pixel edge (which left Chromium 1px short of 0).
-    const host = this.getBoundingClientRect();
-    if (top < rect.height / 2) top = host.top + this.clientTop - box.top;
-    if (bottom > box.height - rect.height / 2) bottom = Math.max(bottom, host.bottom - this.clientTop - box.top);
+    // (Measured from the surface, which starts below the element's top
+    // padding: the element's own box is where the view is *now*, not where
+    // its content begins.)
+    const style = getComputedStyle(this);
+    if (top < rect.height / 2) top = -(Number.parseFloat(style.paddingTop) || 0);
+    if (bottom > box.height - rect.height / 2) bottom = Math.max(bottom, box.height + (Number.parseFloat(style.paddingBottom) || 0));
     probe.style.top = `${top}px`;
     probe.style.left = `${rect.left - box.left}px`;
     probe.style.height = `${Math.max(bottom - top, 1)}px`;
@@ -785,6 +800,7 @@ export default class CodeEditor extends HTMLElement {
     probe.remove(); // left in place, it would keep stretching the scroll area
   }
   #probe = null;
+  #revealQueued = false;
 
   #unpaint() {
     if (highlights) for (const [type, range] of this.#ranges) highlights[type].delete(range);

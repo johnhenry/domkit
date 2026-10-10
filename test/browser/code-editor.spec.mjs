@@ -483,6 +483,19 @@ test.describe("attributes and lifecycle", () => {
     await expect.poll(() => page.evaluate(() => document.getElementById("e").scrollTop)).toBe(0);
   });
 
+  test("back on the first line it scrolls all the way to the top, even with fractional line boxes", async ({ page }) => {
+    // Regression: caret-follow revealed the line's sub-pixel box, which left
+    // Linux Chromium 1px short of the top. A textarea scrolls to its edge.
+    await mount(page, `<code-editor id="e" rows="1" style="display: block; line-height: 20.37px; padding: 3.3px 5px; max-height: 61.7px; overflow: auto"></code-editor>`, MODULES);
+    await place(page, 0);
+    for (let i = 0; i < 9; i++) await page.keyboard.press("Enter");
+    await expect.poll(() => page.evaluate(() => document.getElementById("e").scrollTop)).toBeGreaterThan(50);
+    for (let i = 0; i < 9; i++) await page.keyboard.press("ArrowUp");
+    await expect.poll(() => page.evaluate(() => document.getElementById("e").scrollTop)).toBe(0);
+    for (let i = 0; i < 9; i++) await page.keyboard.press("ArrowDown");
+    await expect.poll(() => page.evaluate(() => { const el = document.getElementById("e"); return el.scrollHeight - el.clientHeight - el.scrollTop; })).toBeLessThanOrEqual(0.5);
+  });
+
   test("long lines wrap by default; wrap=off scrolls them sideways, following the caret", async ({ page }) => {
     await mount(page, `<code-editor id="d" style="display: block; width: 200px; overflow: auto"></code-editor>`, MODULES);
     await page.evaluate(() => (document.getElementById("d").value = "x".repeat(80)));
